@@ -61,7 +61,7 @@ export function observeSolo(run:SoloRun,snapshot:MatchSnapshot):SoloRun {
  }
  for(const event of snapshot.events){
   if(run.seenEvents.has(event.id))continue;run.seenEvents.add(event.id);
-  if(event.type==='block'&&(event.targetId===run.playerId||event.seatId===run.playerId))metrics.blocks++;
+  if(event.type==='block'&&event.targetId===run.playerId)metrics.blocks++;
   if(event.seatId!==run.playerId)continue;
   if(event.type==='attack'&&event.action==='dodge')metrics.dodges++;
   if(event.type==='active'&&event.action==='special'&&event.discipline==='vr')metrics.blinks++;
