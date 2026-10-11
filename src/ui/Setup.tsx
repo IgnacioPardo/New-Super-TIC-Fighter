@@ -11,7 +11,7 @@ import { Choice, MenuDialog, MenuTabs, menuTargets } from './MenuControls';
 import { ContentTabs, Pager, usePageSize } from './ContentPages';
 
 const palettes = {hair:['#164d43','#657822','#5c2f82','#53351f'],shirt:['#24b26d','#75c321','#5734c7','#a72547'],pants:['#7de4dc','#65c052','#b574d4','#d3a479']};
-type SeatEditor = {open:boolean; tab:'fighter'|'player'|'controls';appearancePage?:number};
+type SeatEditor = {open:boolean; tab:'fighter'|'player'|'controls';appearancePage?:number;playerPage?:number};
 type ReadyBridge = OnlineBridge & {setSeatReady?:(id:string,ready:boolean,assetsReady:boolean)=>void;state:OnlineBridge['state'] & {pendingEdits?:boolean;seatReadiness?:Record<string,boolean|{ready:boolean;assetsReady:boolean}>}};
 export function Setup({config:incomingConfig,setConfig,settings,manifest,devices,ready,toggleReady,start,online,practice,feedback,invalidateReady,readOnly=false,lockRules=false,lockRoster=false,lockDiscipline=false,editorOnly=false}: {
  config:MatchConfig;setConfig:(config:MatchConfig)=>void;settings:AppSettings;manifest:AssetsManifest|null;
@@ -167,7 +167,7 @@ export function Setup({config:incomingConfig,setConfig,settings,manifest,devices
    <div className="section-heading"><h2>{t.roster}</h2><span className="count-label">{config.players.length} / {maxFighters}</span><p className="seat-join-help">{t.joinController} · {es?'Cada mando edita su luchador. El teclado comparte un cursor.':'Each controller edits its fighter. Keyboard shares one cursor.'}</p>{!practice&&!lockRoster&&!readOnly&&config.players.length<maxFighters&&(host||!!online)&&<button className="small-button add-fighter" onClick={()=>addSeat()}>+ {t.add}</button>}</div>
 
    <div className="fighter-grid">
-    {orderedPlayers.map((original,displayIndex)=>{const index=config.players.findIndex(player=>player.id===original.id),seat=seatValue(original),panel=editor(seat.id),isCoordinator=coordinator.current===seat.id;return <article key={seat.id} className={`fighter-card fighter-summary ${acknowledgedReady(seat)?'is-ready':''} ${panel.open?'is-editing':''} ${!connected(seat)?'is-disconnected':''}`} hidden={Math.floor(displayIndex/pageSize)!==activePage} data-seat-id={seat.id} data-owner={seat.device} style={{'--fighter-color':disciplineInfo[seat.discipline].color} as CSSProperties}>
+    {orderedPlayers.map((original,displayIndex)=>{const index=config.players.findIndex(player=>player.id===original.id),seat=seatValue(original),panel=editor(seat.id),playerPages=config.mode==='teams'||!practice&&!lockRoster&&!readOnly&&config.players.length>2&&host?3:2,isCoordinator=coordinator.current===seat.id;return <article key={seat.id} className={`fighter-card fighter-summary ${acknowledgedReady(seat)?'is-ready':''} ${panel.open?'is-editing':''} ${!connected(seat)?'is-disconnected':''}`} hidden={Math.floor(displayIndex/pageSize)!==activePage} data-seat-id={seat.id} data-owner={seat.device} style={{'--fighter-color':disciplineInfo[seat.discipline].color} as CSSProperties}>
      <button className="fighter-edit" disabled={!owned(seat)} data-autofocus={index===0||undefined} aria-label={`${t.editFighter}: ${seat.name}`} onClick={()=>{edit(seat.id,{open:!panel.open});}}>
       <span className="fighter-card-top"><span className="seat-number">P{index+1}</span><span className={`ready-light ${acknowledgedReady(seat)?'on':''}`}>{acknowledgedReady(seat)?`✓ ${t.ready}`:t.notReady}</span></span>
       <span className="fighter-preview" data-number={String(index+1).padStart(2,'0')}><Avatar appearance={seat.appearance} discipline={seat.discipline} manifest={manifest} animated={!settings.reducedMotion}/><span className="fighter-stage-line"/></span>
@@ -182,13 +182,16 @@ export function Setup({config:incomingConfig,setConfig,settings,manifest,devices
        {panel.tab==='fighter'?<>
         {(!shortViewport||!panel.appearancePage)&&<Choice disabled={readOnly||lockDiscipline} label={t.discipline} value={seat.discipline} options={(config.ruleset==='classic'?disciplines.slice(0,4):disciplines).map(value=>({value,label:names[value][lang]}))} change={discipline=>changeSeat(seat.id,{discipline})}/>}
         {(['hair','shirt','pants'] as const).filter((_,partIndex)=>!shortViewport||Math.floor((partIndex+1)/2)===(panel.appearancePage??0)).map(part=><Choice key={part} disabled={readOnly} label={t[part]} value={seat.appearance[part]} options={palettes[part].map((_,value)=>({value,label:`${value+1} / 4`}))} swatches={palettes[part]} change={value=>changeSeat(seat.id,{appearance:{...seat.appearance,[part]:value}})}/>)}
-        {shortViewport&&<nav className="appearance-pager" aria-label={`${t.appearance} P${index+1}`}><button disabled={!panel.appearancePage} aria-label={`${es?'Aspecto anterior':'Previous appearance page'} P${index+1}`} onClick={()=>edit(seat.id,{appearancePage:0})}>←</button><span>{(panel.appearancePage??0)+1} / 2</span><button disabled={!!panel.appearancePage} aria-label={`${es?'Siguiente aspecto':'Next appearance page'} P${index+1}`} onClick={()=>edit(seat.id,{appearancePage:1})}>→</button></nav>}
+        {shortViewport&&<Pager compact page={panel.appearancePage??0} count={2} change={appearancePage=>edit(seat.id,{appearancePage})} language={lang} label={`${t.appearance} P${index+1}`}/>}
        </>:panel.tab==='player'?<>
-        <label className="config-row name-row"><span>{t.name}</span><input aria-label={`${t.name} P${index+1}`} value={seat.name} maxLength={18} disabled={readOnly} onChange={event=>changeSeat(seat.id,{name:event.target.value})}/></label><p className="text-input-help">{t.keyboardText}</p>
-        <Choice label={t.player} value={seat.kind} disabled={readOnly||lockRoster||!!online&&!host||practice} options={[{value:'human',label:t.human},{value:'bot',label:t.bot}]} change={kind=>changeSeat(seat.id,{kind,device:kind==='bot'?'bot':`keyboard:${index%4}`,difficulty:'normal'})}/>
+        {(!shortViewport||!panel.playerPage)&&<><label className="config-row name-row"><span>{t.name}</span><input aria-label={`${t.name} P${index+1}`} value={seat.name} maxLength={18} disabled={readOnly} onChange={event=>changeSeat(seat.id,{name:event.target.value})}/></label><p className="text-input-help">{t.keyboardText}</p></>}
+        {(!shortViewport||panel.playerPage===1)&&<><Choice label={t.player} value={seat.kind} disabled={readOnly||lockRoster||!!online&&!host||practice} options={[{value:'human',label:t.human},{value:'bot',label:t.bot}]} change={kind=>changeSeat(seat.id,{kind,device:kind==='bot'?'bot':`keyboard:${index%4}`,difficulty:'normal'})}/>
         {seat.kind==='bot'&&<Choice disabled={readOnly||lockRoster&&!practice} label={t.difficulty} value={seat.difficulty??'normal'} options={[{value:'easy',label:t.easy},{value:'normal',label:t.normal},{value:'hard',label:t.hard},...(practice?[{value:'dummy' as const,label:t.dummy}]:[])]} change={difficulty=>changeSeat(seat.id,{difficulty})}/>}
-        {config.mode==='teams'&&<Choice disabled={readOnly||lockRoster} label={t.team} value={seat.team} options={[{value:0,label:'◆ A'},{value:1,label:'● B'}]} change={team=>changeSeat(seat.id,{team})}/>}
+        </>}
+        {(!shortViewport||panel.playerPage===2)&&<>{config.mode==='teams'&&<Choice disabled={readOnly||lockRoster} label={t.team} value={seat.team} options={[{value:0,label:'◆ A'},{value:1,label:'● B'}]} change={team=>changeSeat(seat.id,{team})}/>}
         {!practice&&!lockRoster&&!readOnly&&config.players.length>2&&host&&<button className="text-button remove-fighter" onClick={()=>update({players:config.players.filter(player=>player.id!==seat.id)})}>{t.remove} {seat.name}</button>}
+        </>}
+        {shortViewport&&<Pager compact page={Math.min(panel.playerPage??0,playerPages-1)} count={playerPages} change={playerPage=>edit(seat.id,{playerPage})} language={lang} label={`${t.player} P${index+1}`}/>}
        </>:<>{seat.kind==='human'&&<Choice disabled={readOnly} label={t.device} value={seat.device} options={[
          ...[0,1,2,3].map(value=>({value:`keyboard:${value}`,label:`${t.keyboard} ${value+1}`,disabled:localHumans.some(player=>player.id!==seat.id&&seatValue(player).device===`keyboard:${value}`)})),
          ...devices.filter(device=>device.id.startsWith('gamepad:')&&device.connected).map(device=>({value:device.id,label:device.label,disabled:localHumans.some(player=>player.id!==seat.id&&seatValue(player).device===device.id)})),
@@ -199,7 +202,7 @@ export function Setup({config:incomingConfig,setConfig,settings,manifest,devices
 </>}
       </div>
      </div>}
-     {!practice&&!editorOnly&&<button disabled={!owned(seat)||seat.kind==='bot'||!connected(seat)||!!drafts[seat.id]} className={`ready-button ${acknowledgedReady(seat)?'confirmed':''}`} onClick={()=>toggleReady(seat.id)}>{acknowledgedReady(seat)?`✓ ${t.ready}`:t.readyButton}</button>}
+     {!practice&&!editorOnly&&seat.kind==='human'&&<button disabled={!owned(seat)||!connected(seat)||!!drafts[seat.id]} className={`ready-button ${acknowledgedReady(seat)?'confirmed':''}`} onClick={()=>toggleReady(seat.id)}>{acknowledgedReady(seat)?`✓ ${t.ready}`:t.readyButton}</button>}
      {isCoordinator&&<button className="seat-shared-button" onClick={()=>{setSharedDevice(seat.device);scope.current?.querySelector<HTMLButtonElement>('.match-summary')?.focus();}}>{t.sharedControls} ↗</button>}
     </article>;})}
    </div>

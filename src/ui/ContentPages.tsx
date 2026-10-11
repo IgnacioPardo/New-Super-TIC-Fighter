@@ -16,15 +16,15 @@ export function usePageSize(desktop:number,narrow:number) {
  useEffect(()=>{const query=matchMedia('(max-width:760px)'),change=()=>setSmall(query.matches);query.addEventListener('change',change);return()=>query.removeEventListener('change',change);},[]);
  return small?narrow:desktop;
 }
-export function Pager({page,count,change,language,label}:{page:number;count:number;change:(page:number)=>void;language:Language;label:string}) {
+export function Pager({page,count,change,language,label,compact=false}:{compact?:boolean;page:number;count:number;change:(page:number)=>void;language:Language;label:string}) {
  const ref=useRef<HTMLElement>(null);
  useEffect(()=>{const active=document.activeElement;if(ref.current?.contains(active)&&active instanceof HTMLButtonElement&&active.disabled)ref.current.querySelector<HTMLButtonElement>('button:not(:disabled)')?.focus();},[page,count]);
  if(count<=1)return null;
  const es=language==='es';
- return <nav className="content-pager" ref={ref} aria-label={label} data-menu-linear>
-  <button className="small-button" disabled={page===0} onClick={()=>change(page-1)} aria-label={`${es?'Página anterior':'Previous page'} · ${label}`}>← {es?'Anterior':'Previous'}</button>
+ return <nav className={`content-pager ${compact?'compact':''}`} ref={ref} aria-label={label} data-menu-linear>
+  <button className="small-button" disabled={page===0} onClick={()=>change(page-1)} aria-label={`${es?'Página anterior':'Previous page'} · ${label}`}>← {!compact&&(es?'Anterior':'Previous')}</button>
   <span aria-live="polite">{page+1} / {count}</span>
-  <button className="small-button" disabled={page>=count-1} onClick={()=>change(page+1)} aria-label={`${es?'Página siguiente':'Next page'} · ${label}`}>{es?'Siguiente':'Next'} →</button>
+  <button className="small-button" disabled={page>=count-1} onClick={()=>change(page+1)} aria-label={`${es?'Página siguiente':'Next page'} · ${label}`}>{!compact&&(es?'Siguiente':'Next')} →</button>
  </nav>;
 }
 export function PagedContent({children,size,language,label,className=''}:{children:ReactNode[];size:number;language:Language;label:string;className?:string}) {

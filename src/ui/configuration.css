@@ -441,3 +441,9 @@ html:has(.app:is(.screen-setup,.screen-room,.screen-settings,.screen-solo,.scree
 .appearance-pager button { min-height:30px; width:38px; background:#1c344b; border:1px solid #526e85; color:#c5e1f0; }
 .appearance-pager span { font-size:12px; color:#aec8da; }
 @media(max-width:760px) { .setup-overview .section-heading { flex-wrap:wrap; }.setup-overview .section-heading .seat-join-help { flex-basis:100%; order:4; }.setup-overview .section-heading .add-fighter { order:3; } }
+.content-pager.compact { margin-top:6px; gap:8px; justify-content:space-between; }
+.content-pager.compact .small-button { min-height:30px; padding:3px; width:38px; font-size:14px; }
+.content-pager.compact span { font-size:12px; }
+.setup-overview .inline-fighter-editor .text-input-help { padding:3px 6px; }
+.setup-overview .inline-fighter-editor .name-row { padding:3px 6px; }
+.setup-overview .inline-fighter-editor .text-input-help { padding:0 6px; }
