@@ -33,7 +33,7 @@ try{
  await page.getByRole('tab',{name:'Jugador / Control'}).click();
  await expect(page.getByRole('button',{name:/^Control:/})).toContainText('DualSense');
  await press(1);
- await page.locator('.fight-button').focus();await press(0);
+ await page.locator('.seat-shared-button').click();await page.locator('.fight-button').focus();await press(0);
  await page.waitForFunction(()=>window.__snapshot?.phase==='playing');
  const before=await page.evaluate(()=>window.__snapshot.fighters[0].x);
  await page.evaluate(()=>window.__pad.axes[0]=1);await page.waitForTimeout(250);await page.evaluate(()=>window.__pad.axes[0]=0);

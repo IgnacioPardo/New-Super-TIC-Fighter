@@ -8,7 +8,9 @@ export interface ControllerStatus {
   blocked: boolean;
   controllers: { id: string; label: string; mapping: string; lastInput: string | null }[];
 }
-type MenuSource = 'keyboard' | 'gamepad';
+export type MenuSource = 'keyboard' | 'gamepad';
+export interface MenuIdentity { device: string; index?: number; controllerId?: string }
+export interface MenuInput { command: MenuCommand; source: MenuSource; identity: MenuIdentity }
 const defaults = DEFAULT_SETTINGS.gamepadBindings;
 const editing = () => {
   const element = document.activeElement;
@@ -20,7 +22,7 @@ export class InputManager {
   private settings: AppSettings;
   private players: PlayerSeat[] = [];
   private keys = new Set<string>();
-  private listeners = new Set<(command: MenuCommand, source: MenuSource) => void>();
+  private listeners = new Set<(command: MenuCommand, source: MenuSource, identity: MenuIdentity) => void>();
   private blocked = false;
   private lastInputs = new Map<number, string>();
   private stickDirections = new Map<number, MenuCommand>();
@@ -33,6 +35,8 @@ export class InputManager {
   private padIdentities = new Map<string, { device: string; id: string }>();
   private raf = 0;
   private destroyed = false;
+  private releasePads = new Set<number>();
+  private releaseKeys = new Set<string>();
 
   constructor(settings: AppSettings, private onPause?: () => void, private onDisconnect?: () => void) {
     this.settings = settings;
@@ -44,6 +48,12 @@ export class InputManager {
     this.scan();
   }
 
+  /** A screen/editor transition must see neutral controls before accepting a held input. */
+  releaseMenu(device?: string) {
+    if (!device || device === 'keyboard') this.releaseKeys = new Set(this.keys);
+    this.menuDirections.clear(); this.stickDirections.clear();
+    for (const pad of this.pads()) if (pad?.connected && (!device || device === `gamepad:${pad.index}`) && (pad.buttons.some(button => button.pressed) || pad.axes.some(axis => Math.abs(axis) > .25))) this.releasePads.add(pad.index);
+  }
   setSettings(settings: AppSettings) { this.settings = settings; this.keys.clear(); }
   setPlayers(players: PlayerSeat[]) {
     this.players = players;
@@ -71,11 +81,11 @@ export class InputManager {
     this.reclaimed.clear(); this.keys.clear(); return true;
   }
   setMode(mode: 'menu' | 'game') { if (this.mode !== mode) { this.mode = mode; this.keys.clear(); this.menuDirections.clear(); this.stickDirections.clear(); } }
-  subscribeMenu(listener: (command: MenuCommand, source: MenuSource) => void) { this.listeners.add(listener); return () => { this.listeners.delete(listener); }; }
+  subscribeMenu(listener: (command: MenuCommand, source: MenuSource, identity: MenuIdentity) => void) { this.listeners.add(listener); return () => { this.listeners.delete(listener); }; }
   getDevices() {
     return [
       ...Array.from({length: 4}, (_, index) => ({id: `keyboard:${index}`, label: `Keyboard ${index + 1}`, connected: true})),
-      ...this.pads().filter((pad): pad is Gamepad => !!pad).map(pad => ({id: `gamepad:${pad.index}`, label: controllerLabel(pad), connected: pad.connected && !this.reclaimed.has(pad.index)})),
+      ...this.pads().filter((pad): pad is Gamepad => !!pad).map(pad => ({id: `gamepad:${pad.index}`, label: controllerLabel(pad), controllerId: pad.id, connected: pad.connected && (this.mode === 'menu' || !this.reclaimed.has(pad.index))})),
     ];
   }
   getControllerStatus(): ControllerStatus {
@@ -90,7 +100,7 @@ export class InputManager {
       const index = Number(player.device.split(':')[1]);
       if (player.device.startsWith('keyboard:')) {
         const bindings = this.settings.keyboardBindings?.[index] ?? {};
-        for (const action of ['left','right','down','jump','punch','special','guard','combo'] as const) input[action] = this.keys.has(bindings[action]);
+        for (const action of ['left','right','down','jump','punch','special','guard','combo','dodge'] as const) input[action] = this.keys.has(bindings[action]);
       } else {
         const pad = pads[index];
         if (!pad?.connected || this.reclaimed.has(index)) return input;
@@ -98,7 +108,7 @@ export class InputManager {
         input.left = (pad.axes[0] ?? 0) < -deadZone || !!pad.buttons[14]?.pressed;
         input.right = (pad.axes[0] ?? 0) > deadZone || !!pad.buttons[15]?.pressed;
         input.down = (pad.axes[1] ?? 0) > deadZone || !!pad.buttons[13]?.pressed;
-        for (const action of ['jump','punch','special','guard','combo'] as const) input[action] = !!pad.buttons[this.settings.gamepadBindings?.[action] ?? defaults[action]]?.pressed;
+        for (const action of ['jump','punch','special','guard','combo','dodge'] as const) input[action] = !!pad.buttons[this.settings.gamepadBindings?.[action] ?? defaults[action]]?.pressed;
       }
       return input;
     });
@@ -116,16 +126,17 @@ export class InputManager {
       this.blocked = false; return pads;
     } catch { this.blocked = true; return []; }
   };
-  private emit(command: MenuCommand, source: MenuSource = 'keyboard') { for (const listener of this.listeners) listener(command, source); }
+  private emit(command: MenuCommand, source: MenuSource = 'keyboard', identity: MenuIdentity = {device:'keyboard'}) { for (const listener of this.listeners) listener(command, source, identity); }
   private blur = () => { this.focused = false; this.keys.clear(); this.menuDirections.clear(); };
   private focus = () => { this.focused = true; this.keys.clear(); };
   private visibility = () => { if (document.hidden) this.blur(); else this.focused = document.hasFocus(); };
-  private keyUp = (event: KeyboardEvent) => { this.keys.delete(event.code); };
+  private keyUp = (event: KeyboardEvent) => { this.keys.delete(event.code); this.releaseKeys.delete(event.code); };
   private keyDown = (event: KeyboardEvent) => {
     if (event.defaultPrevented || event.metaKey || event.ctrlKey || event.altKey) return;
     const textInput = document.activeElement instanceof HTMLElement && (document.activeElement.isContentEditable || document.activeElement.matches('input:not([type=range]):not([type=checkbox]), textarea'));
     if (this.mode === 'game' && editing()) return;
     if (this.mode === 'menu' && textInput && !['Escape', 'Enter', 'ArrowUp', 'ArrowDown'].includes(event.code)) return;
+    if (this.releaseKeys.has(event.code)) return;
     this.keys.add(event.code);
     if (event.code === 'Escape') {
       event.preventDefault();
@@ -151,12 +162,14 @@ export class InputManager {
       const edge = (index: number) => buttons[index] && !previous[index];
       const pressed = buttons.findIndex((held, index) => held && !previous[index]);
       if (pressed >= 0) this.lastInputs.set(pad.index, `Button ${pressed}`);
-      if (this.focused && !document.hidden && (this.mode === 'menu' || !editing())) {
+      const identity: MenuIdentity = {device:`gamepad:${pad.index}`,index:pad.index,controllerId:pad.id};
+      if (this.releasePads.has(pad.index) && !buttons.some(Boolean) && !pad.axes.some(axis => Math.abs(axis) > .25)) this.releasePads.delete(pad.index);
+      if (!this.releasePads.has(pad.index) && this.focused && !document.hidden && (this.mode === 'menu' || !editing())) {
         const pauseButton = this.mode === 'menu' ? 9 : (this.settings.gamepadBindings?.pause ?? 9);
-        if (edge(pauseButton)) { if (this.mode === 'game') this.onPause?.(); else this.emit('pause', 'gamepad'); }
+        if (edge(pauseButton)) { if (this.mode === 'game') this.onPause?.(); else this.emit('pause', 'gamepad', identity); }
         if (this.mode === 'menu') {
-          if (edge(0)) this.emit('confirm', 'gamepad');
-          if (edge(1)) this.emit('back', 'gamepad');
+          if (edge(0)) this.emit('confirm', 'gamepad', identity);
+          if (edge(1)) this.emit('back', 'gamepad', identity);
           const x = pad.axes[0] ?? 0, y = pad.axes[1] ?? 0;
           const deadZone = Math.max(.4, this.settings.gamepadDeadZone ?? .22);
           const previousDirection = this.stickDirections.get(pad.index);
@@ -175,7 +188,7 @@ export class InputManager {
           for (const [command, held] of directions) {
             const key = `${pad.index}:${command}`, next = this.menuDirections.get(key);
             if (!held) this.menuDirections.delete(key);
-            else if (next === undefined || now >= next) { this.emit(command, 'gamepad'); this.lastInputs.set(pad.index, command); this.menuDirections.set(key, now + (next === undefined ? 350 : 120)); }
+            else if (next === undefined || now >= next) { this.emit(command, 'gamepad', identity); this.lastInputs.set(pad.index, command); this.menuDirections.set(key, now + (next === undefined ? 350 : 120)); }
           }
         }
       }

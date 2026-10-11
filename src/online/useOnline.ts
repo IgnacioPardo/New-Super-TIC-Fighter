@@ -6,11 +6,12 @@ import { createSeat } from '../shared/defaults';
 import { emptyInput, type InputFrame, type MatchConfig, type MatchSnapshot, type PlayerSeat, type SimulationMessage } from '../shared/types';
 import type { OnlineBridge, OnlineState } from '../ui/contracts';
 
-const initialState = (): OnlineState => ({status:'idle',isHost:false,members:[]});
+type BridgeState=OnlineState & {pendingEdits?:boolean;seatReadiness?:Record<string,boolean>};
+const initialState = (): BridgeState => ({status:'idle',isHost:false,members:[]});
 
 /** Owns room transport and authority. UI receives only coarse state updates. */
-export function useOnline(): OnlineBridge {
-  const [state,setState]=useState<OnlineState>(initialState);
+export function useOnline(): OnlineBridge & {setSeatReady(id:string,ready:boolean,assetsReady?:boolean):void} {
+  const [state,setState]=useState<BridgeState>(initialState);
   const current=useRef(state); current.current=state;
   const client=useRef<RoomClient|null>(null), authorityWorker=useRef<Worker|null>(null), predictionWorker=useRef<Worker|null>(null);
   const snapshotRef=useRef<MatchSnapshot|null>(null), room=useRef<RoomState|null>(null);
@@ -18,8 +19,42 @@ export function useOnline(): OnlineBridge {
   const lastHostInput=useRef(new Map<string,number>()), latestInputs=useRef(new Map<string,InputFrame>());
   const lastSnapshot=useRef(0), lastPublished=useRef(0), lastSent=useRef(0), reported=useRef('');
   const returningToLobby=useRef(false);
+  const seatRemovals=useRef(new Set<string>());
+  const seatDrafts=useRef(new Map<string,PlayerSeat>()),configDraft=useRef<MatchConfig|null>(null);
+  const editing=useRef<{id:number;kind:'seats'|'config';players?:PlayerSeat[];config?:MatchConfig}|null>(null);
+  const editSequence=useRef(0),editTimer=useRef<ReturnType<typeof setTimeout>|null>(null),editGeneration=useRef(0);
+  const readyDraft=useRef(new Map<string,{ready:boolean;assetsReady:boolean}>());
+  const editedRoster=(next:RoomState):PlayerSeat[]=>{
+    let players=next.players;
+    if(editing.current?.kind==='seats')players=[...players.filter(p=>p.peerId!==next.peerId||p.kind!=='human'),...editing.current.players!];
+    const shared=configDraft.current??editing.current?.config;
+    if(shared)players=[...players.filter(p=>p.kind==='human'),...shared.players.filter(p=>p.kind==='bot')];
+    players=players.filter(p=>!seatRemovals.current.has(p.id));
+    for(const draft of seatDrafts.current.values())players=[...players.filter(p=>p.id!==draft.id),draft];
+    return players;
+  };
+  const unsettled=()=>!!editing.current||seatDrafts.current.size>0||seatRemovals.current.size>0||!!configDraft.current;
+  const flushReady=()=>{if(unsettled())return;const connection=client.current,active=room.current;if(!connection||!active)return;for(const [id,value] of readyDraft.current)if(active.players.some(p=>p.id===id&&p.peerId===active.peerId))connection.setSeatReady(id,value.ready,value.assetsReady);readyDraft.current.clear();};
+  const invalidate=()=>{editGeneration.current++;readyDraft.current.clear();update({pendingEdits:true,seatReadiness:Object.fromEntries(Object.keys(current.current.seatReadiness??{}).map(id=>[id,false]))});};
+  const flushEdits=()=>{
+    if(editing.current)return;const connection=client.current,active=room.current;if(!connection||!active||active.phase!=='lobby')return;
+    const drafts=[...seatDrafts.current.values()];
+    // Removing a host-owned bot must be acknowledged before claiming its identity.
+    const replacingBot=drafts.some(p=>p.kind==='human'&&active.players.some(other=>other.id===p.id&&other.kind==='bot'));
+    if(replacingBot&&connection.isHost){const config={...(configDraft.current??active.config),players:[...active.players.filter(p=>p.kind==='human'),...(configDraft.current??active.config).players.filter(p=>p.kind==='bot'&&!drafts.some(d=>d.id===p.id))]};const id=++editSequence.current;editing.current={id,kind:'config',config};connection.setConfig(config,id);return;}
+    if(drafts.some(p=>p.kind==='human')||seatRemovals.current.size){
+      let players=active.players.filter(p=>p.kind==='human'&&p.peerId===active.peerId&&!seatRemovals.current.has(p.id)).map(p=>({...p,device:localDevices.current.get(p.id)??p.device}));
+      for(const draft of drafts.filter(p=>p.kind==='human'))players=[...players.filter(p=>p.id!==draft.id),draft];
+      for(const draft of drafts.filter(p=>p.kind==='human'))seatDrafts.current.delete(draft.id);seatRemovals.current.clear();
+      const id=++editSequence.current;editing.current={id,kind:'seats',players};connection.setSeats(players,id);return;
+    }
+    if(configDraft.current&&connection.isHost){const proposed=configDraft.current;configDraft.current=null;const config={...proposed,seed:proposed.seed>>>0,practice:false,players:[...active.players.filter(p=>p.kind==='human'),...proposed.players.filter(p=>p.kind==='bot')]};const id=++editSequence.current;editing.current={id,kind:'config',config};connection.setConfig(config,id);return;}
+    update({pendingEdits:false});flushReady();
+  };
+  const queueFlush=()=>{if(editTimer.current)clearTimeout(editTimer.current);editTimer.current=setTimeout(()=>{editTimer.current=null;flushEdits();},40);};
+
   const ownMatch=useRef(''), routes=useRef(new Map<string,TransportStatus>());
-  const update=(patch:Partial<OnlineState>)=>{current.current={...current.current,...patch};setState(current.current);};
+  const update=(patch:Partial<BridgeState>)=>{current.current={...current.current,...patch};setState(current.current);};
   const localize=(config:MatchConfig):MatchConfig=>({...config,players:config.players.map(player=>({...player,device:player.peerId===room.current?.peerId ? localDevices.current.get(player.id) ?? player.device : player.kind==='bot'?'bot':'remote'}))});
   const publish=(snapshot:MatchSnapshot,force=false)=>{
     // A worker response queued before a reliable room control must not undo it.
@@ -37,7 +72,7 @@ export function useOnline(): OnlineBridge {
     authorityWorker.current?.postMessage({type:'stop'});predictionWorker.current?.postMessage({type:'stop'});
     snapshotRef.current=null;pendingInputs.current=[];latestInputs.current.clear();lastHostInput.current.clear();reported.current='';ownMatch.current='';localTick.current=0;
   };
-  const leave=()=>{returningToLobby.current=false;client.current?.close();client.current=null;room.current=null;stop();localDevices.current.clear();routes.current.clear();current.current=initialState();setState(current.current);};
+  const leave=()=>{if(editTimer.current)clearTimeout(editTimer.current);editTimer.current=null;editing.current=null;seatDrafts.current.clear();seatRemovals.current.clear();configDraft.current=null;readyDraft.current.clear();returningToLobby.current=false;client.current?.close();client.current=null;room.current=null;stop();localDevices.current.clear();routes.current.clear();current.current=initialState();setState(current.current);};
   useEffect(()=>{
     const host=new Worker(new URL('../simulation/worker.ts',import.meta.url),{type:'module'});
     const prediction=new Worker(new URL('./prediction.worker.ts',import.meta.url),{type:'module'});
@@ -79,6 +114,7 @@ export function useOnline(): OnlineBridge {
   const newClient=()=>{
     client.current?.close();stop();routes.current.clear();
     const connection=new RoomClient({
+      onEditAck(id,accepted){if(editing.current?.id!==id)return;editing.current=null;if(!accepted){seatDrafts.current.clear();seatRemovals.current.clear();configDraft.current=null;update({pendingEdits:false});}else flushEdits();},
       onRoomState(next){
         const previous=room.current;room.current=next;
         if (returningToLobby.current && connection.isHost && next.phase === 'finished') { returningToLobby.current=false; connection.rematch(); }
@@ -92,7 +128,7 @@ export function useOnline(): OnlineBridge {
         }
         if(next.phase==='lobby'&&previous?.phase!=='lobby'){stop();}
         const statuses=[...routes.current.values()].filter(status=>next.peers.some(peer=>peer.peerId===status.peerId));
-        update({code:next.code,peerId:next.peerId,isHost:connection.isHost,config:localize({...next.config,players:next.players}),
+        update({code:next.code,peerId:next.peerId,isHost:connection.isHost,config:localize({...next.config,...(configDraft.current??editing.current?.config??{}),players:editedRoster(next)}),pendingEdits:unsettled(),seatReadiness:Object.fromEntries(Object.entries(next.seatReadiness??{}).map(([id,value])=>[id,value.ready])),
           status:next.phase==='lobby'?'lobby':'playing',members:next.peers.map(peer=>({id:peer.peerId,name:next.players.find(p=>p.peerId===peer.peerId)?.name??'Jugador',ready:next.readiness[peer.peerId]?.ready??false,connected:peer.connected,seatIds:next.players.filter(p=>p.peerId===peer.peerId).map(p=>p.id)})),
           pauseReason:next.pauseReason,route:statuses.some(s=>s.route==='relay')?'relay':statuses.length&&statuses.every(s=>s.route==='direct')?'direct':'connecting',
           ...(next.phase==='lobby'?{snapshot:undefined}:{}),
@@ -128,27 +164,28 @@ export function useOnline(): OnlineBridge {
     client.current=connection;room.current=null;return connection;
   };
   const replaceConfig=(config:MatchConfig)=>{
-    const active=room.current,connection=client.current;
-    if(!active||!connection)return;
-    const mine=config.players.filter(p=>p.kind==='human'&&p.peerId===active.peerId).map(p=>({...p,device:localDevices.current.get(p.id)??p.device}));
-    const previousMine=active.players.filter(p=>p.kind==='human'&&p.peerId===active.peerId);
-    if(JSON.stringify(mine)!==JSON.stringify(previousMine))connection.setSeats(mine);
-    if(connection.isHost)connection.setConfig({...config,seed:config.seed>>>0,practice:false});
+    const active=room.current,connection=client.current;if(!active||!connection)return;
+    for(const player of config.players.filter(p=>p.kind==='human'&&p.peerId===active.peerId)){
+      const previous=editedRoster(active).find(p=>p.id===player.id);if(JSON.stringify(player)!==JSON.stringify(previous))seatDrafts.current.set(player.id,{...player,device:localDevices.current.get(player.id)??player.device});
+    }
+    for(const player of active.players.filter(p=>p.kind==='human'&&p.peerId===active.peerId))if(!config.players.some(p=>p.kind==='human'&&p.id===player.id))seatRemovals.current.add(player.id);
+    if(connection.isHost)configDraft.current=structuredClone(config);
+    invalidate();queueFlush();
   };
   const claim=(seat:PlayerSeat)=>{
-    const active=room.current,connection=client.current;
-    if(!active||!connection)return;
-    const previous=active.players.find(p=>p.id===seat.id);
-    if(previous?.kind==='human'&&previous.peerId!==active.peerId)return;
+    const active=room.current,connection=client.current;if(!active||!connection)return;
+    const previous=active.players.find(p=>p.id===seat.id);if(previous?.kind==='human'&&previous.peerId!==active.peerId)return;
     if(seat.kind==='bot'){
-      if(!connection.isHost)return;
-      const bot={...seat,peerId:undefined,device:'bot',difficulty:seat.difficulty??'normal' as const};
-      replaceConfig({...active.config,players:[...active.players.filter(p=>p.id!==seat.id),bot]});
-    }else{
-      const owned={...seat,peerId:active.peerId};localDevices.current.set(seat.id,seat.device);
-      if(previous?.kind==='bot'&&connection.isHost)connection.setConfig({...active.config,players:active.players.filter(p=>p.id!==seat.id)});
-      connection.setSeats([...active.players.filter(p=>p.kind==='human'&&p.peerId===active.peerId&&p.id!==seat.id).map(p=>({...p,device:localDevices.current.get(p.id)??p.device})),owned]);
-    }
+      if(!connection.isHost)return;if(previous?.kind==='human'&&previous.peerId===active.peerId)seatRemovals.current.add(seat.id);seatDrafts.current.delete(seat.id);const bot={...seat,peerId:undefined,device:'bot',difficulty:seat.difficulty??'normal' as const};
+      const base=configDraft.current??active.config;configDraft.current={...base,players:[...editedRoster(active).filter(p=>p.id!==seat.id),bot]};
+    }else{seatRemovals.current.delete(seat.id);if(previous?.kind==='bot'&&connection.isHost){const base=configDraft.current??active.config;configDraft.current={...base,players:base.players.filter(p=>p.id!==seat.id)};}const owned={...seat,peerId:active.peerId};localDevices.current.set(seat.id,seat.device);seatDrafts.current.set(seat.id,owned);}
+    invalidate();queueFlush();
+  };
+  const setSeatReady=(id:string,value:boolean,assetsReady=value)=>{
+    const active=client.current,config=room.current?.config,generation=editGeneration.current;
+    if(!active||!config)return;
+    if(!value){readyDraft.current.set(id,{ready:false,assetsReady:false});flushReady();return;}
+    void preloadMatchAssets(config).then(()=>{if(client.current!==active||generation!==editGeneration.current)return;readyDraft.current.set(id,{ready:true,assetsReady});flushReady();}).catch(error=>update({error:String(error)}));
   };
   const enter=async(code:string|null,name:string)=>{
     leave();update({status:'connecting',error:undefined});const connection=newClient();
@@ -162,9 +199,9 @@ export function useOnline(): OnlineBridge {
   };
   return {state,snapshotRef,create:name=>enter(null,name),join:(code,name)=>enter(code,name),leave,
     updateConfig:replaceConfig,
-    updateSeat:claim,claimSeat:claim,
-    ready(value){if(!value){client.current?.setReady(false,false);return;}const active=client.current,config=room.current?.config;if(config)void preloadMatchAssets(config).then(()=>{if(client.current===active)active?.setReady(true,true);}).catch(error=>update({error:String(error)}));},
-    start(){client.current?.start();},pause(){client.current?.pause('Pausa solicitada / Pause requested');},resume(){client.current?.resume();},
+    updateSeat:claim,claimSeat:claim,setSeatReady,
+    ready(value){for(const seat of room.current?.players.filter(p=>p.kind==='human'&&p.peerId===room.current?.peerId)??[])setSeatReady(seat.id,value);},
+    start(){if(!unsettled())client.current?.start();},pause(){client.current?.pause('Pausa solicitada / Pause requested');},resume(){client.current?.resume();},
     rematch(){const connection=client.current;if(!connection||room.current?.phase==='lobby')return;if(!connection.isHost){if(room.current?.phase!=='finished')leave();return;}if(room.current?.phase==='finished')connection.rematch();else if(room.current?.phase==='playing'||room.current?.phase==='paused'){returningToLobby.current=true;authorityWorker.current?.postMessage({type:'stop'});connection.reportResult({winners:[],reason:'interrupted'});}},
     sendInputs(inputs){
       if(!client.current||!snapshotRef.current)return;

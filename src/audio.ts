@@ -1,4 +1,4 @@
-import type { AppSettings, AssetsManifest, GameplayEvent, MatchSnapshot } from './shared/types';
+import type { AppSettings, AssetsManifest, Discipline, GameplayEvent, MatchSnapshot } from './shared/types';
 
 export type UiSound = 'navigate' | 'confirm' | 'back' | 'change' | 'ready' | 'unready' | 'error' | 'pause' | 'resume' | 'open' | 'close' | 'start';
 const asset = (name: string) => `/assets/audio/polish/${name}.wav`;
@@ -9,6 +9,18 @@ const UI: Record<UiSound, string> = {
 const IMPACTS = ['impactPunch_medium_000', 'impactPunch_medium_001', 'impactSoft_heavy_000', 'impactSoft_heavy_001', 'impactWood_light_000', 'impactSoft_medium_000'];
 const pick = (names: string[]) => names[Math.floor(Math.random() * names.length)];
 const clamp = (value: number) => Math.min(1, Math.max(0, value));
+const DISCIPLINE_AUDIO: Record<Discipline, { windup: string; active: string; contact: string; signature: string; rate: number }> = {
+ networks: { windup:'Redes',active:'',contact:'Latigo',signature:'Hard',rate:1 },
+ design: { windup:'',active:'Mouse',contact:'golpeMouse',signature:'Seleccion',rate:1 },
+ code: { windup:'Prog',active:'',contact:'Bola',signature:'Programacion',rate:1 },
+ hardware: { windup:'Hard',active:'RAM',contact:'',signature:'Disco',rate:1 },
+ ai: { windup:'Prog',active:'switch_002',contact:'Bola',signature:'Programacion',rate:1.2 },
+ robotics: { windup:'Hard',active:'RAM',contact:'impactWood_light_000',signature:'Disco',rate:.8 },
+ iot: { windup:'switch_002',active:'open_001',contact:'UTP',signature:'confirmation_002',rate:1.1 },
+ vr: { windup:'minimize_001',active:'maximize_001',contact:'Seleccion',signature:'Seleccion',rate:.85 },
+ games: { windup:'click_003',active:'Mouse',contact:'Bola',signature:'confirmation_002',rate:1.35 },
+ printing: { windup:'Hard',active:'RAM',contact:'impactSoft_heavy_001',signature:'RAM',rate:.7 },
+};
 
 /** Confirmed combat events, semantic UI cues, and streamed original music. */
 export class AudioManager {
@@ -107,26 +119,32 @@ export class AudioManager {
       if (event.type === 'fall') cue('impactSoft_heavy_001', .75, .72);
       if (event.type === 'respawn') cue(UI.resume, .32, 1.1);
       if (event.type === 'block') cue('impactWood_light_000', .48);
+      if (event.type === 'deploy') cue('open_001', .3, DISCIPLINE_AUDIO[event.discipline ?? 'iot'].rate);
+      if (event.type === 'item') cue('confirmation_002', .4, 1.15);
+      if (event.type === 'wave') { cue('maximize_001', .5, .8); this.duck(350); }
+      if (event.type === 'hazard' && this.allow('hazard-cue', 400)) cue('impactSoft_heavy_001', .4, .65);
       if (event.type === 'hit') {
         const heavy = event.action === 'uppercut' || event.action === 'combo' || event.action === 'special';
         cue(pick(heavy ? ['impactSoft_heavy_000', 'impactSoft_heavy_001'] : ['impactPunch_medium_000', 'impactPunch_medium_001']), heavy ? .85 : .65);
         if (event.action === 'special') {
-          const name = {networks:'Latigo', design:'golpeMouse', code:'Bola', hardware:''}[event.discipline ?? 'hardware'];
+          const name = DISCIPLINE_AUDIO[event.discipline ?? 'hardware'].contact;
           if (name) cue(name, .55);
         }
       }
       if (event.type === 'active') {
-        const name = event.action === 'special' ? {design:'Mouse',hardware:'RAM',networks:'',code:''}[event.discipline ?? 'networks']
-          : event.action === 'combo' ? {hardware:'Disco',code:'Programacion',networks:'',design:''}[event.discipline ?? 'networks'] : '';
-        if (name) cue(name, .6);
+        const voice = DISCIPLINE_AUDIO[event.discipline ?? 'networks'];
+        const name = event.action === 'special' ? voice.active : event.action === 'combo' && !['networks','design'].includes(event.discipline ?? '') ? voice.signature : '';
+        if (name) cue(name, .6, voice.rate);
       }
       if (event.type === 'attack') {
         // Windup sounds also communicate a miss; impact sounds only follow confirmed contact.
-        if (event.action === 'punch' || event.action === 'uppercut') cue(pick(['Golpe', 'Golpe2']), .35, event.action === 'uppercut' ? .88 : undefined);
+        if (event.action === 'punch' || event.action === 'uppercut' || event.action === 'air-forward' || event.action === 'air-down') cue(pick(['Golpe', 'Golpe2']), .35, event.action === 'uppercut' || event.action === 'air-down' ? .88 : undefined);
+        else if (event.action === 'dodge' || event.action === 'air-dash') cue('Barrida', .2, 1.45);
+        else if (event.action === 'recover') cue('maximize_001', .3, 1.15);
         else if (event.action === 'sweep') cue('Barrida', .45);
         else if (event.action === 'special') {
-          const name = {networks:'Redes', design:'', code:'Prog', hardware:'Hard'}[event.discipline ?? 'hardware'];
-          if (name) cue(name, .5);
+          const voice = DISCIPLINE_AUDIO[event.discipline ?? 'hardware'];
+          if (voice.windup) cue(voice.windup, .5, voice.rate);
         } else if (event.action === 'combo') {
           if (event.discipline === 'networks') cue('Hard', .5);
           if (event.discipline === 'design') cue('Seleccion', .5);

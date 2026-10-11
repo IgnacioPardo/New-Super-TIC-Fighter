@@ -3,6 +3,8 @@
   "name": "new-super-tic-fighter",
   "main": "server/worker.ts",
   "compatibility_date": "2026-09-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "d1_databases": [{"binding":"DB","database_name":"new-super-tic-fighter-profiles","database_id":"56746be7-6196-4bde-aa0d-d48a3e557247","migrations_dir":"server/migrations"}],
   "workers_dev": true,
   "assets": {
     "directory": "./dist",
@@ -11,9 +13,12 @@
     "run_worker_first": ["/api/*", "/assets/audio/*.mp3"]
   },
   "durable_objects": {
-    "bindings": [{ "name": "ROOMS", "class_name": "Room" }]
+    "bindings": [{ "name": "ROOMS", "class_name": "Room" }, { "name": "MATCHES", "class_name": "MatchDO" }, { "name": "LOBBY", "class_name": "LobbyDO" }, { "name": "TOURNAMENTS", "class_name": "TournamentDO" }]
   },
   "migrations": [
-    { "tag": "v1", "new_sqlite_classes": ["Room"] }
+    { "tag": "v1", "new_sqlite_classes": ["Room"] },
+    { "tag": "v2-matches", "new_sqlite_classes": ["MatchDO"] },
+    { "tag": "v2-lobby", "new_sqlite_classes": ["LobbyDO"] },
+    { "tag": "v2-tournaments", "new_sqlite_classes": ["TournamentDO"] }
   ]
 }

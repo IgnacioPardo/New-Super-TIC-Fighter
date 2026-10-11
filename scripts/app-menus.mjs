@@ -45,12 +45,12 @@ for(const engine of (process.env.STF_BROWSERS??'chromium,firefox,webkit').split(
   await pad(13);await expect(choice('Punch')).toBeFocused();await pad(1);await expect(page.getByRole('dialog')).toHaveCount(0);
   await pad(0);await expect(choice('Jump')).toBeFocused(); // Menu A remains confirm after combat remapping.
   await pad(14);await expect(choice('Jump')).toContainText('A / ✕');
-  await pad(13,750);assert.match(await page.evaluate(()=>document.activeElement.getAttribute('aria-label')), /^(Guard|PAUSED):/, 'Held D-pad repeats through rows with an initial delay');
+  await pad(13,750);assert.match(await page.evaluate(()=>document.activeElement.getAttribute('aria-label')), /^(Guard|Dodge \/ dash|PAUSED):/, 'Held D-pad repeats through rows with an initial delay');
   await pad(1);await page.reload();await enterTitle(page);await page.getByTestId('mode-settings').click();await key('Enter');
   await expect(page.getByRole('slider',{name:'Music'})).toHaveValue('0');await expect(page.getByRole('slider',{name:'Effects'})).toHaveValue('0');await expect(choice('Soundtrack')).toContainText('Original');
   await close();await key('ArrowDown');await key('Enter');await expect(choice('Camera')).toContainText('Fixed');await expect(choice('Reduce motion')).toContainText('On');await key('ArrowLeft'); // English -> Spanish
   await close();await page.locator('.back-button').click();await page.getByTestId('mode-local').click();
-  await expect(page.locator('.fighter-edit').first()).toBeFocused();await key('Enter');await expect(page.getByRole('tab',{name:'Aspecto'})).toBeFocused();
+  await expect(page.locator('.fighter-edit').first()).toBeFocused();await key('Enter');await page.getByRole('tab',{name:'Aspecto'}).focus();
   await key('ArrowDown');await key('ArrowRight');await expect(choice('Disciplina')).toContainText('Diseño');
   await key('ArrowDown');await key('ArrowRight');await expect(choice('Pelo')).toContainText('2 / 4');await key('ArrowDown');await key('ArrowRight');await key('ArrowDown');await key('ArrowRight');
   await key('ArrowDown');await expect(choice('Pantalón')).toBeFocused(); // No wrap to an unrelated control.
@@ -59,13 +59,13 @@ for(const engine of (process.env.STF_BROWSERS??'chromium,firefox,webkit').split(
   await close();await expect(page.locator('.fighter-edit').first()).toBeFocused();await expect(page.locator('.fighter-card').first()).toContainText('Arrow pilot');
   await key('ArrowDown');await expect(page.locator('.ready-button').first()).toBeFocused();await key('Enter');
   await key('ArrowRight');await expect(page.locator('.ready-button').nth(1)).toBeFocused();await key('Enter');await expect(page.locator('.fight-button')).toBeEnabled();
-  await page.locator('.match-summary').click();await expect(choice('Escenario')).toBeFocused();await key('ArrowRight');await key('ArrowDown');await key('ArrowRight');await expect(choice('Modo')).toContainText('Equipos');
+  await page.locator('.match-summary').click();await expect(choice('Reglamento')).toBeFocused();await key('ArrowDown');await expect(choice('Escenario')).toBeFocused();await key('ArrowRight');await choice('Modo').focus();await key('ArrowRight');await expect(choice('Modo')).toContainText('Equipos');
   await close();await expect(page.locator('.fight-button')).toBeDisabled();await page.locator('.add-fighter').click();await page.locator('.add-fighter').click();
   for(const card of await page.locator('.fighter-card').all())await card.locator('.ready-button').click();
   await expect(page.locator('.fight-button')).toBeEnabled();
   await page.screenshot({path:`tmp/qa/${engine}-config-roster.png`,fullPage:true});
   await page.locator('.fighter-edit').last().click();await page.getByRole('tab',{name:'Jugador / Control'}).click();await choice('Control').focus();await key('ArrowRight');await key('ArrowRight');await key('ArrowRight');
-  await close();await expect(page.locator('.fight-button')).toBeDisabled();await expect(page.getByRole('status')).toContainText('control distinto');
+  await close();await expect(page.locator('.fight-button')).toBeDisabled();await expect(page.getByRole('status')).toContainText('Falta confirmar');
   await page.locator('.fighter-edit').last().click();await page.getByRole('tab',{name:'Jugador / Control'}).click();await choice('Jugador').click();await close();
   for(const ready of await page.locator('.ready-button:not(:disabled)').all())await ready.click();
   await expect(page.locator('.fight-button')).toBeEnabled();await page.locator('.fight-button').click();await page.waitForFunction(()=>window.__snapshot?.phase==='playing');

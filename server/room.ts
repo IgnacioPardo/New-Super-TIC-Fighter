@@ -1,5 +1,6 @@
 import { CONTENT_VERSION, PROTOCOL_VERSION } from '../src/shared/types';
 import type { InputFrame, MatchConfig, MatchResult, MatchSnapshot, PlayerSeat } from '../src/shared/types';
+import { validSeat, validConfig, validFrames, maxSeats } from './validation';
 import type { ClientMessage, RoomPhase, RoomState, Route, ServerMessage, SignalData } from '../src/network/types';
 
 interface Member {
@@ -10,6 +11,7 @@ interface Member {
   lastDirectSeen?: number;
   players: PlayerSeat[];
   ready: boolean;
+  seatReadiness?:Record<string,{ready:boolean;assetsReady:boolean}>;
   assetsReady: boolean;
   route: Route;
   pingMs?: number;
@@ -19,6 +21,8 @@ interface Member {
 
 interface StoredRoom {
   code: string;
+  protocolVersion?:number;
+  contentVersion?:string;
   hostToken: string;
   hostPeerId: string;
   createdAt: number;
@@ -40,44 +44,12 @@ const MAX_PACKET_BYTES = 96 * 1024;
 const MAX_BUFFERED_BYTES = 512 * 1024;
 const RECONNECT_MS = 15_000;
 const EMPTY_ROOM_MS = 15 * 60_000;
-const DISCIPLINES = new Set(['networks', 'design', 'code', 'hardware']);
-const ARENAS = new Set(['classic', 'lab', 'pc']);
-const DIFFICULTIES = new Set(['easy', 'normal', 'dummy']);
-
 function token(): string {
   return Array.from(crypto.getRandomValues(new Uint8Array(32)), n => n.toString(16).padStart(2, '0')).join('');
 }
 
 function record(value: unknown): value is Record<string, unknown> {
   return !!value && typeof value === 'object' && !Array.isArray(value);
-}
-
-function validSeat(value: unknown, kind: 'human' | 'bot'): value is PlayerSeat {
-  if (!record(value) || value.kind !== kind || typeof value.id !== 'string' || !/^[a-zA-Z0-9_-]{1,32}$/.test(value.id)) return false;
-  if (typeof value.name !== 'string' || value.name.trim().length < 1 || value.name.length > 24) return false;
-  if (!DISCIPLINES.has(String(value.discipline)) || (value.team !== 0 && value.team !== 1)) return false;
-  const appearance = value.appearance;
-  if (!record(appearance) || !['hair', 'shirt', 'pants'].every(key => Number.isInteger(appearance[key]) && Number(appearance[key]) >= 0 && Number(appearance[key]) <= 3)) return false;
-  if (kind === 'bot' && !DIFFICULTIES.has(String(value.difficulty))) return false;
-  if (typeof value.device !== 'string' || value.device.length > 32) return false;
-  return true;
-}
-
-function validConfig(value: unknown): value is MatchConfig {
-  if (!record(value) || !Array.isArray(value.players) || value.players.length > 4) return false;
-  return (value.mode === 'ffa' || value.mode === 'teams') && ARENAS.has(String(value.arena)) &&
-    Number.isInteger(value.lives) && Number(value.lives) >= 1 && Number(value.lives) <= 9 &&
-    Number.isInteger(value.timeLimit) && Number(value.timeLimit) >= 0 && Number(value.timeLimit) <= 1800 &&
-    typeof value.friendlyFire === 'boolean' && value.practice === false &&
-    Number.isInteger(value.seed) && Number(value.seed) >= 0 && Number(value.seed) <= 0xffffffff &&
-    value.players.every((player: unknown) => record(player) && validSeat(player, player.kind === 'bot' ? 'bot' : 'human'));
-}
-
-function validFrames(value: unknown, owned: Set<string>): value is InputFrame[] {
-  return Array.isArray(value) && value.length > 0 && value.length <= 12 && value.every(frame =>
-    record(frame) && owned.has(String(frame.seatId)) && Number.isInteger(frame.tick) && Number(frame.tick) >= 0 &&
-    ['left', 'right', 'down', 'jump', 'punch', 'special', 'guard', 'combo'].every(key => typeof frame[key] === 'boolean'),
-  );
 }
 
 function validResult(value: unknown, ids: Set<string>): value is MatchResult {
@@ -102,17 +74,18 @@ function validFinalSnapshot(value: unknown, matchId: string, result: MatchResult
 }
 
 function defaultConfig(): MatchConfig {
-  return { mode: 'ffa', arena: 'classic', lives: 3, timeLimit: 300, friendlyFire: false, practice: false, seed: crypto.getRandomValues(new Uint32Array(1))[0], players: [] };
+  return { ruleset:'expanded',gameMode:'stock',items:false,hazards:false,bestOf:3,mode: 'ffa', arena: 'classic', lives: 3, timeLimit: 300, friendlyFire: false, practice: false, seed: crypto.getRandomValues(new Uint32Array(1))[0], players: [] };
 }
 
 export class Room {
   private room: StoredRoom | undefined;
+  private rejectedEdits=new WeakSet<WebSocket>();
   private rates = new WeakMap<WebSocket, Map<string, RateBucket>>();
 
   constructor(private state: DurableObjectState) {
     this.state.storage.sql.exec('CREATE TABLE IF NOT EXISTS room (id INTEGER PRIMARY KEY CHECK (id = 1), data TEXT NOT NULL)');
     const row = this.state.storage.sql.exec('SELECT data FROM room WHERE id = 1').toArray()[0] as { data: string } | undefined;
-    if (row) this.room = JSON.parse(row.data) as StoredRoom;
+    if (row) {this.room = JSON.parse(row.data) as StoredRoom;this.room.protocolVersion??=this.room.members[0]?.protocolVersion??1;this.room.contentVersion??=this.room.members[0]?.contentVersion??'stf-classic-1';}
   }
 
   async fetch(request: Request): Promise<Response> {
@@ -121,10 +94,10 @@ export class Room {
       if (this.room) return new Response(null, { status: 409 });
       const code = request.headers.get('X-Room-Code');
       if (!code || !/^[A-Z2-9]{10}$/.test(code)) return new Response(null, { status: 400 });
-      this.room = { code, hostToken: token(), hostPeerId: '', createdAt: Date.now(), emptySince: Date.now(), members: [], config: defaultConfig(), phase: 'lobby' };
+      this.room = { protocolVersion:PROTOCOL_VERSION,contentVersion:CONTENT_VERSION,code, hostToken: token(), hostPeerId: '', createdAt: Date.now(), emptySince: Date.now(), members: [], config: defaultConfig(), phase: 'lobby' };
       this.save();
       await this.scheduleAlarm();
-      return Response.json({ code, hostToken: this.room.hostToken, protocolVersion: PROTOCOL_VERSION, contentVersion: CONTENT_VERSION });
+      return Response.json({ code, hostToken: this.room.hostToken, protocolVersion: this.room.protocolVersion!, contentVersion: this.room.contentVersion! });
     }
     if (url.pathname === '/internal/ws' && request.headers.get('Upgrade')?.toLowerCase() === 'websocket') {
       if (!this.room) return Response.json({ error: 'room_not_found' }, { status: 404 });
@@ -152,7 +125,9 @@ export class Room {
     const peerId = (ws.deserializeAttachment() as SocketAttachment | null)?.peerId;
     const member = this.room?.members.find(item => item.peerId === peerId);
     if (!member || !peerId) { this.error(ws, 'join_required', 'Join the room first.'); return; }
+    this.rejectedEdits.delete(ws);
     await this.handle(ws, member, message);
+    if ((message.type==='seats'||message.type==='config') && Number.isSafeInteger(message.editId)) this.send(ws,{type:'edit_ack',editId:message.editId!,accepted:!this.rejectedEdits.has(ws)});
   }
 
   async webSocketClose(ws: WebSocket): Promise<void> { await this.disconnect(ws); }
@@ -207,7 +182,7 @@ export class Room {
   private async hello(ws: WebSocket, message: Extract<ClientMessage, { type: 'hello' }>): Promise<void> {
     const room = this.room;
     if (!room) { this.error(ws, 'room_not_found', 'The room has expired.'); ws.close(1008); return; }
-    if (message.protocolVersion !== PROTOCOL_VERSION || message.contentVersion !== CONTENT_VERSION) {
+    if (message.protocolVersion !== room.protocolVersion || message.contentVersion !== room.contentVersion) {
       this.error(ws, 'version_mismatch', 'Game versions differ. Reload the game and try again.'); ws.close(1008); return;
     }
     if ((ws.deserializeAttachment() as SocketAttachment | null)?.peerId) { this.error(ws, 'already_joined', 'Already joined.'); return; }
@@ -219,9 +194,9 @@ export class Room {
     }
     if (!member) {
       if (room.phase !== 'lobby') { this.error(ws, 'round_in_progress', 'New players can join between rounds.'); ws.close(1008); return; }
-      if (room.members.length >= 4) { this.error(ws, 'room_full', 'The room is full.'); ws.close(1008); return; }
+      if (room.members.length >= maxSeats(room.config)) { this.error(ws, 'room_full', 'The room is full.'); ws.close(1008); return; }
       if (!room.hostPeerId && message.hostToken !== room.hostToken) { this.error(ws, 'host_required', 'The host has not opened this room yet.'); ws.close(1008); return; }
-      member = { peerId: crypto.randomUUID(), reconnectToken: token(), joinedAt: Date.now(), players: [], ready: false, assetsReady: false, route: room.hostPeerId ? 'connecting' : 'relay', protocolVersion: PROTOCOL_VERSION, contentVersion: CONTENT_VERSION };
+      member = { peerId: crypto.randomUUID(), reconnectToken: token(), joinedAt: Date.now(), players: [], ready: false, assetsReady: false, route: room.hostPeerId ? 'connecting' : 'relay', protocolVersion: room.protocolVersion!, contentVersion: room.contentVersion! };
       room.members.push(member);
       if (!room.hostPeerId) room.hostPeerId = member.peerId;
     }
@@ -249,7 +224,7 @@ export class Room {
         if (room.phase !== 'lobby' || !Array.isArray(message.players) || message.players.length > 4 || !message.players.every(player => validSeat(player, 'human'))) return this.error(ws, 'invalid_seats', 'Seats can be changed in the lobby only.');
         const players = message.players.map(player => ({ ...player, name: player.name.trim(), peerId: member.peerId, kind: 'human' as const, difficulty: undefined }));
         const all = [...room.members.filter(item => item.peerId !== member.peerId).flatMap(item => item.players), ...players, ...room.config.players.filter(player => player.kind === 'bot')];
-        if (all.length > 4 || new Set(all.map(player => player.id)).size !== all.length) return this.error(ws, 'invalid_seats', 'Seats must be unique and the room holds at most four fighters.');
+        if (all.length > maxSeats(room.config) || new Set(all.map(player => player.id)).size !== all.length) return this.error(ws, 'invalid_seats', 'Seats must be unique and the room holds at most four fighters.');
         member.players = players;
         room.config.players = all;
         this.clearReadiness();
@@ -261,17 +236,23 @@ export class Room {
         const proposedHumans = message.config.players.filter(player => player.kind === 'human');
         const bots = message.config.players.filter(player => player.kind === 'bot').map(player => ({ ...player, peerId: undefined, device: 'bot' }));
         const ids = [...humans, ...bots].map(player => player.id);
-        if (humans.length !== proposedHumans.length || !humans.every(player => proposedHumans.some(other => other.id === player.id && other.peerId === player.peerId)) || ids.length > 4 || new Set(ids).size !== ids.length) {
+        if (humans.length !== proposedHumans.length || !humans.every(player => proposedHumans.some(other => other.id === player.id && other.peerId === player.peerId)) || ids.length > maxSeats(message.config) || new Set(ids).size !== ids.length) {
           return this.error(ws, 'invalid_roster', 'Register every human seat before setting room rules.');
         }
         room.config = { ...message.config, players: [...humans, ...bots] };
         this.clearReadiness();
         break;
       }
+      case 'seat_ready': {
+        if(room.phase!=='lobby'||!member.players.some(p=>p.id===message.seatId)||typeof message.ready!=='boolean'||typeof message.assetsReady!=='boolean')return this.error(ws,'invalid_ready','Ready belongs to your own local fighter.');
+        member.seatReadiness??={};member.seatReadiness[message.seatId]={ready:message.ready,assetsReady:message.assetsReady};
+        member.ready=member.players.length>0&&member.players.every(p=>member.seatReadiness?.[p.id]?.ready);member.assetsReady=member.players.every(p=>member.seatReadiness?.[p.id]?.assetsReady);break;
+      }
       case 'ready': {
         if (room.phase !== 'lobby' || typeof message.ready !== 'boolean' || typeof message.assetsReady !== 'boolean') return this.error(ws, 'invalid_ready', 'Ready is available in the lobby.');
         member.ready = message.ready;
         member.assetsReady = message.assetsReady;
+        member.seatReadiness=Object.fromEntries(member.players.map(p=>[p.id,{ready:message.ready,assetsReady:message.assetsReady}]));
         break;
       }
       case 'route': {
@@ -379,12 +360,12 @@ export class Room {
   private startError(): [string, string] | undefined {
     const room = this.room!;
     const players = room.config.players;
-    if (players.length < 2 || players.length > 4 || new Set(players.map(player => player.id)).size !== players.length) return ['invalid_roster', 'Choose two to four unique fighters.'];
+    if (players.length < 2 || players.length > maxSeats(room.config) || new Set(players.map(player => player.id)).size !== players.length) return ['invalid_roster', 'Choose a valid number of unique fighters for this mode.'];
     if (room.config.mode === 'teams' && (players.filter(player => player.team === 0).length < 2 || players.filter(player => player.team === 1).length < 2)) return ['invalid_teams', 'Team matches need at least two fighters on each side.'];
     const humans = room.members.filter(member => member.players.length > 0);
     if (humans.some(member => member.disconnectedAt || !this.connectionFor(member.peerId))) return ['player_disconnected', 'Wait for every player to reconnect.'];
     if (humans.some(member => !member.ready || !member.assetsReady)) return ['not_ready', 'Every player must be ready with required assets loaded.'];
-    if (humans.some(member => member.protocolVersion !== PROTOCOL_VERSION || member.contentVersion !== CONTENT_VERSION)) return ['version_mismatch', 'A player needs to reload the game.'];
+    if (humans.some(member => member.protocolVersion !== room.protocolVersion || member.contentVersion !== room.contentVersion)) return ['version_mismatch', 'A player needs to reload the game.'];
     if (humans.some(member => member.peerId !== room.hostPeerId && member.route !== 'direct' && member.route !== 'relay')) return ['route_unavailable', 'Wait for a direct or relay route to every guest.'];
     return undefined;
   }
@@ -424,6 +405,7 @@ export class Room {
     const room = this.room!;
     const peers = room.members.map(member => ({ peerId: member.peerId, connected: !!this.connectionFor(member.peerId) || (!!member.disconnectedAt && member.route === 'direct' && Date.now() - (member.lastDirectSeen ?? 0) < RECONNECT_MS), isHost: member.peerId === room.hostPeerId, route: member.route, ...(member.pingMs === undefined ? {} : { pingMs: member.pingMs }) }));
     return {
+      protocolVersion:room.protocolVersion,contentVersion:room.contentVersion,seatReadiness:Object.assign({},...room.members.map(m=>m.seatReadiness??Object.fromEntries(m.players.map(p=>[p.id,{ready:m.ready,assetsReady:m.assetsReady}])))),
       code: room.code, peerId: forPeer, hostPeerId: room.hostPeerId, players: room.config.players,
       config: room.config, readiness: Object.fromEntries(room.members.map(member => [member.peerId, { ready: member.ready, assetsReady: member.assetsReady }])),
       phase: room.phase, matchId: room.matchId, peers, routes: Object.fromEntries(peers.map(peer => [peer.peerId, peer.route])),
@@ -452,7 +434,7 @@ export class Room {
     ws.send(JSON.stringify(message));
   }
 
-  private error(ws: WebSocket, code: string, message: string): void { this.send(ws, { type: 'error', code, message }); }
+  private error(ws: WebSocket, code: string, message: string): void { this.rejectedEdits.add(ws);this.send(ws, { type: 'error', code, message }); }
 
   private allowRate(ws: WebSocket, type: string): boolean {
     const limits: Record<string, number> = { input: 40, snapshot: 25, signal: 60, ping: 3 };
@@ -471,7 +453,7 @@ export class Room {
     return false;
   }
 
-  private clearReadiness(): void { for (const member of this.room?.members ?? []) member.ready = false; }
+  private clearReadiness(): void { for (const member of this.room?.members ?? []) {member.ready = false;member.seatReadiness=Object.fromEntries(member.players.map(p=>[p.id,{ready:false,assetsReady:member.assetsReady}]));} }
 
   private save(): void {
     if (this.room) this.state.storage.sql.exec('INSERT INTO room (id, data) VALUES (1, ?) ON CONFLICT(id) DO UPDATE SET data = excluded.data', JSON.stringify(this.room));

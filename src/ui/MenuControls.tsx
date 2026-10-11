@@ -20,11 +20,14 @@ export function useMenuCommand<T extends HTMLElement>(ref: RefObject<T | null>, 
 
 /** A single focus stop per value, with the same left/right behavior for every device. */
 export function Choice<T extends string | number>({ label, value, options, change, disabled = false, swatches }: {
- label: string; value: T; options: { value: T; label: string }[]; change: (value: T) => void; disabled?: boolean; swatches?: string[];
+ label: string; value: T; options: { value: T; label: string; disabled?: boolean }[]; change: (value: T) => void; disabled?: boolean; swatches?: string[];
 }) {
  const ref = useRef<HTMLDivElement>(null);
  const index = Math.max(0, options.findIndex(option => option.value === value));
- const adjust = (direction: number) => { if (!disabled && options.length) change(options[(index + direction + options.length) % options.length].value); };
+ const adjust = (direction: number) => {
+  if (disabled || !options.length) return;
+  for (let step = 1; step <= options.length; step++) { const next = options[(index + direction * step + options.length * 2) % options.length]; if (!next.disabled) { change(next.value); return; } }
+ };
  useMenuCommand(ref, command => {
   if (command !== 'left' && command !== 'right') return false;
   adjust(command === 'left' ? -1 : 1); return true;
@@ -47,7 +50,7 @@ export function MenuTabs<T extends string>({ value, options, change, label }: { 
   if (command === 'left' || command === 'right') {
    const index = options.findIndex(option => option.value === value);
    const next = (index + (command === 'left' ? -1 : 1) + options.length) % options.length;
-   change(options[next].value); ref.current?.querySelectorAll('button')[next]?.focus(); return true;
+   change(options[next].value); if (ref.current?.contains(document.activeElement) && !ref.current?.closest('[data-controller-command]')) ref.current?.querySelectorAll('button')[next]?.focus(); return true;
   }
   return false;
  });
@@ -57,10 +60,11 @@ export function MenuTabs<T extends string>({ value, options, change, label }: { 
 export function MenuDialog({ title, subtitle, close, children, done, language, mark = 'STF', accent = '#57d4f1' }: { title: string; subtitle?: string; close: () => void; children: ReactNode; done: string; language: Language; mark?: ReactNode; accent?: string }) {
  const ref = useRef<HTMLElement>(null);
  const titleId = useId();
- useMenuCommand(ref, command => { if (command === 'back' || command === 'pause') { close(); return true; } return false; });
+ useMenuCommand(ref, command => { if (command === 'back') { close(); return true; } return false; });
  useEffect(() => {
   const previous = document.activeElement as HTMLElement | null;
   const dialog = ref.current!;
+  window.dispatchEvent(new Event('menu-transition'));
   const overflow = document.body.style.overflow;
   document.body.style.overflow = 'hidden';
   // Inert the surrounding UI so pointer, Tab and assistive navigation stay in this editor.
@@ -78,7 +82,7 @@ export function MenuDialog({ title, subtitle, close, children, done, language, m
    else if (!event.shiftKey && (index === targets.length - 1 || index === -1)) { event.preventDefault(); targets[0]?.focus(); }
   };
   dialog.addEventListener('keydown', trap);
-  return () => { document.body.style.overflow = overflow; siblings.forEach(element => { element.inert = false; }); dialog.removeEventListener('keydown', trap); if (previous?.isConnected) previous.focus(); else document.querySelector<HTMLElement>('main [data-autofocus]')?.focus(); };
+  return () => { window.dispatchEvent(new Event('menu-transition')); document.body.style.overflow = overflow; siblings.forEach(element => { element.inert = false; }); dialog.removeEventListener('keydown', trap); if (previous?.isConnected) previous.focus(); else document.querySelector<HTMLElement>('main [data-autofocus]')?.focus(); };
  }, []);
  return <div className="config-shade"><section className="config-dialog" style={{ '--config-accent': accent } as CSSProperties} role="dialog" aria-modal="true" aria-labelledby={titleId} data-menu-dialog data-menu-linear ref={ref}>
   <header className="config-dialog-heading"><span className="config-dialog-mark" aria-hidden="true">{mark}</span><div><h2 id={titleId}>{title}</h2>{subtitle && <p>{subtitle}</p>}</div><button className="small-button" data-ui-sound="back" onClick={close}>{done} <span aria-hidden="true">↩</span></button></header>

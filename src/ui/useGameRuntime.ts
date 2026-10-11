@@ -1,15 +1,15 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { InputManager, type ControllerStatus } from '../input';
+import { InputManager, type ControllerStatus, type MenuIdentity } from '../input';
 import { AudioManager, type UiSound } from '../audio';
 import { preloadMatchAssets } from '../assets';
 import type { AppSettings, AssetsManifest, MatchConfig, MatchSnapshot, SimulationCommand, SimulationMessage } from '../shared/types';
 import type { OnlineBridge } from './contracts';
 import type { MenuCommand } from '../input';
 export type { MenuCommand } from '../input';
-export function useGameRuntime(settings: AppSettings, manifest: AssetsManifest | null, onMenu: (command: MenuCommand, source: 'keyboard' | 'gamepad') => void, online?: OnlineBridge, onlineActive = false, showMatch = false) {
+export function useGameRuntime(settings: AppSettings, manifest: AssetsManifest | null, onMenu: (command: MenuCommand, source: 'keyboard' | 'gamepad', identity: MenuIdentity) => void, online?: OnlineBridge, onlineActive = false, showMatch = false) {
   const [snapshot, setSnapshot] = useState<MatchSnapshot | null>(null);
   const snapshotRef = useRef<MatchSnapshot | null>(null);
-  const [devices, setDevices] = useState<{ id: string; label: string; connected: boolean }[]>([]);
+  const [devices, setDevices] = useState<{ id: string; label: string; connected: boolean; controllerId?: string }[]>([]);
   const [controllers, setControllers] = useState<ControllerStatus>({ available: true, blocked: false, controllers: [] });
   const [soundUnlocked, setSoundUnlocked] = useState(false);
   const [disconnected, setDisconnected] = useState(false);
@@ -19,19 +19,22 @@ export function useGameRuntime(settings: AppSettings, manifest: AssetsManifest |
   const menu = useRef(onMenu), network = useRef(online), remote = useRef(onlineActive);
   const publishAt = useRef(0), phase = useRef('');
   menu.current = onMenu; network.current = online; remote.current = onlineActive;
-  const command = useCallback((message: SimulationCommand) => worker.current?.postMessage(message), []);
+  const command = useCallback((message: SimulationCommand) => {
+    if (message.type === 'training' && message.command.action === 'frame') worker.current?.postMessage({...message,command:{...message.command,inputs:input.current?.poll((snapshotRef.current?.tick ?? 0)+1)}});
+    else worker.current?.postMessage(message);
+  }, []);
   useEffect(() => {
     const manager = new InputManager(settings, () => {
       if (snapshotRef.current?.phase === 'playing' || snapshotRef.current?.phase === 'countdown') {
         if (remote.current) network.current?.pause(); else worker.current?.postMessage({ type: 'pause' });
-      } else menu.current('pause', 'gamepad');
+      } else menu.current('pause', 'gamepad', {device:'gamepad'});
     }, () => {
       if (!snapshotRef.current || snapshotRef.current.phase === 'finished') return;
       setDisconnected(true);
       if (remote.current) network.current?.pause(); else worker.current?.postMessage({ type: 'pause' });
     });
     input.current = manager;
-    const unsubscribe = manager.subscribeMenu((command, source) => menu.current(command, source));
+    const unsubscribe = manager.subscribeMenu((command, source, identity) => menu.current(command, source, identity));
     const instance = new Worker(new URL('../simulation/worker.ts', import.meta.url), { type: 'module' });
     worker.current = instance;
     instance.onerror = () => { snapshotRef.current = null; setSnapshot(null); manager.setMode('menu'); setError(settings.language === 'es' ? 'El combate no pudo continuar. Recarga la página para intentarlo de nuevo.' : 'The fight could not continue. Reload the page to try again.'); };
@@ -86,7 +89,7 @@ export function useGameRuntime(settings: AppSettings, manifest: AssetsManifest |
       await preloadMatchAssets(config);
       if (generation !== startGeneration.current || !worker.current) return;
       input.current?.setPlayers(config.players); input.current?.setMode('game');
-      worker.current.postMessage({ type: 'start', config: { ...config, seed: Date.now() } });
+      worker.current.postMessage({ type: 'start', config: { ...config, seed: Date.now() >>> 0 } });
     } catch (failure) { if (generation === startGeneration.current) setError(failure instanceof Error ? failure.message : 'El combate no pudo iniciarse / The fight could not start.'); }
   }, []);
   const stop = useCallback(() => { startGeneration.current++; command({ type: 'stop' }); snapshotRef.current = null; setSnapshot(null); setDisconnected(false); input.current?.setPlayers([]); input.current?.setMode('menu'); audio.current?.setScene('menu'); }, [command]);
@@ -94,5 +97,6 @@ export function useGameRuntime(settings: AppSettings, manifest: AssetsManifest |
   const uiSound = useCallback((cue: UiSound) => { audio.current?.playUi(cue); if (audio.current?.unlocked) setSoundUnlocked(true); }, []);
   const preferredController = useCallback(() => input.current?.getDevices().find(device => device.id.startsWith('gamepad:') && device.connected)?.id, []);
   const reclaim = useCallback(() => { const restored = input.current?.reclaim() ?? false; setDisconnected(!restored); return restored; }, []);
-  return { snapshot: onlineActive ? online?.state.snapshot ?? null : snapshot, snapshotRef, start, stop, command, devices, controllers, preferredController, uiSound, soundUnlocked, unlock, disconnected, reclaim, error };
+  const releaseMenu = useCallback((device?: string) => input.current?.releaseMenu(device), []);
+  return { releaseMenu, snapshot: onlineActive ? online?.state.snapshot ?? null : snapshot, snapshotRef, start, stop, command, devices, controllers, preferredController, uiSound, soundUnlocked, unlock, disconnected, reclaim, error };
 }

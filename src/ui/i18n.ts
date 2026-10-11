@@ -2,20 +2,28 @@ import type { Discipline, Language } from '../shared/types';
 export const names: Record<Discipline, Record<Language, string>> = {
   networks: { es: 'Redes', en: 'Networks' }, design: { es: 'Diseño', en: 'Design' },
   code: { es: 'Programación', en: 'Programming' }, hardware: { es: 'Hardware', en: 'Hardware' },
+  ai: { es: 'Inteligencia Artificial', en: 'Artificial Intelligence' }, robotics: { es: 'Robótica', en: 'Robotics' }, iot: { es: 'Internet de las Cosas', en: 'Internet of Things' }, vr: { es: 'Realidad Virtual', en: 'Virtual Reality' }, games: { es: 'Videojuegos', en: 'Video Games' }, printing: { es: 'Impresión 3D', en: '3D Printing' },
 };
 export const disciplineInfo: Record<Discipline, { symbol: string; color: string; special: Record<Language, string>; combo: Record<Language, string> }> = {
   networks: { symbol: '↯', color: '#57d4f1', special: { es: 'Cable UTP', en: 'UTP cable' }, combo: { es: 'Lluvia de cables', en: 'Rising cables' } },
   design: { symbol: '↖', color: '#f073c9', special: { es: 'Puntero', en: 'Pointer' }, combo: { es: 'Selección', en: 'Selection box' } },
   code: { symbol: '⌘', color: '#a0e769', special: { es: 'Bola de código', en: 'Code projectile' }, combo: { es: 'Columna de código', en: 'Code column' } },
   hardware: { symbol: '▤', color: '#f4bd67', special: { es: 'Memoria RAM', en: 'RAM obstacle' }, combo: { es: 'Disco giratorio', en: 'Spinning disc' } },
+  ai: { symbol: '∴', color: '#bb8ff0', special: { es: 'Eco de ataque', en: 'Attack echo' }, combo: { es: 'Secuencia predictiva', en: 'Predictive sequence' } },
+  robotics: { symbol: '⚙', color: '#f48a72', special: { es: 'Brazo mecánico', en: 'Mechanical arm' }, combo: { es: 'Dron', en: 'Drone' } },
+  iot: { symbol: '⌁', color: '#62d6be', special: { es: 'Placa sensora', en: 'Sensor board' }, combo: { es: 'Hub Raspberry Pi', en: 'Raspberry Pi hub' } },
+  vr: { symbol: '◇', color: '#7ab6ff', special: { es: 'Desplazamiento', en: 'Displacement' }, combo: { es: 'Señuelo virtual', en: 'Virtual decoy' } },
+  games: { symbol: '✚', color: '#f3dd71', special: { es: 'Proyectil rebote', en: 'Ricochet shot' }, combo: { es: 'Plataforma de rebote', en: 'Bounce pad' } },
+  printing: { symbol: '▱', color: '#e2a0c2', special: { es: 'Pistón', en: 'Piston' }, combo: { es: 'Bloque impreso', en: 'Printed block' } },
 };
-export const disciplines: Discipline[] = ['networks', 'design', 'code', 'hardware'];
+export const disciplines: Discipline[] = ['networks', 'design', 'code', 'hardware', 'ai', 'robotics', 'iot', 'vr', 'games', 'printing'];
 export function formatLives(count: number, language: Language): string {
  const label = language === 'es' ? count === 1 ? 'vida' : 'vidas' : count === 1 ? 'life' : 'lives';
  return `${count} ${label}`;
 }
 export const ui = {
  es: {
+  hard: 'Difícil', dodge: 'Esquiva / impulso', ruleset: 'Reglamento', classic: 'Classic', expanded: 'Expanded', gameMode: 'Objetivo', stock: 'Vidas', timed: 'KO por tiempo', hill: 'Rey de la zona', royale: 'Royale', survival: 'Supervivencia', training: 'Entrenamiento', bestOf: 'Al mejor de', hazards: 'Peligros', items: 'Objetos', coordinator: 'Coordinador', joinController: 'Pulsa A / ✕ para unirte', sharedControls: 'Reglas / empezar', ownFighter: 'Tu luchador', keyboardText: 'Usa el teclado físico · Esc para salir del campo', reclaimSeat: 'Pulsa A / ✕ con el mismo mando para recuperar', pendingEdits: 'Guardando cambios…', bindingMigration: 'Una tecla de esquiva coincide con otra acción. Revisa los controles.',
   done: 'Listo', editFighter: 'Editar luchador', savedAuto: 'Los cambios se guardan automáticamente.', configHelp: '↑ ↓ Mover · ← → Ajustar · Enter Elegir · Esc Volver',
   introPrompt: 'PULSA UNA TECLA PARA COMENZAR', introInputHint: 'O haz clic · A / ✕ en el mando',
   // Arcade headings use ASCII: the original pixel font lacks accented letters and inverted punctuation.
@@ -55,6 +63,7 @@ export const ui = {
   or: 'O', countdownReady: 'LISTOS', countdownFight: 'YA', reload: 'RECARGAR', slowConnection: 'Conexión lenta', waitingHost: 'ESPERANDO AL ANFITRIÓN', leaveRoom: 'SALIR DE LA SALA',
  },
  en: {
+  hard: 'Hard', dodge: 'Dodge / dash', ruleset: 'Ruleset', classic: 'Classic', expanded: 'Expanded', gameMode: 'Objective', stock: 'Stock', timed: 'Timed KO', hill: 'King of the Hill', royale: 'Royale', survival: 'Survival', training: 'Training', bestOf: 'Best of', hazards: 'Hazards', items: 'Items', coordinator: 'Coordinator', joinController: 'Press A / ✕ to join', sharedControls: 'Rules / start', ownFighter: 'Your fighter', keyboardText: 'Use the physical keyboard · Esc to leave this field', reclaimSeat: 'Press A / ✕ on the same controller to reclaim', pendingEdits: 'Saving changes…', bindingMigration: 'A dodge key overlaps another action. Review your controls.',
   done: 'Done', editFighter: 'Edit fighter', savedAuto: 'Changes are saved automatically.', configHelp: '↑ ↓ Move · ← → Adjust · Enter Choose · Esc Back',
   introPrompt: 'PRESS ANY KEY TO START', introInputHint: 'Or click · A / ✕ on your controller',
   local: 'LOCAL', online: 'ONLINE', practice: 'PRACTICE', settings: 'SETTINGS', guide: 'HOW TO PLAY', back: 'Back',
