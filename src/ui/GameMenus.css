@@ -220,3 +220,17 @@
 .game-menu .setup-overview .match-summary strong { font:700 22px/1 var(--menu-display); }
 .game-menu .setup-overview .fight-button { font:italic 800 25px/1 var(--menu-display); }
 @media(max-width:760px) { .game-menu .setup-overview .fighter-grid { width:100%; grid-template-columns:1fr; }.game-menu:is(.screen-setup,.screen-room) .page-heading h1 { font-size:30px; } }
+/* Reserve room for the live preview and paged controls on short displays. */
+@media(min-width:761px) and (max-height:720px) {
+ .game-menu:has(.fighter-summary.is-editing) .page-heading { padding-bottom:0; }
+ .game-menu .setup-overview:has(.fighter-summary.is-editing) .match-summary { height:48px; min-height:48px; padding-block:4px; }
+ .game-menu .setup-overview:has(.fighter-summary.is-editing) .match-summary small { line-height:11px; }
+ .game-menu .setup-overview:has(.fighter-summary.is-editing) .match-summary strong { line-height:17px; }
+ .game-menu .setup-overview:has(.fighter-summary.is-editing) .match-summary > span > span { line-height:13px; }
+}
+@media(min-width:761px) and (max-height:800px) {
+ .game-menu .competition-list .feature-heading { padding:14px 18px; }
+ .game-menu .content-page .competition-list .feature-body { padding:14px 18px; gap:10px; }
+ .game-menu .competition-list .feature-list li { min-height:44px; padding:6px 0; }
+ .game-menu .competition-list .content-pager { gap:12px; }
+}

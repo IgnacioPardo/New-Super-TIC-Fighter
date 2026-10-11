@@ -1,4 +1,5 @@
 import { Avatar } from './Avatar';
+import { ITEM_ART } from '../game/expansionArt';
 import type { AppSettings, AssetsManifest, MatchSnapshot, ItemKind, PlayerSeat } from '../shared/types';
 import { disciplineInfo, formatLives, names } from './i18n';
 export function formatClock(seconds:number) {const s=Math.max(0,Math.ceil(seconds));return `${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`;}
@@ -18,7 +19,7 @@ export function HUD({snapshot,settings,manifest}:{snapshot:MatchSnapshot;setting
      {compact?<span>{fighter?.eliminated?`#${score?.placement??snapshot.result?.placements?.[seat.id]??'—'}`:es?'En pie':'Alive'}</span>:mode==='timed'?<span>{(score?.kos??0)-(score?.selfDestructs??0)} KO</span>:mode==='hill'?<span>{(score?.hill??0).toFixed(1)} s</span>:mode==='royale'&&fighter?.eliminated?<span>#{score?.placement??snapshot.result?.placements?.[seat.id]??'—'}</span>:<div className="stock-display" aria-label={formatLives(lives,settings.language)}>{snapshot.config.practice?'∞':lives<=5?Array.from({length:snapshot.config.lives},(_,i)=><i key={i} className={i<lives?'filled':''}/>):<><i className="filled"/><b>×{lives}</b></>}<span className="stock-count">{snapshot.config.practice?'':`×${lives}`}</span></div>}
     </div>
     {!compact&&snapshot.config.ruleset==='expanded'&&<div className="hud-resources"><span className={fighter?.airJumps?'':'spent'}>{es?'Salto':'Jump'} {fighter?.airJumps??0}</span><span className={fighter?.airDash?'':'spent'}>{es?'Impulso':'Dash'}</span><span className={fighter?.recoveryAvailable?'':'spent'}>{es?'Recuperar':'Recover'}</span>{!!fighter?.dodgeCooldown&&<span>{es?'Esquiva':'Dodge'} {fighter.dodgeCooldown.toFixed(1)}s</span>}{fighter?.guardMeter!==undefined&&<span>{es?'Guardia':'Guard'} {Math.round(fighter.guardMeter)}%</span>}</div>}
-    {!compact&&!!fighter?.buffs&&<div className="hud-buffs">{Object.entries(fighter.buffs).filter(([,duration])=>duration>0).map(([kind,duration])=><span key={kind}>{itemLabels[kind as ItemKind][settings.language]} {duration.toFixed(1)}s</span>)}</div>}
+    {!compact&&!!fighter?.buffs&&<div className="hud-buffs">{Object.entries(fighter.buffs).filter(([,duration])=>duration>0).map(([kind,duration])=><span key={kind} className="hud-buff-icon" role="img" aria-label={`${itemLabels[kind as ItemKind][settings.language]} · ${Math.ceil(duration)}s`} title={itemLabels[kind as ItemKind][settings.language]}><img src={ITEM_ART[kind as ItemKind].url} alt=""/><i style={{transform:`scaleX(${Math.min(1,duration/ITEM_ART[kind as ItemKind].duration)})`}}/></span>)}</div>}
     </div>
    </article>;
   };

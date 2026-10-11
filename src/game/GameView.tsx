@@ -9,6 +9,7 @@ import type {
   PlayerSeat,
 } from '../shared/types';
 import { CombatFeedback } from './combatFeedback';
+import { EXPANSION_TEXTURES, ITEM_ART } from './expansionArt';
 import { authoredPose } from './poses';
 import { ARENAS, DISCIPLINES } from '../shared/content';
 
@@ -74,6 +75,7 @@ export function GameView({
     let expansion: Phaser.GameObjects.Graphics;
     const echoLayers = new Map<string, Phaser.GameObjects.Sprite[]>();
     const labels = new Map<string, Phaser.GameObjects.Text>();
+    const expansionSprites = new Map<string, Phaser.GameObjects.Image>();
     const platformVisuals: {
       image: Phaser.GameObjects.Image;
       edge: Phaser.GameObjects.Rectangle;
@@ -107,6 +109,7 @@ export function GameView({
         );
         for (const [kind, urls] of Object.entries(art.effects))
           (urls ?? []).forEach((url, i) => this.load.image(`effect-${kind}-${i}`, url));
+        for (const [key, url] of Object.entries(EXPANSION_TEXTURES)) this.load.svg(`expanded-${key}`, url);
         this.load.on('loaderror', () => {
           if (active)
             setError(
@@ -264,6 +267,38 @@ export function GameView({
         expansion.clear();
         const seenLabels = new Set<string>();
         const seenEchoes = new Set<string>();
+        const seenSprites = new Set<string>();
+        const sprite = (id: string, texture: string, x: number, y: number, width: number, height: number, alpha = 1, flip = false) => {
+          seenSprites.add(id);
+          let object = expansionSprites.get(id);
+          if (!object) {
+            object = this.add.image(x, y, `expanded-${texture}`).setOrigin(0).setDepth(12);
+            expansionSprites.set(id, object);
+            this.addWorld(object);
+          }
+          object.setTexture(`expanded-${texture}`).setPosition(Math.round(x), Math.round(y))
+            .setDisplaySize(width, height).setAlpha(alpha).setFlipX(flip);
+        };
+        const ghost = (id: string, owner: PlayerSeat, fighter: FighterState, x: number, y: number, facing: number, alpha: number, color: number) => {
+          seenEchoes.add(id);
+          let layers = echoLayers.get(id);
+          if (!layers) {
+            const keys = ['body', ...(['hair', 'shirt', 'pants'] as const)
+              .filter(part => owner.appearance[part] < art.sheets[part].length)
+              .map(part => `${part}-${owner.appearance[part]}`)];
+            layers = keys.map(key => {
+              const layer = this.add.sprite(0, 0, key).setOrigin(0.5, 1).setDepth(10);
+              this.addWorld(layer);
+              return layer;
+            });
+            echoLayers.set(id, layers);
+          }
+          const pose = authoredPose(fighter, owner.discipline, art);
+          const frame = pose?.frame ?? this.frameFor(fighter, owner, performance.now());
+          for (const layer of layers) layer.setPosition(x, y).setFrame(frame)
+            .setFlipX(facing === -1).setScale(pose?.scaleX ?? 1, pose?.scaleY ?? 1)
+            .setAlpha(alpha).setTint(color);
+        };
         const es = preferences.current.language === 'es';
         const label = (id: string, text: string, x: number, y: number, color = '#e9f4ff') => {
           seenLabels.add(id);
@@ -370,184 +405,59 @@ export function GameView({
               label('press', active ? (es ? 'PRENSA' : 'PRESS') : '!', 683, 420, '#ffc773');
           }
           for (const d of state.deployables ?? []) {
-            const color = Phaser.Display.Color.HexStringToColor(
-              DISCIPLINES[state.config.players.find((p) => p.id === d.ownerId)!.discipline].color,
-            ).color;
-            expansion
-              .fillStyle(0x101b2a, 0.95)
-              .fillRect(d.x, d.y, d.width, d.height)
-              .lineStyle(2, color, 0.9)
-              .strokeRect(d.x, d.y, d.width, d.height);
-            if (d.kind === 'drone') {
-              expansion
-                .lineStyle(3, color, 0.9)
-                .lineBetween(d.x - 14, d.y + 4, d.x + 12, d.y + 4)
-                .lineBetween(d.x + d.width - 12, d.y + 4, d.x + d.width + 14, d.y + 4)
-                .lineBetween(d.x + 14, d.y + 12, d.x + 14, d.y + 27)
-                .lineBetween(d.x + 34, d.y + 12, d.x + 34, d.y + 27);
-            }
-            if (d.kind === 'drone')
-              expansion
-                .lineStyle(2, color, 0.8)
-                .strokeEllipse(d.x - 2, d.y + 4, 26, 10)
-                .strokeEllipse(d.x + d.width + 2, d.y + 4, 26, 10)
-                .strokeCircle(d.x + d.width / 2, d.y + 24, 8);
-            if (d.kind === 'board' || d.kind === 'hub') {
-              for (let pin = 6; pin < d.width; pin += 9)
-                expansion
-                  .fillStyle(0xf3eac8, 0.8)
-                  .fillRect(d.x + pin, d.y - 3, 3, 5)
-                  .fillRect(d.x + pin, d.y + d.height - 2, 3, 5);
-              expansion
-                .lineStyle(2, color, 0.6)
-                .strokeCircle(d.x + d.width / 2, d.y + d.height / 2, 9)
-                .strokeCircle(d.x + d.width / 2, d.y + d.height / 2, 15);
-            }
-            if (d.kind === 'board') {
-              const arduino =
-                state.deployables!.filter((b) => b.ownerId === d.ownerId && b.kind === 'board').indexOf(d) %
-                2;
-              expansion
-                .fillStyle(0xc6d4ce, 0.9)
-                .fillRect(d.x + 2, d.y + 16, 7, 13)
-                .fillStyle(0x26323f, 1)
-                .fillRect(d.x + 16, d.y + 12, arduino ? 24 : 19, arduino ? 10 : 22);
-              if (!arduino)
-                expansion
-                  .lineStyle(1, 0xf0d597, 0.8)
-                  .lineBetween(d.x + 18, d.y + 6, d.x + 35, d.y + 6)
-                  .lineBetween(d.x + 35, d.y + 6, d.x + 35, d.y + 11);
-            }
-            if (d.kind === 'hub')
-              expansion
-                .fillStyle(0xd7e0df, 0.9)
-                .fillRect(d.x + d.width - 13, d.y + 5, 13, 13)
-                .fillRect(d.x + d.width - 13, d.y + 24, 13, 13)
-                .fillStyle(0x252b33, 1)
-                .fillRect(d.x + 18, d.y + 15, 17, 17);
-            if (d.kind === 'pad')
-              expansion
-                .lineStyle(3, 0xe4db65, 0.9)
-                .lineBetween(d.x + 8, d.y + 10, d.x + 24, d.y + 3)
-                .lineBetween(d.x + 24, d.y + 3, d.x + 40, d.y + 10)
-                .lineBetween(d.x + 40, d.y + 10, d.x + 56, d.y + 3);
-            if (d.kind === 'block') {
-              for (let y = d.y + 8; y < d.y + d.height; y += 8)
-                expansion.lineStyle(1, color, 0.3).lineBetween(d.x + 3, y, d.x + d.width - 3, y);
-            }
+            const owner = state.config.players.find(p => p.id === d.ownerId);
+            if (!owner) continue;
+            const color = Phaser.Display.Color.HexStringToColor(DISCIPLINES[owner.discipline].color).color;
+            const alpha = 0.35 + 0.65 * Math.min(1, d.ttl / 2);
+            // Health appears only after a hit; the small base accent identifies ownership.
+            expansion.fillStyle(color, alpha * 0.75).fillRect(d.x + 4, d.y + d.height + 2, d.width - 8, 2);
             if (d.kind === 'decoy') {
-              expansion
-                .lineStyle(2, color, 0.55)
-                .strokeCircle(d.x + d.width / 2, d.y + 8, 9)
-                .lineBetween(d.x + d.width / 2, d.y + 17, d.x + d.width / 2, d.y + d.height)
-                .lineBetween(d.x + 8, d.y + 30, d.x + d.width - 8, d.y + 30);
+              const source = state.fighters.find(f => f.id === owner.id);
+              if (source) ghost(d.id, owner, { ...source, action: 'idle', actionTime: state.elapsed, recovery: 0 },
+                d.x + d.width / 2, d.y + d.height, d.facing, alpha * 0.5, 0xbab0ff);
+              // Sparse scanlines distinguish the hologram without a label or stick figure.
+              for (let y = d.y + 8; y < d.y + d.height; y += 16)
+                expansion.fillStyle(0xbc9bf5, alpha * 0.35).fillRect(d.x + 3, y, d.width - 6, 1);
+            } else {
+              const key = d.kind === 'board'
+                ? (Number(d.id.split(':d').at(-1)) % 2 ? 'board-esp32' : 'board-arduino')
+                : d.kind === 'drone' ? `drone-${preferences.current.reducedMotion ? 0 : Math.floor(state.tick / 5) % 2}` : d.kind;
+              const overhang = d.kind === 'drone' ? 10 : 0;
+              sprite(d.id, key, d.x - overhang, d.y, d.width + overhang * 2, d.height, alpha, d.kind === 'drone' && d.facing === -1);
             }
-            const names = {
-              drone: es ? 'DRON' : 'DRONE',
-              board:
-                state.deployables!.filter((b) => b.ownerId === d.ownerId && b.kind === 'board').indexOf(d) % 2
-                  ? 'ARDUINO'
-                  : 'ESP32',
-              hub: 'RASPBERRY Pi',
-              decoy: es ? 'SEÑUELO' : 'DECOY',
-              pad: es ? 'SALTO' : 'BOUNCE',
-              block: '3D',
-            };
-            label(d.id, `${names[d.kind]} ${Math.ceil(d.ttl)}s`, d.x + d.width / 2, d.y - 14);
-            expansion
-              .fillStyle(color, 0.8)
-              .fillRect(
-                d.x,
-                d.y + d.height + 4,
-                d.width * Math.min(1, d.hp / (d.kind === 'block' ? 18 : d.kind === 'board' ? 12 : 16)),
-                3,
-              );
+            const maxHp = d.kind === 'block' ? 18 : d.kind === 'board' ? 12 : d.kind === 'drone' ? 16 : 10;
+            if (d.hp < maxHp) expansion.fillStyle(0x09131f, 0.8).fillRect(d.x, d.y - 6, d.width, 3)
+              .fillStyle(color, 0.9).fillRect(d.x, d.y - 6, d.width * Math.max(0, d.hp / maxHp), 3);
           }
-          const itemNames = {
-            usb: 'USB',
-            fan: es ? 'VENTILADOR' : 'FAN',
-            firewall: es ? 'CORTAFUEGOS' : 'FIREWALL',
-            battery: es ? 'BATERÍA' : 'BATTERY',
-            overclock: 'OVERCLOCK',
-          };
           for (const item of state.items ?? []) {
-            expansion
-              .fillStyle(0xf5ce75, 0.95)
-              .fillRoundedRect(item.x - 16, item.y - 16, 32, 32, 5)
-              .lineStyle(2, 0xffffff, 0.8)
-              .strokeRoundedRect(item.x - 16, item.y - 16, 32, 32, 5);
-            label(item.id, `${itemNames[item.kind]} ${Math.ceil(item.ttl)}s`, item.x, item.y - 28, '#ffe1a0');
+            const bob = preferences.current.reducedMotion ? 0 : Math.sin(state.tick / 12) * 2;
+            const alpha = 0.35 + 0.65 * Math.min(1, item.ttl / 2);
+            const color = ITEM_ART[item.kind].color;
+            expansion.fillStyle(0x06101b, alpha * 0.65).fillEllipse(item.x, item.y + 22, 32, 6)
+              .lineStyle(1, color, alpha * 0.5).strokeEllipse(item.x, item.y + 21, 29, 6);
+            sprite(item.id, `pickup-${item.kind}`, item.x - 22, item.y - 23 + bob, 44, 44, alpha);
           }
           for (const e of state.effects) {
             if (e.width <= 0 || art.effects[e.kind]?.length) continue;
-            const owner = state.config.players.find((p) => p.id === e.ownerId),
-              color = Phaser.Display.Color.HexStringToColor(
-                DISCIPLINES[owner?.discipline ?? 'code'].color,
-              ).color;
-            expansion
-              .fillStyle(color, e.kind === 'echo' ? 0.2 : 0.7)
-              .fillRoundedRect(e.x, e.y, e.width, e.height, 5)
-              .lineStyle(2, color, 0.9)
-              .strokeRoundedRect(e.x, e.y, e.width, e.height, 5);
-            if (e.kind === 'mechanical') {
-              expansion
-                .lineStyle(5, 0xdce2ee, 0.9)
-                .lineBetween(e.x + 8, e.y + e.height / 2, e.x + e.width - 8, e.y + e.height / 2)
-                .strokeCircle(e.x + e.width / 2, e.y + e.height / 2, 7);
-            }
-            if (e.kind === 'piston')
-              expansion
-                .fillStyle(0xe8ebe9, 0.9)
-                .fillRect(e.x + e.width * 0.3, e.y + 8, e.width * 0.4, e.height - 16);
-            if (e.kind === 'wireless' || e.kind === 'hub')
-              expansion
-                .lineStyle(2, 0xffffff, 0.7)
-                .strokeCircle(e.x + e.width / 2, e.y + e.height / 2, e.width * 0.3);
+            const owner = state.config.players.find(p => p.id === e.ownerId);
+            const color = Phaser.Display.Color.HexStringToColor(DISCIPLINES[owner?.discipline ?? 'code'].color).color;
             if (e.kind === 'echo') {
-              label(e.id, es ? 'ECO' : 'ECHO', e.x + e.width / 2, e.y - 12);
               if (owner && e.sourceAction) {
-                seenEchoes.add(e.id);
-                let layers = echoLayers.get(e.id);
-                if (!layers) {
-                  const keys = [
-                    'body',
-                    ...(['hair', 'shirt', 'pants'] as const)
-                      .filter((part) => owner.appearance[part] < art.sheets[part].length)
-                      .map((part) => `${part}-${owner.appearance[part]}`),
-                  ];
-                  layers = keys.map((key) => {
-                    const sprite = this.add
-                      .sprite(0, 0, key)
-                      .setOrigin(0.5, 1)
-                      .setDepth(10)
-                      .setAlpha(0.35)
-                      .setTint(color);
-                    this.addWorld(sprite);
-                    return sprite;
-                  });
-                  echoLayers.set(e.id, layers);
-                }
-                const source = state.fighters.find((f) => f.id === owner.id)!;
-                const fighter = {
-                  ...source,
-                  action: e.sourceAction,
-                  actionTime: 0.2,
-                  recovery: 0,
-                };
-                const pose = authoredPose(fighter, owner.discipline, art),
-                  frame = pose?.frame ?? this.frameFor(fighter, owner, performance.now());
-                for (const layer of layers)
-                  layer
-                    .setPosition(e.originX ?? e.x + e.width / 2, e.originY ?? e.y + e.height)
-                    .setFrame(frame)
-                    .setFlipX(e.facing === -1)
-                    .setScale(pose?.scaleX ?? 1, pose?.scaleY ?? 1);
+                const source = state.fighters.find(f => f.id === owner.id);
+                if (source) ghost(e.id, owner, { ...source, action: e.sourceAction, actionTime: 0.2, recovery: 0 },
+                  e.originX ?? e.x + e.width / 2, e.originY ?? e.y + e.height, e.facing, 0.4, color);
+              }
+              continue;
+            }
+            const texture = e.kind === 'mechanical' && e.width < 60 ? 'effect-bolt' : `effect-${e.kind}`;
+            if (EXPANSION_TEXTURES[texture]) {
+              sprite(e.id, texture, e.x, e.y, e.width, e.height, e.kind === 'displacement' ? 0.85 : 1, e.facing === -1);
+              if (e.kind === 'ricochet' || e.kind === 'wireless') {
+                const trail = Math.min(24, Math.abs(e.vx) / 35);
+                expansion.lineStyle(2, e.kind === 'ricochet' ? 0xffce63 : 0x69e6ef, 0.35)
+                  .lineBetween(e.x + e.width / 2 - e.facing * trail, e.y + e.height / 2, e.x + e.width / 2, e.y + e.height / 2);
               }
             }
-            if (e.kind === 'ricochet')
-              expansion
-                .lineStyle(2, 0xffffff, 0.9)
-                .strokeCircle(e.x + e.width / 2, e.y + e.height / 2, e.width / 3);
           }
           for (const f of state.fighters) {
             if (f.eliminated) continue;
@@ -578,6 +488,9 @@ export function GameView({
             layers.forEach((layer) => layer.destroy());
             echoLayers.delete(id);
           }
+        });
+        expansionSprites.forEach((object, id) => {
+          if (!seenSprites.has(id)) { object.destroy(); expansionSprites.delete(id); }
         });
         labels.forEach((object, id) => {
           if (!seenLabels.has(id)) {
