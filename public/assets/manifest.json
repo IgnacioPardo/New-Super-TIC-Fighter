@@ -226,7 +226,10 @@
   "backgrounds": {
     "classic": "/assets/backgrounds/classic.png",
     "lab": "/assets/backgrounds/lab.svg",
-    "pc": "/assets/backgrounds/pc.svg"
+    "pc": "/assets/backgrounds/pc.svg",
+    "embedded": "/assets/backgrounds/embedded.svg",
+    "virtual": "/assets/backgrounds/virtual.svg",
+    "arcade": "/assets/backgrounds/arcade.svg"
   },
   "font": "/assets/arcade.ttf",
   "logo": "/assets/branding/overdrive.svg",
