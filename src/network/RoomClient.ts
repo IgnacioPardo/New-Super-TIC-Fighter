@@ -350,14 +350,14 @@ export class RoomClient {
   }
 
   private acceptInput(from: string, sequence: number, frames: InputFrame[]): void {
-    if (!this.room || !this.isHost || !validDirectInput(frames, this.room, from)) return;
+    if (!this.room || !this.isHost || this.room.phase !== 'playing' || !Number.isSafeInteger(sequence) || sequence < 0 || !validDirectInput(frames, this.room, from)) return;
     if (sequence <= (this.lastInputSequences.get(from) ?? -1)) return;
     this.lastInputSequences.set(from, sequence);
     this.options.onInput?.(from, frames);
   }
 
   private acceptSnapshot(sequence: number, snapshot: MatchSnapshot, acknowledgements: Record<string, number> = {}): void {
-    if (!this.room || this.isHost || snapshot?.matchId !== this.room.matchId) return;
+    if (!this.room || this.isHost || !Number.isSafeInteger(sequence) || sequence < 0 || snapshot?.matchId !== this.room.matchId) return;
     // Unreliable direct snapshots can arrive after a reliable pause/result
     // control. Never let an older phase reopen a finished or paused round.
     if (this.room.phase === 'lobby' || this.room.phase === 'finished' && snapshot.phase !== 'finished' ||
