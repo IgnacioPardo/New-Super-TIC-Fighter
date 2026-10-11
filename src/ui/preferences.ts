@@ -24,8 +24,8 @@ export function loadSettings(): AppSettings {
   } catch { return structuredClone(DEFAULT_SETTINGS); }
 }
 export function loadConfig(): MatchConfig {
-  const initial: MatchConfig = { mode: 'ffa', ruleset: 'expanded', gameMode: 'stock', bestOf: 3, items: false, hazards: false, arena: 'classic', lives: 3, timeLimit: 300, friendlyFire: false, practice: false, seed: Date.now(), players: [defaultSeat(0), defaultSeat(1)] };
-  try { const saved = JSON.parse(localStorage.getItem('stf-match') ?? 'null'); return saved ? { ...initial, ...saved, ruleset: saved.ruleset ?? 'classic', gameMode: saved.gameMode ?? 'stock', practice: false, seed: Date.now() } : initial; } catch { return initial; }
+  const initial: MatchConfig = { mode: 'ffa', ruleset: 'expanded', gameMode: 'stock', bestOf: 3, items: false, hazards: false, arena: 'classic', lives: 3, timeLimit: 300, friendlyFire: false, practice: false, seed: Date.now() >>> 0, players: [defaultSeat(0), defaultSeat(1)] };
+  try { const saved = JSON.parse(localStorage.getItem('stf-match') ?? 'null'); return saved ? { ...initial, ...saved, ruleset: saved.ruleset ?? 'classic', gameMode: saved.gameMode ?? 'stock', practice: false, seed: Date.now() >>> 0 } : initial; } catch { return initial; }
 }
 export function keyName(code: string) { return code.replace('Key', '').replace('Numpad', 'Num ').replace('ArrowUp', '↑').replace('ArrowDown', '↓').replace('ArrowLeft', '←').replace('ArrowRight', '→').replace('Space', '␣'); }
 
