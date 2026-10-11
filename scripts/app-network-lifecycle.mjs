@@ -1,6 +1,6 @@
 // Full application online lifecycle through visible UI, real workers and room WebSockets.
-// Run with the app on :5173 and Wrangler on :8787. Playwright fault injection closes
-// real browser WebSockets; no game state or simulation output is fabricated.
+// Run with the app preview on :4173 and Wrangler on :8787. Browser navigation
+// closes the real room WebSocket; no game state or simulation output is fabricated.
 import assert from 'node:assert/strict';
 import { mkdir } from 'node:fs/promises';
 import { chromium } from '@playwright/test';
@@ -14,18 +14,14 @@ await mkdir('tmp/qa', { recursive: true });
 async function openSession(label) {
   const context = await browser.newContext({ viewport: { width: 1440, height: 1000 } });
   const page = await context.newPage();
-  const sockets = [];
-  await page.routeWebSocket('**/api/rooms/*/ws', route => {
-    sockets.push(route);
-    route.connectToServer();
-  });
   page.on('pageerror', error => errors.push(`${label}: ${error.message}`));
   await page.addInitScript(() => {
-    window.__stfObserved = { rooms: [], controls: [], snapshots: 0 };
+    window.__stfObserved = { rooms: [], controls: [], snapshots: 0, sockets: 0 };
     const NativeWorker = window.Worker;
     window.Worker = class extends NativeWorker {
       constructor(...args) {
         super(...args);
+        window.__stfObserved.sockets++;
         this.addEventListener('message', event => {
           const snapshot = event.data?.type === 'snapshot' ? event.data.snapshot : event.data;
           if (snapshot?.matchId && Array.isArray(snapshot.fighters)) {
@@ -56,7 +52,7 @@ async function openSession(label) {
       }
     };
   });
-  sessions.push({ label, context, page, sockets });
+  sessions.push({ label, context, page });
   return sessions.at(-1);
 }
 
@@ -140,14 +136,20 @@ async function scenarioTwoPlusTwo() {
   const after = await host.page.evaluate(id => window.__stfSnapshot.fighters.find(fighter => fighter.id === id).x, guestSeat);
   assert(after > before + 30, `Forced-relay guest input did not move its fighter: ${before} -> ${after}`);
 
-  assert(guest.sockets.length, 'Playwright must observe the room WebSocket');
+  assert(await guest.page.evaluate(() => window.__stfObserved.sockets > 0), 'The page must open a real room WebSocket');
   const guestPeerId = await guest.page.evaluate(() => window.__stfRoom.peerId);
-  await guest.sockets.at(-1).close({ code: 1012, reason: 'QA relay disconnect' });
+  await guest.page.goto('about:blank'); // closes the real socket but preserves this tab's reconnect credentials
   await host.page.waitForFunction(() => window.__stfSnapshot?.phase === 'paused', null, { timeout: 10_000 });
   await host.page.waitForFunction(peerId => window.__stfRoom?.peers.find(peer => peer.peerId === peerId)?.connected === false, guestPeerId, { timeout: 10_000 });
-  await guest.page.waitForFunction(() => window.__stfObserved.rooms.filter(message => message.type === 'welcome').length > 1, null, { timeout: 15_000 });
+  await guest.page.goto(`${base}/?room=${code}`);
+  await guest.page.getByRole('button', { name: /02.*ONLINE/ }).click();
+  await guest.page.getByPlaceholder('Jugador', { exact: true }).fill('Guest A');
+  await guest.page.getByRole('button', { name: /ENTRAR/ }).click();
+  await guest.page.waitForFunction(peerId => window.__stfRoom?.peerId === peerId && window.__stfRoom?.phase === 'paused', guestPeerId, { timeout: 15_000 });
+  assert.equal(await guest.page.evaluate(() => window.__stfRoom.peerId), guestPeerId, 'Reconnect must reclaim the same guest peer');
   await guest.page.waitForFunction(() => window.__stfRoom?.peers.find(peer => peer.peerId === window.__stfRoom.peerId)?.connected, null, { timeout: 15_000 });
   await host.page.waitForFunction(peerId => window.__stfRoom?.peers.find(peer => peer.peerId === peerId)?.connected, guestPeerId, { timeout: 15_000 });
+  await guest.page.locator('.pause-panel').waitFor({ timeout: 10_000 });
   await host.page.getByRole('button', { name: /CONTINUAR/ }).click();
   await Promise.all([host, guest].map(session => session.page.waitForFunction(() => window.__stfSnapshot?.phase === 'playing', null, { timeout: 10_000 })));
   console.log(`2+2 teams ${code}: four humans, forced relay movement, actual guest WebSocket fault, reconnect and resume passed.`);
@@ -175,6 +177,7 @@ async function scenarioTwoPlusOnePlusOne() {
     assert.equal(await guest.page.locator('.results-screen').filter({ hasText: /VICTORIA|VICTORY/ }).count(), 0, 'Host loss must never show a winner');
     await guest.page.getByRole('button', { name: /VOLVER A LA SALA/ }).click();
     await guest.page.locator('.room-code strong').waitFor({ timeout: 8_000 });
+    assert.equal(await guest.page.locator('.room-code strong').innerText(), code, 'Remaining guests must stay in the promoted lobby');
   }
   const newHost = await guest1.page.evaluate(() => window.__stfRoom.hostPeerId);
   assert.equal(newHost, await guest1.page.evaluate(() => window.__stfRoom.peerId), 'First remaining guest should host the new lobby');
@@ -215,8 +218,12 @@ try {
 } catch (error) {
   for (const session of sessions) {
     if (session.page.isClosed()) continue;
-    const detail = await session.page.evaluate(() => ({ room: window.__stfRoom, snapshot: window.__stfSnapshot && { phase: window.__stfSnapshot.phase, matchId: window.__stfSnapshot.matchId, result: window.__stfSnapshot.result }, observations: window.__stfObserved })).catch(() => null);
-    console.log(`${session.label}:`, JSON.stringify(detail).slice(-2800));
+    const detail = await session.page.evaluate(() => ({
+      room: window.__stfRoom && { code: window.__stfRoom.code, phase: window.__stfRoom.phase, peerId: window.__stfRoom.peerId, hostPeerId: window.__stfRoom.hostPeerId, peers: window.__stfRoom.peers, routes: window.__stfRoom.routes },
+      snapshot: window.__stfSnapshot && { phase: window.__stfSnapshot.phase, tick: window.__stfSnapshot.tick, matchId: window.__stfSnapshot.matchId, result: window.__stfSnapshot.result },
+      observed: window.__stfObserved && { sockets: window.__stfObserved.sockets, snapshots: window.__stfObserved.snapshots, rooms: window.__stfObserved.rooms.slice(-5), controls: window.__stfObserved.controls.slice(-5) },
+    })).catch(() => null);
+    console.log(`${session.label}:`, JSON.stringify(detail));
     console.log(`${session.label} body:`, (await session.page.locator('body').innerText().catch(() => '')).slice(-2500));
     await session.page.screenshot({ path: `tmp/qa/lifecycle-${session.label.replaceAll(/[^a-z0-9]+/gi, '-').toLowerCase()}.png`, fullPage: true }).catch(() => {});
   }
