@@ -16,7 +16,7 @@ async function openSession(label) {
   const page = await context.newPage();
   page.on('pageerror', error => errors.push(`${label}: ${error.message}`));
   await page.addInitScript(() => {
-    window.__stfObserved = { rooms: [], controls: [], snapshots: 0, sockets: 0 };
+    window.__stfObserved = { rooms: [], controls: [], snapshots: 0, sockets: 0, inputSequences: [] };
     const NativeWorker = window.Worker;
     window.Worker = class extends NativeWorker {
       constructor(...args) {
@@ -33,6 +33,12 @@ async function openSession(label) {
     };
     const NativeSocket = window.WebSocket;
     window.WebSocket = class extends NativeSocket {
+      send(data) {
+        if (typeof data === 'string') {
+          try { const packet = JSON.parse(data); if (packet.type === 'input') window.__stfObserved.inputSequences.push(packet.sequence); } catch { /* only room JSON is observed */ }
+        }
+        return super.send(data);
+      }
       constructor(...args) {
         super(...args);
         this.addEventListener('message', event => {
@@ -150,6 +156,8 @@ async function scenarioTwoPlusTwo() {
   await host.page.waitForTimeout(150);
   const after = await host.page.evaluate(id => window.__stfSnapshot.fighters.find(fighter => fighter.id === id).x, guestSeat);
   assert(after > before + 30, `Forced-relay guest input did not move its fighter: ${before} -> ${after}`);
+  await guest.page.waitForTimeout(3000); // build a real pre-reconnect input sequence
+  const outboundBeforeRefresh = await guest.page.evaluate(() => window.__stfObserved.inputSequences.at(-1));
 
   assert(await guest.page.evaluate(() => window.__stfObserved.sockets > 0), 'The page must open a real room WebSocket');
   const guestPeerId = await guest.page.evaluate(() => window.__stfRoom.peerId);
@@ -170,6 +178,16 @@ async function scenarioTwoPlusTwo() {
   await Promise.all([host, guest].map(session => session.page.waitForFunction(() => window.__stfSnapshot?.phase === 'playing', null, { timeout: 10_000 })));
   const resumeLatency = Date.now() - resumeRequestedAt;
   if (process.env.STF_REVIEW_RESUME) console.log(`Online resume reached both browsers in ${resumeLatency}ms after host click.`);
+  const resumedX = await host.page.evaluate(id => window.__stfSnapshot.fighters.find(fighter => fighter.id === id).x, guestSeat);
+  const acknowledgedBefore = await host.page.evaluate(id => window.__stfSnapshot.acknowledgedInputs?.find(input => input.seatId === id)?.tick ?? -1, guestSeat);
+  await guest.page.keyboard.down('a');
+  await guest.page.waitForTimeout(1200);
+  await guest.page.keyboard.up('a');
+  await host.page.waitForTimeout(150);
+  const reclaimedX = await host.page.evaluate(id => window.__stfSnapshot.fighters.find(fighter => fighter.id === id).x, guestSeat);
+  const acknowledgedAfter = await host.page.evaluate(id => window.__stfSnapshot.acknowledgedInputs?.find(input => input.seatId === id)?.tick ?? -1, guestSeat);
+  if (process.env.STF_REVIEW_RESUME) console.log(`Reconnect input: pre-refresh WS sequence ${outboundBeforeRefresh}, authority ack ${acknowledgedBefore} -> ${acknowledgedAfter}, x ${resumedX} -> ${reclaimedX}`);
+  assert(acknowledgedAfter > acknowledgedBefore, `Host did not consume post-reconnect guest input (ack ${acknowledgedBefore} -> ${acknowledgedAfter}, x ${resumedX} -> ${reclaimedX})`);
   console.log(`2+2 teams ${code}: four humans, forced relay movement, actual guest WebSocket fault, reconnect and resume passed.`);
 }
 
@@ -236,10 +254,12 @@ async function scenarioHostRefresh() {
   await openOnline(host.page);
   await host.page.getByPlaceholder('Jugador', { exact: true }).fill('Host R');
   await host.page.getByRole('button', { name: /ENTRAR/ }).click();
-  await host.page.waitForFunction(peerId => window.__stfRoom?.peerId === peerId && window.__stfRoom.phase === 'finished', hostPeerId, { timeout: 10_000 });
+  await host.page.waitForFunction(peerId => window.__stfRoom?.peerId === peerId && window.__stfObserved.controls.some(message => message.type === 'result' && message.result?.reason === 'interrupted'), hostPeerId, { timeout: 10_000 });
   await guest.page.waitForFunction(() => window.__stfObserved.controls.some(message => message.type === 'result' && message.result?.reason === 'interrupted'), null, { timeout: 10_000 });
   await host.page.waitForFunction(() => window.__stfRoom?.phase === 'lobby', null, { timeout: 8_000 });
   assert.equal(await host.page.locator('.room-code strong').innerText(), code);
+  await guest.page.getByRole('button', { name: /VOLVER A LA SALA/ }).click();
+  assert.equal(await guest.page.locator('.room-code strong').innerText(), code);
   console.log(`Host refresh ${code}: interrupted no-winner round returned to a playable lobby.`);
 }
 
