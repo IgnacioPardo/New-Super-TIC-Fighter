@@ -24,6 +24,8 @@ export class LobbyDO {
     state.setWebSocketAutoResponse(new WebSocketRequestResponsePair('ping','pong'));
     state.storage.sql.exec('CREATE TABLE IF NOT EXISTS lobby(id INTEGER PRIMARY KEY CHECK(id=1),data TEXT NOT NULL)');
     const row=state.storage.sql.exec('SELECT data FROM lobby WHERE id=1').toArray()[0] as {data:string}|undefined;if(row)this.store=JSON.parse(row.data);for(const r of this.store.reservations)r.dayReservations??={[r.day]:r.playerMinutes};
+    for(const peer of this.store.peers)if(!this.socketFor(peer.id))peer.disconnectedAt??=Date.now();
+    this.save();this.state.waitUntil(this.scheduleAlarm());
   }
   async fetch(request:Request):Promise<Response>{
     const url=new URL(request.url);
@@ -80,7 +82,9 @@ export class LobbyDO {
         if(!Array.isArray(message.players)||message.players.length<1||message.players.length>4||!message.players.every(p=>validSeat(p))||new Set(message.players.map(p=>p.id)).size!==message.players.length)return this.error(ws,'invalid_seats','Choose one to four unique local humans.');
         const otherSeats=this.partyPeers(party.id).filter(p=>p.id!==peer.id).flatMap(p=>p.players);if(otherSeats.length+message.players.length>8)return this.error(ws,'party_full','The party supports at most eight fighters.');
         // Browser-local IDs are namespaced on the server; a peer cannot steal a seat.
-        peer.players=message.players.map((p,index)=>({...p,id:p.id.startsWith(`${peer.id.slice(0,8)}_`)?p.id:`${peer.id.slice(0,8)}_${p.id.slice(0,32)}`,peerId:peer.id,name:p.name.trim(),difficulty:undefined,device:index===0?p.device:p.device}));party.queuedAt=undefined;break;
+        const players=message.players.map(p=>({...p,id:p.id.startsWith(`${peer.id.slice(0,8)}_`)?p.id:`${peer.id.slice(0,8)}_${p.id.slice(0,32)}`,peerId:peer.id,name:p.name.trim(),difficulty:undefined}));
+        if(new Set(players.map(p=>p.id)).size!==players.length)return this.error(ws,'invalid_seats','Local seat identifiers must remain unique after namespacing.');
+        peer.players=players;party.queuedAt=undefined;break;
       }
       case 'party_join':{
         const target=this.store.parties.find(p=>p.inviteCode===String(message.code).trim().toUpperCase());if(!target||target.queuedAt||peer.ticket&&!this.store.reservations.find(r=>r.matchId===peer.ticket!.matchId)?.released)return this.error(ws,'invalid_party','That party is unavailable.');
@@ -117,7 +121,7 @@ export class LobbyDO {
     let peer=this.store.peers.find(p=>p.id===message.peerId&&p.token===message.token);
     if(message.token&&(!peer||peer.disconnectedAt&&Date.now()-peer.disconnectedAt>RECONNECT)){this.error(ws,'reconnect_expired','The fifteen-second lobby reconnect window expired.');ws.close(1008);return;}
     if(!peer){peer={id:crypto.randomUUID(),token:secret(),partyId:'',players:[],joinedAt:Date.now(),userId:attachment.userId};this.store.peers.push(peer);this.newParty(peer);}
-    const old=this.socketFor(peer.id);if(old&&old!==ws)old.close(4001,'reconnected elsewhere');peer.disconnectedAt=undefined;ws.serializeAttachment({peerId:peer.id,userId:peer.userId});this.save();this.send(ws,{type:'welcome',peerId:peer.id,token:peer.token,state:this.publicState(peer)});if(peer.ticket&&this.store.reservations.some(r=>r.matchId===peer!.ticket!.matchId&&!r.released))this.send(ws,{type:'match',ticket:peer.ticket});this.broadcast();
+    const old=this.socketFor(peer.id);if(old&&old!==ws)old.close(4001,'reconnected elsewhere');peer.disconnectedAt=undefined;peer.userId=attachment.userId;ws.serializeAttachment({peerId:peer.id,userId:peer.userId});this.save();this.send(ws,{type:'welcome',peerId:peer.id,token:peer.token,state:this.publicState(peer)});if(peer.ticket&&this.store.reservations.some(r=>r.matchId===peer!.ticket!.matchId&&!r.released))this.send(ws,{type:'match',ticket:peer.ticket});this.broadcast();
   }
   private reserve(matchId:string,count:number,seconds:number):Reservation|undefined{
     const existing=this.store.reservations.find(r=>r.matchId===matchId);if(existing)return existing.released?undefined:existing;

@@ -85,7 +85,7 @@ export class TournamentDO {
   }
   private game(round:number,entrants:[string,string]):TournamentGame{return{id:crypto.randomUUID(),round,entrants,phase:'scheduled',wins:[0,0],bout:0,koDifferential:[0,0]};}
   private async schedule():Promise<void>{
-    const t=this.tournament;if(!t||t.phase!=='running'||this.scheduling)return;this.scheduling=true;
+    const t=this.tournament;if(!t||t.phase!=='running'||this.scheduling)return;this.scheduling=true;t.capacity=null;
     try{
       const occupied=new Set(t.games.filter(g=>g.phase==='running').flatMap(g=>g.entrants.flatMap(id=>t.entrants.find(e=>e.id===id)!.browserIds)));
       for(const game of t.games.filter(g=>g.phase==='scheduled').sort((a,b)=>a.round-b.round)){
