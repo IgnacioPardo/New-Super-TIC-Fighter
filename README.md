@@ -23,7 +23,9 @@ A desktop browser remake of **Super TIC Fighter**, the school-computing platform
 
 **Build damage. Launch friends. Stay on the platforms.** Damage increases knockback, up to 200%. Falling below the arena costs a life. Three lives means three attempts. The last fighter—or team—standing wins.
 
-> **Under construction.** This checkout contains the Classic combat simulation, shared game definitions, and imported art/audio. The browser interface, renderer integration, room service, and end-to-end suite are still pending. There is no playable release linked here yet. The [accepted implementation plan](docs/implementation-plan.md) defines the release scope and acceptance gates.
+> **Playable release candidate.** [Play New Super TIC Fighter](https://new-super-tic-fighter.new-super-tic-fighter.workers.dev). Local, practice, and online matches are implemented. Owner/friend playtesting on separate networks and physical controllers remains the release acceptance gate. See the [verification record](docs/verification.md).
+
+[GitHub CI](https://github.com/IgnacioPardo/New-Super-TIC-Fighter/actions/workflows/verify.yml) · [Production deployment status](https://github.com/IgnacioPardo/New-Super-TIC-Fighter/deployments) · [Cloudflare project](https://dash.cloudflare.com/98f3f5983afc3baf9aa40f441412fee0/workers/services/view/new-super-tic-fighter/production) · [Playing guide](docs/playing.md)
 
 ## Choose your discipline
 
@@ -62,7 +64,7 @@ Online play is designed around private room links/codes, direct WebRTC connectio
 
 ## Controls
 
-These are the configured keyboard defaults in [the shared settings](src/shared/defaults.ts); playable input integration is pending.
+These are the keyboard defaults; bindings can be changed in Settings. The [playing guide](docs/playing.md) also explains controllers and reconnects.
 
 | Action | Player 1 | Player 2 | Player 3 | Player 4 · numpad |
 | :--- | :---: | :---: | :---: | :---: |
@@ -76,7 +78,7 @@ These are the configured keyboard defaults in [the shared settings](src/shared/d
 
 **Crouch + punch** triggers an uppercut. **Crouch + special** triggers a sweep. Combos also support the original direction → crouch → standing special sequence, with a 500 ms window. Guard blocks ordinary frontal punches; specials, combos, uppercuts, and sweeps bypass it.
 
-The planned standard gamepad layout uses stick/D-pad for movement, bottom/left/right/top face buttons for jump/punch/special/combo, right bumper for guard, and Start/Options for pause. Escape pauses on keyboard. Physical controller compatibility still requires hands-on verification.
+The standard gamepad layout uses stick/D-pad for movement, bottom/left/right/top face buttons for jump/punch/special/combo, right bumper for guard, and Start/Options for pause. Escape pauses on keyboard. Physical controller compatibility still requires hands-on verification.
 
 ## Development
 
@@ -87,15 +89,20 @@ pnpm install --frozen-lockfile
 pnpm typecheck
 ```
 
-The remaining scripts describe the application workflow as integration lands:
+Install isolated browser engines once with `pnpm exec playwright install chromium firefox webkit`. Then use:
 
-| Command | Purpose | Current checkout |
-| :--- | :--- | :--- |
-| `pnpm dev` | Vite frontend | Pending `src/main.tsx` and UI/rendering integration |
-| `pnpm dev:server` | Local room service on port 8787 | Pending Worker implementation and Wrangler configuration |
-| `pnpm build` | Type check + production bundle | Pending frontend entry point |
-| `pnpm preview` | Serve the production bundle locally | Requires a successful build |
-| `pnpm e2e` | Whole-application Playwright checks | Pending application/service flows and test configuration |
+| Command | Purpose |
+| :--- | :--- |
+| `pnpm dev` | Vite frontend on port 5173 |
+| `pnpm dev:server` | Local room service on port 8787 |
+| `pnpm build` | Type check and production bundle |
+| `pnpm preview --port 4173` | Stable production preview after building |
+| `pnpm e2e` | Complete browser, device, settings, and multiplayer lifecycle flows |
+| `pnpm e2e:transport` | Room service and real browser transport flows |
+| `pnpm e2e:audio` | Actual Worker HTTP streaming and exact music byte ranges |
+| `pnpm run deploy` | Build and manually deploy to Cloudflare Free |
+
+Run the frontend and room service before browser exercises. Set `STF_APP_URL=http://127.0.0.1:4173` to check a stable production preview, `STF_SERVER_URL` for a different room-service endpoint, or `STF_AUDIO_ORIGIN` for production media checks. Device checks cover Chromium, Firefox, and WebKit with injected gamepads; `STF_BROWSERS` selects engines. Do not rebuild during a browser exercise.
 
 Vite is configured to forward `/api` requests and WebSockets to the local room service. Runtime art and audio are already committed; the original source archives are not required for ordinary development.
 
@@ -115,6 +122,11 @@ Vite is configured to forward `/api` requests and WebSockets to the local room s
 src/
   shared/           Types, content definitions, default controls and settings
   simulation/       Combat, geometry, bots, and the worker entry point
+  game/             Phaser rendering and camera
+  ui/               Setup, HUD, settings, guide, and controls
+  network/          Room signaling and WebRTC/relay transports
+  online/           Host authority and guest prediction integration
+server/             Cloudflare Worker and room Durable Object
 public/assets/      Imported fighters, effects, platforms, portraits, and audio
 scripts/            Asset import tooling
 docs/               Accepted plan, historical research, and asset provenance
@@ -132,6 +144,8 @@ The remake draws on the **2017 original**, the **2020 Unity remake**, and the re
 
 | Read next | What it explains |
 | :--- | :--- |
+| [Hosting and maintenance](docs/hosting.md) | Deployment, GitHub status, free limits, rollback |
+| [Verification](docs/verification.md) | Measured results and remaining acceptance coverage |
 | [Implementation plan](docs/implementation-plan.md) | Accepted scope, architecture, milestones, release gates |
 | [Game understanding](docs/game-understanding.md) | The game's identity and what the recovered sources establish |
 | [Original gameplay reference](docs/original-gameplay-reference.md) | Combat values, timing, collision rules, source anchors |

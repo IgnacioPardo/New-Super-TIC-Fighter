@@ -225,8 +225,8 @@
   ],
   "backgrounds": {
     "classic": "/assets/backgrounds/classic.png",
-    "lab": "/assets/backgrounds/lab.webp",
-    "pc": "/assets/backgrounds/pc.webp"
+    "lab": "/assets/backgrounds/lab.svg",
+    "pc": "/assets/backgrounds/pc.svg"
   },
   "font": "/assets/arcade.ttf",
   "logo": "/assets/logo.png",
@@ -280,5 +280,17 @@
       "UTP": "/assets/audio/effects/UTP.wav",
       "golpeMouse": "/assets/audio/effects/golpeMouse.wav"
     }
+  },
+  "arenaPlatforms": {
+    "lab": [
+      "/assets/platforms/lab-0.svg",
+      "/assets/platforms/lab-1.svg",
+      "/assets/platforms/lab-2.svg"
+    ],
+    "pc": [
+      "/assets/platforms/pc-0.svg",
+      "/assets/platforms/pc-1.svg",
+      "/assets/platforms/pc-2.svg"
+    ]
   }
 }

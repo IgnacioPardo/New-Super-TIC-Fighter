@@ -1,0 +1,28 @@
+# Verification record
+
+Verified on 2026-10-11. No unit tests were written or run. Verification uses the complete application, actual browser workers, the running Cloudflare room service, real browser transports, visual review, production builds, and type checks.
+
+## Completed
+
+- Client and server TypeScript checks, frozen dependency installation, production build, and Cloudflare deployment dry-run pass. GitHub Actions also passed the combined application/browser workflow on the integrated release branch; the final commit is checked again before merge.
+- Imported fighter layers, original effects, original and remake music collections, and eighteen sound effects have source provenance and file hashes. Audio loading, playback state, volume persistence, and lazy music requests are exercised; this does not claim a human listening review of every track.
+- Complete matches exercised all four disciplines, eleven attacks and guard, the original combo sequence and dedicated combo, action buffering, one-minute timeout draw, fresh-match rematch reset, and a four-bot team result. Detailed combat evidence is in `src/simulation/PLAYTEST.md`.
+- Easy and Normal bots traversed all three arenas. Six map/difficulty runs had no observed unforced falls; Normal bots reached the upper PC platforms. This is bounded playtesting, not a guarantee of flawless bot decisions.
+- All three arena scenes render. The classic stage uses imported artwork; Lab and PC use code-authored SVG environments and matching platforms. The owner canceled image generation; no image API requests were made.
+- The integrated arcade title, fighter selection bays, match HUD, pause, guide, and results were visually reviewed at 1366×768 and 1920×1080. Native Arc hands-on review entered a Lab practice match, exercised keyboard movement/attacks, and paused it.
+- Settings and menu flows exercised ES/EN, key-remap conflict rejection and restoration, camera/reduced-motion preferences, persistent volume settings, gamepad menu navigation and escape from text fields. Practice worked with the online API returning an error.
+- Chromium, Firefox, and WebKit displayed a live Phaser canvas and ran the real simulation worker. Injected gamepad movement, pause, frozen match time, same-device reclaim, and refusal to reclaim a different controller ID passed. Controller claims are cleared between rounds. These are API-level checks, not physical-controller certification.
+- Real RTCDataChannels carried direct inputs/snapshots; forced WebSocket relay also passed. The transport exercise covered room signaling loss while direct channels remained available.
+- Five full-application multiplayer scenarios passed together with no uncaught page errors: mixed 2+2 teams with forced relay and same-tab guest reconnect; 2+1+1 with host loss and fresh lobby recovery; two humans plus two bots; host refresh interruption and lobby recovery; and a natural one-stock result followed by guest refresh, exact final scoreboard recovery, rematch, and local keyboard play after leaving online.
+- Reconnect verification checked real guest movement and host input acknowledgements after restoring the same peer identity. Result verification checked exact authoritative stocks, damage, winner, and visible scoreboards on both clients.
+- Foreground simulation cadence, ten practice resets, and six game-view recreations were measured. A Phaser visibility-listener leak was fixed with a reproducible dependency patch; independent repeated-mount checks stayed at one canvas, three workers, and stable listener counts. Hardware, measurement limits, and initial transfer estimates are in `docs/performance.md`.
+
+- The camera now anchors its framing to the complete arena. All three stages were visually checked at spawn, during an offstage fall, after respawn, and after live resizing at 1366×768, 1440×1000, 1920×1080, and 1680×1050. The canvas remained centered and landing surfaces stayed in view.
+- Actual production clients passed the same five online lifecycle scenarios plus an unforced direct WebRTC match. A 370-second shared UI pause retained the exact match/time and resumed through the normal countdown without catch-up. This did not establish a genuinely frozen renderer or hidden tab.
+
+## Production and acceptance gates
+
+- Public HTTPS deployment, production media range/header checks, and full multiplayer verification on the deployed service are recorded separately in `docs/hosting.md` when completed.
+- Physical Xbox/PlayStation controllers and native Safari hardware have not been certified. WebKit automation and injected gamepad events do not establish hardware compatibility.
+- A real session involving the owner and friends on separate networks remains the acceptance gate, including Argentina/South America latency observations. Same-machine browser clients do not establish those network conditions.
+- Long host background/sleep/wake sessions and free-quota exhaustion have not been verified in production. Browser-hosted combat intentionally interrupts when its authority disappears; seamless host migration is outside the accepted scope.

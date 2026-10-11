@@ -1,0 +1,63 @@
+/*
+  X-Robots-Tag: noindex, nofollow
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: same-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=()
+/assets/*
+  Cache-Control: public, max-age=86400
+/assets/manifest.json
+  Cache-Control: no-cache
+
+# BEGIN GENERATED MP3 LENGTHS
+# ASSETS.fetch omits inferred Content-Length; ranges need explicit sizes.
+/assets/audio/intro.mp3
+  Content-Length: 3905328
+/assets/audio/original/00.mp3
+  Content-Length: 3284479
+/assets/audio/original/01.mp3
+  Content-Length: 4534595
+/assets/audio/original/02.mp3
+  Content-Length: 4308897
+/assets/audio/original/03.mp3
+  Content-Length: 3872547
+/assets/audio/original/04.mp3
+  Content-Length: 3425331
+/assets/audio/original/05.mp3
+  Content-Length: 6313586
+/assets/audio/original/06.mp3
+  Content-Length: 3572453
+/assets/audio/original/07.mp3
+  Content-Length: 3764714
+/assets/audio/remake/00.mp3
+  Content-Length: 4788333
+/assets/audio/remake/01.mp3
+  Content-Length: 4965741
+/assets/audio/remake/02.mp3
+  Content-Length: 6638445
+/assets/audio/remake/03.mp3
+  Content-Length: 5136813
+/assets/audio/remake/04.mp3
+  Content-Length: 8835309
+/assets/audio/remake/05.mp3
+  Content-Length: 5670189
+/assets/audio/remake/06.mp3
+  Content-Length: 6722541
+/assets/audio/remake/07.mp3
+  Content-Length: 12175533
+/assets/audio/remake/08.mp3
+  Content-Length: 5313645
+/assets/audio/remake/09.mp3
+  Content-Length: 9469485
+/assets/audio/remake/10.mp3
+  Content-Length: 9545517
+/assets/audio/remake/11.mp3
+  Content-Length: 9923373
+/assets/audio/remake/12.mp3
+  Content-Length: 3877101
+/assets/audio/remake/13.mp3
+  Content-Length: 4478445
+/assets/audio/remake/14.mp3
+  Content-Length: 7033581
+/assets/audio/remake/15.mp3
+  Content-Length: 6461613
+# END GENERATED MP3 LENGTHS

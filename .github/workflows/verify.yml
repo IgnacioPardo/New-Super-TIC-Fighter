@@ -1,0 +1,52 @@
+name: Verify game
+on:
+  push:
+    branches: [main]
+  pull_request:
+concurrency:
+  group: verify-${{ github.ref }}
+  cancel-in-progress: true
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: python3 scripts/make-audio-headers.py --check
+      - run: pnpm typecheck
+      - run: pnpm exec tsc -p tsconfig.server.json --noEmit
+      - run: pnpm build
+      - run: pnpm exec playwright install --with-deps chromium
+      - name: Exercise the complete game and room service
+        env:
+          STF_APP_URL: http://127.0.0.1:4173
+          STF_BROWSERS: chromium
+          WRANGLER_SEND_METRICS: "false"
+        run: |
+          mkdir -p tmp/qa
+          pnpm dev:server > "$RUNNER_TEMP/stf-room.log" 2>&1 &
+          stf_room_pid=$!
+          pnpm preview --port 4173 > "$RUNNER_TEMP/stf-app.log" 2>&1 &
+          stf_app_pid=$!
+          trap 'kill "$stf_room_pid" "$stf_app_pid" 2>/dev/null || true' EXIT
+          for stf_attempt in $(seq 1 40); do
+            if curl --fail --silent http://127.0.0.1:4173/api/health >/dev/null; then break; fi
+            sleep 1
+          done
+          curl --fail --silent http://127.0.0.1:4173/api/health
+          pnpm e2e
+          pnpm e2e:audio
+      - name: Preserve failed browser screenshots
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: browser-failures
+          path: tmp/qa
+          retention-days: 7

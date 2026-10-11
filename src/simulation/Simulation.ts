@@ -223,7 +223,7 @@ export class Simulation {
     runtime.history = runtime.history.filter(entry => state.tick - entry.tick <= 30);
     const locked = isAttack(fighter.action) || fighter.stun > EPSILON;
     if (!locked) {
-      if (input.left !== input.right) {
+      if (input.left !== input.right && (fighter.action !== 'guard' || !input.guard)) {
         fighter.facing = input.left ? -1 : 1;
         if ((input.left && !runtime.previous.left) || (input.right && !runtime.previous.right)) this.history(fighter, input.left ? 'left' : 'right');
       }
@@ -233,9 +233,9 @@ export class Simulation {
       } else if (fighter.action === 'crouch') {
         fighter.action = 'idle'; fighter.height = PHYSICS.standingHeight;
       }
-      if (!input.guard || !fighter.grounded || input.down) {
+      if (!input.guard || !fighter.grounded) {
         if (fighter.action === 'guard') fighter.action = 'idle';
-      } else if (fighter.recovery < EPSILON) {
+      } else if (!input.down && fighter.recovery < EPSILON) {
         fighter.action = 'guard'; fighter.height = PHYSICS.standingHeight;
       }
     }
@@ -291,7 +291,11 @@ export class Simulation {
       if (fighter.action === 'sweep') this.finishAttack(fighter);
     }
     if (isAttack(fighter.action)) {
+      const before = fighter.actionTime;
       fighter.actionTime += DT;
+      if ((fighter.action === 'special' || fighter.action === 'combo') && before + EPSILON < ATTACKS[fighter.action].windup && fighter.actionTime + EPSILON >= ATTACKS[fighter.action].windup) {
+        this.event({ type: 'active', seatId: fighter.id, action: fighter.action, discipline: this.seatDiscipline(fighter.id) });
+      }
       this.updateEffect(fighter);
     } else if (fighter.action !== 'hurt') {
       fighter.actionTime += DT;

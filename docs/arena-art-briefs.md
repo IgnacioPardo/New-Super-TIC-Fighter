@@ -17,3 +17,7 @@ Inside an enormous retro desktop computer, a miniature-fighter viewpoint among o
 ## Delivery
 
 Final project assets: public/assets/backgrounds/lab.webp and public/assets/backgrounds/pc.webp. Retain generation/source provenance and optimize for browser delivery. Author matching desk/electronics platform trim separately with exact collision alignment.
+
+## Revised production decision
+
+The owner declined image generation during implementation. No API images were generated or billed. New backgrounds use code-authored SVG school-lab and computer-interior scenery rendered by the browser, with matching desk/PCB platform trim. Rebuild with scripts/make-scenery.py and scripts/make-platforms.py. Existing fighters, effects and Clásico scenery remain supplied artwork. The original prompts above record the visual direction only. Final new backdrops are public/assets/backgrounds/lab.svg and pc.svg.

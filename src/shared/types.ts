@@ -59,7 +59,7 @@ export interface EffectState {
 }
 export interface GameplayEvent {
   id: string; tick: number;
-  type: 'attack' | 'hit' | 'block' | 'fall' | 'respawn' | 'fight' | 'result';
+  type: 'attack' | 'active' | 'hit' | 'block' | 'fall' | 'respawn' | 'fight' | 'result';
   seatId?: string; targetId?: string; action?: PlayerAction; discipline?: Discipline;
 }
 export interface MatchResult { winners: string[]; winningTeam?: 0 | 1; reason: 'last-standing' | 'timeout' | 'draw' | 'interrupted' }
@@ -71,6 +71,7 @@ export interface MatchSnapshot {
   effects: EffectState[];
   events: GameplayEvent[];
   result?: MatchResult;
+  acknowledgedInputs?: InputFrame[]; // Last inputs consumed by authority, for guest reconciliation.
 }
 export interface Platform { x: number; y: number; width: number; height: number }
 export interface ArenaDefinition {
@@ -98,6 +99,7 @@ export interface AssetsManifest {
   effects: Record<EffectKind, string[]>;
   backgrounds: Record<ArenaId, string>;
   platforms: string[];
+  arenaPlatforms?: Partial<Record<ArenaId, string[]>>;
   portraits: string[];
   font: string;
   logo: string;
