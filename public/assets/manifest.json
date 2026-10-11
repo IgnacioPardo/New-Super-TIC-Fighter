@@ -1,0 +1,284 @@
+{
+  "sheets": {
+    "frameWidth": 60,
+    "frameHeight": 96,
+    "columns": 7,
+    "hair": [
+      "/assets/fighters/hair0.png",
+      "/assets/fighters/hair1.png",
+      "/assets/fighters/hair2.png"
+    ],
+    "shirt": [
+      "/assets/fighters/shirt0.png",
+      "/assets/fighters/shirt1.png",
+      "/assets/fighters/shirt2.png"
+    ],
+    "pants": [
+      "/assets/fighters/pants0.png",
+      "/assets/fighters/pants1.png",
+      "/assets/fighters/pants2.png"
+    ],
+    "body": "/assets/fighters/body.png"
+  },
+  "poses": {
+    "crouch": [
+      0
+    ],
+    "sweep": [
+      1
+    ],
+    "walk": [
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ],
+    "combo-design": [
+      9,
+      10
+    ],
+    "combo-hardware": [
+      11,
+      12,
+      13
+    ],
+    "combo-networks": [
+      14,
+      15
+    ],
+    "combo-code": [
+      14,
+      15
+    ],
+    "guard": [
+      16
+    ],
+    "punch": [
+      17,
+      18,
+      19,
+      20
+    ],
+    "hurt": [
+      21,
+      24
+    ],
+    "idle": [
+      25,
+      26
+    ],
+    "jump": [
+      27
+    ],
+    "special-design": [
+      28,
+      29
+    ],
+    "special-hardware": [
+      30,
+      31,
+      32
+    ],
+    "special-code": [
+      33,
+      34
+    ],
+    "special-networks": [
+      35,
+      36
+    ],
+    "uppercut": [
+      37
+    ]
+  },
+  "effects": {
+    "cable": [
+      "/assets/effects/cable-0.png",
+      "/assets/effects/cable-1.png",
+      "/assets/effects/cable-2.png",
+      "/assets/effects/cable-3.png",
+      "/assets/effects/cable-4.png",
+      "/assets/effects/cable-5.png",
+      "/assets/effects/cable-6.png",
+      "/assets/effects/cable-7.png",
+      "/assets/effects/cable-8.png",
+      "/assets/effects/cable-9.png",
+      "/assets/effects/cable-10.png",
+      "/assets/effects/cable-11.png",
+      "/assets/effects/cable-12.png",
+      "/assets/effects/cable-13.png",
+      "/assets/effects/cable-14.png"
+    ],
+    "cables": [
+      "/assets/effects/cables-0.png",
+      "/assets/effects/cables-1.png",
+      "/assets/effects/cables-2.png",
+      "/assets/effects/cables-3.png",
+      "/assets/effects/cables-4.png",
+      "/assets/effects/cables-5.png",
+      "/assets/effects/cables-6.png",
+      "/assets/effects/cables-7.png",
+      "/assets/effects/cables-8.png",
+      "/assets/effects/cables-9.png",
+      "/assets/effects/cables-10.png",
+      "/assets/effects/cables-11.png",
+      "/assets/effects/cables-12.png",
+      "/assets/effects/cables-13.png",
+      "/assets/effects/cables-14.png"
+    ],
+    "mouse": [
+      "/assets/effects/mouse-0.png",
+      "/assets/effects/mouse-1.png",
+      "/assets/effects/mouse-2.png",
+      "/assets/effects/mouse-3.png",
+      "/assets/effects/mouse-4.png",
+      "/assets/effects/mouse-5.png",
+      "/assets/effects/mouse-6.png",
+      "/assets/effects/mouse-7.png",
+      "/assets/effects/mouse-8.png",
+      "/assets/effects/mouse-9.png"
+    ],
+    "selection": [
+      "/assets/effects/selection-0.png",
+      "/assets/effects/selection-1.png",
+      "/assets/effects/selection-2.png",
+      "/assets/effects/selection-3.png",
+      "/assets/effects/selection-4.png",
+      "/assets/effects/selection-5.png",
+      "/assets/effects/selection-6.png",
+      "/assets/effects/selection-7.png",
+      "/assets/effects/selection-8.png",
+      "/assets/effects/selection-9.png",
+      "/assets/effects/selection-10.png",
+      "/assets/effects/selection-11.png",
+      "/assets/effects/selection-12.png",
+      "/assets/effects/selection-13.png",
+      "/assets/effects/selection-14.png",
+      "/assets/effects/selection-15.png",
+      "/assets/effects/selection-16.png",
+      "/assets/effects/selection-17.png",
+      "/assets/effects/selection-18.png",
+      "/assets/effects/selection-19.png",
+      "/assets/effects/selection-20.png",
+      "/assets/effects/selection-21.png"
+    ],
+    "ball": [
+      "/assets/effects/ball-0.png",
+      "/assets/effects/ball-1.png",
+      "/assets/effects/ball-2.png",
+      "/assets/effects/ball-3.png",
+      "/assets/effects/ball-4.png",
+      "/assets/effects/ball-5.png"
+    ],
+    "column": [
+      "/assets/effects/column-0.png"
+    ],
+    "ram": [
+      "/assets/effects/ram-0.png",
+      "/assets/effects/ram-1.png",
+      "/assets/effects/ram-2.png",
+      "/assets/effects/ram-3.png",
+      "/assets/effects/ram-4.png",
+      "/assets/effects/ram-5.png",
+      "/assets/effects/ram-6.png",
+      "/assets/effects/ram-7.png",
+      "/assets/effects/ram-8.png",
+      "/assets/effects/ram-9.png",
+      "/assets/effects/ram-10.png",
+      "/assets/effects/ram-11.png",
+      "/assets/effects/ram-12.png",
+      "/assets/effects/ram-13.png",
+      "/assets/effects/ram-14.png"
+    ],
+    "disc": [
+      "/assets/effects/disc-0.png",
+      "/assets/effects/disc-1.png",
+      "/assets/effects/disc-2.png",
+      "/assets/effects/disc-3.png"
+    ]
+  },
+  "platforms": [
+    "/assets/platforms/classic-0.png",
+    "/assets/platforms/classic-1.png",
+    "/assets/platforms/classic-2.png"
+  ],
+  "portraits": [
+    "/assets/portraits/0-0.png",
+    "/assets/portraits/0-1.png",
+    "/assets/portraits/0-2.png",
+    "/assets/portraits/0-3.png",
+    "/assets/portraits/1-0.png",
+    "/assets/portraits/1-1.png",
+    "/assets/portraits/1-2.png",
+    "/assets/portraits/1-3.png",
+    "/assets/portraits/2-0.png",
+    "/assets/portraits/2-1.png",
+    "/assets/portraits/2-2.png",
+    "/assets/portraits/2-3.png",
+    "/assets/portraits/3-0.png",
+    "/assets/portraits/3-1.png",
+    "/assets/portraits/3-2.png",
+    "/assets/portraits/3-3.png"
+  ],
+  "backgrounds": {
+    "classic": "/assets/backgrounds/classic.png",
+    "lab": "/assets/backgrounds/lab.webp",
+    "pc": "/assets/backgrounds/pc.webp"
+  },
+  "font": "/assets/arcade.ttf",
+  "logo": "/assets/logo.png",
+  "audio": {
+    "intro": "/assets/audio/intro.mp3",
+    "original": [
+      "/assets/audio/original/00.mp3",
+      "/assets/audio/original/01.mp3",
+      "/assets/audio/original/02.mp3",
+      "/assets/audio/original/03.mp3",
+      "/assets/audio/original/04.mp3",
+      "/assets/audio/original/05.mp3",
+      "/assets/audio/original/06.mp3",
+      "/assets/audio/original/07.mp3"
+    ],
+    "remake": [
+      "/assets/audio/remake/00.mp3",
+      "/assets/audio/remake/01.mp3",
+      "/assets/audio/remake/02.mp3",
+      "/assets/audio/remake/03.mp3",
+      "/assets/audio/remake/04.mp3",
+      "/assets/audio/remake/05.mp3",
+      "/assets/audio/remake/06.mp3",
+      "/assets/audio/remake/07.mp3",
+      "/assets/audio/remake/08.mp3",
+      "/assets/audio/remake/09.mp3",
+      "/assets/audio/remake/10.mp3",
+      "/assets/audio/remake/11.mp3",
+      "/assets/audio/remake/12.mp3",
+      "/assets/audio/remake/13.mp3",
+      "/assets/audio/remake/14.mp3",
+      "/assets/audio/remake/15.mp3"
+    ],
+    "effects": {
+      "Barrida": "/assets/audio/effects/Barrida.wav",
+      "Bola": "/assets/audio/effects/Bola.wav",
+      "Disco": "/assets/audio/effects/Disco.wav",
+      "Fight": "/assets/audio/effects/Fight.wav",
+      "Gancho": "/assets/audio/effects/Gancho.wav",
+      "Golpe": "/assets/audio/effects/Golpe.wav",
+      "Golpe2": "/assets/audio/effects/Golpe2.wav",
+      "Golpeado": "/assets/audio/effects/Golpeado.wav",
+      "Hard": "/assets/audio/effects/Hard.wav",
+      "Latigo": "/assets/audio/effects/Latigo.wav",
+      "Mouse": "/assets/audio/effects/Mouse.wav",
+      "Prog": "/assets/audio/effects/Prog.wav",
+      "Programacion": "/assets/audio/effects/Programacion.wav",
+      "RAM": "/assets/audio/effects/RAM.wav",
+      "Redes": "/assets/audio/effects/Redes.wav",
+      "Seleccion": "/assets/audio/effects/Seleccion.wav",
+      "UTP": "/assets/audio/effects/UTP.wav",
+      "golpeMouse": "/assets/audio/effects/golpeMouse.wav"
+    }
+  }
+}

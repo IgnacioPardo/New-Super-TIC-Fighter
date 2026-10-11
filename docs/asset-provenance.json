@@ -1,0 +1,3200 @@
+[
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Cuerpos/Agachado/Agachado0.png",
+    "sourceSha256": "6c693504089d4a693eaf24a2a17477a0975dda381c666f4ff19a0930bd0a0aea",
+    "output": "public/assets/fighters/body.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Cuerpos/Barrida/Barrida0.png",
+    "sourceSha256": "369ea1378097b78b7f8b6b07f29880dd7d843e995694a370ded759fda9886cb7",
+    "output": "public/assets/fighters/body.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Cuerpos/Caminar/Caminar0.png",
+    "sourceSha256": "187398afaceb4f33b439d54166a4c955613738f08204cbe37856496833a73876",
+    "output": "public/assets/fighters/body.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Cuerpos/Caminar/Caminar1.png",
+    "sourceSha256": "214235e32679fbc0dbc53627f4edf43d74c9cf5c6202b3622e3d9f0790955339",
+    "output": "public/assets/fighters/body.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Cuerpos/Caminar/Caminar2.png",
+    "sourceSha256": "accd872a094d352a418b75b1df52cbfb1b4e990965a01843f42136f4f1302137",
+    "output": "public/assets/fighters/body.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Cuerpos/Caminar/Caminar3.png",
+    "sourceSha256": "d604a1f004eb50b6258cfcf262f21c4a129e9f148286a0e53408528183d152e9",
+    "output": "public/assets/fighters/body.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Cuerpos/Caminar/Caminar4.png",
+    "sourceSha256": "a1b31b3fca143405ee3b29c402f28daf1a968b6982b5b826e0b8ea1ef7adb435",
+    "output": "public/assets/fighters/body.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Cuerpos/Caminar/Caminar5.png",
+    "sourceSha256": "619731d281cc1767b464c667478ddc456d233a8acd10a36bfb8b64ecd42bb4ec",
+    "output": "public/assets/fighters/body.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Cuerpos/Caminar/Caminar6.png",
+    "sourceSha256": "a5884dc5a3231d62f9a32450607564cc890a1f018b74b5a1c44c7362b870371f",
+    "output": "public/assets/fighters/body.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Cuerpos/Combo Diseno/CProgramacion0.png",
+    "sourceSha256": "19c80af49639ba3e9e6283fc1eb50136c7d5e5586904bec8c5ad9d9f2d7cbf03",
+    "output": "public/assets/fighters/body.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Cuerpos/Combo Diseno/CProgramacion1.png",
+    "sourceSha256": "a72d42fc5f0da56e85d38ee7bea74a44fabcede251a1a685fccf406646029b24",
+    "output": "public/assets/fighters/body.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Cuerpos/Combo Hard/CHardware0.png",
+    "sourceSha256": "07eca736d93d220065a4d1f81f651dadc988aa9f7d21b3eb460da4d83b0f4fa3",
+    "output": "public/assets/fighters/body.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Cuerpos/Combo Hard/CHardware1.png",
+    "sourceSha256": "994c62874403c45b51c39862a2cc4da9a29f4fec493090e72eab990dfaaab9a4",
+    "output": "public/assets/fighters/body.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Cuerpos/Combo Hard/CHardware2.png",
+    "sourceSha256": "dcce26aac755055358d8f05287a6a569e814aae43612f10977d1e45e80082eb6",
+    "output": "public/assets/fighters/body.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Cuerpos/Combo Redes/CRedes0.png",
+    "sourceSha256": "67ce007cbe682ad163c6c74b395e9d1a3ceca9c4b4e7e368c381fe7665c32d69",
+    "output": "public/assets/fighters/body.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Cuerpos/Combo Redes/CRedes1.png",
+    "sourceSha256": "64c3b78a3cd22c9f69fce83e0b93cbbe076ca059c58683f3e1c5c34329742494",
+    "output": "public/assets/fighters/body.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Cuerpos/Defensa/Defensa0.png",
+    "sourceSha256": "77eadaa77cee0e214db7424f34eacb56f56f540c2cb06f294de2eb2ee4f75fbf",
+    "output": "public/assets/fighters/body.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Cuerpos/Golpe/Golpe0.png",
+    "sourceSha256": "25c9810c083595b921c6464f5ca834768b490856640048488e0cd4db1a687f5f",
+    "output": "public/assets/fighters/body.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Cuerpos/Golpe/Golpe1.png",
+    "sourceSha256": "cadb6fbc641961e8875beab7e9d3a1723de05085174399da0cbbc84b18e19dc9",
+    "output": "public/assets/fighters/body.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Cuerpos/Golpe/Golpe2.png",
+    "sourceSha256": "c7610f5ac7669792ace57c7d6a95938bac671dd945fb960f1d3097f2d7e69c4d",
+    "output": "public/assets/fighters/body.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Cuerpos/Golpe/Golpe3.png",
+    "sourceSha256": "e35efd92e25ee6fbd55f1fe5dfbab5397a06c38ef544e897f80571f2231dabb2",
+    "output": "public/assets/fighters/body.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Cuerpos/Golpeado/Malo0.png",
+    "sourceSha256": "87afaec736baac6f8f264c9a65fd3bde123162b786a72b3ee482783d0c4c78c3",
+    "output": "public/assets/fighters/body.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Cuerpos/Golpeado/Malo1.png",
+    "sourceSha256": "2b1da13938f9fcc16a3d0f5127c0bd52862e4fef5594e0701059a6840b797439",
+    "output": "public/assets/fighters/body.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Cuerpos/Golpeado/Malo2.png",
+    "sourceSha256": "ea386d6d80b1397ce9b0a80c0af10a753a10a48ec35b3b2b1f46cf9639181bc1",
+    "output": "public/assets/fighters/body.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Cuerpos/Golpeado/Malo3.png",
+    "sourceSha256": "d4bbb5af0ca108c454704fb3b2d9f7891f2cd7f7c959a20dbc1272cb407e2a40",
+    "output": "public/assets/fighters/body.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Cuerpos/Idle/Idle0.png",
+    "sourceSha256": "493763991d0f47c72265ff984cf6f5119088aef878248886a00f0d08552a5184",
+    "output": "public/assets/fighters/body.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Cuerpos/Idle/Idle1.png",
+    "sourceSha256": "c1506c80e49de44b46b83a54aa7c24f14703cfed51d73b5d203b29a5249cd3a3",
+    "output": "public/assets/fighters/body.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Cuerpos/Salto/Salto0.png",
+    "sourceSha256": "be4fa0f21f3a3fb733a84df4707505f24a0c08d199864834c6d5562fc2cde6e7",
+    "output": "public/assets/fighters/body.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Cuerpos/Spam Diseno/Diseno0.png",
+    "sourceSha256": "ae060dbf63f3ce2013eabf07685e031c60740c8abd240c58e34e33cb9f2290d1",
+    "output": "public/assets/fighters/body.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Cuerpos/Spam Diseno/Diseno1.png",
+    "sourceSha256": "4f0a4b27072b86e542467d5ce456c2408c2acbc16221e2adc5606ccf17beed4d",
+    "output": "public/assets/fighters/body.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Cuerpos/Spam Hard/Hardware0.png",
+    "sourceSha256": "b4fd4de2180f945d2231eef8bf97af37d60346f2948b36fc58990deecc446037",
+    "output": "public/assets/fighters/body.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Cuerpos/Spam Hard/Hardware1.png",
+    "sourceSha256": "787fa4a31c6172c8b024b0938bd6d84d7f48a50bff380b8c99bfa435524fa5ba",
+    "output": "public/assets/fighters/body.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Cuerpos/Spam Hard/Hardware2.png",
+    "sourceSha256": "b14ae84e950792042fdebe13a03709dfe74c5210858eec937c2806252af59b82",
+    "output": "public/assets/fighters/body.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Cuerpos/Spam Prog/Programacion0.png",
+    "sourceSha256": "9b3de9ac9604302ea0d1b37f5ab1c82b8bf2526ef14cd1554000089873fcd100",
+    "output": "public/assets/fighters/body.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Cuerpos/Spam Prog/Programacion1.png",
+    "sourceSha256": "f0a92f8dcaacfb8c63d4eff47a777a184537fb836373628de56b5c9378a55fc2",
+    "output": "public/assets/fighters/body.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Cuerpos/Spam Red/Redes0.png",
+    "sourceSha256": "266f1df30d67c04c546e8ed5919597389be22fa41cf88eac07f093e0f4fb8cf2",
+    "output": "public/assets/fighters/body.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Cuerpos/Spam Red/Redes1.png",
+    "sourceSha256": "652606b60b9a9d0d1543c63edcf6972a0c4556f0c6fd5d09985ad2863f239697",
+    "output": "public/assets/fighters/body.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Cuerpos/Uper Cut/Upercut0.png",
+    "sourceSha256": "c6e79b22ac12a95dfb9219ac09bca8b08515b18d8098ea0eaad5e23b7d286fab",
+    "output": "public/assets/fighters/body.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Agachado/Agachado0_Pantalon0.png",
+    "sourceSha256": "3d5a4a884c63606130afeb5b58fb4b12d3d845121ce4ecaad766679e8aaf4254",
+    "output": "public/assets/fighters/pants0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Barrida/Barrida0_Pantalon0.png",
+    "sourceSha256": "e3e450a7961e332f8940f3bb30c500c7376c290fdd45d217ca1fe3c32f3eb6db",
+    "output": "public/assets/fighters/pants0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Caminar/Caminar0_Pantalon0.png",
+    "sourceSha256": "61ec5b61e4b09a727742abd8566830282cd2e9f0622c42e41b3a34616bf77742",
+    "output": "public/assets/fighters/pants0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Caminar/Caminar1_Pantalon0.png",
+    "sourceSha256": "6a83d5ab9d777e1c7b71d2bc991d179ef205cd6a96d2b444c35f892c5fdd9e3e",
+    "output": "public/assets/fighters/pants0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Caminar/Caminar2_Pantalon0.png",
+    "sourceSha256": "f549e798dc3d1283abd6da854cfc7390644a0e9d88934d1999e7175124868e18",
+    "output": "public/assets/fighters/pants0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Caminar/Caminar3_Pantalon0.png",
+    "sourceSha256": "b13946430c05a2b8c5dd5d091c77049b436a3f49a40c8e6bb9499102e7861b67",
+    "output": "public/assets/fighters/pants0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Caminar/Caminar4_Pantalon0.png",
+    "sourceSha256": "a6162487585b87142f52b0ab9a69c099790d66a47d498509fded4117cdd6d7c4",
+    "output": "public/assets/fighters/pants0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Caminar/Caminar5_Pantalon0.png",
+    "sourceSha256": "5a2ba25340cf99932c6a4f0610e9229f31fa488c3e1d9033b3acb2d59523ea04",
+    "output": "public/assets/fighters/pants0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Caminar/Caminar6_Pantalon0.png",
+    "sourceSha256": "fd23b5e57694b86a32b41da9655728268de75879cffb70eea73b3329002e3f0e",
+    "output": "public/assets/fighters/pants0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Combo Diseno/CProgramacion0_Pantalon0.png",
+    "sourceSha256": "ca69cb94c354d00a5f556b43861aa313e478576fdb7a85a835c120a3942941ef",
+    "output": "public/assets/fighters/pants0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Combo Diseno/CProgramacion1_Pantalon0.png",
+    "sourceSha256": "aba7f65970d3d40aaf26a6476ee8f5d1cb0fcd394f7fe51ae4f14731edc7068c",
+    "output": "public/assets/fighters/pants0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Spam Red/Redes0_Pantalon0.png",
+    "sourceSha256": "8b645944fe5498daca5f1366ebf9227d01b4caf1d148900c89f9432727dc8af1",
+    "output": "public/assets/fighters/pants0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Spam Red/Redes1_Pantalon0.png",
+    "sourceSha256": "9563fd0487b3b90ce72bd5cdaef4508ea1c4ec7d3a8eeb211692a6db162f69f6",
+    "output": "public/assets/fighters/pants0.png",
+    "correction": "Trello 35: overlay x offset -1"
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Spam Red/Redes1_Pantalon0.png",
+    "sourceSha256": "9563fd0487b3b90ce72bd5cdaef4508ea1c4ec7d3a8eeb211692a6db162f69f6",
+    "output": "public/assets/fighters/pants0.png",
+    "correction": "Trello 35: overlay x offset -1"
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Combo Redes/CRedes0_Pantalon0.png",
+    "sourceSha256": "60f6aa6ee31b9517559e423ab091e53793e5af39c0861e1403cc472ce87cb640",
+    "output": "public/assets/fighters/pants0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Combo Redes/CRedes1_Pantalon0.png",
+    "sourceSha256": "b680c1d83d4da4f6bec05e407b02463895cb895d6af4d992ed52c9edd3e1be31",
+    "output": "public/assets/fighters/pants0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Defensa/Defensa0_Pantalon0.png",
+    "sourceSha256": "4320c0345b08a45747b53b4eb6f61d00aa9b5adf385f9e1b6b1d9775017d7d64",
+    "output": "public/assets/fighters/pants0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Golpe/Golpe0_Pantalon0.png",
+    "sourceSha256": "284649b664629307869d35f341b0ecb9456076bf0fb2415ff6069d93ba380750",
+    "output": "public/assets/fighters/pants0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Golpe/Golpe1_Pantalon0.PNG",
+    "sourceSha256": "bb9b076572e2b32259bf5743ff11c56a6ad6dcfd4e25d69342f36df7dd634729",
+    "output": "public/assets/fighters/pants0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Golpe/Golpe2_Pantalon0.png",
+    "sourceSha256": "4d729f8435c1112b0f34b6dead7866b7ee582600caf4f72f2e206c837ca8c931",
+    "output": "public/assets/fighters/pants0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Golpe/Golpe3_Pantalon0.png",
+    "sourceSha256": "004e78ef4f3eebac62f818ab6f3c391e2405797b3e5dcb8567bdaf920dbcedd0",
+    "output": "public/assets/fighters/pants0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Golpeado/Malo0_Pantalon0.png",
+    "sourceSha256": "ff4b6ed6922da3dcf374c32a53bd1a46cddf85c4478349b7c4334aa87640e1a4",
+    "output": "public/assets/fighters/pants0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Golpeado/Malo1_Pantalon0.png",
+    "sourceSha256": "f185d91baf36879ab6f0233be0d7d65bbeb632d3a3ae8dedc20cc984cde9d0c5",
+    "output": "public/assets/fighters/pants0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Golpeado/Malo2_Pantalon0.png",
+    "sourceSha256": "86db84dc1a2e4f9860dffba4a7265ac57dff6c7f92aed19bedd47758de02e0da",
+    "output": "public/assets/fighters/pants0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Golpeado/Malo3_Pantalon0.png",
+    "sourceSha256": "cf25a311c2e9585f0645dd04e9abf0495285e4098534e533f6552980716620e5",
+    "output": "public/assets/fighters/pants0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Idle/Idle0_Pantalon0.png",
+    "sourceSha256": "a3d706f04b5c6883a165ca4224ce60f389465c671b567adc58810b31dea17b14",
+    "output": "public/assets/fighters/pants0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Idle/Idle1_Pantalon0.png",
+    "sourceSha256": "648b9b8318681b49340f351b0aecd375c56a3b08e3905bd6273ea056373af5b6",
+    "output": "public/assets/fighters/pants0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Salto/Salto0_Pantalon0.png",
+    "sourceSha256": "c83d40c715b23bf58db84b6101966822c8176a9c8b59a0707ab5196b517c05f4",
+    "output": "public/assets/fighters/pants0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Spam Diseno/Diseno0_Pantalon0.png",
+    "sourceSha256": "826e69efe826f2289ea1ada89215d2d36b356a6b23788a8efb1427ccbcb6cbd9",
+    "output": "public/assets/fighters/pants0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Spam Diseno/Diseno1_Pantalon0.png",
+    "sourceSha256": "80c2e6caee4254c4c0b82a948c622cd951fb2359d575dc99c94443a4ad0bd361",
+    "output": "public/assets/fighters/pants0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Spam Hard/Hardware0_Pantalon0.png",
+    "sourceSha256": "99df274bdc201f84271f0f5349a73101f46d9c7c6453cf421e40e9de9c301474",
+    "output": "public/assets/fighters/pants0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Spam Hard/Hardware1_Pantalon0.png",
+    "sourceSha256": "873d7c9f635dd263742a3958a714961a0bc8cc26f29a912b6eb3d731d759284e",
+    "output": "public/assets/fighters/pants0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Spam Hard/Hardware2_Pantalon0.png",
+    "sourceSha256": "14e883276348fea9fc9db7c219c7a3f022d5f21a9edc3f4f01c7c3ed98c2f2ed",
+    "output": "public/assets/fighters/pants0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Spam Prog/Programacion0_Pantalon0.png",
+    "sourceSha256": "d5cacf681798345af4facfc3418ec0391fee789dbc9c1b1fde83cec4723a1f46",
+    "output": "public/assets/fighters/pants0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Spam Prog/Programacion1_Pantalon0.png",
+    "sourceSha256": "d078a45d0c5484441a3c9fdaf56f5481a2d38eca27696e28f184aa7bcb270c70",
+    "output": "public/assets/fighters/pants0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Spam Red/Redes0_Pantalon0.png",
+    "sourceSha256": "8b645944fe5498daca5f1366ebf9227d01b4caf1d148900c89f9432727dc8af1",
+    "output": "public/assets/fighters/pants0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Spam Red/Redes1_Pantalon0.png",
+    "sourceSha256": "9563fd0487b3b90ce72bd5cdaef4508ea1c4ec7d3a8eeb211692a6db162f69f6",
+    "output": "public/assets/fighters/pants0.png",
+    "correction": "Trello 35: overlay x offset -1"
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Uper Cut/Upercut0_Pantalon0.png",
+    "sourceSha256": "e4b6ab20b4d42eae7ab6e722846ce49a23a00b36704122f191181cbe594f090c",
+    "output": "public/assets/fighters/pants0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Agachado/Agachado0_Pantalon1.png",
+    "sourceSha256": "065035791febe3a506c89e1a38e7e7192c489b08ec1d46f097d70359404e2039",
+    "output": "public/assets/fighters/pants1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Barrida/Barrida0_Pantalon1.png",
+    "sourceSha256": "93a17f72b6e7ddd400a9938cd41afab32ca9c7194f810e17df424a48762ab91b",
+    "output": "public/assets/fighters/pants1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Caminar/Caminar0_Pantalon1.png",
+    "sourceSha256": "a47993d8683745fd1335ac336bf09b2fb313b3b250956828ff4575c6945dbec7",
+    "output": "public/assets/fighters/pants1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Caminar/Caminar1_Pantalon1.png",
+    "sourceSha256": "aa08424f50123490f8516a8c417bf15c8e380e371791ef7aa496ae6ccf65d019",
+    "output": "public/assets/fighters/pants1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Caminar/Caminar2_Pantalon1.png",
+    "sourceSha256": "d5273e3702881b50ef7f6bd8f04b6c93485ea595503895db95ba1f19d7f38ce0",
+    "output": "public/assets/fighters/pants1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Caminar/Caminar3_Pantalon1.png",
+    "sourceSha256": "1b9474880534a264aa55057d84e684d3b450676169e981ff984e737017879431",
+    "output": "public/assets/fighters/pants1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Caminar/Caminar4_Pantalon1.png",
+    "sourceSha256": "b61ee5ddd7bd173e2dbb8f6130cfa4757d0eece65e3bd94274be5e9fc76ab7cf",
+    "output": "public/assets/fighters/pants1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Caminar/Caminar5_Pantalon1.png",
+    "sourceSha256": "ca7e48b3c2effcac05eca57407aa242b79dbb86021762574a0730ff9e23eac09",
+    "output": "public/assets/fighters/pants1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Caminar/Caminar6_Pantalon1.png",
+    "sourceSha256": "ff628e591afc94e4107581a3f3022a1ec5250f29b106b3126074cbfc4c20e537",
+    "output": "public/assets/fighters/pants1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Combo Diseno/CProgramacion0_Pantalon1.png",
+    "sourceSha256": "3f9822af6f429d1a02fcd67147f4c5bdc73e7ed23b1f2920e56b9be328cb0c37",
+    "output": "public/assets/fighters/pants1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Combo Diseno/CProgramacion1_Pantalon1.png",
+    "sourceSha256": "5071043223d3f1a0adc0c2bd28972ac122b848c54960c631731d28e84b587aed",
+    "output": "public/assets/fighters/pants1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Spam Red/Redes0_Pantalon1.png",
+    "sourceSha256": "2cb90673e8f8cd83d711ad69e4562798a325b94e551e454e7a1474ca53c2aedc",
+    "output": "public/assets/fighters/pants1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Spam Red/Redes1_Pantalon1.png",
+    "sourceSha256": "6c4871382dde9816195d85bd25a9854601700f4ccbba3c6f1c13c788cbe87a1d",
+    "output": "public/assets/fighters/pants1.png",
+    "correction": "Trello 35: overlay x offset -1"
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Spam Red/Redes1_Pantalon1.png",
+    "sourceSha256": "6c4871382dde9816195d85bd25a9854601700f4ccbba3c6f1c13c788cbe87a1d",
+    "output": "public/assets/fighters/pants1.png",
+    "correction": "Trello 35: overlay x offset -1"
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Combo Redes/CRedes0_Pantalon1.png",
+    "sourceSha256": "8a377500fe89b57ac05b50dca498b22edc9fba5455929f7c6a37c0a30f076e8f",
+    "output": "public/assets/fighters/pants1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Combo Redes/CRedes1_Pantalon1.png",
+    "sourceSha256": "c5a849a802cd964e3ab0d41d6eca4cf5b599ce471a860db02ec1ebd0768a775b",
+    "output": "public/assets/fighters/pants1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Defensa/Defensa0_Pantalon1.png",
+    "sourceSha256": "b41c4f32315b4289791c54a93133d5599fbd1215a7d6a74597931cc864083db4",
+    "output": "public/assets/fighters/pants1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Golpe/Golpe0_Pantalon1.png",
+    "sourceSha256": "e35ef0d722f6a87b9b054836d9cc4b1dadd09a46265fa37662698ba02ea87766",
+    "output": "public/assets/fighters/pants1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Golpe/Golpe1_Pantalon1.png",
+    "sourceSha256": "36c8f957ba674b7f90181b055a885b774f545b7b6a295c42ac4d48da2ae27ca4",
+    "output": "public/assets/fighters/pants1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Golpe/Golpe2_Pantalon1.png",
+    "sourceSha256": "1bb25ead5855fd67a3345e72c131695174669dd8647226db0f830e0305c89c37",
+    "output": "public/assets/fighters/pants1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Golpe/Golpe3_Pantalon1.png",
+    "sourceSha256": "50714a8eca40390c466ad67e8131f5b03b8dd12ac26882e1e3bc5fb2ed9723ec",
+    "output": "public/assets/fighters/pants1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Golpeado/Malo0_Pantalon1.png",
+    "sourceSha256": "147412da98409a6ea2781134846a94404758d4b7bfa01405f90ab49022a0f260",
+    "output": "public/assets/fighters/pants1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Golpeado/Malo1_Pantalon1.png",
+    "sourceSha256": "3befd84a8630514fd9a506f7e5a1cdfaccda4d68cacaaab6fa76042a02922aff",
+    "output": "public/assets/fighters/pants1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Golpeado/Malo2_Pantalon1.png",
+    "sourceSha256": "82c7c0c3d92ba575a3f7207e88911dc37b143aed7ad83f33d2d40fb4de714ad1",
+    "output": "public/assets/fighters/pants1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Golpeado/Malo3_Pantalon1.png",
+    "sourceSha256": "b86b9944e58037a72dfe9cc726982291940de9b97d9f82f858d0f0f255fe92ee",
+    "output": "public/assets/fighters/pants1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Idle/Idle0_Pantalon1.png",
+    "sourceSha256": "3ab5dc5114f476abc3533399f79d472b7812a7e4b81eb4b153976061d913578f",
+    "output": "public/assets/fighters/pants1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Idle/Idle1_Pantalon1.png",
+    "sourceSha256": "3b56d3745e93bfaa03aab2f62c71494e5cce0d09d960296e35dae1798d0222b7",
+    "output": "public/assets/fighters/pants1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Salto/Salto0_Pantalon1.png",
+    "sourceSha256": "a4482a099ae4566a86a92f32a78d558cd59883d34b94eff713fa603d198c5768",
+    "output": "public/assets/fighters/pants1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Spam Diseno/Diseno0_Pantalon1.png",
+    "sourceSha256": "4167be45218d19a3a1660e705b968ffcd8a86a30c7719e916093347bedc1704b",
+    "output": "public/assets/fighters/pants1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Spam Diseno/Diseno1_Pantalon1.png",
+    "sourceSha256": "1e57c8a482c7ca98279980792dc2b5641c9e3c2ac26bbdcc0e7973bb2400fd8b",
+    "output": "public/assets/fighters/pants1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Spam Hard/Hardware0_Pantalon1.png",
+    "sourceSha256": "3bb689e5f9a0af8a0834e36afd2bec9b052f6bdfb389c541b3cdd7064c5bbe4d",
+    "output": "public/assets/fighters/pants1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Spam Hard/Hardware1_Pantalon1.png",
+    "sourceSha256": "a14301cfb7a6a282df2d8f3d455cf08ff13a1f516dc017f74175c8cfd5c677ec",
+    "output": "public/assets/fighters/pants1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Spam Hard/Hardware2_Pantalon1.png",
+    "sourceSha256": "35b43072e3d33d9a1397848efac6bbd0d44d01c407da54cc5f4cf0dc75933adf",
+    "output": "public/assets/fighters/pants1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Spam Prog/Programacion0_Pantalon1.png",
+    "sourceSha256": "79bba911907f22ccb1e8412eaa91ae38b456997bf5b52de8ce603e29615b871f",
+    "output": "public/assets/fighters/pants1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Spam Prog/Programacion1_Pantalon1.png",
+    "sourceSha256": "6a88b6e5851dd3cf78c512b9349f950e54b134a5efa6e2a8b77643ab938102c3",
+    "output": "public/assets/fighters/pants1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Spam Red/Redes0_Pantalon1.png",
+    "sourceSha256": "2cb90673e8f8cd83d711ad69e4562798a325b94e551e454e7a1474ca53c2aedc",
+    "output": "public/assets/fighters/pants1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Spam Red/Redes1_Pantalon1.png",
+    "sourceSha256": "6c4871382dde9816195d85bd25a9854601700f4ccbba3c6f1c13c788cbe87a1d",
+    "output": "public/assets/fighters/pants1.png",
+    "correction": "Trello 35: overlay x offset -1"
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Uper Cut/Upercut0_Pantalon1.png",
+    "sourceSha256": "e27aaeaaca5fd9263e45fde6e1cc232f609bedae8b02a31c69f5ff5a1c293780",
+    "output": "public/assets/fighters/pants1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Agachado/Agachado0_Pantalon2.png",
+    "sourceSha256": "7fd75ef19a8e00a987adb8625dde73c04800a421aca6fe890e85e69e6f512940",
+    "output": "public/assets/fighters/pants2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Barrida/Barrida0_Pantalon2.png",
+    "sourceSha256": "6be4629a1a070f83bea70968cac5efc8e39bb60691bb97f4577a23662c6f6080",
+    "output": "public/assets/fighters/pants2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Caminar/Caminar0_Pantalon2.png",
+    "sourceSha256": "41e0df3910ccbfa196b2d87a12a055e40365573a8cce30dfc7747263c6c55e26",
+    "output": "public/assets/fighters/pants2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Caminar/Caminar1_Pantalon2.png",
+    "sourceSha256": "b8d2a3c56934a169a1d2787f0becbaffa77389e3296b711e5f75977f57122ff8",
+    "output": "public/assets/fighters/pants2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Caminar/Caminar2_Pantalon2.png",
+    "sourceSha256": "c791b1bff76465cab80e425dd1d95de3039f1c5673a7009f06937bf04034b4e1",
+    "output": "public/assets/fighters/pants2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Caminar/Caminar3_Pantalon2.png",
+    "sourceSha256": "d0a434564d521f6f1c4caf911bfa2dd8f187d96b7140627abd1eb6cb825a6ea4",
+    "output": "public/assets/fighters/pants2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Caminar/Caminar4_Pantalon2.png",
+    "sourceSha256": "80ed62e8071363fe91a013bfc3c4eaa244c762198697c3a594d61835b236c741",
+    "output": "public/assets/fighters/pants2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Caminar/Caminar5_Pantalon2.png",
+    "sourceSha256": "1e7a2e4efee79216cefc25f0eb737a8b5bef71eeae416fa3bfb1631d3d8b758f",
+    "output": "public/assets/fighters/pants2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Caminar/Caminar6_Pantalon2.png",
+    "sourceSha256": "89db1ffbbfde880c5c4e759b07ad0784f2c31e44a4751dcde66cebbb7369f761",
+    "output": "public/assets/fighters/pants2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Combo Diseno/CProgramacion0_Pantalon2.png",
+    "sourceSha256": "9c42bd87e379cedf93429416362a5df3c5027ada9187d727ea36745a229ad6ca",
+    "output": "public/assets/fighters/pants2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Combo Diseno/CProgramacion1_Pantalon2.png",
+    "sourceSha256": "d5ce55779b363739d8ea1664b3be8a8ac97daaa174ae82aeae90ed19bea1805d",
+    "output": "public/assets/fighters/pants2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Spam Red/Redes0_Pantalon2.png",
+    "sourceSha256": "7a57632395932f7dfb27ceca7c868d4b000fddb6523db2a93f25a7115ddb6615",
+    "output": "public/assets/fighters/pants2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Spam Red/Redes1_Pantalon2.png",
+    "sourceSha256": "49fbc414e243c81381ac083a64cdaf6e6af441b95635d592c47dab1f4199098b",
+    "output": "public/assets/fighters/pants2.png",
+    "correction": "Trello 35: overlay x offset -1"
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Spam Red/Redes1_Pantalon2.png",
+    "sourceSha256": "49fbc414e243c81381ac083a64cdaf6e6af441b95635d592c47dab1f4199098b",
+    "output": "public/assets/fighters/pants2.png",
+    "correction": "Trello 35: overlay x offset -1"
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Combo Redes/CRedes0_Pantalon2.png",
+    "sourceSha256": "49ac50044cb308ed09518c34c6f57814dd03178648a551a730b1446fc804bec5",
+    "output": "public/assets/fighters/pants2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Combo Redes/CRedes1_Pantalon2.png",
+    "sourceSha256": "4d8d0f2df3ac6617d6c1ff5691ba22e1caf552cea7d19083413b8faf96a13e7e",
+    "output": "public/assets/fighters/pants2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Defensa/Defensa0_Pantalon2.png",
+    "sourceSha256": "b51e5809b57a2e319c931472885aea09a3bad9ab76060f1b42cef2b465dd974c",
+    "output": "public/assets/fighters/pants2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Golpe/Golpe0_Pantalon2.png",
+    "sourceSha256": "eafb9393b6ea6857f9021308bce5a57495f3d47797395da8cbeb91ecdfb15f0e",
+    "output": "public/assets/fighters/pants2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Golpe/Golpe1_Pantalon2.png",
+    "sourceSha256": "cf4d95ebea21c358d7e5da283df985177ea61b3defbf633308deaffe3f8d8546",
+    "output": "public/assets/fighters/pants2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Golpe/Golpe2_Pantalon2.png",
+    "sourceSha256": "cf9483f45c5ec46a61ba3a143b22195011fa20cf5492a5f3f06ca0150f3405ee",
+    "output": "public/assets/fighters/pants2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Golpe/Golpe3_Pantalon2.png",
+    "sourceSha256": "2cc82168f05b7acdb0433048d5b6112e8dd4a13a0074cbd7049fc2911f0ba68b",
+    "output": "public/assets/fighters/pants2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Golpeado/Malo0_Pantalon2.png",
+    "sourceSha256": "2d6fa734ad229d756da5cebb63ab721e182af9ef4cd53add54d13618da5010b0",
+    "output": "public/assets/fighters/pants2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Golpeado/Malo1_Pantalon2.png",
+    "sourceSha256": "62059392253d450da00d4fe512c6078bfed7a0a9cd7bbd35e30ffe8720398514",
+    "output": "public/assets/fighters/pants2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Golpeado/Malo2_Pantalon2.png",
+    "sourceSha256": "839e2284f1df1a7927fa17433ca59e2551cc44e55c510f30dd253aa51c4c075c",
+    "output": "public/assets/fighters/pants2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Golpeado/Malo3_Pantalon2.png",
+    "sourceSha256": "3d2a65c6c0024863bdeb76a8ce49d6861952160f49669dcf64efac5fd0e60c83",
+    "output": "public/assets/fighters/pants2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Idle/Idle0_Pantalon2.png",
+    "sourceSha256": "34bfdc844d646d910633579cd706c994c3658307c4d23ca2debec4131e18c668",
+    "output": "public/assets/fighters/pants2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Idle/Idle1_Pantalon2.png",
+    "sourceSha256": "9fb05b11a57ee7b2571e6a797f908372ea51861990355a7297fbf84227eb7aee",
+    "output": "public/assets/fighters/pants2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Salto/Salto0_Pantalon2.png",
+    "sourceSha256": "aecf68cba27e08b6dc52f941b5b41f5655e277be91a78aa5363d0f948081b194",
+    "output": "public/assets/fighters/pants2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Spam Diseno/Diseno0_Pantalon2.png",
+    "sourceSha256": "57b9eab3f8dd7568eee3c517e7636667e970ec7dce58935853c8707d78006c58",
+    "output": "public/assets/fighters/pants2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Spam Diseno/Diseno1_Pantalon2.png",
+    "sourceSha256": "dcdf76037dbfa4da99013c94a6741f0b73f373ab92757b511f842c0842a52db6",
+    "output": "public/assets/fighters/pants2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Spam Hard/Hardware0_Pantalon2.png",
+    "sourceSha256": "349f379725add4139cbc466bead37d9082a224869015dbb62891b320b6953695",
+    "output": "public/assets/fighters/pants2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Spam Hard/Hardware1_Pantalon2.png",
+    "sourceSha256": "005ee663956c41192c58b73caf3518d1cf01b28a88b92d83c5509723223a9a1d",
+    "output": "public/assets/fighters/pants2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Spam Hard/Hardware2_Pantalon2.png",
+    "sourceSha256": "55d91678cbddd70db035df6aa8fda69390c4388fc7ea25a85d9dcd50c20018ec",
+    "output": "public/assets/fighters/pants2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Spam Prog/Programacion0_Pantalon2.png",
+    "sourceSha256": "fe80934d7a530a24b62c6cb293d795a4d4ee788efb0c2b5e5304c28cd241c5f0",
+    "output": "public/assets/fighters/pants2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Spam Prog/Programacion1_Pantalon2.png",
+    "sourceSha256": "f54a2c5eb58463ab367bdecbbbcc5977eb1756da3812ca7cc91ff3455ab324e9",
+    "output": "public/assets/fighters/pants2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Spam Red/Redes0_Pantalon2.png",
+    "sourceSha256": "7a57632395932f7dfb27ceca7c868d4b000fddb6523db2a93f25a7115ddb6615",
+    "output": "public/assets/fighters/pants2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Spam Red/Redes1_Pantalon2.png",
+    "sourceSha256": "49fbc414e243c81381ac083a64cdaf6e6af441b95635d592c47dab1f4199098b",
+    "output": "public/assets/fighters/pants2.png",
+    "correction": "Trello 35: overlay x offset -1"
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pantalon/Uper Cut/Upercut0_Pantalon2.png",
+    "sourceSha256": "3b2594bf30039abe15419f39816076c12a01b75ad03cf09e0c27fcd647564d40",
+    "output": "public/assets/fighters/pants2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Agachado/Agachado0_Pelo0.png",
+    "sourceSha256": "27e6f41f894649242699cbd7a7b986862232591e558155ef16bbdd0452f11005",
+    "output": "public/assets/fighters/hair0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Barrida/Barrida0_Pelo0.png",
+    "sourceSha256": "2be5dc0a2a27e6bbec1fc835eff06ca8a39e092a88bd3dea6a6b266f4fc4ea41",
+    "output": "public/assets/fighters/hair0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Caminar/Caminar0_Pelo0.png",
+    "sourceSha256": "e69b5183270141a71a9aa19368c3fe488a6cc9cd6287d1c64b84d61fd79da307",
+    "output": "public/assets/fighters/hair0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Caminar/Caminar1_Pelo0.png",
+    "sourceSha256": "eaa66de659d6bf8e83c1e30f28c7989b3c697d0aa011e8dd06c8291dc209a297",
+    "output": "public/assets/fighters/hair0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Caminar/Caminar2_Pelo0.png",
+    "sourceSha256": "900b134aff1b722f0c81d1539ae69831daa8835e5e4eda8b8bcc5454e066bd90",
+    "output": "public/assets/fighters/hair0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Caminar/Caminar3_Pelo0.png",
+    "sourceSha256": "51d04405b0a571a430700710ac0e9f3374f1ef281772c0353775523541b8c762",
+    "output": "public/assets/fighters/hair0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Caminar/Caminar4_Pelo0.png",
+    "sourceSha256": "a54beb02be11f00bb335b2be3fa3e7663a83dd1d013cd54931e505db00f027dd",
+    "output": "public/assets/fighters/hair0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Caminar/Caminar5_Pelo0.png",
+    "sourceSha256": "e812aca14ffb6792a6008e6c18a7ad0ea5c6be1772c4bf50cad87c84c55e6996",
+    "output": "public/assets/fighters/hair0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Caminar/Caminar6_Pelo0.png",
+    "sourceSha256": "4763ff99ec5e7b665160357369fe2b9e98753179d570672eb7cbf296b7ab87fc",
+    "output": "public/assets/fighters/hair0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Combo Diseno/CProgramacion0_Pelo0.png",
+    "sourceSha256": "9ac82634fe69431fcd6e9b76cafcf17336927905f4b0143a1c5e0299a5dbcc4f",
+    "output": "public/assets/fighters/hair0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Combo Diseno/CProgramacion1_Pelo0.png",
+    "sourceSha256": "5eed52add0a535f4e70a04e7688cb8e7afdf798a73f769a440e688434ddfa8bb",
+    "output": "public/assets/fighters/hair0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Combo Hard/CHardware0_Pelo0.png",
+    "sourceSha256": "3710391995f12090b69151fb03e4353422cb01a456b9b8f2a9bbd93c73e86f66",
+    "output": "public/assets/fighters/hair0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Spam Red/Redes1_Pelo0.png",
+    "sourceSha256": "99467b9efaddfdd0de0837ee080a90feca0280242b81d93a774f29cd1e675aaa",
+    "output": "public/assets/fighters/hair0.png",
+    "correction": "Trello 35: overlay x offset -1"
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Spam Red/Redes1_Pelo0.png",
+    "sourceSha256": "99467b9efaddfdd0de0837ee080a90feca0280242b81d93a774f29cd1e675aaa",
+    "output": "public/assets/fighters/hair0.png",
+    "correction": "Trello 35: overlay x offset -1"
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Combo Redes/CRedes0_Pelo0.png",
+    "sourceSha256": "d590490aae077bff9f00552e9e9231c69fc9db01bd5bfcf1c95b989fc2a94e63",
+    "output": "public/assets/fighters/hair0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Combo Redes/CRedes1_Pelo0.png",
+    "sourceSha256": "d084a6aa3b10758613466bef759a0d63281afc4020d642b182a97f0f2469b5fe",
+    "output": "public/assets/fighters/hair0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Defensa/Defensa0_Pelo0.png",
+    "sourceSha256": "f6fbd891067136933eaaff0e53e2dac14bb56995907ec5d4dba499f8814063c9",
+    "output": "public/assets/fighters/hair0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Golpe/Golpe0_Pelo0.png",
+    "sourceSha256": "a0779d8da7fdd73627a6e1a2a68257da309d843d1884e9b063137f7688c58740",
+    "output": "public/assets/fighters/hair0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Golpe/Golpe1_Pelo0.png",
+    "sourceSha256": "6a1e5583617a7bd3ffffa3d15432cd2ca19f6116651d83a3c44c14f9759f07d0",
+    "output": "public/assets/fighters/hair0.png",
+    "correction": "Trello 35: hair-0 hue restored (+50 degrees), original silhouette/alpha retained"
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Golpe/Golpe2_Pelo0.png",
+    "sourceSha256": "d77fefc6d0a962a7d2111af83e8435d939f742a9efa456bc035271810fb4b2ba",
+    "output": "public/assets/fighters/hair0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Golpe/Golpe3_Pelo0.png",
+    "sourceSha256": "1f64f73e9809ac7c25710a8e5ec5e6367525cca6248a036bc0721e033191b95e",
+    "output": "public/assets/fighters/hair0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Golpeado/Malo0_Pelo0.png",
+    "sourceSha256": "ba3042b36380b9a45af0d924ed18c244dd06603d0f9d5d13595170b09a939924",
+    "output": "public/assets/fighters/hair0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Golpeado/Malo1_Pelo0.png",
+    "sourceSha256": "8c040585346b8be3358ae3afb751488880ebac050621a56447daedfbf4707895",
+    "output": "public/assets/fighters/hair0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Golpeado/Malo2_Pelo0.png",
+    "sourceSha256": "1b9ffb6587221d308a5276551c23d1ad893c597c1a5c31a4160174382b780c3c",
+    "output": "public/assets/fighters/hair0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Golpeado/Malo3_Pelo0.png",
+    "sourceSha256": "79ad7e2c7c04deafad85ab56b69615401245f93774a039313f9d423b94cbf732",
+    "output": "public/assets/fighters/hair0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Idle/Idle0_Pelo0.png",
+    "sourceSha256": "1addf86e78ea680f6e52746deee93ddc1be4459cfa26a435e798ea562f7dff65",
+    "output": "public/assets/fighters/hair0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Idle/Idle1_Pelo0.png",
+    "sourceSha256": "ca5bcf9bc0b92ba1f2fd831d342ffc026251258448d485dedbab046cc9789adb",
+    "output": "public/assets/fighters/hair0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Salto/Salto0_Pelo0.png",
+    "sourceSha256": "1de1913dd8ad5bc37d342090de39fc6f488428901d1f888a53f291fb8d8e2ee8",
+    "output": "public/assets/fighters/hair0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Spam Diseno/Diseno0_Pelo0.png",
+    "sourceSha256": "a979f493e95655cb2150d022f0b514fe6e3b8eaf00a4484fc51ea91e3078b1c7",
+    "output": "public/assets/fighters/hair0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Spam Diseno/Diseno1_Pelo0.png",
+    "sourceSha256": "2de56c4993e732b5f8a994bab8c2368fc8eef542130088c9383535cefc4b067d",
+    "output": "public/assets/fighters/hair0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Spam Hard/Hardware0_Pelo0.png",
+    "sourceSha256": "16f46aed6c1750dff06bdac2363c28efbf65f9a1d4640a492e6db96e366beab7",
+    "output": "public/assets/fighters/hair0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Spam Hard/Hardware1_Pelo0.png",
+    "sourceSha256": "fd02a8f1529af484b34a6c9c03d8c0b3fb8fe76d48f1636afc01f2f3e64a9c75",
+    "output": "public/assets/fighters/hair0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Spam Hard/Hardware2_Pelo0.png",
+    "sourceSha256": "8cda6050c35c37f7c7f1481027b012a422690afd4888c10a30692d43536c1e8f",
+    "output": "public/assets/fighters/hair0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Spam Prog/Programacion0_Pelo0.png",
+    "sourceSha256": "a5cf760f8b110f9d12d546bdf803b90d2254a7be0dfb27bf6b588b08815bf861",
+    "output": "public/assets/fighters/hair0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Spam Prog/Programacion1_Pelo0.png",
+    "sourceSha256": "4e7e84c7a00fefb80ea7979cdfa36fea20865b1fe36ffff0731b46fcb1f0418f",
+    "output": "public/assets/fighters/hair0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Spam Red/Redes0_Pelo0.png",
+    "sourceSha256": "54b4f447f8c6c448813986d1d14875ea55df1d8b72ec471cd8ff2d44c6c2fb03",
+    "output": "public/assets/fighters/hair0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Spam Red/Redes1_Pelo0.png",
+    "sourceSha256": "99467b9efaddfdd0de0837ee080a90feca0280242b81d93a774f29cd1e675aaa",
+    "output": "public/assets/fighters/hair0.png",
+    "correction": "Trello 35: overlay x offset -1"
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Uper Cut/Upercut0_Pelo0.png",
+    "sourceSha256": "043c2abf61cd5da435183d05224830da2198db7bcc4ffb5c935e2532aee761e7",
+    "output": "public/assets/fighters/hair0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Agachado/Agachado0_Pelo1.png",
+    "sourceSha256": "a6cb4b3984dc07c83815b6568a69b5d4bc3680745fde8c3ad4fcb9778e62f0a5",
+    "output": "public/assets/fighters/hair1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Barrida/Barrida0_Pelo1.png",
+    "sourceSha256": "5b44cc81d1a4cb36cd4ef00b576fd9ac53158aa0ff8aac9d27bda96ed28e32ed",
+    "output": "public/assets/fighters/hair1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Caminar/Caminar0_Pelo1.png",
+    "sourceSha256": "2d590f2234519310373f2a1b08c13f49245e782fdd9703bf18a35757573c21f2",
+    "output": "public/assets/fighters/hair1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Caminar/Caminar1_Pelo1.png",
+    "sourceSha256": "39d1b03a16be0affa834d4ea3066042dae1305f3f7f533290b76f1881068c175",
+    "output": "public/assets/fighters/hair1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Caminar/Caminar2_Pelo1.png",
+    "sourceSha256": "ff8e1cf1c64cffd7c68b076feefe1868a031247a6d51164722414f843e4e648e",
+    "output": "public/assets/fighters/hair1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Caminar/Caminar3_Pelo1.png",
+    "sourceSha256": "ef5f4386a7028e681f4cf89f779fc7cc097b825012cce1bc132d5e700f01d01b",
+    "output": "public/assets/fighters/hair1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Caminar/Caminar4_Pelo1.png",
+    "sourceSha256": "7a654832630a44c3c8981a8961569f328331bc07e14bfdb3c52ded0260596c47",
+    "output": "public/assets/fighters/hair1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Caminar/Caminar5_Pelo1.png",
+    "sourceSha256": "e92e663428b74aa4070bdbd1f6e24f00938a217983f271971c97ee21064e9d7f",
+    "output": "public/assets/fighters/hair1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Caminar/Caminar6_Pelo1.png",
+    "sourceSha256": "84b6b137b961c308b2ffe8a4b39a1a9a56579d2edc54dacf1fa6ba41f5a0228b",
+    "output": "public/assets/fighters/hair1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Combo Diseno/CProgramacion0_Pelo1.png",
+    "sourceSha256": "64824625781627ec1bd5c95b55fb4c93881e881adafb5d38deaac392ae5c33c6",
+    "output": "public/assets/fighters/hair1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Combo Diseno/CProgramacion1_Pelo1.png",
+    "sourceSha256": "fb962cbd5e283911b6b97a690e35177974a16f3480e7279e55ceef765fa97e8d",
+    "output": "public/assets/fighters/hair1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Combo Hard/CHardware0_Pelo1.png",
+    "sourceSha256": "62cf148893d952e577f760b61b1772b75a22821c186f4d68b399350b9e66c171",
+    "output": "public/assets/fighters/hair1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Spam Red/Redes1_Pelo1.png",
+    "sourceSha256": "2dc90813d43f5e4d8f065bddb68f8b8334d02339364a81e974f1baf56a7b5a37",
+    "output": "public/assets/fighters/hair1.png",
+    "correction": "Trello 35: overlay x offset -1"
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Spam Red/Redes1_Pelo1.png",
+    "sourceSha256": "2dc90813d43f5e4d8f065bddb68f8b8334d02339364a81e974f1baf56a7b5a37",
+    "output": "public/assets/fighters/hair1.png",
+    "correction": "Trello 35: overlay x offset -1"
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Combo Redes/CRedes0_Pelo1.png",
+    "sourceSha256": "54a6d1e2c2e4df575aca9be220c5205c075ea34a48e6e9bdcefbe1b7d34af0d1",
+    "output": "public/assets/fighters/hair1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Combo Redes/CRedes1_Pelo1.png",
+    "sourceSha256": "db3109198c09c64aeecd4218cc78fd6b9b01bc7fb4ffe2ef1a3c1aed34766afc",
+    "output": "public/assets/fighters/hair1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Defensa/Defensa0_Pelo1.png",
+    "sourceSha256": "02b2532fefdc12f8e100b46220c67088fa4be0a14b0e1b95a0f17e851c672136",
+    "output": "public/assets/fighters/hair1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Golpe/Golpe0_Pelo1.png",
+    "sourceSha256": "0c52f009222003e908635c794c66822993d44e30ac23de59f5b5462aedfb45c6",
+    "output": "public/assets/fighters/hair1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Golpe/Golpe1_Pelo0.png",
+    "sourceSha256": "6a1e5583617a7bd3ffffa3d15432cd2ca19f6116651d83a3c44c14f9759f07d0",
+    "output": "public/assets/fighters/hair1.png",
+    "correction": "Trello 35: hair-0 hue restored (+50 degrees), original silhouette/alpha retained"
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Golpe/Golpe2_Pelo1.png",
+    "sourceSha256": "63934c5d6169a8ca379ca49d224f09880035bf35dd8f8fbec0f8582f6152dcf5",
+    "output": "public/assets/fighters/hair1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Golpe/Golpe3_Pelo1.png",
+    "sourceSha256": "15aaa4cc2cfb1325e56561a21ff8b7cebbf9c8717deb4f7d187d2e9d097e9002",
+    "output": "public/assets/fighters/hair1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Golpeado/Malo0_Pelo1.png",
+    "sourceSha256": "8a92273a59eac8e0078eeba7b10c47b2f4bd8d2f087c937a550b4318443ad497",
+    "output": "public/assets/fighters/hair1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Golpeado/Malo1_Pelo1.png",
+    "sourceSha256": "dd1a60dccb077246d2493f6859fb183cabb6dbca5eecfc18c950dfb95f9f8d47",
+    "output": "public/assets/fighters/hair1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Golpeado/Malo2_Pelo1.png",
+    "sourceSha256": "883b8c3344c08d6cab3047dd597f14df9c915d6e135ed018ef270c74428aec50",
+    "output": "public/assets/fighters/hair1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Golpeado/Malo3_Pelo1.png",
+    "sourceSha256": "510189c39ac8dc2297945104098060fd354cc5e3b79d4add71b41d742b95d468",
+    "output": "public/assets/fighters/hair1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Idle/Idle0_Pelo1.png",
+    "sourceSha256": "fde9902277b15b73441eb5df7663776ec4f09e8b86b42d79620b26b6ca74ad29",
+    "output": "public/assets/fighters/hair1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Idle/Idle1_Pelo1.png",
+    "sourceSha256": "4756d8b97ac168f3706241262fc1187906bc1625a042ba5d0f013daf5b759192",
+    "output": "public/assets/fighters/hair1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Salto/Salto0_Pelo1.png",
+    "sourceSha256": "d9a87e175a55060ba92b33e63c786dbbb6d106b7a827e4eff07d0a55d2c4510a",
+    "output": "public/assets/fighters/hair1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Spam Diseno/Diseno0_Pelo1.png",
+    "sourceSha256": "5bd6548f07621177e879ccf51fca0f6a24dfdd6831fc69cedd9f415a782d9ca5",
+    "output": "public/assets/fighters/hair1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Spam Diseno/Diseno1_Pelo1.png",
+    "sourceSha256": "d36dce8aba5a8bb79d715c6f4c484cd910534c81620ba3fe461fd122393ba845",
+    "output": "public/assets/fighters/hair1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Spam Hard/Hardware0_Pelo1.png",
+    "sourceSha256": "d693be700541d8d2bd45738d7f0952395723827ba15265471914cd9ac800ae4e",
+    "output": "public/assets/fighters/hair1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Spam Hard/Hardware1_Pelo1.png",
+    "sourceSha256": "f486d3697cad8d542038f6a3187849a4f082724ffda8954124b95894b704d22c",
+    "output": "public/assets/fighters/hair1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Spam Hard/Hardware2_Pelo1.png",
+    "sourceSha256": "dcb8796ff2f411fbd1d95cd461e34061ffec89d06f272f0fe5da8ffb5fa54dea",
+    "output": "public/assets/fighters/hair1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Spam Prog/Programacion0_Pelo1.png",
+    "sourceSha256": "e5b82a836d31904a830997985eec0c465cb7800e89e71c6fa7aa446682838de5",
+    "output": "public/assets/fighters/hair1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Spam Prog/Programacion1_Pelo1.png",
+    "sourceSha256": "47e050689fb7a59c5712479c787b086f2db92590db5df7dbcb3c095e6b7cbdfc",
+    "output": "public/assets/fighters/hair1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Spam Red/Redes0_Pelo1.png",
+    "sourceSha256": "d6af9277b0fec3a24e80f79b1acd3772c0dc425b18040010a4830410d3de5211",
+    "output": "public/assets/fighters/hair1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Spam Red/Redes1_Pelo1.png",
+    "sourceSha256": "2dc90813d43f5e4d8f065bddb68f8b8334d02339364a81e974f1baf56a7b5a37",
+    "output": "public/assets/fighters/hair1.png",
+    "correction": "Trello 35: overlay x offset -1"
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Uper Cut/Upercut0_Pelo1.png",
+    "sourceSha256": "6720e30ab3dcbe1e53a30f8af08df1373c40dd57886368eee2a44fbbd63026ed",
+    "output": "public/assets/fighters/hair1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Agachado/Agachado0_Pelo2.png",
+    "sourceSha256": "6363e30f7e68faabb745aa92d9dfed5e480ba5fefef83165407f1eef914ffe81",
+    "output": "public/assets/fighters/hair2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Barrida/Barrida0_Pelo2.png",
+    "sourceSha256": "a1a6be5aa3e580517062f47e52dc0bfd52237a91690a30e5a3052dbbf41bc1b4",
+    "output": "public/assets/fighters/hair2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Caminar/Caminar0_Pelo2.png",
+    "sourceSha256": "50d4972a97a96119779ac9409eb7bd64cafa2020ca149c0d14e4a48c19e1714c",
+    "output": "public/assets/fighters/hair2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Caminar/Caminar1_Pelo2.png",
+    "sourceSha256": "7ebf658d905ccf6fe2feaa8276148485f0365bb8c187c3265c23d15ec1d80f52",
+    "output": "public/assets/fighters/hair2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Caminar/Caminar2_Pelo2.png",
+    "sourceSha256": "a45accc85992ca99d4cb222916b4686df68ac22afedd78b6bec086c15ecbd0f7",
+    "output": "public/assets/fighters/hair2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Caminar/Caminar3_Pelo2.png",
+    "sourceSha256": "b1b1c7889a00d650a9f83fafd17a61a53719326289959b8baa5e6a3090af2dcb",
+    "output": "public/assets/fighters/hair2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Caminar/Caminar4_Pelo2.png",
+    "sourceSha256": "eef5c6ff1f21f48b4cc737927b0774277da5b50bb04ccb27d58491f292681e08",
+    "output": "public/assets/fighters/hair2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Caminar/Caminar5_Pelo2.png",
+    "sourceSha256": "85e148d4b95c326af391a74e5ded3490fd998115020f11fd441662cd7a8e27ca",
+    "output": "public/assets/fighters/hair2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Caminar/Caminar6_Pelo2.png",
+    "sourceSha256": "cb9be149f70328228da78be4eff9353720b9711001eb7a7efd6d660ed7192d3d",
+    "output": "public/assets/fighters/hair2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Combo Diseno/CProgramacion0_Pelo2.png",
+    "sourceSha256": "89e2782080b676568176e46e055251aaeb08e2e36c83e55ba639bdcd5a05941c",
+    "output": "public/assets/fighters/hair2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Combo Diseno/CProgramacion1_Pelo2.png",
+    "sourceSha256": "8c85591fa6cc412148c5a3671316fc98b8b88145f000bb09e0e7adbc16e31f3d",
+    "output": "public/assets/fighters/hair2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Combo Hard/CHardware0_Pelo2.png",
+    "sourceSha256": "f6e4fe1d1503aaac33a2f6dc04ec85f18fddb7f8435e89fc90a8f18b6f6e383b",
+    "output": "public/assets/fighters/hair2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Spam Red/Redes1_Pelo2.png",
+    "sourceSha256": "72331a2454958a07db1d4656381dbfbc397eccf9c719801d1f6314fdf0daa086",
+    "output": "public/assets/fighters/hair2.png",
+    "correction": "Trello 35: overlay x offset -1"
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Spam Red/Redes1_Pelo2.png",
+    "sourceSha256": "72331a2454958a07db1d4656381dbfbc397eccf9c719801d1f6314fdf0daa086",
+    "output": "public/assets/fighters/hair2.png",
+    "correction": "Trello 35: overlay x offset -1"
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Combo Redes/CRedes0_Pelo2.png",
+    "sourceSha256": "6c6249495716d2af2ae20fa23d03d8b462dffa0ba8cad715454cb67009372c36",
+    "output": "public/assets/fighters/hair2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Combo Redes/CRedes1_Pelo2.png",
+    "sourceSha256": "35c6877bf239260510243b692dc751aa358173dc6165b585404946b640ce4299",
+    "output": "public/assets/fighters/hair2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Defensa/Defensa0_Pelo2.png",
+    "sourceSha256": "11b1e69c16f1386396ee6182d6ecfc8dc2e0697a0c2c8ec0ae9de1fa258ac9a4",
+    "output": "public/assets/fighters/hair2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Golpe/Golpe0_Pelo2.png",
+    "sourceSha256": "a27e6489f731cb7f30f586fa80abd5b7aa8c471c8945036624fd2c41a8bc7abf",
+    "output": "public/assets/fighters/hair2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Golpe/Golpe1_Pelo2.png",
+    "sourceSha256": "368d254f3de9c084e09cd5bee779d582d0519781f507b5493097e0f40da2eae2",
+    "output": "public/assets/fighters/hair2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Golpe/Golpe2_Pelo2.png",
+    "sourceSha256": "55cc85acae07bff78ad64ce884cb43a28253ce5cd01037e57a603711e8a36e65",
+    "output": "public/assets/fighters/hair2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Golpe/Golpe3_Pelo2.png",
+    "sourceSha256": "8ca2c4fe96d7bb6a4c428fc29df285826d4f0690fff2998c7dbe32af3461898c",
+    "output": "public/assets/fighters/hair2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Golpeado/Malo0_Pelo2.png",
+    "sourceSha256": "578aea7b28e89f623143aa40270d3b25e3045a89697ba5b3f8b20d2cd8cd762c",
+    "output": "public/assets/fighters/hair2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Golpeado/Malo1_Pelo2.png",
+    "sourceSha256": "fa3860613541428b5ec7d8e3593ada12e54bd70fad7077c7841a0d6df09ea649",
+    "output": "public/assets/fighters/hair2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Golpeado/Malo2_Pelo2.png",
+    "sourceSha256": "ea195e5078b431313f577e481f0cfdc32abb7f7072b8837f8ba602dc2b10ca1b",
+    "output": "public/assets/fighters/hair2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Golpeado/Malo3_Pelo2.png",
+    "sourceSha256": "91e355f2a22b6e16f3cf52d2835836d84809bbc3a73693462d244e07663cf4a9",
+    "output": "public/assets/fighters/hair2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Idle/Idle0_pelo2.png",
+    "sourceSha256": "2788eb27225546ce7e104bca8a2e0a8dba0cb434f059a9815817dcde6a55b66a",
+    "output": "public/assets/fighters/hair2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Idle/Idle1_Pelo2.png",
+    "sourceSha256": "36fb79eb67cba7a96107c4bd04a6d4b61fd2eeed0bfb2ae2f8229cebf8685618",
+    "output": "public/assets/fighters/hair2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Salto/Salto0_Pelo2.png",
+    "sourceSha256": "f722d083b57aceef6e45b75ba81fb8e404c976897504ba0be86229d892fa92dc",
+    "output": "public/assets/fighters/hair2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Spam Diseno/Diseno0_Pelo2.png",
+    "sourceSha256": "d2782fc538ab718b0b500f7b0eac62aee43c6a0cf8a5cb04c155d0d94b0ca6e9",
+    "output": "public/assets/fighters/hair2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Spam Diseno/Diseno1_Pelo2.png",
+    "sourceSha256": "22b1dc968eb10582ca3ed5dd4ab55dfea4316358c5857ae7ca8423abdd73ca8a",
+    "output": "public/assets/fighters/hair2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Spam Hard/Hardware0_Pelo2.png",
+    "sourceSha256": "8309cd38c1bdee980482ef007324518730877da275fcc6bf4630d106b8259842",
+    "output": "public/assets/fighters/hair2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Spam Hard/Hardware1_Pelo2.png",
+    "sourceSha256": "ee46aa8a124081c80d50dd9b6193192d1854d855258c8acf78a6b0e883d5837d",
+    "output": "public/assets/fighters/hair2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Spam Hard/Hardware2_Pelo2.png",
+    "sourceSha256": "682c702282e827503b56788a6032d9225b4b3527bef8358ecae38cc2aa84b2f3",
+    "output": "public/assets/fighters/hair2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Spam Prog/Programacion0_Pelo2.png",
+    "sourceSha256": "0a8990071c304d8666ff3c15bf033c26dad969082aa9df0d6030cd2b58772605",
+    "output": "public/assets/fighters/hair2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Spam Prog/Programacion1_Pelo2.png",
+    "sourceSha256": "902e8349d44726dc72ff6c50f2b3801475b4d22a20c55a2ef37b850bc81f263f",
+    "output": "public/assets/fighters/hair2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Spam Red/Redes0_Pelo2.png",
+    "sourceSha256": "fb8b6cec13fdd210105e0981d7e5b3c663d22cc09f0882f0fabefcbfa50767b1",
+    "output": "public/assets/fighters/hair2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Spam Red/Redes1_Pelo2.png",
+    "sourceSha256": "72331a2454958a07db1d4656381dbfbc397eccf9c719801d1f6314fdf0daa086",
+    "output": "public/assets/fighters/hair2.png",
+    "correction": "Trello 35: overlay x offset -1"
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Pelo/Uper Cut/Upercut0_Pelo2.png",
+    "sourceSha256": "faba451abb958e10ebb076961630a3db8a568f788a1d26ec257ae073abf2d209",
+    "output": "public/assets/fighters/hair2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Agachado/Agachado0_Remera0.png",
+    "sourceSha256": "220c8dbc26e94ca8f683ff5c3222475fd725ee067386811cb249a4bffdc58c23",
+    "output": "public/assets/fighters/shirt0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Barrida/Barrida0_Remera0.png",
+    "sourceSha256": "18b7b32307ab79265aebe5bb58a30b4d83358723e6e262ba1cd6ee40b2e38fe4",
+    "output": "public/assets/fighters/shirt0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Caminar/Caminar0_Remera0.png",
+    "sourceSha256": "f077763289e8b3e3dbc8a12ebfda108e200b4d0615383b24e9ea3e43f6da8281",
+    "output": "public/assets/fighters/shirt0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Caminar/Caminar1_Remera0.png",
+    "sourceSha256": "f1ce7755d3f556d0f3c2b20311fc5e9b22f8f1982167a07339f94ee1a849b21a",
+    "output": "public/assets/fighters/shirt0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Caminar/Caminar2_Remera0.png",
+    "sourceSha256": "7fd940ac21d296f1f106e8f2965f5a6acb3d5ce5fc5810d78a71428e94bd5ffe",
+    "output": "public/assets/fighters/shirt0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Caminar/Caminar3_Remera0.png",
+    "sourceSha256": "3466c0590bcec00ab4ada545755856d86c15e4d84bb2e667d65bbcf8f8a5467d",
+    "output": "public/assets/fighters/shirt0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Caminar/Caminar4_Remera0.png",
+    "sourceSha256": "72c9cd5d53ee42f49c94415d4bac2e528a7df180ddb0df044279fff78925f2e5",
+    "output": "public/assets/fighters/shirt0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Caminar/Caminar5_Remera0.png",
+    "sourceSha256": "87da1994d3c4d55de56eeee05dcaedc9a574588f48138e247ffce8d3819d0084",
+    "output": "public/assets/fighters/shirt0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Caminar/Caminar6_Remera0.png",
+    "sourceSha256": "11e6a5dcb19e01e6f30590732a4b60d5f84f4e526334ad3e01e039435f3de9e2",
+    "output": "public/assets/fighters/shirt0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Combo Diseno/CProgramacion0_Remera0.png",
+    "sourceSha256": "a20432e90f0b690f61739cb3c901d0e983cb3e44cd3bedc415af84cf43b0d8e2",
+    "output": "public/assets/fighters/shirt0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Combo Diseno/CProgramacion1_Remera0.png",
+    "sourceSha256": "8590e285808b38eb0e2148be8cdde78e90e8a9f2f6f3dab68ed4454db3f38abf",
+    "output": "public/assets/fighters/shirt0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Spam Red/Redes0_Remera0.png",
+    "sourceSha256": "57d4d670ede3fbf2e5d9e6ec0e66c86b1929b8ce11b292c5ccb46f06b1f5b759",
+    "output": "public/assets/fighters/shirt0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Spam Red/Redes1_Remera0.png",
+    "sourceSha256": "2d2077c4759c7ff4564ae7a592e35307f104ae13ee96e7625ee167491da90d50",
+    "output": "public/assets/fighters/shirt0.png",
+    "correction": "Trello 35: overlay x offset -1"
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Spam Red/Redes1_Remera0.png",
+    "sourceSha256": "2d2077c4759c7ff4564ae7a592e35307f104ae13ee96e7625ee167491da90d50",
+    "output": "public/assets/fighters/shirt0.png",
+    "correction": "Trello 35: overlay x offset -1"
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Combo Redes/CRedes0_Remera0.png",
+    "sourceSha256": "1f76fa976cb93e39742a102f2717d7d282b0174cde67846d685d09dac373bd16",
+    "output": "public/assets/fighters/shirt0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Combo Redes/CRedes1_Remera0.png",
+    "sourceSha256": "142f2c3e25608bb2026beebf5dabc5a6a9a276392bf656682ffcf696bbcb3d08",
+    "output": "public/assets/fighters/shirt0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Defensa/Defensa0_Remera0.png",
+    "sourceSha256": "7d85240ad86ed2f4cec5e238bbd385e119204fd9d6c7c34c87d8fcf5e08ea7c1",
+    "output": "public/assets/fighters/shirt0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Golpe/Golpe0_Remera0.png",
+    "sourceSha256": "867dc12cc9b54290a58c017f466a379f8c7b1624ae2c0135853d293a56e86378",
+    "output": "public/assets/fighters/shirt0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Golpe/Golpe1_Remera0.png",
+    "sourceSha256": "ed4badb1a47d23b1071173fc1b8418c16cb54ef018f64ded244d1e49355f639b",
+    "output": "public/assets/fighters/shirt0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Golpe/Golpe2_Remera0.png",
+    "sourceSha256": "abacd17429f8b2d387234db9949a0523cb9a948a76bb67ea6ba04492309b599e",
+    "output": "public/assets/fighters/shirt0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Golpe/Golpe3_Remera0.png",
+    "sourceSha256": "733a0246a4faafd90d1e5f45c6331251faedbbec8eccdf090a3959d1f3dda08c",
+    "output": "public/assets/fighters/shirt0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Golpeado/Malo0_Remera0.png",
+    "sourceSha256": "551bc81e94783dc4188ef3f7dc193ab6bbe5e9a8a45a8dec6f55238a820cac75",
+    "output": "public/assets/fighters/shirt0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Golpeado/Malo1_Remera0.png",
+    "sourceSha256": "61c8df610b3fce08d2c8d50e6059327253f3a150a94278b80983711b82d1ca33",
+    "output": "public/assets/fighters/shirt0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Golpeado/Malo2_Remera0.png",
+    "sourceSha256": "bda1edf962a22501f26daa8bf4eb14f074fe1bb0165be20d8e1f0653b655433a",
+    "output": "public/assets/fighters/shirt0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Golpeado/Malo3_Remera0.png",
+    "sourceSha256": "bd8332bc9f41b73efdf3840fa479304b4502d8b3c0a34f530ac7090e3e6d9c8c",
+    "output": "public/assets/fighters/shirt0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Idle/Idle0_Remera0.png",
+    "sourceSha256": "f96846bcf806edbbf853502a9a84ebf011876242433a156adf05a7e1841b4c64",
+    "output": "public/assets/fighters/shirt0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Idle/Idle1_Remera0.png",
+    "sourceSha256": "48ed92093c9b2b668912559a5e1d0f5b2593ea758b49ed3dfffa9c37706f760b",
+    "output": "public/assets/fighters/shirt0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Salto/Salto0_Remera0.png",
+    "sourceSha256": "7630db4e6f57e80ec8f76eb4d46e9138d21262b34a05ad42cc46648772c93752",
+    "output": "public/assets/fighters/shirt0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Spam Diseno/Diseno0_Remera0.png",
+    "sourceSha256": "187d9069bce88f22620610e72e606173a8d8f7ac195ad96cecf92bfee2f73c0f",
+    "output": "public/assets/fighters/shirt0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Spam Diseno/Diseno1_Remera0.png",
+    "sourceSha256": "01ded6e51e589298265449efabed0f3490e367e49af7e38c26156e62f5fe29b9",
+    "output": "public/assets/fighters/shirt0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Spam Hard/Hardware0_Remera0.png",
+    "sourceSha256": "c6c61cea5797cc206294507c347ff637b484c542acd29f2bc3f868ea6499862a",
+    "output": "public/assets/fighters/shirt0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Spam Hard/Hardware1_Remera0.png",
+    "sourceSha256": "2d78a98cc91560d514651f0152033de53524b59af8c140c8f7a0af4a1d828141",
+    "output": "public/assets/fighters/shirt0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Spam Hard/Hardware2_Remera0.png",
+    "sourceSha256": "d02103631496c1f38ef629de5989676195c7f0db58554fece62646df274e4724",
+    "output": "public/assets/fighters/shirt0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Spam Prog/Programacion0_Remera0.png",
+    "sourceSha256": "773387dc74dfa97117d318821210335d3e3a3637103076460a8705515a6807f6",
+    "output": "public/assets/fighters/shirt0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Spam Prog/Programacion1_Remera0.png",
+    "sourceSha256": "75e73bcae843bfe3b3ccfa9d5fbb9782f39f480ba16aa134f3aae57658924161",
+    "output": "public/assets/fighters/shirt0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Spam Red/Redes0_Remera0.png",
+    "sourceSha256": "57d4d670ede3fbf2e5d9e6ec0e66c86b1929b8ce11b292c5ccb46f06b1f5b759",
+    "output": "public/assets/fighters/shirt0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Spam Red/Redes1_Remera0.png",
+    "sourceSha256": "2d2077c4759c7ff4564ae7a592e35307f104ae13ee96e7625ee167491da90d50",
+    "output": "public/assets/fighters/shirt0.png",
+    "correction": "Trello 35: overlay x offset -1"
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Uper Cut/Upercut0_Remera0.png",
+    "sourceSha256": "53047d8b4bd845230daa1c7c13fed9958b64d18d905625ea73bb23f777eb77ce",
+    "output": "public/assets/fighters/shirt0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Agachado/Agachado0_Remera1.png",
+    "sourceSha256": "b3aa0fae6a0c07346bdfd9049dabd2d2d4a53b948704b3a6cff837cce022d23e",
+    "output": "public/assets/fighters/shirt1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Barrida/Barrida0_Remera1.png",
+    "sourceSha256": "4c6102bc48a7182dcdc95c9ab7f134d5bb40f92070019e653f168cbc5c44b3ef",
+    "output": "public/assets/fighters/shirt1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Caminar/Caminar0_Remera1.png",
+    "sourceSha256": "1a3cb0fe6be7b1edba327a4afac1f9bd24df1e315d1697d2515e0448f3eceae3",
+    "output": "public/assets/fighters/shirt1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Caminar/Caminar1_Remera1.png",
+    "sourceSha256": "3855b70aff69657459192487863448d0dc4de8176b9044d4357b81e6d68460b5",
+    "output": "public/assets/fighters/shirt1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Caminar/Caminar2_Remera1.png",
+    "sourceSha256": "3514807273f74ef615c88e04fd39312e95eeaff8b507e0548feee3a48ce495a7",
+    "output": "public/assets/fighters/shirt1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Caminar/Caminar3_Remera1.png",
+    "sourceSha256": "af4716c7fc7f7af2b02947d7be746c308727b8e42cafede303faa3f14a368d36",
+    "output": "public/assets/fighters/shirt1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Caminar/Caminar4_Remera1.png",
+    "sourceSha256": "de9b82744ef9f2728a9169afbfb7964a829ef904aeb8fce9039438c626a51244",
+    "output": "public/assets/fighters/shirt1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Caminar/Caminar5_Remera1.png",
+    "sourceSha256": "e4b9cdadd013051c10fdc3f62d18f4586d6845fb9251a235de769481548f358e",
+    "output": "public/assets/fighters/shirt1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Caminar/Caminar6_Remera1.png",
+    "sourceSha256": "bc0fe023f4b086dab6814ac60795d4113adbe7e0642b61197c6808cd83b75722",
+    "output": "public/assets/fighters/shirt1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Combo Diseno/CProgramacion0_Remera1.png",
+    "sourceSha256": "e6bdae620aadb83a7acf30f74d829cce4415006028c9765ef97773448149f14b",
+    "output": "public/assets/fighters/shirt1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Combo Diseno/CProgramacion1_Remera1.png",
+    "sourceSha256": "7c1f2f2cf31e6ea4ed434e799503c51efdbeeb31af0fa6061928b92dc9616e53",
+    "output": "public/assets/fighters/shirt1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Spam Red/Redes0_Remera1.png",
+    "sourceSha256": "070285b04083a1d451575fa915476f63e203330992f8b2fa640593e1220d703a",
+    "output": "public/assets/fighters/shirt1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Spam Red/Redes1_Remera1.png",
+    "sourceSha256": "133506b78919ab92a49fd6f065fcc3fd5456bb67706d79294a91c8556585e405",
+    "output": "public/assets/fighters/shirt1.png",
+    "correction": "Trello 35: overlay x offset -1"
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Spam Red/Redes1_Remera1.png",
+    "sourceSha256": "133506b78919ab92a49fd6f065fcc3fd5456bb67706d79294a91c8556585e405",
+    "output": "public/assets/fighters/shirt1.png",
+    "correction": "Trello 35: overlay x offset -1"
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Combo Redes/CRedes0_Remera1.png",
+    "sourceSha256": "2c39b4b6d566dcef0c5f4263b57fb022aa43b210bdfabf1c1a5fc1d0ffdd86a8",
+    "output": "public/assets/fighters/shirt1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Combo Redes/CRedes1_Remera1.png",
+    "sourceSha256": "4372e2342f8f75d327f71762fb4df6870b9955fefacc9947f7da642735416183",
+    "output": "public/assets/fighters/shirt1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Defensa/Defensa0_Remera1.png",
+    "sourceSha256": "a52aaf96d7546bc755d2808331e393d6caa3bd1bec91e05e844465060245ad45",
+    "output": "public/assets/fighters/shirt1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Golpe/Golpe0_Remera1.png",
+    "sourceSha256": "9cf67e36b091751ef7e62d770977c7f9f051c028b4a88f2da40d3278b86e461a",
+    "output": "public/assets/fighters/shirt1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Golpe/Golpe1_Remera1.png",
+    "sourceSha256": "a4c1d9dd54af869ac99be2184c432e72a104093961c657a0becb27ec81373e24",
+    "output": "public/assets/fighters/shirt1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Golpe/Golpe2_Remera1.png",
+    "sourceSha256": "9e00e4608bc790c19b062e4e74844caa7acef7fd0ad24d59737a915574bdf3ad",
+    "output": "public/assets/fighters/shirt1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Golpe/Golpe3_Remera1.png",
+    "sourceSha256": "300f9543e1d8fdcd20864b6cc4033f5e1087c1b6084b4c28a184743346c1d824",
+    "output": "public/assets/fighters/shirt1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Golpeado/Malo0_Remera1.png",
+    "sourceSha256": "c7d136617b1eb63fe31a7734d7ce67b1f0dc067fd31e37c57919255995a3a61c",
+    "output": "public/assets/fighters/shirt1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Golpeado/Malo1_Remera1.png",
+    "sourceSha256": "fdf9d00a1bbd46ab2cb5dddba29785261a2ebb6bc014f7ee404d5da22618e19d",
+    "output": "public/assets/fighters/shirt1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Golpeado/Malo2_Remera1.png",
+    "sourceSha256": "740e21876a89cab0016f2d757d5a29dc68d48da34ba65d32c72a4a3090a475ee",
+    "output": "public/assets/fighters/shirt1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Golpeado/Malo3_Remera1.png",
+    "sourceSha256": "48f15464345f5b635be8987f5b361edb8c641837029e1777d13d720cb45cacb1",
+    "output": "public/assets/fighters/shirt1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Idle/Idle0_Remera1.png",
+    "sourceSha256": "e04823916f570b664b2a85f765cbbf28c4b548335fb9597061711b1a9c43e438",
+    "output": "public/assets/fighters/shirt1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Idle/Idle1_Remera1.png",
+    "sourceSha256": "ab70af770250152cf49e9b272280c89ff4bbb734a1295624ebd4e66921b3ab1e",
+    "output": "public/assets/fighters/shirt1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Salto/Salto0_Remera1.png",
+    "sourceSha256": "0c3a2d3855af09933deef30b4f1b157fdd4d08fb0e6eb3e5476c47b70bcb3d9b",
+    "output": "public/assets/fighters/shirt1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Spam Diseno/Diseno0_Remera1.png",
+    "sourceSha256": "b63e9342d7b9ed1041a3424556606f46c505b97c0d5acb629e20c531c66f4a4b",
+    "output": "public/assets/fighters/shirt1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Spam Diseno/Diseno1_Remera1.png",
+    "sourceSha256": "6cf7bdfb1d0d8cb25e31d7533dbeea12d3a26ff998c6e2d3f91e0204c9068fa6",
+    "output": "public/assets/fighters/shirt1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Spam Hard/Hardware0_Remera1.png",
+    "sourceSha256": "9f885b0d6918869c061e70a7b0762eb216d7b3a03dcf529167b8171d6c4f4d32",
+    "output": "public/assets/fighters/shirt1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Spam Hard/Hardware1_Remera1.png",
+    "sourceSha256": "a6bf72633575ff7d2a77ae05695a2c6b1bb2e9d6b15e19ff6111f792b6d61677",
+    "output": "public/assets/fighters/shirt1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Spam Hard/Hardware2_Remera1.png",
+    "sourceSha256": "b5eb5ad03964b9e591e49a95704a2ef46d62afeb2e81a7ac7853fda58d8111fa",
+    "output": "public/assets/fighters/shirt1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Spam Prog/Programacion0_Remera1.png",
+    "sourceSha256": "2519b55e76dd07c2afe09594a67e18531258a442b58c1f5cd07c0f4b75f4a49f",
+    "output": "public/assets/fighters/shirt1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Spam Prog/Programacion1_Remera1.png",
+    "sourceSha256": "ec8367094c8d9db52aa4ee8598d44424965f1dce3383989d72d30f25e248cd15",
+    "output": "public/assets/fighters/shirt1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Spam Red/Redes0_Remera1.png",
+    "sourceSha256": "070285b04083a1d451575fa915476f63e203330992f8b2fa640593e1220d703a",
+    "output": "public/assets/fighters/shirt1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Spam Red/Redes1_Remera1.png",
+    "sourceSha256": "133506b78919ab92a49fd6f065fcc3fd5456bb67706d79294a91c8556585e405",
+    "output": "public/assets/fighters/shirt1.png",
+    "correction": "Trello 35: overlay x offset -1"
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Uper Cut/Upercut0_Remera1.png",
+    "sourceSha256": "0ccb6b0efce60e22772abe48a88820300c3f76f3eaf5533edb9ce2678a9652bf",
+    "output": "public/assets/fighters/shirt1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Agachado/Agachado0_Remera2.png",
+    "sourceSha256": "4f25e105bc7197a157fe35bd2de5e8f44d132ecad93c9617dbdac89479f8fc34",
+    "output": "public/assets/fighters/shirt2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Barrida/Barrida0_Remera2.png",
+    "sourceSha256": "a73efe1e5775c7bf5b7b008185bdc0bbdf9f57bcc7f37f9c6dded515ab2b7971",
+    "output": "public/assets/fighters/shirt2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Caminar/Caminar0_Remera2.png",
+    "sourceSha256": "1cb6850082f9603a723726f169bcc6ef749fbb02d8cd543df27f8b5e4eab9e76",
+    "output": "public/assets/fighters/shirt2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Caminar/Caminar1_Remera2.png",
+    "sourceSha256": "156c337950911e6698129571a0489b0a282e58c076d2ec105412a8f6090bed8d",
+    "output": "public/assets/fighters/shirt2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Caminar/Caminar2_Remera2.png",
+    "sourceSha256": "f26223bf443779bef14112015172841e6e41bf57af3de64fec3eb0950db2ee43",
+    "output": "public/assets/fighters/shirt2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Caminar/Caminar3_Remera2.png",
+    "sourceSha256": "259f41b60fba7a5b6033d34bf17f87250cf121e37bce7ca3edc2bcaadd69076b",
+    "output": "public/assets/fighters/shirt2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Caminar/Caminar4_Remera2.png",
+    "sourceSha256": "ee3e183f791b321cb2e98ade3999a28b8671773120947f6e6aa3914b08a7b921",
+    "output": "public/assets/fighters/shirt2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Caminar/Caminar5_Remera2.png",
+    "sourceSha256": "7f9ea6c86d7a43821caf7a0cfd76865f81adc85719ec696b39fafd776b9d4055",
+    "output": "public/assets/fighters/shirt2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Caminar/Caminar6_Remera2.png",
+    "sourceSha256": "c36e38f93473a14e25cf77387a793fc661b4d5690da0277d2e5aa711041475f4",
+    "output": "public/assets/fighters/shirt2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Combo Diseno/CProgramacion0_Remera2.png",
+    "sourceSha256": "0b62074c3187dbda37edd021b71ca8e03f9fe1a6f8d0eaf3f929ec817f338aa5",
+    "output": "public/assets/fighters/shirt2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Combo Diseno/CProgramacion1_Remera2.png",
+    "sourceSha256": "c20bb054c275482aec1ca6a95348ad56521f0ab807fb9098f1dfc166586f9651",
+    "output": "public/assets/fighters/shirt2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Spam Red/Redes0_Remera2.png",
+    "sourceSha256": "134606868f7353ef77e9d906cfbaaaf3673625eb2e5eeaec3ee4763ced4dbd52",
+    "output": "public/assets/fighters/shirt2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Spam Red/Redes1_Remera2.png",
+    "sourceSha256": "4836a7f4298fc28735f6329c5ecfe51823293d504f733d7597847c7f47e05bfe",
+    "output": "public/assets/fighters/shirt2.png",
+    "correction": "Trello 35: overlay x offset -1"
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Spam Red/Redes1_Remera2.png",
+    "sourceSha256": "4836a7f4298fc28735f6329c5ecfe51823293d504f733d7597847c7f47e05bfe",
+    "output": "public/assets/fighters/shirt2.png",
+    "correction": "Trello 35: overlay x offset -1"
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Combo Redes/CRedes0_Remera2.png",
+    "sourceSha256": "156db920f1e18ae06af18d34dc781e91439a046ff5d6104ec76ec6bca75b35ba",
+    "output": "public/assets/fighters/shirt2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Combo Redes/CRedes1_Remera2.png",
+    "sourceSha256": "e8a831c7a7771a98e7868947ef618d1d12fd2eb8f58a852a6d713720ba35204c",
+    "output": "public/assets/fighters/shirt2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Defensa/Defensa0_Remera2.png",
+    "sourceSha256": "9bea6b8adda08d10b5f1e082497097a8dd6b73eeb25c6b4a735fae53b36aef56",
+    "output": "public/assets/fighters/shirt2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Golpe/Golpe0_Remera2.png",
+    "sourceSha256": "51424e24a19ce90d6803ff7600c87ca00ac1b50a277662587baecdbda5ca0153",
+    "output": "public/assets/fighters/shirt2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Golpe/Golpe1_Remera2.png",
+    "sourceSha256": "78b191f8399f93af2a4bc5f9ed00431142d46874b91b3e56f71148f17f0be03c",
+    "output": "public/assets/fighters/shirt2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Golpe/Golpe2_Remera2.png",
+    "sourceSha256": "552e3e26e15d72587ee2c6d7e06c634c26ec828d337ac6c45916ba9ec2ca9859",
+    "output": "public/assets/fighters/shirt2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Golpe/Golpe3_Remera2.png",
+    "sourceSha256": "d89f7d9bc2052c60782b278b59d57f6b44dff60dd28bba896ac151f0a74e3960",
+    "output": "public/assets/fighters/shirt2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Golpeado/Malo0_Remera2.png",
+    "sourceSha256": "84232ccd46e45b899d527bfdec2d548bca13daaee5e4428e2197d7ffb5320ed0",
+    "output": "public/assets/fighters/shirt2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Golpeado/Malo1_Remera2.png",
+    "sourceSha256": "31741864c661208081fc7ed4efe03d1bbfb1160911c02d51ee0e7f51f3275f09",
+    "output": "public/assets/fighters/shirt2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Golpeado/Malo2_Remera2.png",
+    "sourceSha256": "96cf76debb90450d721bf8721e0da248f474f730fc2cf10d9e9d013c36fae5b8",
+    "output": "public/assets/fighters/shirt2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Golpeado/Malo3_Remera2.png",
+    "sourceSha256": "a10b199b415e837423b3daac759292aedf1e782984a14dcb57cc711d515c0807",
+    "output": "public/assets/fighters/shirt2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Idle/Idle0_Remera2.png",
+    "sourceSha256": "e7575a59312d825b4eedfb31bfbbba14ae342cd28a95f462c7d6080f7131325e",
+    "output": "public/assets/fighters/shirt2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Idle/Idle1_Remera2.png",
+    "sourceSha256": "5777eb9f571a65277e87fc5cf7a7939293960cebef9d77b5f04ff444fe3c8179",
+    "output": "public/assets/fighters/shirt2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Salto/Salto0_Remera2.png",
+    "sourceSha256": "3420938a58f7296ee6cc082d813ff16696efd5f4e23251ac60ac81c29a457dc7",
+    "output": "public/assets/fighters/shirt2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Spam Diseno/Diseno0_Remera2.png",
+    "sourceSha256": "6543462bfbf5a059d916c3c680c60b6643ca2fdddc768e5d1e40a37544b105aa",
+    "output": "public/assets/fighters/shirt2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Spam Diseno/Diseno1_Remera2.png",
+    "sourceSha256": "70c9bbeea85930e5561e4c52cf6825e1aa97de0403894b73187091f45b96c3eb",
+    "output": "public/assets/fighters/shirt2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Spam Hard/Hardware0_Remera2.png",
+    "sourceSha256": "d07e565da60c5d11bb08595bcd3f6f2dd3d4792a597dab1aed66dfc6d699d7f7",
+    "output": "public/assets/fighters/shirt2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Spam Hard/Hardware1_Remera2.png",
+    "sourceSha256": "28a9c76f738bcd688eac6c5bfa0e1f6be879daa877603e0bfba16d8ad0776ef5",
+    "output": "public/assets/fighters/shirt2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Spam Hard/Hardware2_Remera2.png",
+    "sourceSha256": "40ae29a8f630424d2ec4ce56098ffbf624205f3912e006dce5a7e7d9688e2a07",
+    "output": "public/assets/fighters/shirt2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Spam Prog/Programacion0_Remera2.png",
+    "sourceSha256": "9160f874804ad0027cfc4e32bdfadd72f2f215c31f299e5f36317a5e45f0b5a1",
+    "output": "public/assets/fighters/shirt2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Spam Prog/Programacion1_Remera2.png",
+    "sourceSha256": "141f02b846f3aff5e527fa4893056b312176fe8c0201ca942c0e7d06fa4b811b",
+    "output": "public/assets/fighters/shirt2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Spam Red/Redes0_Remera2.png",
+    "sourceSha256": "134606868f7353ef77e9d906cfbaaaf3673625eb2e5eeaec3ee4763ced4dbd52",
+    "output": "public/assets/fighters/shirt2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Spam Red/Redes1_Remera2.png",
+    "sourceSha256": "4836a7f4298fc28735f6329c5ecfe51823293d504f733d7597847c7f47e05bfe",
+    "output": "public/assets/fighters/shirt2.png",
+    "correction": "Trello 35: overlay x offset -1"
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Jugadores/Remera/Uper Cut/Upercut0_Remera2.png",
+    "sourceSha256": "f9db50dbfeae769ad735f674adbce153952f66f5336fa886ca2f7d4808ac1e74",
+    "output": "public/assets/fighters/shirt2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Ataques/Redes/Spam/UTP0.png",
+    "sourceSha256": "deb62939071c2d70e309fa60757c2c005474207c52198111ba9467d3a1d38c72",
+    "output": "public/assets/effects/cable-0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Ataques/Redes/Spam/UTP1.png",
+    "sourceSha256": "93cc1de30f5dbed1248776d50509c4e284079d707ccf3d5088c382f946ec841d",
+    "output": "public/assets/effects/cable-1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Ataques/Redes/Spam/UTP2.png",
+    "sourceSha256": "204593b0888cd6925b10a8c0f4b1eee50a13d3bc08489decb2b32fcd5cd81f91",
+    "output": "public/assets/effects/cable-2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Ataques/Redes/Spam/UTP3.png",
+    "sourceSha256": "23c444b9e7a4b31dd7d4ff62f0edaad69f62626af1c9a2dc43b41e9b529c0174",
+    "output": "public/assets/effects/cable-3.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Ataques/Redes/Spam/UTP4.png",
+    "sourceSha256": "9718a4567fad2b30b3d388ee189d48f80bce704d8494ddc939261fdfe1fa6006",
+    "output": "public/assets/effects/cable-4.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Ataques/Redes/Spam/UTP5.png",
+    "sourceSha256": "fd94ee280f09948e27c945ae5d964a22a99c4e11ea6ba7e3bb4908137025e268",
+    "output": "public/assets/effects/cable-5.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Ataques/Redes/Spam/UTP6.png",
+    "sourceSha256": "90e6ac1c5a98286050b411c907a32576da641fea29ff44ff346e2032bfcba22a",
+    "output": "public/assets/effects/cable-6.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Ataques/Redes/Spam/UTP7.png",
+    "sourceSha256": "ca8fed507e1fd2c70a1a09fa0dd108f42abeb1dfad798958a0f0cfb12ebdf665",
+    "output": "public/assets/effects/cable-7.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Ataques/Redes/Spam/UTP8.png",
+    "sourceSha256": "561e8282ba9124d9d2b12bedde1b6a32f62a30ac500a2dcb2ef262fce14057a0",
+    "output": "public/assets/effects/cable-8.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Ataques/Redes/Spam/UTP9.png",
+    "sourceSha256": "eb87b738e2d2c31113ec337be4e8f617c97bc0901180f345a45263e5e58cf1e3",
+    "output": "public/assets/effects/cable-9.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Ataques/Redes/Spam/UTP10.png",
+    "sourceSha256": "b4ea6ef006310dd0424dade9ddcc35585f8349d29d207f494ae5683ca7414bb5",
+    "output": "public/assets/effects/cable-10.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Ataques/Redes/Spam/UTP11.png",
+    "sourceSha256": "f061cd446274603550c11508d30c5476fa682f5d6702ccbc6a0ad714794063da",
+    "output": "public/assets/effects/cable-11.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Ataques/Redes/Spam/UTP12.png",
+    "sourceSha256": "2646b80ea3e7db0f7988fa4b65960925bd2a8b0385d72fb02c8f6385a3e4557a",
+    "output": "public/assets/effects/cable-12.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Ataques/Redes/Spam/UTP13.png",
+    "sourceSha256": "d8a83bf0036bb26f31c416b864c474c75d32cf6bceaaf6db44843da1e5fa3e88",
+    "output": "public/assets/effects/cable-13.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Ataques/Redes/Spam/UTP14.png",
+    "sourceSha256": "933dfe97e67e577ef0d028e750d4ba6c38f16e46767726eb05670f1b0630fcc0",
+    "output": "public/assets/effects/cable-14.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Ataques/Redes/Combo/CABLES0.png",
+    "sourceSha256": "4e65185a452f0ee7836601d69fd470950beffc99cab9879d2552eac05986d0ee",
+    "output": "public/assets/effects/cables-0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Ataques/Redes/Combo/CABLES1.png",
+    "sourceSha256": "72bc264ee76827c7e4e2e259693198f93edb9fc3a2701ff1bf9b113ca599d799",
+    "output": "public/assets/effects/cables-1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Ataques/Redes/Combo/CABLES2.png",
+    "sourceSha256": "6f76cb5d7c505d84a2eaff5cadcfc05fd98e8096d9919332f381c637c22f5b45",
+    "output": "public/assets/effects/cables-2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Ataques/Redes/Combo/CABLES3.png",
+    "sourceSha256": "823c180bab24acf05ab7684199e91e99f3a929a1d2df8d8a38f2e25bebd62150",
+    "output": "public/assets/effects/cables-3.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Ataques/Redes/Combo/CABLES4.png",
+    "sourceSha256": "fecc3baca3e5c2e1a3df66f682bdf54bf5695190f0a308693edb7fe7152fcd87",
+    "output": "public/assets/effects/cables-4.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Ataques/Redes/Combo/CABLES5.png",
+    "sourceSha256": "a47262ad35b5683268f110dc9a82dd30fec347c6f9fdefecdd15595e8fae336e",
+    "output": "public/assets/effects/cables-5.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Ataques/Redes/Combo/CABLES6.png",
+    "sourceSha256": "07e24af341aa11d6a383a03e111eee217423d7cea09008357aa1ce869fbe92aa",
+    "output": "public/assets/effects/cables-6.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Ataques/Redes/Combo/CABLES7.png",
+    "sourceSha256": "22d52c3d39732d606422029f042ef10a6eb9c6b885724e6a34e3f04c35f22c49",
+    "output": "public/assets/effects/cables-7.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Ataques/Redes/Combo/CABLES8.png",
+    "sourceSha256": "bb81a3b77de212911859ff62638287c205c2bd6dfd821e6bd3497f3111c5d710",
+    "output": "public/assets/effects/cables-8.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Ataques/Redes/Combo/CABLES9.png",
+    "sourceSha256": "f2f3d0e9175ccbd3f0fd0e0069885b9e5f80b6769a12df47affbf365cd85ab6e",
+    "output": "public/assets/effects/cables-9.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Ataques/Redes/Combo/CABLES10.png",
+    "sourceSha256": "cafdcf1b63366347b2b18909e0df11745dd710dd0f7b226964ae10701ddfba4d",
+    "output": "public/assets/effects/cables-10.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Ataques/Redes/Combo/CABLES11.png",
+    "sourceSha256": "bd935d96cd2054100a510d451bcadc9099601dd966f2ba74733c7b1876eba702",
+    "output": "public/assets/effects/cables-11.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Ataques/Redes/Combo/CABLES12.png",
+    "sourceSha256": "66a4124ba98ba0f51ed5bb58d8cf6745ae95f72b600d9fc4cdbd8bab48b871e0",
+    "output": "public/assets/effects/cables-12.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Ataques/Redes/Combo/CABLES13.png",
+    "sourceSha256": "19d21ea2dd2173414f81e0b1462e537b62252538ced6521afbb30653bf53062c",
+    "output": "public/assets/effects/cables-13.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Ataques/Redes/Combo/CABLES14.png",
+    "sourceSha256": "b0d0792239e5fca1376762a37363ff9b4a64eb6aeaeb814cf1e82b1d3236e70d",
+    "output": "public/assets/effects/cables-14.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Ataques/Diseno/Spam/MOUSE0.png",
+    "sourceSha256": "f4dc960e9e0263c3ce7bfd88fb2f4db39ea1f8e36bd06166d642a8dea9890afd",
+    "output": "public/assets/effects/mouse-0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Ataques/Diseno/Spam/MOUSE1.png",
+    "sourceSha256": "1facf6b4e1db5cd91904c0970c90d8f49424ec151b0973fb66933bfaa56d7a04",
+    "output": "public/assets/effects/mouse-1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Ataques/Diseno/Spam/MOUSE2.png",
+    "sourceSha256": "f81f188dc406a3ef8bb5cdd3762eeb6baf623ea7ab2c9600983bcc6eb8fd2281",
+    "output": "public/assets/effects/mouse-2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Ataques/Diseno/Spam/MOUSE3.png",
+    "sourceSha256": "56632d153f42b105a28d3ca4f79fcaa20d01faf8da7fd14105c28c29c38cdb1b",
+    "output": "public/assets/effects/mouse-3.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Ataques/Diseno/Spam/MOUSE4.png",
+    "sourceSha256": "bf51a5be31819dcf8d750a1e2bfb7a3edd4b68355fa13078dd44f6db8720b53d",
+    "output": "public/assets/effects/mouse-4.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Ataques/Diseno/Spam/MOUSE5.png",
+    "sourceSha256": "d625a0d58573b6f0da9a2ecec857f539ed8722d23257bc213c03cdb7ead0b9e4",
+    "output": "public/assets/effects/mouse-5.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Ataques/Diseno/Spam/MOUSE6.png",
+    "sourceSha256": "d7f6677f4ce5d80c33d6ea669e65beb216fdb0dc3a1bcd414085e00b0e98b3ce",
+    "output": "public/assets/effects/mouse-6.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Ataques/Diseno/Spam/MOUSE7.png",
+    "sourceSha256": "c023fa4338aac0a3e97a14aea318aaa2a3b89cc430607f4c58c130b932c4cbac",
+    "output": "public/assets/effects/mouse-7.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Ataques/Diseno/Spam/MOUSE8.png",
+    "sourceSha256": "fb366bf89086f8efc2045f5c452a8f5a238d37f55b44c0e60411b0a67d15b292",
+    "output": "public/assets/effects/mouse-8.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Ataques/Diseno/Spam/MOUSE9.png",
+    "sourceSha256": "79f6586d8fb21b49a182d191aaab8cbbeb168f7751722d0f01ae7674d4a00968",
+    "output": "public/assets/effects/mouse-9.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Ataques/Diseno/Combo/Cdiseno0.png",
+    "sourceSha256": "a62338ff0de7edb9089c78cde5d0bee7eeac59ae22b9c5a59b8a9d352bd47ccc",
+    "output": "public/assets/effects/selection-0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Ataques/Diseno/Combo/Cdiseno1.png",
+    "sourceSha256": "a62338ff0de7edb9089c78cde5d0bee7eeac59ae22b9c5a59b8a9d352bd47ccc",
+    "output": "public/assets/effects/selection-1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Ataques/Diseno/Combo/Cdiseno2.png",
+    "sourceSha256": "30ae736bf74aed295b1981cbd2b133aaef88ce9551ec84d69b01ae0e350d58fa",
+    "output": "public/assets/effects/selection-2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Ataques/Diseno/Combo/Cdiseno3.png",
+    "sourceSha256": "30ae736bf74aed295b1981cbd2b133aaef88ce9551ec84d69b01ae0e350d58fa",
+    "output": "public/assets/effects/selection-3.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Ataques/Diseno/Combo/Cdiseno4.png",
+    "sourceSha256": "8069308c5389fc6093094fb994c4b1fe99bc9c4a294f7923d10434c3b9517532",
+    "output": "public/assets/effects/selection-4.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Ataques/Diseno/Combo/Cdiseno5.png",
+    "sourceSha256": "8069308c5389fc6093094fb994c4b1fe99bc9c4a294f7923d10434c3b9517532",
+    "output": "public/assets/effects/selection-5.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Ataques/Diseno/Combo/Cdiseno6.png",
+    "sourceSha256": "3824c772c9eab8e8780a2932aa4816df2efa00e9b20e0e0bdf673ef15d63d817",
+    "output": "public/assets/effects/selection-6.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Ataques/Diseno/Combo/Cdiseno7.png",
+    "sourceSha256": "3824c772c9eab8e8780a2932aa4816df2efa00e9b20e0e0bdf673ef15d63d817",
+    "output": "public/assets/effects/selection-7.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Ataques/Diseno/Combo/Cdiseno8.png",
+    "sourceSha256": "94ea775285be4684c02a19504bc6f1de110816e93a4e117d62843ecf0855909e",
+    "output": "public/assets/effects/selection-8.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Ataques/Diseno/Combo/Cdiseno9.png",
+    "sourceSha256": "94ea775285be4684c02a19504bc6f1de110816e93a4e117d62843ecf0855909e",
+    "output": "public/assets/effects/selection-9.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Ataques/Diseno/Combo/Cdiseno10.png",
+    "sourceSha256": "53939ca9acd0dc39ed28f9762f413da6aaba45a68448d63c7c9cfb0c2e28a956",
+    "output": "public/assets/effects/selection-10.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Ataques/Diseno/Combo/Cdiseno11.png",
+    "sourceSha256": "53939ca9acd0dc39ed28f9762f413da6aaba45a68448d63c7c9cfb0c2e28a956",
+    "output": "public/assets/effects/selection-11.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Ataques/Diseno/Combo/Cdiseno12.png",
+    "sourceSha256": "789e46c0a6398e66348afce777b70ca0508f3be25d7f385e71f3c109aca3d2f1",
+    "output": "public/assets/effects/selection-12.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Ataques/Diseno/Combo/Cdiseno13.png",
+    "sourceSha256": "789e46c0a6398e66348afce777b70ca0508f3be25d7f385e71f3c109aca3d2f1",
+    "output": "public/assets/effects/selection-13.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Ataques/Diseno/Combo/Cdiseno14.png",
+    "sourceSha256": "399b21a5d23cebe8362fdd167a9e670329d4e8a03362b5e6392f0e6cb0a0519a",
+    "output": "public/assets/effects/selection-14.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Ataques/Diseno/Combo/Cdiseno15.png",
+    "sourceSha256": "399b21a5d23cebe8362fdd167a9e670329d4e8a03362b5e6392f0e6cb0a0519a",
+    "output": "public/assets/effects/selection-15.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Ataques/Diseno/Combo/Cdiseno16.png",
+    "sourceSha256": "4d9fcd44f89797e6f636a468245168e682ae55ccb4d89ff3e21170b27e8391b7",
+    "output": "public/assets/effects/selection-16.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Ataques/Diseno/Combo/Cdiseno17.png",
+    "sourceSha256": "12d0567ee23ea4012fe5da64c0e9cc06880d023c71b4d07af872792f3f14d0af",
+    "output": "public/assets/effects/selection-17.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Ataques/Diseno/Combo/Cdiseno18.png",
+    "sourceSha256": "9279d1ae412839c79c97e9eb6e1cb8aeae3d78fb1f0742036acc304e8e192842",
+    "output": "public/assets/effects/selection-18.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Ataques/Diseno/Combo/Cdiseno19.png",
+    "sourceSha256": "934760e2f9865adda4a983b4617494dbfefed2b0e3cb8fd1400dba3b2a70b0d2",
+    "output": "public/assets/effects/selection-19.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Ataques/Diseno/Combo/Cdiseno20.png",
+    "sourceSha256": "5dbacd32e3a58a01bc26754931c951843ee208eae9a3b1c75ed3c9d7ca7da943",
+    "output": "public/assets/effects/selection-20.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Ataques/Diseno/Combo/Cdiseno21.png",
+    "sourceSha256": "5dbacd32e3a58a01bc26754931c951843ee208eae9a3b1c75ed3c9d7ca7da943",
+    "output": "public/assets/effects/selection-21.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Ataques/Programacion/Spam/BOLA0.png",
+    "sourceSha256": "19b6194f23ecaa6054f82d2becc94b9f8b1974066247112f9c52eed80a821ecb",
+    "output": "public/assets/effects/ball-0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Ataques/Programacion/Spam/BOLA1.png",
+    "sourceSha256": "b56e51a99d5484dfc1cc4134f7ca6f7066ab1cc6e6ba8418352853db0cd3ab3f",
+    "output": "public/assets/effects/ball-1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Ataques/Programacion/Spam/BOLA2.png",
+    "sourceSha256": "d6e95a8195a785a85134e2bff843233acef46ff63499bcc2ad5fa016b1d16036",
+    "output": "public/assets/effects/ball-2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Ataques/Programacion/Spam/BOLA3.png",
+    "sourceSha256": "133335dc5dd6301b13275d19968d05ceb4a88bf1a828a4b889a7b40c19a61c43",
+    "output": "public/assets/effects/ball-3.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Ataques/Programacion/Spam/BOLA4.png",
+    "sourceSha256": "69990aa80072583cc26e01b4389a10cd67c8b0af50dfcbcf90b32e5a9bc351b0",
+    "output": "public/assets/effects/ball-4.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Ataques/Programacion/Spam/BOLA5.png",
+    "sourceSha256": "bb5b48a1db913fcdf644bdb424eb3de887ad80fb56d8d980c6948abe3d497a0d",
+    "output": "public/assets/effects/ball-5.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Ataques/Programacion/Combo/CProg.png",
+    "sourceSha256": "1dd5a294b8a1429b072e6d28c0d411dac5a43604b443ef5d5e61f9acb53921c1",
+    "output": "public/assets/effects/column-0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Ataques/Hardware/Spam/RAM0.png",
+    "sourceSha256": "c38818ae06d808db775dfdd780444a7f4b40d6f2b04eeab737680308925f85f8",
+    "output": "public/assets/effects/ram-0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Ataques/Hardware/Spam/RAM1.png",
+    "sourceSha256": "3532095d209078def5008dceb5ea7ae445eb63906ae0e78a539bf21b11ce3b81",
+    "output": "public/assets/effects/ram-1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Ataques/Hardware/Spam/RAM2.png",
+    "sourceSha256": "0a3e403c9edfee9e6e1c4ec0f53fa07f6cf4e56f201eab6344a625e2615c1593",
+    "output": "public/assets/effects/ram-2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Ataques/Hardware/Spam/RAM3.png",
+    "sourceSha256": "f32b76dcced1af9b6f671035120d4067583e2d16b575e0d14ed461b9852e1c02",
+    "output": "public/assets/effects/ram-3.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Ataques/Hardware/Spam/RAM4.png",
+    "sourceSha256": "1239b758a6be131f5700568698bb299c5c744b78f6890881fd05b567387203d1",
+    "output": "public/assets/effects/ram-4.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Ataques/Hardware/Spam/RAM5.png",
+    "sourceSha256": "856d3ee2477927b772b07e4fcdfcbff4822398830d750e79f4015ec538b85e69",
+    "output": "public/assets/effects/ram-5.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Ataques/Hardware/Spam/RAM6.png",
+    "sourceSha256": "99b998695b479a1575193632c9166146b2141d37cb2b867f774c9527d7c599c2",
+    "output": "public/assets/effects/ram-6.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Ataques/Hardware/Spam/RAM7.png",
+    "sourceSha256": "bccbebee60b39427f4592df1397a0b6b8b0fb4590f0297f44d0e7e2eedf0e72a",
+    "output": "public/assets/effects/ram-7.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Ataques/Hardware/Spam/RAM8.png",
+    "sourceSha256": "59cb2b4b3370fdfadf6762938024db90e63913003bb2c9f22f9a4cb2e0614a3b",
+    "output": "public/assets/effects/ram-8.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Ataques/Hardware/Spam/RAM9.png",
+    "sourceSha256": "0e93a70b72d58cb87c858419cfee9a7966839826fe14f729da938bef562799fc",
+    "output": "public/assets/effects/ram-9.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Ataques/Hardware/Spam/RAM10.png",
+    "sourceSha256": "fef1fba2fbb33ad597093a25345178bc503556ff53b683de3b0d32e121955566",
+    "output": "public/assets/effects/ram-10.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Ataques/Hardware/Spam/RAM11.png",
+    "sourceSha256": "4ca1892e3799cf265825628e8831ccd2b2def8e691e98958c61edc3082c536c5",
+    "output": "public/assets/effects/ram-11.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Ataques/Hardware/Spam/RAM12.png",
+    "sourceSha256": "8fad0ccb50093381e357822dd666534022a8f578c7b63720f013f533d91098e0",
+    "output": "public/assets/effects/ram-12.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Ataques/Hardware/Spam/RAM13.png",
+    "sourceSha256": "368a02dc6a9413e869f55915d7de5a16773714632a81afc25fa948a480e91bb1",
+    "output": "public/assets/effects/ram-13.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Ataques/Hardware/Spam/RAM14.png",
+    "sourceSha256": "f34293e6e4a01d0383739b8a6bf664700b6fc5a98ab246dbb2eb00f6b1db3b26",
+    "output": "public/assets/effects/ram-14.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Ataques/Hardware/Combo/Disco0.png",
+    "sourceSha256": "c96761f0f3e0d2c735007011fd54e836f1d232f62cd1909ecfa03c498c8e0633",
+    "output": "public/assets/effects/disc-0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Ataques/Hardware/Combo/Disco1.png",
+    "sourceSha256": "ebb9daa4d10632838735d7bbded6fa3fd22eda89c3299527c652ba56c5962ad1",
+    "output": "public/assets/effects/disc-1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Ataques/Hardware/Combo/Disco2.png",
+    "sourceSha256": "38e1c611a5641fd7aa113a26feb665a70368f0ad131cd5d75640067e657e88b2",
+    "output": "public/assets/effects/disc-2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Ataques/Hardware/Combo/Disco3.png",
+    "sourceSha256": "10a4dc0ee8d75b6ee298dd0007e61e03355aa5dc57ca6e45d0347f7587914e57",
+    "output": "public/assets/effects/disc-3.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Escenarios/Mapa1/Plataformas/Plataforma0.png",
+    "sourceSha256": "7128a5deae717317ef572ce3550c0e91167ef9d43760f10d99da6e1d5818f7fa",
+    "output": "public/assets/platforms/classic-0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Escenarios/Mapa1/Plataformas/Plataforma1.png",
+    "sourceSha256": "8abc103a089521a54b1e6e8a9978978a7c9b71849a8a78cbeed3cf61bb6f8846",
+    "output": "public/assets/platforms/classic-1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/Escenarios/Mapa1/Plataformas/Plataforma2.png",
+    "sourceSha256": "0d7987daed0cb54726818b83163132c2e2671675884bcb418d9677cc52e53efb",
+    "output": "public/assets/platforms/classic-2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/HUD/Retrato0-0.png",
+    "sourceSha256": "405e3f5e34c6681c862e16e15de535a1be45abbc0d29b06a7e5bdae17a56fb5a",
+    "output": "public/assets/portraits/0-0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/HUD/Retrato0-1.png",
+    "sourceSha256": "3d2ab259ed083ede55fee6b86ae3b270b0bf52d2279c07da8c5d49eadd304fb1",
+    "output": "public/assets/portraits/0-1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/HUD/Retrato0-2.png",
+    "sourceSha256": "c8ac0635f9fbdc8fe5a4fb854e5c58357a40c8845f649674f8f2987a11c5453a",
+    "output": "public/assets/portraits/0-2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/HUD/Retrato0-3.png",
+    "sourceSha256": "1035aa221dbac4942c209aaabad3c426a6e8013c4f46f11e0fe7c3dae830e804",
+    "output": "public/assets/portraits/0-3.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/HUD/Retrato1-0.png",
+    "sourceSha256": "40cc6b567cecd6877b0cced1dd303489562f58b539ea9b1d7a6b7018d7bd10e8",
+    "output": "public/assets/portraits/1-0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/HUD/Retrato1-1.png",
+    "sourceSha256": "4af1d042a6c4a29e2c950aeb6b232e6953535565faffc658af11342bbb9a6d90",
+    "output": "public/assets/portraits/1-1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/HUD/Retrato1-2.png",
+    "sourceSha256": "7f5a83c746f999471f45d3e3e844001044dd1597dac6df0c200f5dfc781f484f",
+    "output": "public/assets/portraits/1-2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/HUD/Retrato1-3.png",
+    "sourceSha256": "622c706f35b2310151b6177dc1c4376241aaf6b6b7a04633db57e0047de7d56c",
+    "output": "public/assets/portraits/1-3.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/HUD/Retrato2-0.png",
+    "sourceSha256": "82f6d406db798f55ab023f366eae26329301525ec4e50c52eb849b322d9abb01",
+    "output": "public/assets/portraits/2-0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/HUD/Retrato2-1.png",
+    "sourceSha256": "9a4a893852488e10c5981f4232950ec9de8ffa63963a531c9722e1806c12ab94",
+    "output": "public/assets/portraits/2-1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/HUD/Retrato2-2.png",
+    "sourceSha256": "33dae0f8ac72d5030e704c690c90d7cff334691c105170b180e7ffb8b772abc9",
+    "output": "public/assets/portraits/2-2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/HUD/Retrato2-3.png",
+    "sourceSha256": "03b9d22442a24813cf84db2ef0ccaba7d1415053c825fea1ffbbe2fd899f728a",
+    "output": "public/assets/portraits/2-3.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/HUD/Retrato3-0.png",
+    "sourceSha256": "b452e6c7948da470c2034308d0813a2904308d4ca08d39edb4f8dd834bac2566",
+    "output": "public/assets/portraits/3-0.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/HUD/Retrato3-1.png",
+    "sourceSha256": "e4247af7d250947b58eec0b3fd2eb883f230a2e8a748607f4e8fc3935a955cb1",
+    "output": "public/assets/portraits/3-1.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/HUD/Retrato3-2.png",
+    "sourceSha256": "6c3204a2f1955dab3d742f2fcdc4f8b3318d82b5937a980ccbcea0d1837b3fbb",
+    "output": "public/assets/portraits/3-2.png",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/Super TIC Fighter Remake/Sprites Sin editar/HUD/Retrato3-3.png",
+    "sourceSha256": "b5c4848239933aa5aeeaf949d26f3d2d0ef644d1fd0d9b42dae5f395ed22052a",
+    "output": "public/assets/portraits/3-3.png",
+    "correction": null
+  },
+  {
+    "source": "/tmp/stf-remake-audit-ThKloi/Assets/Backgrounds/Map1.png",
+    "sourceSha256": "5f7dfccbc454521c209892473a27bead6df9a576c981e3639d22f50a52aa1d28",
+    "output": "public/assets/backgrounds/classic.png",
+    "correction": null
+  },
+  {
+    "source": "/tmp/stf-remake-audit-ThKloi/Assets/OST/intro.mp3",
+    "sourceSha256": "c9770b31c313edfe08b8cea03a7b5794809c6d24d06627e3191a547a0d47e2c5",
+    "output": "public/assets/audio/intro.mp3",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/STF_2017/Programacion/Super Tic Fighter/Super Tic Fighter/Super Tic FighterContent/Sonidos/Cancion 0.mp3",
+    "sourceSha256": "5d1db4d4f557e78265949731b707635346e59a80f430150d1434fbabfe8b36f1",
+    "output": "public/assets/audio/original/00.mp3",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/STF_2017/Programacion/Super Tic Fighter/Super Tic Fighter/Super Tic FighterContent/Sonidos/Cancion 1.mp3",
+    "sourceSha256": "5cd876f99970e93d98d433d9ff8a999323ed49f97f9ad38cd5ed25c8164385bd",
+    "output": "public/assets/audio/original/01.mp3",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/STF_2017/Programacion/Super Tic Fighter/Super Tic Fighter/Super Tic FighterContent/Sonidos/Cancion 2.mp3",
+    "sourceSha256": "8d6d33e7ebdac8bc407a623bbd59aa82916ee48c7463e41927007de9a3bf896f",
+    "output": "public/assets/audio/original/02.mp3",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/STF_2017/Programacion/Super Tic Fighter/Super Tic Fighter/Super Tic FighterContent/Sonidos/Cancion 3.mp3",
+    "sourceSha256": "d715445ee8e14560466ebed0cd948eafcf3e85346d929c22ba7c09405f0a686f",
+    "output": "public/assets/audio/original/03.mp3",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/STF_2017/Programacion/Super Tic Fighter/Super Tic Fighter/Super Tic FighterContent/Sonidos/Cancion 4.mp3",
+    "sourceSha256": "6ba5e0ee27168ad8648de6a3d9cdffa92da08540e7e4fc24fa1411889a436b46",
+    "output": "public/assets/audio/original/04.mp3",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/STF_2017/Programacion/Super Tic Fighter/Super Tic Fighter/Super Tic FighterContent/Sonidos/Cancion 5.mp3",
+    "sourceSha256": "9600457bb1cb8c5084574331f17f92133141ec7cc880d0dc1f0d5de639ffc177",
+    "output": "public/assets/audio/original/05.mp3",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/STF_2017/Programacion/Super Tic Fighter/Super Tic Fighter/Super Tic FighterContent/Sonidos/Cancion 6.mp3",
+    "sourceSha256": "1c29b2b37fd2d49d99fd6655ab1865cb8505a8d647d5171b011de0e1e79d848a",
+    "output": "public/assets/audio/original/06.mp3",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/STF_2017/Programacion/Super Tic Fighter/Super Tic Fighter/Super Tic FighterContent/Sonidos/Cancion 7.mp3",
+    "sourceSha256": "0e20c10c8a0d83f562f0a254836e1fd8c59d610eb692b8e75f5991c21bc69bac",
+    "output": "public/assets/audio/original/07.mp3",
+    "correction": null
+  },
+  {
+    "source": "/tmp/stf-remake-audit-ThKloi/Assets/Music/Cancion0.mp3",
+    "sourceSha256": "59a6ccaf1e62c6f249e09afd8ce989c78397ab156d414e611db612b5ebf31ff5",
+    "output": "public/assets/audio/remake/00.mp3",
+    "correction": null
+  },
+  {
+    "source": "/tmp/stf-remake-audit-ThKloi/Assets/Music/Cancion1.mp3",
+    "sourceSha256": "0a1b0f5eee8b3fd36b6319f94aa5dc8afcaf44a6c70bef2b54ed70fd986ee6d6",
+    "output": "public/assets/audio/remake/01.mp3",
+    "correction": null
+  },
+  {
+    "source": "/tmp/stf-remake-audit-ThKloi/Assets/Music/Cancion2.mp3",
+    "sourceSha256": "1be5de1fd16ac55be47ee05df9ad2d4100db3c2638b09227141d46778c32e43f",
+    "output": "public/assets/audio/remake/02.mp3",
+    "correction": null
+  },
+  {
+    "source": "/tmp/stf-remake-audit-ThKloi/Assets/Music/Cancion3.mp3",
+    "sourceSha256": "6ee752b45f192891d55a703e2cea44d69c655fff79d795c17657e95b9478490a",
+    "output": "public/assets/audio/remake/03.mp3",
+    "correction": null
+  },
+  {
+    "source": "/tmp/stf-remake-audit-ThKloi/Assets/Music/Cancion4.mp3",
+    "sourceSha256": "c0cbe0d8c9daf5de61959f7af68f412a455022aa51ece758ae32ff7efc3fece1",
+    "output": "public/assets/audio/remake/04.mp3",
+    "correction": null
+  },
+  {
+    "source": "/tmp/stf-remake-audit-ThKloi/Assets/Music/Cancion5.mp3",
+    "sourceSha256": "bdb8d522d629fb1a4fa74a9190a4c8ccc15e905c735c7803c2933fbae585acfa",
+    "output": "public/assets/audio/remake/05.mp3",
+    "correction": null
+  },
+  {
+    "source": "/tmp/stf-remake-audit-ThKloi/Assets/Music/Cancion6.mp3",
+    "sourceSha256": "1148d1652ee9636900931e98ec88a1c2d1362361179157a789ac4901dcc2c5d6",
+    "output": "public/assets/audio/remake/06.mp3",
+    "correction": null
+  },
+  {
+    "source": "/tmp/stf-remake-audit-ThKloi/Assets/Music/Cancion7.mp3",
+    "sourceSha256": "7127fe4af43bbe3f850c7793b69bbd20428a348863d0913f827a24b877aa4b92",
+    "output": "public/assets/audio/remake/07.mp3",
+    "correction": null
+  },
+  {
+    "source": "/tmp/stf-remake-audit-ThKloi/Assets/Music/Cancion8.mp3",
+    "sourceSha256": "37640f10f23be49060edd3e0c86897d88f37cb49f063d6ab53a12a3d5d78c4cb",
+    "output": "public/assets/audio/remake/08.mp3",
+    "correction": null
+  },
+  {
+    "source": "/tmp/stf-remake-audit-ThKloi/Assets/Music/Cancion9.mp3",
+    "sourceSha256": "f4965420a9f3d05c44adc25361b6b818260a166ff19d5dbde48545687921c11c",
+    "output": "public/assets/audio/remake/09.mp3",
+    "correction": null
+  },
+  {
+    "source": "/tmp/stf-remake-audit-ThKloi/Assets/Music/Cancion10.mp3",
+    "sourceSha256": "ac5e68ae222235b9d924faed6d989d12ceb855156a1765be546c93d127edda3e",
+    "output": "public/assets/audio/remake/10.mp3",
+    "correction": null
+  },
+  {
+    "source": "/tmp/stf-remake-audit-ThKloi/Assets/Music/Cancion11.mp3",
+    "sourceSha256": "a2a3746005529bdcc84a58109dda3e118c2c198f5f76ef71eaa436a801e0e006",
+    "output": "public/assets/audio/remake/11.mp3",
+    "correction": null
+  },
+  {
+    "source": "/tmp/stf-remake-audit-ThKloi/Assets/Music/Cancion12.mp3",
+    "sourceSha256": "a8a349cb99a0b2e48b444fc213d97d5d0b1469d9d6392765e7a31a12df0f3f40",
+    "output": "public/assets/audio/remake/12.mp3",
+    "correction": null
+  },
+  {
+    "source": "/tmp/stf-remake-audit-ThKloi/Assets/Music/Cancion13.mp3",
+    "sourceSha256": "ede76137882ea3b5a1e1d399d27efa3292bf0479df8487f95064865304658742",
+    "output": "public/assets/audio/remake/13.mp3",
+    "correction": null
+  },
+  {
+    "source": "/tmp/stf-remake-audit-ThKloi/Assets/Music/Cancion14.mp3",
+    "sourceSha256": "ca2fe8b28d030f3fc3bfacb6ca2fc9f5070bb6c0b7d0006cd6be29550c6cc504",
+    "output": "public/assets/audio/remake/14.mp3",
+    "correction": null
+  },
+  {
+    "source": "/tmp/stf-remake-audit-ThKloi/Assets/Music/Cancion15.mp3",
+    "sourceSha256": "2120bbee12552c1e9094f45013429bbb4c6f6f136caf4f776dcd7cb4192c2923",
+    "output": "public/assets/audio/remake/15.mp3",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/STF_2017/Programacion/Super Tic Fighter/Super Tic Fighter/Super Tic FighterContent/Sonidos/Barrida.wav",
+    "sourceSha256": "068d8fab989cd74095c3382be8351abc5e3ceb13eade0011766bd7c2d178674d",
+    "output": "public/assets/audio/effects/Barrida.wav",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/STF_2017/Programacion/Super Tic Fighter/Super Tic Fighter/Super Tic FighterContent/Sonidos/Bola.wav",
+    "sourceSha256": "451815491a1c7b407b82f0ae32abdfa8fd02c56e64fb9d2a825aed110bd8c67d",
+    "output": "public/assets/audio/effects/Bola.wav",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/STF_2017/Programacion/Super Tic Fighter/Super Tic Fighter/Super Tic FighterContent/Sonidos/Disco.wav",
+    "sourceSha256": "bac14d325ab83efa876ccd17850b3c53d7339cb503a49026869ff388dd1eb202",
+    "output": "public/assets/audio/effects/Disco.wav",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/STF_2017/Programacion/Super Tic Fighter/Super Tic Fighter/Super Tic FighterContent/Sonidos/Fight.wav",
+    "sourceSha256": "5c648e7e9ebb4df3dede867927106a189e7e6011b399d3f875b6e9fe21bd5225",
+    "output": "public/assets/audio/effects/Fight.wav",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/STF_2017/Programacion/Super Tic Fighter/Super Tic Fighter/Super Tic FighterContent/Sonidos/Gancho.wav",
+    "sourceSha256": "dfcdcb44a2681b362a53443b436032e27a3ddc34df950861e21baa7f93e6356b",
+    "output": "public/assets/audio/effects/Gancho.wav",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/STF_2017/Programacion/Super Tic Fighter/Super Tic Fighter/Super Tic FighterContent/Sonidos/Golpe.wav",
+    "sourceSha256": "d7b51dd2bf044d52ce1fadb6192ed3e95a9aa4675f8235c2d362cb146ecfa66f",
+    "output": "public/assets/audio/effects/Golpe.wav",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/STF_2017/Programacion/Super Tic Fighter/Super Tic Fighter/Super Tic FighterContent/Sonidos/Golpe2.wav",
+    "sourceSha256": "1b76e3046834f6f1cdf8b199a1fc920f44be7c2a6bc39187f5b9336aba3e1c55",
+    "output": "public/assets/audio/effects/Golpe2.wav",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/STF_2017/Programacion/Super Tic Fighter/Super Tic Fighter/Super Tic FighterContent/Sonidos/Golpeado.wav",
+    "sourceSha256": "aed61705fdb302a3c21da3be40a99752fe5159f3531e012058e90544d229df13",
+    "output": "public/assets/audio/effects/Golpeado.wav",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/STF_2017/Programacion/Super Tic Fighter/Super Tic Fighter/Super Tic FighterContent/Sonidos/Hard.wav",
+    "sourceSha256": "335cfac7468d442a1a3ae9abbe62d8bb73027a8e2043200c5450813818eceb9b",
+    "output": "public/assets/audio/effects/Hard.wav",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/STF_2017/Programacion/Super Tic Fighter/Super Tic Fighter/Super Tic FighterContent/Sonidos/Latigo.wav",
+    "sourceSha256": "e860c1a82ff67b3cbe1fb440be38e3937445ce023120985001038c7e2acb5bb6",
+    "output": "public/assets/audio/effects/Latigo.wav",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/STF_2017/Programacion/Super Tic Fighter/Super Tic Fighter/Super Tic FighterContent/Sonidos/Mouse.wav",
+    "sourceSha256": "5730c2ca640d9d8363703d5d90d21d9f764e97d0342c049ee845c1d8176bad32",
+    "output": "public/assets/audio/effects/Mouse.wav",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/STF_2017/Programacion/Super Tic Fighter/Super Tic Fighter/Super Tic FighterContent/Sonidos/Prog.wav",
+    "sourceSha256": "3510be84e08e7f04e2af0f7fd3a06b1c143bd1b1b31481f13d94886bb849ab0f",
+    "output": "public/assets/audio/effects/Prog.wav",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/STF_2017/Programacion/Super Tic Fighter/Super Tic Fighter/Super Tic FighterContent/Sonidos/Programacion.wav",
+    "sourceSha256": "94208b702bb088f782c844ca65a13540bc1557c0fcb804eac370b436df8550f8",
+    "output": "public/assets/audio/effects/Programacion.wav",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/STF_2017/Programacion/Super Tic Fighter/Super Tic Fighter/Super Tic FighterContent/Sonidos/RAM.wav",
+    "sourceSha256": "2236bc43d21dcd78de84ba0e1eee8ca4d39a9e3bf26ae5380cc136fcdff28aa7",
+    "output": "public/assets/audio/effects/RAM.wav",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/STF_2017/Programacion/Super Tic Fighter/Super Tic Fighter/Super Tic FighterContent/Sonidos/Redes.wav",
+    "sourceSha256": "e0aeda9b600c63ff07336a264ad154bfec1ab6b68abf9f2052da059ed35e14cf",
+    "output": "public/assets/audio/effects/Redes.wav",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/STF_2017/Programacion/Super Tic Fighter/Super Tic Fighter/Super Tic FighterContent/Sonidos/Seleccion.wav",
+    "sourceSha256": "3dab4a0509e75e5861be9f73f365412eba1e91cebd174b183147c209e2334393",
+    "output": "public/assets/audio/effects/Seleccion.wav",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/STF_2017/Programacion/Super Tic Fighter/Super Tic Fighter/Super Tic FighterContent/Sonidos/UTP.wav",
+    "sourceSha256": "98d417a083e23ed723e29f0362046eba4bbb469e9e3727083e4dd9e4968a2188",
+    "output": "public/assets/audio/effects/UTP.wav",
+    "correction": null
+  },
+  {
+    "source": "/Users/nacho/Downloads/STF_2017/Programacion/Super Tic Fighter/Super Tic Fighter/Super Tic FighterContent/Sonidos/golpeMouse.wav",
+    "sourceSha256": "94eec0fc47d817db876899b07c4165454997cc22733a6b418fcf1c6ee2ba8a6c",
+    "output": "public/assets/audio/effects/golpeMouse.wav",
+    "correction": null
+  },
+  {
+    "source": "/tmp/stf-remake-audit-ThKloi/Assets/ARCADE_N.TTF",
+    "sourceSha256": "145ca8092ec8e01662783c7c141a3521999c2d5a5a28a301318da3ea6d360688",
+    "output": "public/assets/arcade.ttf",
+    "correction": null
+  },
+  {
+    "source": "/tmp/stf-remake-audit-ThKloi/Assets/STFX.png",
+    "sourceSha256": "73b871d4e976220b6995b73b3b2134a95404085012443756fded139ab60dc8cc",
+    "output": "public/assets/logo.png",
+    "correction": null
+  }
+]

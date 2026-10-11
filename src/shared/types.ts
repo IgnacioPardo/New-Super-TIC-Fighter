@@ -82,6 +82,7 @@ export interface AppSettings {
   musicVolume: number; effectsVolume: number; playlist: 'original' | 'remake';
   keyboardBindings: Record<string, string>[];
   gamepadBindings: Record<string, number>;
+  gamepadDeadZone?: number;
 }
 export type SimulationCommand =
   | { type: 'start'; config: MatchConfig; matchId?: string }
