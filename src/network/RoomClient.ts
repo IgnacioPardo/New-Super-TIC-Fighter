@@ -144,14 +144,14 @@ export class RoomClient {
   }
 
   sendInputs(frames: InputFrame[]): void {
-    if (!this.room || this.isHost || !this.room.matchId || !frames.length) return;
+    if (!this.room || this.isHost || this.room.phase !== 'playing' || !this.room.matchId || !frames.length) return;
     const owned = new Set(this.room.players.filter(player => player.kind === 'human' && player.peerId === this.room!.peerId).map(player => player.id));
     const valid = frames.filter(frame => owned.has(frame.seatId)).slice(0, 12);
     if (!valid.length) return;
     const sequence = ++this.sequence;
     const host = this.room.hostPeerId;
     const link = this.links.get(host);
-    if (link?.route === 'direct' && this.sendGameplay(link, { type: 'input', matchId: this.room.matchId, sequence, frames: valid })) return;
+    if (link?.route === 'direct' && this.room.routes[host] === 'direct' && this.sendGameplay(link, { type: 'input', matchId: this.room.matchId, sequence, frames: valid })) return;
     this.send({ type: 'input', matchId: this.room.matchId, sequence, frames: valid });
   }
 
@@ -163,7 +163,7 @@ export class RoomClient {
     for (const peer of this.room.peers) {
       if (peer.peerId === this.room.peerId) continue;
       const link = this.links.get(peer.peerId);
-      if (link?.route === 'direct' && this.sendGameplay(link, { type: 'snapshot', matchId: snapshot.matchId, sequence, snapshot, acknowledgements })) continue;
+      if (link?.route === 'direct' && peer.route === 'direct' && this.sendGameplay(link, { type: 'snapshot', matchId: snapshot.matchId, sequence, snapshot, acknowledgements })) continue;
       if (peer.connected) targets.push(peer.peerId);
     }
     if (targets.length) this.send({ type: 'snapshot', matchId: snapshot.matchId, sequence, snapshot, acknowledgements, targets });

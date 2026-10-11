@@ -269,7 +269,10 @@ export class Room {
         return;
       }
       case 'input': {
-        if (host || room.phase !== 'playing' || message.matchId !== room.matchId || !Number.isSafeInteger(message.sequence) || !validFrames(message.frames, new Set(member.players.map(player => player.id)))) return this.error(ws, 'invalid_input', 'Input does not match your active seats.');
+        if (host || !Number.isSafeInteger(message.sequence) || !validFrames(message.frames, new Set(member.players.map(player => player.id)))) return this.error(ws, 'invalid_input', 'Input does not match your active seats.');
+        // In-flight gameplay packets are routine during pause/result transitions.
+        if (room.phase !== 'playing') return;
+        if (message.matchId !== room.matchId) return this.error(ws, 'invalid_input', 'Input does not match the active round.');
         const targetWs = this.connectionFor(room.hostPeerId);
         if (targetWs) this.send(targetWs, { type: 'input', from: member.peerId, sequence: message.sequence, frames: message.frames }, true);
         return;
