@@ -71,7 +71,7 @@ export interface EffectState {
 export interface GameplayEvent {
   id: string; tick: number;
   type: 'attack' | 'active' | 'hit' | 'block' | 'fall' | 'respawn' | 'fight' | 'result' | 'deploy' | 'item' | 'hazard' | 'objective' | 'wave';
-  seatId?: string; targetId?: string; action?: PlayerAction; discipline?: Discipline;
+  seatId?: string; targetId?: string; creditedTo?: string; action?: PlayerAction; discipline?: Discipline;
 }
 export interface MatchResult { winners: string[]; winningTeam?: 0 | 1; reason: 'last-standing' | 'timeout' | 'draw' | 'interrupted'; placements?: Record<string, number>; scores?: Record<string, number> }
 export interface MatchSnapshot {
