@@ -45,7 +45,7 @@ for(const engine of (process.env.STF_BROWSERS??'chromium,firefox,webkit').split(
   await pad(13);await expect(choice('Punch')).toBeFocused();await pad(1);await expect(page.getByRole('dialog')).toHaveCount(0);
   await pad(0);await expect(choice('Jump')).toBeFocused(); // Menu A remains confirm after combat remapping.
   await pad(14);await expect(choice('Jump')).toContainText('A / ✕');
-  await pad(13,750);assert.match(await page.evaluate(()=>document.activeElement.getAttribute('aria-label')), /^(Guard|Dodge \/ dash|PAUSED):/, 'Held D-pad repeats through rows with an initial delay');
+  await page.getByRole('button',{name:'Next page · Controller',exact:true}).click();await choice('Guard').focus();await pad(13,500);assert.match(await page.evaluate(()=>document.activeElement.getAttribute('aria-label')), /^(Dodge \/ dash|PAUSED|Dead zone)/, 'Held D-pad repeats through current-page controls with an initial delay');
   await pad(1);await page.reload();await enterTitle(page);await page.getByTestId('mode-settings').click();await key('Enter');
   await expect(page.getByRole('slider',{name:'Music'})).toHaveValue('0');await expect(page.getByRole('slider',{name:'Effects'})).toHaveValue('0');await expect(choice('Soundtrack')).toContainText('Original');
   await close();await key('ArrowDown');await key('Enter');await expect(choice('Camera')).toContainText('Fixed');await expect(choice('Reduce motion')).toContainText('On');await key('ArrowLeft'); // English -> Spanish

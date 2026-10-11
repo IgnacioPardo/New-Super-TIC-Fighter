@@ -41,7 +41,7 @@ try{
  await press(9);await page.locator('.pause-panel').waitFor();
  await page.locator('.pause-panel .secondary-button').filter({hasText:'AJUSTES'}).focus();await press(0);
  await page.locator('.settings-category').last().click();
- await expect(page.locator('.controller-status')).toContainText('DualSense');
+ await page.getByRole('button',{name:/^Página siguiente/}).click();await page.getByRole('button',{name:/^Página siguiente/}).click();await expect(page.locator('.controller-status')).toContainText('DualSense');
  await press(1);await page.locator('.settings-category').first().click();
  await page.locator('.volume-field input').nth(1).focus();
  const volume=Number(await page.locator('.volume-field input').nth(1).inputValue());
