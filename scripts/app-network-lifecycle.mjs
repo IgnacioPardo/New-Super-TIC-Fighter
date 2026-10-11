@@ -165,8 +165,11 @@ async function scenarioTwoPlusTwo() {
   await guest.page.waitForFunction(() => window.__stfRoom?.peers.find(peer => peer.peerId === window.__stfRoom.peerId)?.connected, null, { timeout: 15_000 });
   await host.page.waitForFunction(peerId => window.__stfRoom?.peers.find(peer => peer.peerId === peerId)?.connected, guestPeerId, { timeout: 15_000 });
   await guest.page.locator('.pause-panel').waitFor({ timeout: 10_000 });
+  const resumeRequestedAt = Date.now();
   await host.page.getByRole('button', { name: /CONTINUAR/ }).click();
   await Promise.all([host, guest].map(session => session.page.waitForFunction(() => window.__stfSnapshot?.phase === 'playing', null, { timeout: 10_000 })));
+  const resumeLatency = Date.now() - resumeRequestedAt;
+  if (process.env.STF_REVIEW_RESUME) console.log(`Online resume reached both browsers in ${resumeLatency}ms after host click.`);
   console.log(`2+2 teams ${code}: four humans, forced relay movement, actual guest WebSocket fault, reconnect and resume passed.`);
 }
 
@@ -217,16 +220,62 @@ async function scenarioBots() {
   console.log(`Bot room ${code}: two human browsers plus two bot seats entered a live Worker round.`);
 }
 
+async function scenarioHostRefresh() {
+  const host = await openSession('refresh host');
+  const guest = await openSession('refresh guest');
+  const code = await onlineEntry(host, 'Host R');
+  await onlineEntry(guest, 'Guest R', code);
+  await waitRoster(host.page, 2);
+  await ready(host, 'Host R');
+  await ready(guest, 'Guest R');
+  await startAndWait(host, [guest], 2);
+  const hostPeerId = await host.page.evaluate(() => window.__stfRoom.peerId);
+  await host.page.goto('about:blank');
+  await guest.page.waitForFunction(() => window.__stfRoom?.phase === 'paused', null, { timeout: 10_000 });
+  await host.page.goto(`${base}/?room=${code}`);
+  await openOnline(host.page);
+  await host.page.getByPlaceholder('Jugador', { exact: true }).fill('Host R');
+  await host.page.getByRole('button', { name: /ENTRAR/ }).click();
+  await host.page.waitForFunction(peerId => window.__stfRoom?.peerId === peerId && window.__stfRoom.phase === 'finished', hostPeerId, { timeout: 10_000 });
+  await guest.page.waitForFunction(() => window.__stfObserved.controls.some(message => message.type === 'result' && message.result?.reason === 'interrupted'), null, { timeout: 10_000 });
+  await host.page.waitForFunction(() => window.__stfRoom?.phase === 'lobby', null, { timeout: 8_000 });
+  assert.equal(await host.page.locator('.room-code strong').innerText(), code);
+  console.log(`Host refresh ${code}: interrupted no-winner round returned to a playable lobby.`);
+}
+
+async function scenarioGuestFinishedLobby() {
+  const host = await openSession('finished host');
+  const guest = await openSession('finished guest');
+  const code = await onlineEntry(host, 'Host F');
+  await onlineEntry(guest, 'Guest F', code);
+  await waitRoster(host.page, 2);
+  await host.page.locator('.rules-controls .rule-pair select').first().selectOption('1');
+  await host.page.waitForFunction(() => window.__stfRoom?.config.lives === 1);
+  await ready(host, 'Host F');
+  await ready(guest, 'Guest F');
+  await startAndWait(host, [guest], 2);
+  await guest.page.keyboard.down('d');
+  await guest.page.waitForFunction(() => window.__stfRoom?.phase === 'finished', null, { timeout: 15_000 });
+  await guest.page.keyboard.up('d');
+  await guest.page.locator('.results-screen').waitFor({ timeout: 10_000 });
+  await guest.page.getByRole('button', { name: /VOLVER A LA SALA/ }).click();
+  await guest.page.locator('.room-code strong').waitFor({ timeout: 8_000 });
+  assert.equal(await guest.page.locator('.room-code strong').innerText(), code, 'Guest returning from results should remain in the same room');
+  console.log(`Guest finish ${code}: returning from a natural result preserved room membership.`);
+}
+
 try {
   const scenarios = {
     '2+2': scenarioTwoPlusTwo,
     '2+1+1': scenarioTwoPlusOnePlusOne,
     bots: scenarioBots,
+    'host-refresh': scenarioHostRefresh,
+    'guest-finished-lobby': scenarioGuestFinishedLobby,
   };
   const selected = process.env.STF_LIFECYCLE_SCENARIO;
   assert(!selected || selected in scenarios, `Unknown scenario: ${selected}`);
   for (const [name, run] of Object.entries(scenarios)) {
-    if (!selected || selected === name) await run();
+    if (selected === name || !selected && !['host-refresh', 'guest-finished-lobby'].includes(name)) await run();
   }
   assert.equal(errors.length, 0, errors.join('\n'));
   console.log('Full application online lifecycle passed without page errors.');

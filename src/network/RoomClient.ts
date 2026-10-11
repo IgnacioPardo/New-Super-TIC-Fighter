@@ -341,6 +341,11 @@ export class RoomClient {
 
   private acceptSnapshot(sequence: number, snapshot: MatchSnapshot, acknowledgements: Record<string, number> = {}): void {
     if (!this.room || this.isHost || snapshot?.matchId !== this.room.matchId) return;
+    // Unreliable direct snapshots can arrive after a reliable pause/result
+    // control. Never let an older phase reopen a finished or paused round.
+    if (this.room.phase === 'lobby' || this.room.phase === 'finished' && snapshot.phase !== 'finished' ||
+        this.room.phase === 'paused' && snapshot.phase === 'playing' ||
+        this.room.phase === 'playing' && this.room.resumeAt && snapshot.phase === 'paused') return;
     if (sequence <= (this.lastSnapshots.get(snapshot.matchId) ?? -1)) return;
     this.lastSnapshots.set(snapshot.matchId, sequence);
     this.options.onSnapshot?.(snapshot, sequence, acknowledgements);
