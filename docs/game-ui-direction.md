@@ -44,7 +44,7 @@ A full-screen cabinet poster: original logo large, four original fighters staged
 
 ### Player selection
 
-P1–P4 remain in consistent left-to-right bays. Each shows a large original layered fighter, prominent player identifier, discipline picker, three four-option appearance rows and a clear ready state. Name, human/bot, difficulty, device and team controls remain fully available in each bay; compact disclosure groups avoid making the first impression a wall of forms. No settings or customization combinations are removed. Rules and arena selection use a horizontal strip beneath the bays. A full-width fight band carries the single start action and validation.
+P1–P4 remain in consistent left-to-right bays. Each shows a large original layered fighter, prominent player identifier, discipline picker, an appearance-part selector with four swatches for each of hair/shirt/pants and a clear ready state. Name, human/bot, difficulty, device and team controls remain fully available in each bay; compact disclosure groups avoid making the first impression a wall of forms. No settings or customization combinations are removed. Rules and arena selection use a horizontal strip beneath the bays. A full-width fight band carries the single start action and validation.
 
 Online ownership rules, own-device validation, guest-owned customization, host rules, ready state, copy invite, connection state and accessible controls remain intact. No remote device duplicates may block local seats. Disabled host actions stay visible with their reason.
 

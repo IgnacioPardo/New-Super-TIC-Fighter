@@ -38,6 +38,7 @@ export function GameView({ snapshot, snapshotRef, settings, manifest, arena = 'c
     const fighters = new Map<string, FighterArt>();
     const effects = new Map<string, Phaser.GameObjects.Image>();
     const indicators = new Map<string, Phaser.GameObjects.Text>();
+    const remoteFrames = new Map<string, { previous: FighterState; current: FighterState; received: number; duration: number; tick: number }>();
     let background: Phaser.GameObjects.Image;
     let platformGroup: Phaser.GameObjects.Group;
     let hudCamera: Phaser.Cameras.Scene2D.Camera;
@@ -58,7 +59,7 @@ export function GameView({ snapshot, snapshotRef, settings, manifest, arena = 'c
         this.load.on('loaderror', () => { if (active) setError(preferences.current.language === 'es' ? 'No se pudo cargar una imagen. Recarga la página.' : 'An image could not load. Reload this page.'); });
       }
       create() {
-        background = this.add.image(683, 384, `background-${arena}`).setDisplaySize(1366, 768).setDepth(-20);
+        background = this.add.image(683, 384, `background-${arena}`).setDisplaySize(1366, 768).setScrollFactor(0).setDepth(-20);
         platformGroup = this.add.group();
         hudCamera = this.cameras.add(0, 0, 1366, 768, false, 'markers');
         hudCamera.setBackgroundColor('rgba(0,0,0,0)');
@@ -117,7 +118,7 @@ export function GameView({ snapshot, snapshotRef, settings, manifest, arena = 'c
         const state = read(); if (!state || !background) return;
         if (state !== current) { previous = current; current = state; received = performance.now(); }
         if (matchId !== state.matchId) {
-          matchId = state.matchId; previous = null; centerX = 683; centerY = 384; zoom = 1;
+          matchId = state.matchId; remoteFrames.clear(); previous = null; centerX = 683; centerY = 384; zoom = 1;
           fighters.forEach(f => { f.layers.forEach(l => l.destroy()); f.tag.destroy(); f.halo.destroy(); }); fighters.clear();
           effects.forEach(e => e.destroy()); effects.clear(); indicators.forEach(i => i.destroy()); indicators.clear();
         }
@@ -134,13 +135,31 @@ export function GameView({ snapshot, snapshotRef, settings, manifest, arena = 'c
           zoom = Phaser.Math.Linear(zoom, desiredZoom, smoothing); centerX = Phaser.Math.Linear(centerX, desiredX, smoothing); centerY = Phaser.Math.Linear(centerY, desiredY, smoothing);
         } else { zoom = 1; centerX = 683; centerY = 384; }
         this.cameras.main.setZoom(zoom).centerOn(centerX, centerY);
+        // Keep the arena's scenery filling the viewport when living fighters force the camera out.
+        background.setDisplaySize(1366 / zoom, 768 / zoom);
         for (const f of state.fighters) {
           const seat = state.config.players.find(p => p.id === f.id); if (!seat) continue;
           let object = fighters.get(f.id); if (!object) object = this.makeFighter(seat);
-          const old = previous?.fighters.find(p => p.id === f.id);
+          let old = previous?.fighters.find(p => p.id === f.id);
+          let progress = fraction;
+          if (seat.device === 'remote' || seat.kind === 'bot') {
+            const now = performance.now();
+            let frames = remoteFrames.get(f.id);
+            if (!frames) { frames = { previous: f, current: f, received: now, duration: 1000 / 60, tick: state.tick }; remoteFrames.set(f.id, frames); }
+            else if (frames.tick !== state.tick) {
+              // Guest prediction publishes at 60 Hz while remote positions arrive with host authority.
+              // Only a new transform starts the remote interpolation clock.
+              if (frames.current.x !== f.x || frames.current.y !== f.y || frames.current.action !== f.action || frames.current.facing !== f.facing) {
+                frames.previous = frames.current; frames.current = f;
+                frames.duration = Phaser.Math.Clamp(now - frames.received, 16, 100); frames.received = now;
+              }
+              frames.tick = state.tick;
+            }
+            old = frames.previous; progress = Math.min(1, (now - frames.received) / frames.duration);
+          }
           const canInterpolate = old && !f.eliminated && Math.abs(f.x - old.x) < 200 && Math.abs(f.y - old.y) < 250;
-          const x = canInterpolate ? Phaser.Math.Linear(old.x, f.x, fraction) : f.x;
-          const y = canInterpolate ? Phaser.Math.Linear(old.y, f.y, fraction) : f.y;
+          const x = canInterpolate && old ? Phaser.Math.Linear(old.x, f.x, progress) : f.x;
+          const y = canInterpolate && old ? Phaser.Math.Linear(old.y, f.y, progress) : f.y;
           const frame = this.frameFor(f, seat, performance.now());
           const protectedAlpha = f.invulnerable > 0 ? (Math.floor(performance.now() / 90) % 2 ? .42 : .92) : 1;
           for (const layer of object.layers) layer.setPosition(x, y).setFrame(frame).setFlipX(f.facing === -1).setAlpha(protectedAlpha).setVisible(!f.eliminated);
