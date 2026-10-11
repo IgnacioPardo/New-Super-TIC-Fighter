@@ -3,7 +3,7 @@ import type { MatchTicket, PublicCapacity, TournamentEntrant, TournamentGame, To
 import type { MatchAdmission, MatchMember } from './match';
 import type { Env } from './env';
 import { json, record, secret } from './validation';
-interface EntrantMember {peerId:string;token:string;seatIds:string[];userId?:string}
+interface EntrantMember {peerId:string;token:string;seatIds:string[];userId?:string;primarySeatId?:string}
 interface Entry extends TournamentEntrant {members:EntrantMember[]}
 interface StoredTournament extends Omit<TournamentState,'entrants'> {entrants:Entry[];ownerId:string;capacityLimit:number;ruleset:'classic'|'expanded';processed:string[];tickets:Record<string,MatchTicket[]>;spectatorTokens:Record<string,string>}
 interface PeerLookup {peerId:string;players:PlayerSeat[];userId?:string;available:boolean}
@@ -34,14 +34,16 @@ export class TournamentDO {
     }
     if(url.pathname==='/internal/join'&&request.method==='POST'){
       if(t.phase!=='registration'||t.entrants.length>=t.capacityLimit)return json({error:'registration_closed'},409);
-      const value=await request.json() as {name:string;members:EntrantMember[]};
-      if(!record(value)||typeof value.name!=='string'||!value.name.trim()||value.name.length>32||!Array.isArray(value.members)||!value.members.length||value.members.length>2)return json({error:'invalid_entrant'},400);
+      const value=await request.json() as {name:string;members?:EntrantMember[];party?:boolean;peerId?:string;token?:string};
+      if(value.party===true){const response=await this.lobby('/internal/party',{peerId:value.peerId,token:value.token});if(!response.ok)return response;value.members=(await response.json() as {members:EntrantMember[]}).members;}
+      const proposedMembers=value.members;
+      if(!record(value)||typeof value.name!=='string'||!value.name.trim()||value.name.length>32||!Array.isArray(proposedMembers)||!proposedMembers.length||proposedMembers.length>2)return json({error:'invalid_entrant'},400);
       const players:PlayerSeat[]=[],members:EntrantMember[]=[],browserIds:string[]=[];
-      for(const supplied of value.members){
+      for(const supplied of proposedMembers!){
         if(!record(supplied)||!Array.isArray(supplied.seatIds)||!supplied.seatIds.length)return json({error:'invalid_entrant'},400);
         const peer=await this.peer(supplied.peerId,supplied.token);if(!peer)return json({error:'lobby_identity_required'},403);
         for(const id of supplied.seatIds){const p=peer.players.find(p=>p.id===id);if(!p||t.entrants.some(e=>e.players.some(other=>other.id===id)))return json({error:'seat_unavailable'},409);players.push(p);}
-        members.push({peerId:peer.peerId,token:supplied.token,seatIds:supplied.seatIds,userId:peer.userId&&supplied.seatIds.includes(peer.players[0]?.id)?peer.userId:undefined});browserIds.push(peer.peerId);
+        members.push({peerId:peer.peerId,token:supplied.token,seatIds:supplied.seatIds,userId:peer.userId&&supplied.seatIds.includes(peer.players[0]?.id)?peer.userId:undefined,primarySeatId:peer.players[0]?.id});browserIds.push(peer.peerId);
       }
       if(t.ruleset==='classic'&&players.some(p=>!['networks','design','code','hardware'].includes(p.discipline)))return json({error:'fighter_not_classic'},400);
       if(players.length!==(t.team?2:1)||new Set(players.map(p=>p.id)).size!==players.length)return json({error:'entrant_size'},400);
@@ -94,7 +96,7 @@ export class TournamentDO {
         const reservationResponse=await this.lobby('/internal/reserve',{matchId,playerCount:players.length,durationSeconds:config.timeLimit});
         if(!reservationResponse.ok){t.capacity=(await reservationResponse.json() as {capacity:PublicCapacity}).capacity;break;}
         const {reservationId}=await reservationResponse.json() as {reservationId:string};const browserIds=[...new Set(entries.flatMap(e=>e.browserIds))];
-        const members:MatchMember[]=browserIds.map(peerId=>({peerId,token:secret(),seatIds:players.filter(p=>p.peerId===peerId).map(p=>p.id),seatUserIds:Object.assign({},...entries.flatMap(e=>e.members.filter(m=>m.peerId===peerId&&m.userId).map(m=>({[m.seatIds[0]]:m.userId!})))),connected:false,forfeited:false,lastSequence:0,ready:{}}));
+        const members:MatchMember[]=browserIds.map(peerId=>({peerId,token:secret(),seatIds:players.filter(p=>p.peerId===peerId).map(p=>p.id),seatUserIds:Object.assign({},...entries.flatMap(e=>e.members.filter(m=>m.peerId===peerId&&m.userId).map(m=>({[m.primarySeatId??m.seatIds[0]]:m.userId!})))),connected:false,forfeited:false,lastSequence:0,ready:{}}));
         const admission:MatchAdmission={matchId,config,members,reservationId,tournamentId:t.id,tournamentGameId:game.id};
         let response:Response;try{response=await this.env.MATCHES.get(this.env.MATCHES.idFromName(matchId),{locationHint:'enam'}).fetch('https://internal/internal/create',{method:'POST',body:JSON.stringify(admission)});}catch{await this.lobby('/internal/release',{reservationId,matchId,cancelled:true,elapsedMs:0});continue;}
         if(!response.ok){await this.lobby('/internal/release',{reservationId,matchId,cancelled:true,elapsedMs:0});continue;}

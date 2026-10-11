@@ -13,11 +13,12 @@
     "run_worker_first": ["/api/*", "/assets/audio/*.mp3"]
   },
   "durable_objects": {
-    "bindings": [{ "name": "ROOMS", "class_name": "Room" }, { "name": "MATCHES", "class_name": "MatchDO" }, { "name": "LOBBY", "class_name": "LobbyDO" }]
+    "bindings": [{ "name": "ROOMS", "class_name": "Room" }, { "name": "MATCHES", "class_name": "MatchDO" }, { "name": "LOBBY", "class_name": "LobbyDO" }, { "name": "TOURNAMENTS", "class_name": "TournamentDO" }]
   },
   "migrations": [
     { "tag": "v1", "new_sqlite_classes": ["Room"] },
     { "tag": "v2-matches", "new_sqlite_classes": ["MatchDO"] },
-    { "tag": "v2-lobby", "new_sqlite_classes": ["LobbyDO"] }
+    { "tag": "v2-lobby", "new_sqlite_classes": ["LobbyDO"] },
+    { "tag": "v2-tournaments", "new_sqlite_classes": ["TournamentDO"] }
   ]
 }

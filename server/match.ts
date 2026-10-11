@@ -7,7 +7,7 @@ import { json, record, secret, validConfig, validFrames } from './validation';
 
 export interface MatchMember { peerId:string; token:string; seatIds:string[]; seatUserIds?:Record<string,string>; connected:boolean; disconnectedAt?:number; forfeited:boolean; lastSequence:number; ready:Record<string,boolean> }
 export interface MatchAdmission { matchId:string; config:MatchConfig; members:MatchMember[]; reservationId?:string; tournamentId?:string; tournamentGameId?:string; spectatorToken?:string }
-interface StoredMatch extends MatchAdmission { phase:'waiting'|'running'|'finished'; createdAt:number; startedAt?:number; finishedAt?:number; checkpoint?:MatchSnapshot; resultId?:string; interrupted?:boolean; published?:boolean; metrics:MatchMetrics }
+interface StoredMatch extends MatchAdmission { phase:'waiting'|'running'|'finished'; createdAt:number; startedAt?:number; finishedAt?:number; checkpoint?:MatchSnapshot; resultId?:string; interrupted?:boolean; published?:boolean; metrics:MatchMetrics; recoveryGeneration?:number }
 interface Attachment { peerId?:string; spectator?:boolean }
 const RECONNECT_MS=15_000, WAIT_MS=60_000, DT=1000/60, MAX_SPECTATORS=8;
 const freshMetrics=():MatchMetrics=>({ticks:0,snapshots:0,wallMs:0,tickCpuMs:0,maxTickCpuMs:0,maxLatenessMs:0,catchupTicks:0,droppedTimeMs:0,bytesSent:0,inputPackets:0,checkpointCount:0});
@@ -20,6 +20,8 @@ export class MatchDO {
   private nextTickAt=0;
   private timerCount=0;
   private lastTimerWall=0;
+  private clockAnchorAt=0;
+  private clockAnchorTick=0;
   private lastCheckpointAt=0;
   private inputQueues=new Map<string,InputFrame[]>();
   private inputTicks=new Map<string,number>();
@@ -36,7 +38,7 @@ export class MatchDO {
       if(this.match.phase==='running'){
         // V2 checkpoints contain every hidden runtime. Old/incomplete snapshots must
         // honestly interrupt rather than invent ability/combo/random state.
-        if(this.match.checkpoint?.runtime){this.simulation.restore(this.match.checkpoint);this.startTimer();}
+        if(this.match.checkpoint?.runtime){this.simulation.restore(this.match.checkpoint);this.clockAnchorAt=Date.now();this.clockAnchorTick=this.match.metrics.ticks;this.match.recoveryGeneration=(this.match.recoveryGeneration??0)+1;this.save();this.broadcast({type:'recovery',generation:this.match.recoveryGeneration,snapshot:wireSnapshot(this.match.checkpoint)});this.startTimer();}
         else this.interrupt('checkpoint unavailable');
       }
     }
@@ -118,12 +120,12 @@ export class MatchDO {
     if(!member||member.forfeited||match.phase==='running'&&member.disconnectedAt&&this.clock()-member.disconnectedAt>RECONNECT_MS){this.error(ws,'invalid_ticket','Your ticket or fifteen-second reconnect window expired.');ws.close(1008);return;}
     const old=this.socketFor(member.peerId);if(old&&old!==ws)old.close(4001,'reconnected elsewhere');
     ws.serializeAttachment({peerId:member.peerId});member.connected=true;member.disconnectedAt=undefined;this.save();
-    this.send(ws,{type:'welcome',peerId:member.peerId,state:this.publicState(),spectator:false});
+    this.send(ws,{type:'welcome',peerId:member.peerId,state:this.publicState(),spectator:false,inputSequence:member.lastSequence});
     if(match.phase==='finished'&&match.checkpoint?.result)this.send(ws,{type:'result',resultId:match.resultId!,result:match.checkpoint.result,snapshot:match.checkpoint,verified:true});
     this.broadcastState();
   }
   private begin():void{
-    const match=this.match!;match.phase='running';match.startedAt=Date.now();match.checkpoint=this.simulation.createMatch(match.config,match.matchId);this.save();this.broadcastState();this.startTimer();
+    const match=this.match!;match.phase='running';match.startedAt=Date.now();this.clockAnchorAt=match.startedAt;this.clockAnchorTick=0;match.checkpoint=this.simulation.createMatch(match.config,match.matchId);this.save();this.broadcastState();this.startTimer();
     void this.state.storage.setAlarm(Date.now()+RECONNECT_MS);
   }
   private startTimer():void{if(this.timer||this.match?.phase!=='running')return;this.nextTickAt=Date.now()+DT;this.lastTimerWall=Date.now();this.scheduleTick();}
@@ -158,8 +160,8 @@ export class MatchDO {
       }
       if(count>1)match.metrics.catchupTicks+=count-1;
       if(wallAdvanced&&this.nextTickAt<now-100){match.metrics.droppedTimeMs+=now-this.nextTickAt;this.nextTickAt=now+DT;}
-      match.metrics.wallMs=Date.now()-(match.startedAt??Date.now());
-      if(Date.now()-this.lastCheckpointAt>=5000){this.lastCheckpointAt=Date.now();match.metrics.checkpointCount++;this.save();}
+      match.metrics.wallMs=this.clock()-(match.startedAt??this.clock());
+      if(this.clock()-this.lastCheckpointAt>=5000){this.lastCheckpointAt=this.clock();match.metrics.checkpointCount++;this.save();}
       if(match.phase==='running')this.scheduleTick();
     }catch{this.interrupt('simulation runtime interrupted');}
   }
@@ -178,7 +180,7 @@ export class MatchDO {
   }
   private finish(snapshot:MatchSnapshot):void{
     const match=this.match!;if(match.phase==='finished')return;
-    if(this.timer)clearTimeout(this.timer);this.timer=undefined;match.phase='finished';match.finishedAt=Date.now();match.checkpoint=snapshot;match.resultId=`${match.matchId}:result`;match.metrics.wallMs=Date.now()-(match.startedAt??match.createdAt);this.save();
+    if(this.timer)clearTimeout(this.timer);this.timer=undefined;match.phase='finished';match.finishedAt=this.clock();match.checkpoint=snapshot;match.resultId=`${match.matchId}:result`;match.metrics.wallMs=this.clock()-(match.startedAt??match.createdAt);this.save();
     this.broadcast({type:'result',resultId:match.resultId,result:snapshot.result!,snapshot,verified:true});this.broadcastState();
     this.state.waitUntil(this.publishResult());
   }
@@ -195,7 +197,7 @@ export class MatchDO {
     member.connected=false;member.disconnectedAt=this.clock();for(const seatId of member.seatIds)this.inputQueues.delete(seatId);this.save();this.broadcastState();
     if(this.match?.phase==='running')void this.state.storage.setAlarm(Date.now()+RECONNECT_MS);
   }
-  private clock():number{const match=this.match;return Math.max(Date.now(),match?(match.startedAt??match.createdAt)+match.metrics.ticks*DT:0);}
+  private clock():number{const match=this.match;return Math.max(Date.now(),match&&this.clockAnchorAt?this.clockAnchorAt+(match.metrics.ticks-this.clockAnchorTick)*DT:0);}
   private socketFor(id:string):WebSocket|undefined{return this.state.getWebSockets().find(s=>s.readyState===WebSocket.OPEN&&(s.deserializeAttachment() as Attachment)?.peerId===id);}
   private publicState():PublicMatchState{const m=this.match!;return{matchId:m.matchId,authority:'server',phase:m.phase,config:m.config,peers:m.members.map(p=>({peerId:p.peerId,connected:p.connected,seatIds:p.seatIds,reconnectUntil:p.disconnectedAt?p.disconnectedAt+RECONNECT_MS:undefined,forfeited:p.forfeited})),seatReadiness:Object.assign({},...m.members.map(p=>p.ready)),snapshot:m.checkpoint,result:m.checkpoint?.result,resultId:m.resultId,interrupted:m.interrupted,metrics:m.metrics,verified:true};}
   private save():void{if(this.match)this.state.storage.sql.exec('INSERT INTO public_match(id,data) VALUES(1,?) ON CONFLICT(id) DO UPDATE SET data=excluded.data',JSON.stringify(this.match));}

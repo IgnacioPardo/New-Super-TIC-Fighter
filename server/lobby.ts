@@ -30,6 +30,12 @@ export class LobbyDO {
       const {peerId,token}=await request.json() as {peerId:string;token:string};const peer=this.store.peers.find(p=>p.id===peerId&&p.token===token&&this.socketFor(p.id));
       return peer?json({peerId:peer.id,players:peer.players,userId:peer.userId,browserId:peer.id,available:!peer.ticket||!this.store.reservations.some(r=>r.matchId===peer.ticket!.matchId&&!r.released)}):json({error:'invalid_peer'},403);
     }
+    if(url.pathname==='/internal/party'&&request.method==='POST'){
+      const {peerId,token}=await request.json() as {peerId:string;token:string};const leader=this.store.peers.find(p=>p.id===peerId&&p.token===token&&this.socketFor(p.id)),party=leader&&this.store.parties.find(p=>p.id===leader.partyId&&p.leaderId===leader.id);
+      if(!party)return json({error:'party_leader_required'},403);
+      const peers=this.partyPeers(party.id);if(peers.some(peer=>!this.socketFor(peer.id)||peer.ticket&&this.store.reservations.some(r=>r.matchId===peer.ticket!.matchId&&!r.released)))return json({error:'party_unavailable'},409);
+      return json({members:peers.map(peer=>({peerId:peer.id,token:peer.token,seatIds:peer.players.map(p=>p.id)}))});
+    }
     if(url.pathname==='/internal/tournament_tickets'&&request.method==='POST'){
       const {tickets}=await request.json() as {tickets:MatchTicket[]};for(const ticket of tickets){const peer=this.store.peers.find(p=>p.id===ticket.peerId);if(!peer)continue;peer.ticket=ticket;const socket=this.socketFor(peer.id);if(socket)this.send(socket,{type:'match',ticket});}this.save();return json({ok:true});
     }

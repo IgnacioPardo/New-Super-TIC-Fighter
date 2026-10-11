@@ -87,7 +87,8 @@ export class PublicClient {
   leaveParty():void{this.sendLobby({type:'party_leave'});}
   setPreference(preference:PoolPreference):void{this.sendLobby({type:'preference',preference});}
   queue(queued:boolean):void{if(queued&&this.pendingEdits){this.options.onError?.('pending_edits','Wait for local fighter edits to settle before queueing.');return;}this.sendLobby({type:'queue',queued});}
-  async spectate(matchId:string):Promise<PublicMatchState>{const response=await fetch(this.url(`/api/activities/${matchId}/spectate`));if(!response.ok)throw new Error('Activity unavailable.');const value=await response.json() as {token:string};return this.openMatch({matchId,token:value.token,peerId:'',seatIds:[],config:{} as MatchTicket['config']},true);}
+  async spectate(matchId:string):Promise<PublicMatchState>{const response=await fetch(this.url(`/api/activities/${matchId}/spectate`));if(!response.ok)throw new Error('Activity unavailable.');const value=await response.json() as {token:string};return this.spectateTicket(matchId,value.token);}
+  async spectateTicket(matchId:string,token:string):Promise<PublicMatchState>{this.leaveMatch();this.startTimers();return this.openMatch({matchId,token,peerId:'',seatIds:[],config:{} as MatchTicket['config']},true);}
   async connectMatch(ticket:MatchTicket):Promise<PublicMatchState>{this.leaveMatch();this.ticket=ticket;this.sequence=0;this.localTick=0;this.startTimers();this.prediction=new Worker(new URL('../online/prediction.worker.ts',import.meta.url),{type:'module'});this.prediction.onmessage=({data}:MessageEvent<MatchSnapshot>)=>{if(data.matchId!==this.ticket?.matchId)return;this.snapshot=data;this.options.onSnapshot?.(data);};return this.openMatch(ticket,false);}
   private async openMatch(ticket:MatchTicket,spectator=false,retryAt=0):Promise<PublicMatchState>{
     this.ticket=ticket;const socket=new WebSocket(this.url(`/api/matches/${ticket.matchId}/ws`,true));this.matchSocket=socket;
@@ -96,8 +97,9 @@ export class PublicClient {
       socket.onopen=()=>this.sendMatch({type:'hello',protocolVersion:PROTOCOL_VERSION,contentVersion:CONTENT_VERSION,peerId:ticket.peerId,token:ticket.token,spectator});
       socket.onmessage=({data})=>{
         let message:MatchServerMessage;try{message=JSON.parse(data);}catch{return;}
-        if(message.type==='welcome'){welcomed=true;clearTimeout(timer);this.acceptMatch(message.state);resolve(message.state);this.options.onStatus?.('connected');for(const [seatId,value] of this.queuedSeatReady)this.sendMatch({type:'ready',seatId,...value});}
+        if(message.type==='welcome'){welcomed=true;clearTimeout(timer);this.sequence=Math.max(this.sequence,message.inputSequence??0);this.pendingInputs=[];this.localTick=Math.max(message.state.snapshot?.tick??0,...(message.state.snapshot?.acknowledgedInputs??[]).filter(input=>ticket.seatIds.includes(input.seatId)).map(input=>input.tick));this.acceptMatch(message.state);resolve(message.state);this.options.onStatus?.('connected');for(const [seatId,value] of this.queuedSeatReady)this.sendMatch({type:'ready',seatId,...value});}
         else if(message.type==='match')this.acceptMatch(message.state);
+        else if(message.type==='recovery'){this.pendingInputs=[];this.localTick=Math.max(message.snapshot.tick,...(message.snapshot.acknowledgedInputs??[]).filter(input=>ticket.seatIds.includes(input.seatId)).map(input=>input.tick));this.snapshot=undefined;this.prediction?.postMessage({type:'stop'});this.acceptMatch({...this.match!,snapshot:message.snapshot});this.prediction?.postMessage({type:'authority',snapshot:message.snapshot,seatIds:ticket.seatIds});}
         else if(message.type==='snapshot'){
           if(message.snapshot.matchId!==ticket.matchId||this.snapshot&&message.snapshot.tick<this.snapshot.tick)return;
           this.localTick=Math.max(this.localTick,message.snapshot.tick);

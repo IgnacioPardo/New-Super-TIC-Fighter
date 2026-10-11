@@ -42,8 +42,9 @@ export type MatchClientMessage =
   | { type: 'forfeit' }
   | { type: 'ping'; nonce: number };
 export type MatchServerMessage =
-  | { type: 'welcome'; peerId: string; state: PublicMatchState; spectator: boolean }
+  | { type: 'welcome'; peerId: string; state: PublicMatchState; spectator: boolean; inputSequence?:number }
   | { type: 'match'; state: PublicMatchState }
+  | { type: 'recovery'; generation:number; snapshot:MatchSnapshot }
   | { type: 'snapshot'; sequence: number; snapshot: MatchSnapshot; serverTime: number }
   | { type: 'result'; resultId: string; result: MatchResult; snapshot: MatchSnapshot; verified: true }
   | { type: 'error'; code: string; message: string; refresh?: boolean }
