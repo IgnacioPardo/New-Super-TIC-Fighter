@@ -29,6 +29,7 @@ export function GameView({ snapshot, snapshotRef, settings, manifest, arena = 'c
   useEffect(() => {
     if (!host.current || !manifest) return;
     let active = true;
+    setLoading(true); setError('');
     const art = manifest;
     const read = () => snapshotRef?.current ?? latest.current;
     let previous: MatchSnapshot | null = null;
@@ -39,7 +40,6 @@ export function GameView({ snapshot, snapshotRef, settings, manifest, arena = 'c
     const indicators = new Map<string, Phaser.GameObjects.Text>();
     let background: Phaser.GameObjects.Image;
     let platformGroup: Phaser.GameObjects.Group;
-    let worldObjects: Phaser.GameObjects.GameObject[] = [];
     let hudCamera: Phaser.Cameras.Scene2D.Camera;
     let arenaId = '';
     let matchId = '';
@@ -53,20 +53,19 @@ export function GameView({ snapshot, snapshotRef, settings, manifest, arena = 'c
         loadSheet('body', art.sheets.body);
         for (const layer of ['hair', 'shirt', 'pants'] as const) art.sheets[layer].forEach((url, i) => loadSheet(`${layer}-${i}`, url));
         this.load.image(`background-${arena}`, art.backgrounds[arena]);
-        art.platforms.forEach((url, i) => this.load.image(`platform-${i}`, url));
+        (art.arenaPlatforms?.[arena] ?? art.platforms).forEach((url, i) => this.load.image(`platform-${i}`, url));
         for (const [kind, urls] of Object.entries(art.effects)) urls.forEach((url, i) => this.load.image(`effect-${kind}-${i}`, url));
         this.load.on('loaderror', () => { if (active) setError(preferences.current.language === 'es' ? 'No se pudo cargar una imagen. Recarga la página.' : 'An image could not load. Reload this page.'); });
       }
       create() {
         background = this.add.image(683, 384, `background-${arena}`).setDisplaySize(1366, 768).setDepth(-20);
         platformGroup = this.add.group();
-        worldObjects = [background];
         hudCamera = this.cameras.add(0, 0, 1366, 768, false, 'markers');
         hudCamera.setBackgroundColor('rgba(0,0,0,0)');
-        hudCamera.ignore(worldObjects);
+        hudCamera.ignore(background);
         if (active) { setLoading(false); readyCallback.current?.(); }
       }
-      addWorld(object: Phaser.GameObjects.GameObject) { worldObjects.push(object); hudCamera.ignore(object); }
+      addWorld(object: Phaser.GameObjects.GameObject) { hudCamera.ignore(object); }
       buildArena(id: string) {
         arenaId = id;
         const arena = ARENAS[id as keyof typeof ARENAS];
@@ -107,8 +106,12 @@ export function GameView({ snapshot, snapshotRef, settings, manifest, arena = 'c
       frameFor(f: FighterState, seat: PlayerSeat, now: number) {
         const pose = f.action === 'special' || f.action === 'combo' ? `${f.action}-${seat.discipline}` : f.action === 'out' ? 'hurt' : f.action;
         const frames = art.poses[pose] ?? art.poses.idle ?? [0];
-        const at = ['idle', 'walk', 'guard', 'crouch'].includes(f.action) ? Math.floor(now / 110) : Math.floor(f.actionTime / .07);
-        return frames[Math.min(frames.length - 1, at % frames.length)] ?? 0;
+        let at = 0;
+        if (f.action === 'idle') at = Math.floor(now / 250) % frames.length;
+        else if (f.action === 'walk') { const cycle = f.actionTime % .475; at = Math.min(frames.length - 1, Math.floor(cycle / .075)); }
+        else if (f.action === 'punch') at = Math.min(frames.length - 1, Math.floor(f.actionTime / .1));
+        else if (f.action === 'special' || f.action === 'combo') at = Math.min(frames.length - 1, Math.floor(f.actionTime / (seat.discipline === 'hardware' ? .075 : .1)));
+        return frames[at] ?? frames[0] ?? 0;
       }
       update(_time: number, delta: number) {
         const state = read(); if (!state || !background) return;
@@ -171,7 +174,8 @@ export function GameView({ snapshot, snapshotRef, settings, manifest, arena = 'c
     });
     return () => { active = false; game.destroy(true); };
   }, [manifest, snapshotRef, arena]);
-  return <div className="game-canvas-wrap" ref={host} aria-label={settings.language === 'es' ? 'Escenario de combate' : 'Fight arena'}>
+  return <div className="game-canvas-wrap" aria-label={settings.language === 'es' ? 'Escenario de combate' : 'Fight arena'}>
+    <div className="phaser-host" ref={host} />
     {(loading || error) && <div className="canvas-loading"><span className="loading-ring" /><p>{error || (settings.language === 'es' ? 'PREPARANDO EL COMBATE' : 'PREPARING THE FIGHT')}</p></div>}
   </div>;
 }

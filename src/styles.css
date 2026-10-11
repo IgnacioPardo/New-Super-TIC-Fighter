@@ -252,6 +252,7 @@ kbd { font: 9px ui-monospace, monospace; display: inline-grid; place-content: ce
 .match-topbar .small-button { width: 100px; text-align: center; }
 .match-stage { position: relative; width: min(100%, calc((100vh - 247px) * 1.77865)); aspect-ratio: 1366 / 768; background: #141e2a; border: 1px solid #334251; overflow: hidden; margin: 0 auto; }
 .game-canvas-wrap { width: 100%; height: 100%; position: relative; }
+.phaser-host { position: absolute; inset: 0; width: 100%; height: 100%; }
 .game-canvas-wrap canvas { display: block; image-rendering: pixelated; }
 .canvas-loading { position: absolute; inset: 0; background: #121c2b; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 20px; z-index: 20; }
 .canvas-loading p { font-size: 10px; letter-spacing: 2px; font-weight: 800; color: #a3bed9; }
