@@ -11,7 +11,7 @@
     "server rejects locked cosmetic, foreign Origin, non-JSON, malformed and oversized writes",
     "client cannot forge verified matches, wins or XP",
     "virtual WebAuthn enrollment persists a discoverable localhost credential and lists it in profile",
-    "logout invalidates session; fresh virtual passkey assertion creates authenticated session and restores profile without account cache",
+    "logout restores saved guest name/Copper and invalidates session; fresh virtual passkey assertion creates authenticated session and restores account name/Neon/progress without account cache",
     "passkey removal persists while linked recovery identity remains; local imports never increment verified stats",
     "zero browser page errors"
   ],

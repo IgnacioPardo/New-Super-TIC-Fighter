@@ -1,6 +1,6 @@
 # V2 account service verification
 
-On 2026-10-11, `scripts/profile-service.mjs` passed against the compiled application and a real local Cloudflare workerd service with a disposable D1 database. Playwright controlled isolated Chromium. No unit tests were used and no account implementation bug was found in these flows.
+On 2026-10-11, `scripts/profile-service.mjs` passed against the compiled application and a real local Cloudflare workerd service with a disposable D1 database. Playwright controlled isolated Chromium. No unit tests were used. An additional logout audit found stale signed-in name/style fields in the guest form; commit `85aa71c` fixed restoration from the guest identity/style store and guest XP validation. The final run verifies that correction.
 
 Run after `pnpm build`:
 
@@ -17,7 +17,7 @@ The script chooses an unused local port, creates a temporary Wrangler configurat
 - Signed-in public-name and cosmetic changes persist in D1. Fresh progress in the account's local store merges on profile refresh, unlocks Neon at 600 XP, and persists without losing earlier challenge records.
 - The profile service rejects a locked cosmetic (400), foreign Origin (403), non-JSON payload (415), malformed JSON (400), and oversized payload (413). Sending forged verified matches/wins/XP leaves all verified statistics at zero.
 - The visible Add passkey action runs a real WebAuthn registration ceremony with a CDP virtual CTAP2 authenticator, resident credentials and user verification. The browser lists the enrolled passkey.
-- Sign out clears the local active-account marker and revokes the original session server-side; replaying its original cookie receives 401. After deleting the local account-progress cache, Sign in with passkey runs the authentication ceremony, advances the authenticator counter, creates a new session and restores the name, Neon style and merged progress from D1.
+- Sign out restores the saved guest name and Copper style, clears the local active-account marker and revokes the original session server-side; replaying its original cookie receives 401. After deleting the local account-progress cache, Sign in with passkey runs the authentication ceremony, advances the authenticator counter, creates a new session and restores the account name, Neon style and merged progress from D1.
 - The visible Remove action deletes the passkey from the service. The seeded recovery-provider association remains. Guest imports, practice/local records and forged API input do not increment verified online stats. Browser page errors: zero.
 
 The retained report is `docs/evidence/v2-accounts/local-passkey-roundtrip.json`. Screenshots of the enrolled and authenticated profile are produced in the output directory. Their identity and progress are disposable fixtures.
