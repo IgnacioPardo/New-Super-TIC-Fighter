@@ -1,0 +1,146 @@
+[
+  {
+    "pack": "interface",
+    "source": "Audio/select_001.ogg",
+    "sourceSha256": "aec0c31ea934a35936ae0d2ab8fac8123c93aa5647f935853a58dbaf90278b7a",
+    "file": "select_001.wav",
+    "sha256": "c7fc64379f6fdfde0857d4145d672e2824f26bd8088395f189bee121dce08509",
+    "seconds": 0.0355,
+    "bytes": 3210
+  },
+  {
+    "pack": "interface",
+    "source": "Audio/click_003.ogg",
+    "sourceSha256": "2fa929138bc3a0f432696588f66eac94b8f6d463905ec8808c6461ce4b054292",
+    "file": "click_003.wav",
+    "sha256": "342316268d2133e314e524eb0c713772b21105d775760c73ac29f26c3fa2fa50",
+    "seconds": 0.0071,
+    "bytes": 706
+  },
+  {
+    "pack": "interface",
+    "source": "Audio/back_001.ogg",
+    "sourceSha256": "07db973f79f6ae0f2edc34561e7592e24d0577455919fb602cb8ecc0da991dcf",
+    "file": "back_001.wav",
+    "sha256": "dfceced6f2219a5bdd791e069bf016114090e0480226c6e181b2ae90fb2b8c3a",
+    "seconds": 0.0575,
+    "bytes": 5146
+  },
+  {
+    "pack": "interface",
+    "source": "Audio/switch_002.ogg",
+    "sourceSha256": "6fc395be2ad1f99ce318a5d28f98fb76dbeb676d83a0b28239d8c1fb90736180",
+    "file": "switch_002.wav",
+    "sha256": "ebd529c24c515241ccae6d0bfa4c8571a5285477794bc7b32227eac002dc34c8",
+    "seconds": 0.1331,
+    "bytes": 11816
+  },
+  {
+    "pack": "interface",
+    "source": "Audio/confirmation_002.ogg",
+    "sourceSha256": "33b17a9a9a2397c62b285c52c33a907fdffb476909c99e42dde603f6a7a8b12c",
+    "file": "confirmation_002.wav",
+    "sha256": "14b0c593220d582de6f524669ffe1825988fce6ebd61965028eb5cc30b865b6e",
+    "seconds": 0.5211,
+    "bytes": 46042
+  },
+  {
+    "pack": "interface",
+    "source": "Audio/error_003.ogg",
+    "sourceSha256": "885b28175c7b511118bcffab95675b48bbac9005cf6514656ebdad979276b3ab",
+    "file": "error_003.wav",
+    "sha256": "3e0894ad3b6b9d6e129e9d6828d296f6c5362c9ce5781dc3bc353eaa8f29c956",
+    "seconds": 0.3387,
+    "bytes": 29950
+  },
+  {
+    "pack": "interface",
+    "source": "Audio/open_001.ogg",
+    "sourceSha256": "a27c6bb0df7da1e6af5dd5937593c98bc58b6e513f42fe6a3254cd6a6949c648",
+    "file": "open_001.wav",
+    "sha256": "90a75cefcd9bc0330c7f025cf1352d60eb597102174003b9eb27002e142cc080",
+    "seconds": 0.1448,
+    "bytes": 12846
+  },
+  {
+    "pack": "interface",
+    "source": "Audio/close_001.ogg",
+    "sourceSha256": "44af8249b933e0fd35ec957a638bb1a0b01f85b53fbe9674bf77bd3ca3168ef4",
+    "file": "close_001.wav",
+    "sha256": "4637aedeb2627d3e40e5328c7637def7ffc0f6c65ba0ea1478ada5919d0c6fcc",
+    "seconds": 0.1447,
+    "bytes": 12844
+  },
+  {
+    "pack": "interface",
+    "source": "Audio/maximize_001.ogg",
+    "sourceSha256": "fd3e75e1de2f2fda90aceeacaeb0427ac8bddd3b07a6ce2a8f9ba923df3771f9",
+    "file": "maximize_001.wav",
+    "sha256": "43e20450ff38b2cd1393de4f5053166fcc45236991a773ff277180d8fd30bda7",
+    "seconds": 0.2543,
+    "bytes": 22504
+  },
+  {
+    "pack": "interface",
+    "source": "Audio/minimize_001.ogg",
+    "sourceSha256": "8481912bc7fa5828924a00ef15b6cd613b994956e0817bd3122065c9b2896d2d",
+    "file": "minimize_001.wav",
+    "sha256": "eab930e644f1f2cf0907ebdc66f0d36760c7289b4e8bc123318b5f43a8c961d0",
+    "seconds": 0.2542,
+    "bytes": 22502
+  },
+  {
+    "pack": "impact",
+    "source": "Audio/impactPunch_medium_000.ogg",
+    "sourceSha256": "486988aa2d6440ffc4c62a0e8ccf3c23673ba84424bd4723378d451b7255eb5c",
+    "file": "impactPunch_medium_000.wav",
+    "sha256": "fe37fbeacb5666707cb3aee0ca142e8032e0092bed1d29568ad1aa9a36cc2849",
+    "seconds": 0.2813,
+    "bytes": 24890
+  },
+  {
+    "pack": "impact",
+    "source": "Audio/impactPunch_medium_001.ogg",
+    "sourceSha256": "e71d23abcc3f10d9d6bc9615b2a431fff70b12333a5fcdd9964457564ace4349",
+    "file": "impactPunch_medium_001.wav",
+    "sha256": "7a751d30c062e1a45b2b91e8704054fbdb4946f3882eb3dd3ac51cbb0f503149",
+    "seconds": 0.2649,
+    "bytes": 23440
+  },
+  {
+    "pack": "impact",
+    "source": "Audio/impactSoft_heavy_000.ogg",
+    "sourceSha256": "49e7ca88743fca974bb8676ea138b751cfd8f9033b5e7af8736c2a215d6edbc1",
+    "file": "impactSoft_heavy_000.wav",
+    "sha256": "ec8a876e90de3f5c126027ab9d01e565b261974508fe3e238c4c10978091c2e6",
+    "seconds": 0.5046,
+    "bytes": 44588
+  },
+  {
+    "pack": "impact",
+    "source": "Audio/impactSoft_heavy_001.ogg",
+    "sourceSha256": "4d0096364ba9e46119d2ff6df493fdc101bd2e1efae061da5e5f77a53b3fdcb6",
+    "file": "impactSoft_heavy_001.wav",
+    "sha256": "626c7a5e9a4a442960f728a11402db328d77360f155dbcf24e5d8932acdfa8e8",
+    "seconds": 0.5691,
+    "bytes": 50270
+  },
+  {
+    "pack": "impact",
+    "source": "Audio/impactWood_light_000.ogg",
+    "sourceSha256": "eb45e35b4bed784d3f120de4afec4b0d6ac09d9e143cce8cfcb7d739e1b1f3c3",
+    "file": "impactWood_light_000.wav",
+    "sha256": "c055a355c77442417dd0806cbe5487c3a23627f8eb507e54b007762c26ff3f7d",
+    "seconds": 0.1041,
+    "bytes": 9256
+  },
+  {
+    "pack": "impact",
+    "source": "Audio/impactSoft_medium_000.ogg",
+    "sourceSha256": "7d3ba0bb5e60a11b5d3e558c141303dcf494256675fbf753c0d252d2cf0481e3",
+    "file": "impactSoft_medium_000.wav",
+    "sha256": "82d70794858b30786bbff59ef81b8280e435c24137f5e508aabcce04db0e16b1",
+    "seconds": 0.1151,
+    "bytes": 10230
+  }
+]
