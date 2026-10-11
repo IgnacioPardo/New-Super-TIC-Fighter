@@ -1,0 +1,220 @@
+@font-face { font-family: 'STF Display'; src: url('/assets/fonts/BarlowCondensed-Bold.ttf') format('truetype'); font-weight: 700; font-style: normal; font-display: swap; }
+@font-face { font-family: 'STF Display'; src: url('/assets/fonts/BarlowCondensed-ExtraBoldItalic.ttf') format('truetype'); font-weight: 800; font-style: italic; font-display: swap; }
+
+/* Menu presentation. Settings retains its original presentation. Fixed-window paging, editor ownership and the combat HUD stay independent. */
+.game-menu {
+ --menu-ink: #f4f2e9; --menu-muted: #9aa9b7; --menu-edge: #ffffff20;
+ --menu-display: 'STF Display', 'Arial Narrow', 'Trebuchet MS', sans-serif;
+ --panel: #151d28; --panel-line: #ffffff25; --selected: #f4f2e9; --selected-ink: #111922;
+ --hard-shadow: none; color: var(--menu-ink); background: #0d141d;
+}
+.game-menu .site-atmosphere { opacity: .09; filter: grayscale(1); background-size: auto 120%; }
+.game-menu::before { content: ''; pointer-events: none; position: absolute; width: 38vw; height: 130%; right: 10%; top: -15%; transform: skewX(-12deg); background: #162331; opacity: .55; }
+.game-menu > main { max-width: 1344px; padding-inline: clamp(20px,4vw,64px); }
+.game-menu .app-header { padding: 14px clamp(20px,4vw,64px); height: 64px; max-width: 1472px; width: 100%; margin: 0 auto; }
+.game-menu .brand-button { width: 154px; }
+.game-menu .header-actions { gap: 8px; }
+.game-menu :is(.icon-button,.language-button,.profile-shortcut) { background: transparent; border: 1px solid transparent; border-radius: 0; min-height: 36px; }
+.game-menu .profile-shortcut { padding: 8px 12px; }
+.game-menu :is(.icon-button,.language-button,.profile-shortcut):hover { background: #ffffff10; border-color: #ffffff30; }
+.game-menu .app-footer { max-width: none; padding: 10px clamp(20px,4vw,64px); min-height: 44px; border-color: #ffffff12; background: #090f16; font-size: 12px; color: #a7b2be; }
+.game-menu .footer-mark { font: italic 800 21px var(--menu-display); color: #71869b; }
+.game-menu .app-footer > button { font-size: 12px; color: #b5c0ca; }
+.game-menu .page-heading { gap: 20px; padding-block: 6px 22px; }
+.game-menu .page-heading h1 { font: italic 800 clamp(32px,3.4vw,48px)/1 var(--menu-display); letter-spacing: .01em; text-shadow: none; }
+.game-menu .page-heading::after { display: none; }
+.game-menu .back-button { padding: 8px 0; min-width: 70px; border: 0; background: transparent; box-shadow: none; color: #a7b6c5; font-size: 13px; }
+.game-menu .back-button:hover { color: white; }
+.game-menu .screen-context { font-size: 11px; font-weight: 700; color: #72cde4; letter-spacing: .06em; }
+.game-menu :is(.feature-heading h2,.reader-text-card h2,.guide-card h2,.fighter-identity,.settings-category strong,.online-mode strong) { font-family: var(--menu-display); font-weight: 700; text-shadow: none; }
+.game-menu :is(.primary-button,.secondary-button,.fight-button) { box-shadow: none; border-radius: 0; font-family: var(--menu-display); font-weight: 700; letter-spacing: .025em; }
+.game-menu :is(.primary-button,.fight-button) { background: #56d4eb; border-color: #56d4eb; color: #0c1d27; }
+.game-menu :is(.primary-button,.fight-button):hover { background: #b9f3ff; color: #0c1d27; }
+.game-menu button:focus-visible,.game-menu[data-input='gamepad'] button:focus { outline: 2px solid #f4f2e9; outline-offset: 3px; box-shadow: none; }
+
+/* Three deliberate choices; the roster and original logo supply the artwork. */
+.game-menu.screen-title > main { max-width: 1472px; }
+.game-menu.screen-title .title-screen { grid-template-columns: minmax(280px,.8fr) minmax(0,1.3fr); gap: clamp(28px,5vw,80px); padding: 16px 0 28px; }
+.game-menu.screen-title .title-menu-area { grid-column: 1; grid-row: 1; align-self: center; }
+.game-menu.screen-title .title-poster { grid-column: 2; grid-row: 1; display: flex; flex-direction: column; justify-content: center; height: 100%; max-height: 680px; }
+.game-menu.screen-title .hero-logo { width: 100%; margin: 0 auto; }
+.game-menu.screen-title .hero-logo img { max-height: 28svh; }
+.game-menu.screen-title .title-cast { height: clamp(180px,34svh,320px); margin-top: 24px; }
+.game-menu.screen-title .title-cast .avatar-sprite { transform: scale(2.6); }
+.game-menu.screen-title .title-cast > div { position: relative; }
+.game-menu.screen-title .title-cast > div::before { content: ''; position: absolute; width: 90%; height: 85%; bottom: 0; background: var(--fighter-color); opacity: .09; transform: skewX(-9deg); }
+.game-menu.screen-title .title-cast::after { height: 4px; border: 0; background: #82909d55; bottom: -12px; transform: none; }
+.game-menu.screen-title .arcade-menu { gap: 6px; }
+.game-menu.screen-title .arcade-menu button { min-height: 94px; padding: 10px 24px 14px; gap: 0; background: transparent; border: 0; border-bottom: 1px solid #ffffff20; color: #8e9cac; box-shadow: none; position: relative; }
+.game-menu.screen-title .arcade-menu strong { font: italic 800 clamp(48px,5.7vw,82px)/1 var(--menu-display); text-shadow: none; letter-spacing: -.015em; }
+.game-menu.screen-title .arcade-menu .menu-pointer { display: none; }
+.title-choice-arrow { margin-left: auto; font: 700 46px/1 'STF Display',sans-serif; opacity: 0; }
+.game-menu.screen-title .arcade-menu button[data-selected='true'] { background: #f4f2e9; color: #111c27; border-color: #f4f2e9; box-shadow: -6px 0 #ed278b; }
+.game-menu.screen-title .arcade-menu button[data-selected='true'] .title-choice-arrow { opacity: 1; }
+.game-menu.screen-title .arcade-menu button:hover:not([data-selected='true']) { background: #ffffff09; color: #f4f2e9; }
+.game-menu.screen-title .mode-hint { margin: 22px 0 0 24px; min-height: 44px; max-width: 310px; color: #aab7c4; font-size: 14px; line-height: 1.6; }
+
+/* Light is reserved for focus; content sits quietly behind its controls. */
+.game-menu .feature-home { width: min(100%,1080px); gap: 16px; }
+.game-menu .feature-panel { border: 0; box-shadow: none; background: #151f2bd9; }
+.game-menu .content-page > .feature-panel { flex: 0 1 auto; }
+.game-menu .feature-heading { border: 0; border-bottom: 1px solid var(--menu-edge); background: transparent; color: var(--menu-ink); padding: 20px 24px 16px; }
+.game-menu .feature-heading h2 { font-size: 28px; line-height: 1.1; }
+.game-menu .feature-heading p { color: #9cabb9; font-size: 13px; line-height: 1.5; margin-top: 7px; }
+.game-menu .feature-number { padding: 0; box-shadow: none; background: transparent; font: italic 800 38px/1 var(--menu-display); color: var(--config-accent); }
+.game-menu .content-page .feature-body { padding: 22px 24px; gap: 18px; }
+.game-menu .content-page .feature-body > .primary-button { width: auto; min-width: 160px; min-height: 42px; font-size: 20px; padding: 10px 24px; }
+.game-menu .feature-stats { gap: 30px; }
+.game-menu .feature-stats strong { font: 700 38px/1 var(--menu-display); }
+.game-menu .feature-stats > span { font-size: 12px; color: #9caebe; gap: 5px; }
+.game-menu .feature-actions button,.game-menu .feature-list button { background: #263647; border-color: #ffffff20; box-shadow: none; }
+.game-menu .config-tabs { background: transparent; border: 0; border-bottom: 1px solid #ffffff25; gap: 4px; }
+.game-menu .content-pages > .config-tabs button { flex: 0 1 auto; border: 0; border-bottom: 3px solid transparent; background: transparent; padding: 10px 18px; color: #98aab9; min-height: 44px; font-size: 14px; }
+.game-menu .config-tabs button[aria-selected='true'] { border-bottom-color: #56d4eb; color: #fff; background: #ffffff08; box-shadow: none; }
+.game-menu .config-row { background: #ffffff04; border-color: #ffffff12; }
+.game-menu .config-row:focus-within { background: #ffffff0b; }
+.game-menu .profile-home .name-row { flex-direction: column; align-items: stretch; gap: 8px; }
+.game-menu .profile-home .name-row input { border: 0; border-bottom: 1px solid #ffffff40; border-radius: 0; background: #070d1455; }
+.game-menu .feature-status { background: #1c2936; border-color: #e1bd77; }
+.game-menu .cosmetic-options button { background: #101a26; border-color: #ffffff25; }
+.game-menu .cosmetic-options button.selected { background: #26394a; }
+.game-menu .reader-text-card { background: #151f2bd9; border: 0; }
+.game-menu .reader-text-card h2 { font-size: 30px; }
+.game-menu .reader-text-card p { color: #bac6d1; }
+
+/* Profile reads as a fighter identity, with account tools alongside it. */
+.game-menu .profile-home { display: grid; grid-template-columns: minmax(0,1.2fr) minmax(200px,.8fr); grid-template-rows: minmax(0,1fr) auto; gap: 20px 48px; max-width: 1080px; padding-top: 20px; }
+.game-menu .profile-home > .content-pages { grid-column: 1; grid-row: 1; }
+.game-menu .profile-home > .feature-status { grid-column: 1 / -1; grid-row: 2; }
+.profile-fighter { grid-column: 2; grid-row: 1; align-self: center; display: flex; flex-direction: column; align-items: center; min-width: 0; padding-bottom: 30px; }
+.profile-fighter-art { position: relative; width: 100%; height: clamp(240px,38svh,380px); display: grid; place-items: end center; isolation: isolate; }
+.profile-fighter-art::before { content: ''; position: absolute; inset: 0 18% 0 12%; background: var(--fighter-color); opacity: .1; transform: skewX(-10deg); }
+.profile-fighter-art::after { content: ''; position: absolute; bottom: 0; left: 5%; right: 5%; height: 3px; background: var(--fighter-color); opacity: .7; }
+.profile-fighter-art .avatar { width: 100%; height: 100%; }
+.profile-fighter-art .avatar-sprite { transform: scale(3.4); }
+.profile-fighter > span { margin-top: 26px; font-size: 11px; font-weight: 700; letter-spacing: .15em; color: #98a8b8; }
+.profile-fighter > strong { font: italic 800 clamp(28px,3vw,42px)/1.1 var(--menu-display); margin-top: 8px; text-align: center; text-transform: uppercase; overflow-wrap: anywhere; }
+.game-menu .profile-home .feature-heading > b { font: 700 24px var(--menu-display); white-space: nowrap; color: #a9bfd0; }
+
+/* Consistent choice rows for secondary modes and configuration. */
+.game-menu .online-mode-menu { width: min(100%,820px); gap: 8px; justify-content: center; }
+.game-menu .online-mode { background: #151f2bd9; border: 0; border-left: 3px solid #3f566c; padding: 22px 28px; box-shadow: none; }
+.game-menu .online-mode strong { font-size: clamp(27px,3vw,40px); font-style: italic; font-weight: 800; }
+.game-menu .online-mode small { margin-top: 6px; font-size: 13px; color: #9cabb9; }
+.game-menu .online-mode .menu-pointer { border-width: 6px; border-left-width: 9px; }
+.game-menu .online-mode:focus { background: #f4f2e9; color: #111c27; border-left-color: #ed278b; }
+.game-menu .online-mode:focus small { color: #435365; }
+.game-menu .solo-home .feature-grid { grid-auto-rows: minmax(80px,1fr); max-height: 520px; }
+.game-menu .feature-card { background: #151f2bd9; border: 0; border-left: 3px solid var(--config-accent); box-shadow: none; }
+.game-menu .feature-card strong { font: italic 800 30px/1.05 var(--menu-display); text-transform: uppercase; }
+.game-menu .feature-card > span:first-child { font: 700 30px/1 var(--menu-display); min-width: 44px; opacity: .75; }
+.game-menu .feature-card small { font-size: 13px; color: #9eafbd; line-height: 1.45; }
+.game-menu .feature-card:focus { background: #f4f2e9; color: #111c27; }
+.game-menu .feature-card:focus small { color: #435365; }
+.game-menu .config-dialog { background: #131e2a; border: 1px solid #60758a; box-shadow: 0 20px 80px #0009; }
+.game-menu .config-dialog-heading { background: transparent; border-bottom: 1px solid #ffffff25; color: #f4f2e9; }
+.game-menu .config-dialog-heading h2 { font: italic 800 34px/1.05 var(--menu-display); }
+.game-menu .config-dialog-heading p { color: #a2b2c1; }
+.game-menu .setup-overview .fighter-summary { border: 1px solid #ffffff20; border-top: 3px solid var(--fighter-color); background: #131f2c; box-shadow: none; }
+.game-menu .setup-overview .fighter-summary.is-ready { border-color: var(--fighter-color); }
+.game-menu .fighter-seat-actions { display:flex; flex-direction:column; flex:none; }
+.game-menu .fighter-summary:not(.is-editing) .fighter-seat-actions.with-ready { min-height:64px; }
+.game-menu .setup-overview .fighter-identity { font: 700 24px/1.1 var(--menu-display); }
+.game-menu .setup-overview .fighter-summary.is-editing .fighter-identity { font-size: 19px; }
+.game-menu .setup-overview .fighter-summary:not(.is-editing) .fighter-edit { display:flex; flex-direction:column; justify-content:center; }
+.game-menu .setup-overview .fighter-summary:not(.is-editing) .fighter-edit > :not(.fighter-preview) { flex:none; }
+.game-menu .setup-overview .fighter-summary:not(.is-editing) .fighter-preview { flex:1; min-height:0; max-height:220px; container:roster-portrait / size; }
+.game-menu .setup-overview .fighter-summary:not(.is-editing) .avatar { position:absolute; inset:0; width:100%; height:100%; max-height:none; }
+.game-menu .setup-overview .fighter-summary:not(.is-editing) .avatar-sprite { transform:scale(.7); }
+@container roster-portrait (min-height:90px) { .game-menu .setup-overview .fighter-summary:not(.is-editing) .avatar-sprite { transform:scale(.9); } }
+@container roster-portrait (min-height:120px) { .game-menu .setup-overview .fighter-summary:not(.is-editing) .avatar-sprite { transform:scale(1.2); } }
+@container roster-portrait (min-height:150px) { .game-menu .setup-overview .fighter-summary:not(.is-editing) .avatar-sprite { transform:scale(1.5); } }
+@container roster-portrait (min-height:180px) { .game-menu .setup-overview .fighter-summary:not(.is-editing) .avatar-sprite { transform:scale(1.8); } }
+@container roster-portrait (min-height:210px) { .game-menu .setup-overview .fighter-summary:not(.is-editing) .avatar-sprite { transform:scale(2.1); } }
+.game-menu .setup-overview .match-summary { background: #151f2b; border-color: #ffffff20; box-shadow: none; }
+.game-menu .setup-overview .inline-fighter-editor .name-row { flex-direction: row; align-items: center; }
+.game-menu .setup-overview .fighter-summary .seat-number { font-family: var(--menu-display); }
+.game-menu .setup-overview .fighter-summary:not(.is-editing) .fighter-device { margin:4px 0 3px; }
+.game-menu .setup-overview .fighter-summary:not(.is-editing) .fighter-ownership { margin-top:3px; }
+.game-menu .setup-overview .fighter-summary:not(.is-editing) .fighter-edit-label { margin-top:6px; padding:5px 0; line-height:18px; }
+.game-menu .setup-overview .fighter-edit-label > span { font-size:18px; line-height:18px; }
+
+@media(min-width:761px) and (max-height:720px) {
+ .game-menu .app-header { height: 48px; padding-block: 6px; }
+ .game-menu .page-heading { padding-bottom: 14px; }
+ .game-menu .page-heading h1 { font-size: 34px; }
+ .game-menu.screen-title .arcade-menu button { min-height: 78px; }
+ .game-menu.screen-title .arcade-menu strong { font-size: 60px; }
+ .game-menu.screen-title .title-cast { height: 180px; margin-top: 18px; }
+ .game-menu.screen-title .title-cast .avatar-sprite { transform: scale(1.8); }
+ .game-menu .profile-home { padding-top: 0; gap: 12px 32px; }
+ .game-menu .profile-home .feature-heading { padding: 14px 18px; }
+ .game-menu .profile-home .feature-body { padding: 16px 18px; gap: 14px; }
+ .profile-fighter-art { height: 250px; }
+ .profile-fighter-art .avatar-sprite { transform: scale(2.4); }
+ .game-menu .setup-overview .fighter-summary:not(.is-editing) .fighter-identity { font-size:21px; margin-top:3px; }
+}
+@media(max-width:760px) {
+ .game-menu > main { padding-inline: 16px; }
+ .game-menu .app-header { height: 54px; padding: 8px 16px; }
+ .game-menu .brand-button { width: 42px; }
+ .game-menu .header-actions { gap: 4px; }
+ .game-menu .page-heading { gap: 12px; padding-block: 6px 16px; }
+ .game-menu .page-heading h1 { font-size: 34px; }
+ .game-menu .app-footer { padding: 8px 14px; gap: 8px; font-size: 10px; min-height: 42px; }
+ .game-menu .app-footer > button { font-size: 10px; }
+ .game-menu.screen-title .title-screen { grid-template-columns: 1fr; grid-template-rows: minmax(0,1fr) auto; gap: 18px; padding: 8px 0 18px; }
+ .game-menu.screen-title .title-poster { grid-column: 1; grid-row: 1; }
+ .game-menu.screen-title .title-menu-area { grid-column: 1; grid-row: 2; max-width: none; }
+ .game-menu.screen-title .hero-logo img { max-height: 18svh; }
+ .game-menu.screen-title .title-cast { height: 18svh; min-height: 90px; margin-top: 8px; }
+ .game-menu.screen-title .title-cast .avatar-sprite { transform: scale(1.2); }
+ .game-menu.screen-title .arcade-menu button { min-height: 62px; padding: 8px 18px; }
+ .game-menu.screen-title .arcade-menu strong { font-size: 43px; }
+ .game-menu.screen-title .mode-hint { min-height: 20px; margin: 12px 0 0; max-width: none; font-size: 12px; text-align: center; }
+ .game-menu .profile-home { display: flex; padding-top: 0; gap: 12px; }
+ .profile-fighter { display: none; }
+ .game-menu .feature-home { gap: 12px; }
+ .game-menu .content-page .feature-heading { padding: 14px 16px; }
+ .game-menu .feature-heading h2 { font-size: 24px; }
+ .game-menu .content-page .feature-body { padding: 16px; gap: 14px; }
+ .game-menu .feature-stats { gap: 18px; }
+ .game-menu .feature-stats strong { font-size: 30px; }
+ .game-menu .content-pages > .config-tabs button { padding: 8px 10px; font-size: 13px; }
+ .game-menu .solo-home .feature-grid { max-height: none; }
+ .game-menu .solo-home .feature-card { padding: 12px 16px; }
+ .game-menu .feature-card strong { font-size: 25px; }
+ .game-menu .feature-card small { font-size: 12px; }
+ .game-menu .online-mode { padding: 20px 16px; }
+ .game-menu .online-mode strong { font-size: 32px; }
+ .game-menu .reader-text-card h2 { font-size: 27px; }
+}
+@media(prefers-reduced-motion:reduce) { .game-menu * { transition: none; } }
+@media(max-width:760px) and (max-height:500px) {
+ .game-menu.screen-title .title-screen { grid-template-columns: minmax(190px,.9fr) minmax(0,1.1fr); grid-template-rows: minmax(0,1fr); gap: 24px; padding: 4px 0 12px; }
+ .game-menu.screen-title .title-menu-area { grid-column: 1; grid-row: 1; }
+ .game-menu.screen-title .title-poster { grid-column: 2; grid-row: 1; }
+ .game-menu.screen-title .arcade-menu button { min-height: 46px; padding: 5px 12px; }
+ .game-menu.screen-title .arcade-menu strong { font-size: 35px; }
+ .game-menu.screen-title .mode-hint { font-size: 11px; }
+ .game-menu.screen-title .title-cast { height: 90px; min-height: 0; }
+ .game-menu.screen-title .title-cast .avatar-sprite { transform: scale(.8); }
+ .game-menu.screen-title .hero-logo img { max-height: 24svh; }
+ .game-menu .online-mode-menu { gap: 6px; padding-block: 0 10px; }
+ .game-menu .online-mode { padding: 8px 12px; }
+ .game-menu .online-mode strong { font-size: 24px; }
+ .game-menu .online-mode small { margin-top: 3px; font-size: 11px; }
+}
+
+.game-menu .setup-overview .fighter-grid { grid-template-columns:repeat(var(--roster-columns,4),minmax(0,1fr)); width:min(100%,calc(var(--roster-columns,4) * 310px)); align-self:center; }
+.game-menu .empty-fighter-slot { min-height:0; border:1px dashed #6c81934d; background:#0b152055; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; padding:18px; color:#72899d; text-align:center; }
+.game-menu .empty-fighter-slot svg { width:42px; height:42px; opacity:.6; margin-bottom:10px; }
+.game-menu .empty-fighter-slot strong { font:italic 800 26px/1.1 var(--menu-display); color:#a7bacb; }
+.game-menu .empty-fighter-slot span { font-size:12px; line-height:1.5; }
+.game-menu .empty-fighter-slot small { font-size:11px; color:#688096; }
+.game-menu .empty-fighter-slot:hover,.game-menu .empty-fighter-slot:focus { border-color:#57d4f1; background:#192c3c; color:#bce7f7; }
+.game-menu .setup-overview .page-heading h1 { font-size:34px; }
+.game-menu:is(.screen-setup,.screen-room) .page-heading h1 { font-size:34px; }
+.game-menu .setup-overview .match-summary strong { font:700 22px/1 var(--menu-display); }
+.game-menu .setup-overview .fight-button { font:italic 800 25px/1 var(--menu-display); }
+@media(max-width:760px) { .game-menu .setup-overview .fighter-grid { width:100%; grid-template-columns:1fr; }.game-menu:is(.screen-setup,.screen-room) .page-heading h1 { font-size:30px; } }
