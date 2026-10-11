@@ -1,0 +1,11 @@
+// Actual complete application timeout. Both fighters stay neutral for a real one-minute bout.
+import assert from 'node:assert/strict';
+import {chromium,expect} from '@playwright/test';
+import {enterTitle} from './enter-title.mjs';
+const browser=await chromium.launch({headless:true}),page=await browser.newPage({viewport:{width:1366,height:768}}),errors=[];
+page.on('pageerror',error=>errors.push(error.message));
+await page.addInitScript(()=>{Object.defineProperty(navigator,'getGamepads',{value:()=>[]});localStorage.setItem('stf-settings',JSON.stringify({language:'en',reducedMotion:true}));localStorage.setItem('stf-match',JSON.stringify({ruleset:'classic',bestOf:1,timeLimit:60}));const NativeWorker=window.Worker;window.Worker=class extends NativeWorker{constructor(...args){super(...args);this.addEventListener('message',event=>{if(event.data.type==='snapshot')window.__snapshot=event.data.snapshot;});}};});
+try {
+ await page.goto(process.env.STF_APP_URL??'http://127.0.0.1:5174');await enterTitle(page);await page.getByTestId('mode-local').click();for(const ready of await page.locator('.ready-button:not(:disabled)').all())await ready.click();await page.locator('.fight-button').click();await page.waitForFunction(()=>window.__snapshot?.phase==='playing');console.log('Real one-minute neutral stock bout started.');await page.waitForFunction(()=>window.__snapshot?.phase==='finished',null,{timeout:75000});
+ assert.equal(await page.evaluate(()=>window.__snapshot.result.reason),'draw');assert.deepEqual(await page.evaluate(()=>window.__snapshot.result.winners),[]);await expect(page.locator('.set-score')).not.toContainText('Set complete');await expect(page.locator('.set-score b')).toHaveText(['0','0']);const previous=await page.evaluate(()=>window.__snapshot.matchId);await page.getByRole('button',{name:/^NEXT BOUT/}).click();await page.waitForFunction(id=>window.__snapshot.matchId!==id&&window.__snapshot.phase==='playing',previous);assert.equal(await page.evaluate(()=>window.__snapshot.config.bestOf),1);assert.deepEqual(errors,[]);console.log('Actual one-minute tied stock bout remains tied and replays the best-of-one without inventing a set winner.');
+} finally {await browser.close();}

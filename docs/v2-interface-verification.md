@@ -1,0 +1,23 @@
+# V2 interface verification
+
+Verified on 2026-10-11. These checks exercise complete application flows; no unit tests or fabricated game results were used.
+
+## Actual application and services
+
+- `app-v2-solo.mjs`: the native worker counted three actual keyboard double-jumps and landings in Challenge 1, saved guest challenge progress, and displayed a contained completion dialog. Training recorded a performed input pattern, replayed it, advanced a paused frame and reset damage. Two actual one-stock losses completed a best-of-three at two wins.
+- `app-v2-draw.mjs`: a real one-minute neutral Classic stock bout timed out tied. Both win counts stayed zero and the best-of-one replayed; no set winner was invented.
+- `app-v2-public.mjs`: independent Chromium browser sessions used the running workerd Lobby/Match services to edit a fighter name, queue a duel, acknowledge every local seat, move a fighter, open a local pause/settings/guide menu while the other browser continued receiving playing ticks, resume, forfeit and receive the authoritative result. The public waiting screen exposes server rules and start ownership, without private invite links or match UUIDs.
+- `app-network-lifecycle.mjs`: keyboard 2+2 teams used a forced relay, lost an actual guest WebSocket, reclaimed the same peer and resumed consuming inputs. Keyboard 2+1+1 recovered from host tab loss with an interrupted result and promoted lobby. Two human browsers plus two bots ran over the direct route. Host refresh returned an interrupted round to a playable lobby. Results survived guest refresh, host Next Bout returned to the same room, and controls still worked after leaving for Local. Two browsers entered private Survival together on team A with two bot opponents and the actual first wave.
+- `app-v2-royale-hud.mjs`: actual eight-fighter worker matches with one and four local humans retained detailed local resource panels and compact opponent cards. Both desktop HUDs measured 160 px within the renderer's 180 px reservation; 390×844 also had no horizontal overflow.
+- The private room lifecycle also verified two rapid shared Lives edits before server acknowledgement: optimistic rule drafts retained the latest value and both browsers received the same acknowledged configuration.
+- TypeScript and production Vite builds passed. The existing Phaser chunk remains above Vite's advisory 500 kB threshold.
+
+## Injected devices and browser coverage
+
+- `app-v2-seats.mjs` passed in Chromium, Firefox and WebKit with four injected standard controllers: simultaneous independent inline editors, discipline and appearance changes, native keyboard text entry coexisting with other seat edits, coordinator-only shared navigation, held-input release gating, explicit same-controller reconnect, nested Settings/Guide return with editor state retained, and readiness.
+- The same flow checked 1366×768, 1024×640 and 390×844 without horizontal overflow. Names such as `Zoë / 日本語` retained readable text and keyboard focus.
+- `app-feedback.mjs` used injected DualSense input with actual Web Audio and worker gameplay. It verified the new title order, visible controller focus, confirmation/back, assignment, movement, pause/settings/resume and audible feedback.
+
+## Practical limits
+
+Injected gamepad data does not certify physical DualSense or other hardware. These service browser sessions share one development host and are not a separate-network Argentina latency/reliability session. Physical Arc/controller acceptance, production OAuth/provider-link consent and production performance/capacity evidence belong to the release verification record. The completed initial challenge does not certify all twelve challenge objectives or a full eight-bout Arcade clear.

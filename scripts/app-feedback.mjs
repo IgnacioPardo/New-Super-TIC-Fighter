@@ -27,6 +27,8 @@ try{
  assert.equal(await page.locator('.app').getAttribute('data-input'),'gamepad');
  assert.equal(await page.getByTestId('mode-online').locator('.menu-pointer').evaluate(el=>getComputedStyle(el).visibility),'visible');
  await press(13);
+ await expect(page.getByTestId('mode-public')).toBeFocused();
+ await press(13);
  await expect(page.getByTestId('mode-practice')).toBeFocused();
  await press(0);
  await page.locator('.fighter-edit').first().click();
