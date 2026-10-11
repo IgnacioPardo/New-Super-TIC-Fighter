@@ -32,3 +32,11 @@ User feedback accepted the layout but found the presentation too plain. Preserve
 - Inspected actual application screenshots at 1366×768, 1024×640, 390×844, and the existing 360px minimum width at 360×640. No horizontal editor overflow; short windows scroll inside the dialog. The application still has its pre-existing 360px minimum page width.
 - Removed the brief low-contrast background fade during selection and corrected the focused keyboard-capture colour precedence. The existing reduced-motion setting still disables transitions.
 - Visual checks used isolated Playwright browsers with physical gamepads excluded. Screenshots are in ignored `tmp/qa/polish-*.png`. The earlier Arc and full-service checks above predate this cosmetic follow-up.
+
+## Integration with current main
+
+Preserved the Overdrive opening screen and branding, concise copy, controller normalization/automatic assignment, connection status, semantic UI audio, and the post-result navigation fix. Controller details live in the Controller category. The current main's additional browser exercises now use the new configuration editors.
+
+Integration checks passed for the production build, client/server types, music headers, opening-screen flow, two-browser multiplayer, all three browsers' menu/device flows, standard and macOS-HID DualSense input, audible UI feedback, result navigation, and HTTP delivery of all 26 music assets. Multiplayer scenarios covered 2+2 teams, 2+1+1 players, bots, host refresh, and guest results/rematch/local play.
+
+The multiplayer run exposed rapid adjustments using stale values while waiting for a render or room response. Menu commands now commit their React updates synchronously. Online fighter/rule editors keep a local draft, revoke readiness when editing starts, and submit the combined changes when closed; untouched fields come from the latest room state. The complete guest-result scenario now explicitly exercises two rapid arrow presses before closing and verifies the authoritative one-life configuration. This regression passed against the real local room service.

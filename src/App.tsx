@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { flushSync } from 'react-dom';
 import type { AppSettings, AssetsManifest, MatchConfig, MatchSnapshot } from './shared/types';
 import { GameView } from './game/GameView';
 import { Avatar } from './ui/Avatar';
@@ -105,7 +106,11 @@ export default function App({ online }: AppProps) {
    const focused = document.activeElement as HTMLElement;
    const dialog = root.current?.querySelector<HTMLElement>('[data-menu-dialog]');
    const commandTarget = dialog && !dialog.contains(focused) ? dialog : focused;
-   if (commandTarget && !commandTarget.dispatchEvent(new CustomEvent('menu-command', { detail: command, bubbles: true, cancelable: true }))) {
+   // Native keyboard/gamepad events can arrive before React's next render.
+   // Commit each adjustment before calculating the following one.
+   let handled = false;
+   flushSync(() => { handled = !!commandTarget && !commandTarget.dispatchEvent(new CustomEvent('menu-command', { detail: command, bubbles: true, cancelable: true })); });
+   if (handled) {
      if (command === 'back' || command === 'pause') runtime.uiSound('back');
      else if ((command === 'left' || command === 'right') && focused.closest('.choice-row, [role=tablist]')) runtime.uiSound(focused.closest('[role=tablist]') ? 'navigate' : 'change');
      return;
