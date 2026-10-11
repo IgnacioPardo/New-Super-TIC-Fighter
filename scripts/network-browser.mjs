@@ -1,6 +1,6 @@
-// Cross-browser transport exercise against the full local Worker.
+// Chromium transport exercise against the full local Worker.
 import assert from 'node:assert/strict';
-import { readdir, mkdir, writeFile } from 'node:fs/promises';
+import { readdir, mkdir, writeFile, rm } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { chromium } from '@playwright/test';
@@ -9,16 +9,19 @@ const base = process.env.STF_SERVER_URL ?? 'http://127.0.0.1:8787';
 const esbuildDir = (await readdir('node_modules/.pnpm')).find(name => name.startsWith('esbuild@'));
 if (!esbuildDir) throw new Error('The Vite toolchain does not contain esbuild.');
 const { build } = await import(pathToFileURL(resolve('node_modules/.pnpm', esbuildDir, 'node_modules/esbuild/lib/main.js')).href);
-await mkdir('dist', { recursive: true });
-await build({ entryPoints: ['src/network/RoomClient.ts'], bundle: true, format: 'esm', platform: 'browser', outfile: 'dist/network-client.js' });
-await writeFile('dist/network-test.html', '<!doctype html><title>Network browser flow</title>');
-const browser = await chromium.launch({ headless: true });
-const hostContext = await browser.newContext();
-const guestContext = await browser.newContext();
-const hostPage = await hostContext.newPage();
-const guestPage = await guestContext.newPage();
+let browser;
+let hostPage;
+let guestPage;
 
 try {
+  await mkdir('dist', { recursive: true });
+  await build({ entryPoints: ['src/network/RoomClient.ts'], bundle: true, format: 'esm', platform: 'browser', outfile: 'dist/network-client.js' });
+  await writeFile('dist/network-test.html', '<!doctype html><title>Network browser flow</title>');
+  browser = await chromium.launch({ headless: true });
+  const hostContext = await browser.newContext();
+  const guestContext = await browser.newContext();
+  hostPage = await hostContext.newPage();
+  guestPage = await guestContext.newPage();
   await Promise.all([hostPage.goto(`${base}/network-test.html`), guestPage.goto(`${base}/network-test.html`)]);
   const created = await hostPage.evaluate(async () => {
     const { RoomClient } = await import('/network-client.js');
@@ -88,6 +91,10 @@ try {
   await guestPage.waitForFunction(() => window.events.some(event => event.type === 'snapshot' && event.snapshot.tick === 2));
   console.log(`Browser room ${created.code}: direct WebRTC input/snapshot, simulated client signaling loss controls, and forced-relay recovery passed (${matchId}).`);
 } finally {
-  await Promise.all([hostPage.evaluate(() => window.client?.close()).catch(() => {}), guestPage.evaluate(() => window.client?.close()).catch(() => {})]);
-  await browser.close();
+  try {
+    await Promise.all([hostPage ? hostPage.evaluate(() => window.client?.close()).catch(() => {}) : undefined, guestPage ? guestPage.evaluate(() => window.client?.close()).catch(() => {}) : undefined]);
+    await browser?.close();
+  } finally {
+    await Promise.all([rm('dist/network-client.js', { force: true }), rm('dist/network-test.html', { force: true })]);
+  }
 }
