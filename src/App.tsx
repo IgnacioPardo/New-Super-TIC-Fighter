@@ -6,24 +6,28 @@ import { Avatar } from './ui/Avatar';
 import { Setup } from './ui/Setup';
 import { Settings } from './ui/Settings';
 import { Guide } from './ui/Guide';
+import { TrainingControls } from './ui/TrainingControls';
 import { HUD, formatClock } from './ui/HUD';
 import { useGameRuntime } from './ui/useGameRuntime';
-import type { MenuCommand } from './ui/useGameRuntime';
+import type { MenuCommand, MenuIdentity } from './input';
+import { useNavigation } from './ui/useNavigation';
 import type { OnlineBridge } from './ui/contracts';
 import { defaultSeat, loadConfig, loadSettings } from './ui/preferences';
 import { disciplineInfo, formatLives, names, pauseMessage, ui } from './ui/i18n';
 import { ARENAS } from './shared/content';
 import { Icon } from './ui/Icon';
-import { menuTargets } from './ui/MenuControls';
+import { menuTargets, MenuDialog } from './ui/MenuControls';
 import { Intro } from './ui/Intro';
 import { useUiFeedback } from './ui/useUiFeedback';
 
-type Screen = 'intro' | 'title' | 'setup' | 'online' | 'room' | 'match' | 'results' | 'settings' | 'guide';
+type Screen = 'intro' | 'title' | 'setup' | 'online' | 'room' | 'match' | 'results' | 'settings' | 'guide' | 'solo' | 'profile' | 'public' | 'tournaments';
 export interface AppProps { online?: OnlineBridge }
 export default function App({ online }: AppProps) {
  const [settings, setSettings] = useState<AppSettings>(loadSettings);
  const [config, setConfig] = useState<MatchConfig>(loadConfig);
- const [screen, setScreen] = useState<Screen>(() => new URLSearchParams(window.location.search).get('room') ? 'title' : 'intro');
+ const root = useRef<HTMLDivElement>(null);
+ const navigation = useNavigation<Screen>(() => new URLSearchParams(window.location.search).get('room') ? 'title' : 'intro', root);
+ const { screen, replace: setScreen } = navigation;
  const [returnScreen, setReturnScreen] = useState<Screen>('title');
  const [source, setSource] = useState<'local' | 'online' | 'practice'>('local');
  const [ready, setReady] = useState<Record<string, boolean>>({});
@@ -37,14 +41,14 @@ export default function App({ online }: AppProps) {
  const [menuInput, setMenuInput] = useState<'keyboard' | 'gamepad'>('keyboard');
  const [renderReady, setRenderReady] = useState(false);
  const [selectedMode, setSelectedMode] = useState<'local' | 'online' | 'practice' | 'settings' | 'guide'>('local');
- const menuHandler = useRef<(command: MenuCommand, source: 'keyboard' | 'gamepad') => void>(() => {});
+ const menuHandler = useRef<(command: MenuCommand, source: 'keyboard' | 'gamepad', identity: MenuIdentity) => void>(() => {});
  const lastSnapshot = useRef<MatchSnapshot | null>(null);
- const root = useRef<HTMLDivElement>(null);
  const t = ui[settings.language];
- const runtime = useGameRuntime(settings, manifest, (command, source) => menuHandler.current(command, source), online, source === 'online' && !!online?.state.snapshot, screen === 'match');
+ const runtime = useGameRuntime(settings, manifest, (command, source, identity) => menuHandler.current(command, source, identity), online, source === 'online' && !!online?.state.snapshot, screen === 'match');
  const snapshot = runtime.snapshot;
  const enterTitle = useCallback((fromGamepad = false) => { setMenuInput(fromGamepad ? 'gamepad' : 'keyboard'); void runtime.unlock(); setScreen('title'); }, [runtime.unlock]);
  useUiFeedback(root, runtime.uiSound);
+ useEffect(() => { const release = (event: Event) => runtime.releaseMenu((event as CustomEvent<string>).detail || undefined); window.addEventListener('menu-transition', release); return () => window.removeEventListener('menu-transition', release); }, [runtime.releaseMenu]);
  const previousPhase = useRef(snapshot?.phase);
  useEffect(() => { if (screen === 'results') runtime.uiSound(snapshot?.result?.reason === 'interrupted' ? 'error' : 'ready'); }, [screen, runtime.uiSound]);
  const reportedError = assetError || onlineError || runtime.error || (source === 'online' ? online?.state.error : '');
@@ -74,6 +78,7 @@ export default function App({ online }: AppProps) {
  useEffect(() => { if (snapshot?.phase === 'finished' && (screen === 'match' || (['settings', 'guide'].includes(screen) && returnScreen === 'match'))) setScreen('results'); }, [snapshot?.phase, screen, returnScreen]);
  useLayoutEffect(() => {
    if (screen !== 'match' || snapshot?.phase === 'paused') {
+     if (root.current?.hasAttribute('data-navigation-restored')) { root.current.removeAttribute('data-navigation-restored'); return; }
      (root.current?.querySelector<HTMLElement>('[data-autofocus]:not(:disabled)') ?? root.current?.querySelector<HTMLElement>('main button:not(:disabled), main input:not(:disabled), .pause-panel button:not(:disabled)'))?.focus({ preventScroll: true });
    }
  }, [screen, snapshot?.phase]);
@@ -82,28 +87,40 @@ export default function App({ online }: AppProps) {
    const controller = runtime.preferredController();
    setSource(practice ? 'practice' : 'local'); setReady({}); setRenderReady(false); lastSnapshot.current = null;
    setConfig(previous => {
-     const next = practice ? { ...previous, practice: true, mode: 'ffa' as const, timeLimit: 0, players: [defaultSeat(0, false, settings.language), defaultSeat(1, true, settings.language)] } : { ...previous, practice: false, timeLimit: previous.timeLimit || 300 };
+     const next = practice ? { ...previous, practice: true, gameMode: 'training' as const, mode: 'ffa' as const, timeLimit: 0, players: [defaultSeat(0, false, settings.language), defaultSeat(1, true, settings.language)] } : { ...previous, practice: false, timeLimit: previous.timeLimit || 300 };
      const first = next.players.find(player => player.kind === 'human');
      return controller && first && !next.players.some(player => player.device === controller) ? { ...next, players: next.players.map(player => player.id === first.id ? { ...player, device: controller } : player) } : next;
    });
-   setScreen('setup');
+   navigation.navigate('setup');
  };
  const leaveMatch = () => { runtime.stop(); if (source === 'online') { online?.rematch(); setScreen('room'); } else setScreen('setup'); };
  const leaveRoom = () => { online?.leave(); runtime.stop(); setSource('local'); setScreen('title'); };
  const back = useCallback(() => {
    if (screen === 'match') {
      if (snapshot?.phase === 'paused') { if (!runtime.reclaim()) return; if (source === 'online') { if (online?.state.isHost && !online.state.members.some(member => !member.connected)) online.resume(); } else runtime.command({ type: 'resume' }); } else { if (source === 'online') online?.pause(); else runtime.command({ type: 'pause' }); }
-   } else if (screen === 'settings' || screen === 'guide') setScreen(returnScreen);
+   } else if (screen === 'settings' || screen === 'guide') navigation.pop(returnScreen);
    else if (screen === 'title') setScreen('intro');
    else if (screen === 'room') leaveRoom();
    else if (screen === 'results') { if (source === 'online' && !online?.state.isHost && online?.state.status !== 'lobby') leaveRoom(); else leaveMatch(); }
-   else setScreen('title');
+   else navigation.pop('title');
  }, [screen, returnScreen, source, online, runtime.command, snapshot?.phase, runtime.disconnected, runtime.reclaim]);
- menuHandler.current = (command, inputSource) => {
+ menuHandler.current = (command, inputSource, identity) => {
    setMenuInput(inputSource);
    if (inputSource === 'gamepad') root.current?.setAttribute('data-input', 'gamepad');
-   if (screen === 'intro') { if (command === 'confirm' || command === 'pause') enterTitle(inputSource === 'gamepad'); return; }
+   if (command === 'pause' && screen !== 'match') return;
+   if (screen === 'intro') { if (command === 'confirm') enterTitle(inputSource === 'gamepad'); return; }
    const focused = document.activeElement as HTMLElement;
+   // Local-seat controllers navigate their own inline editor, without moving browser focus.
+   const seatScope = root.current?.querySelector<HTMLElement>('[data-seat-navigation]');
+   if (inputSource === 'gamepad' && seatScope) {
+     let handled = false;
+     flushSync(() => { handled = !seatScope.dispatchEvent(new CustomEvent('seat-menu-input', {detail:{command,source:inputSource,identity},bubbles:false,cancelable:true})); });
+     if (handled) return;
+   }
+   if (focused?.matches('input:not([type=range]):not([type=checkbox]), textarea') && command === 'back') {
+     const scope = focused.closest('[data-menu-dialog], [data-seat-id]') ?? root.current;
+     (scope ? menuTargets(scope).find(target => target !== focused && target.tagName === 'BUTTON') : undefined)?.focus(); return;
+   }
    const dialog = root.current?.querySelector<HTMLElement>('[data-menu-dialog]');
    const commandTarget = dialog && !dialog.contains(focused) ? dialog : focused;
    // Native keyboard/gamepad events can arrive before React's next render.
@@ -116,7 +133,7 @@ export default function App({ online }: AppProps) {
      return;
    }
    if (command === 'back' || command === 'pause') { if (screen !== 'match') runtime.uiSound('back'); back(); return; }
-   const container = root.current?.querySelector('[data-menu-dialog]') ?? root.current?.querySelector('.pause-panel') ?? root.current?.querySelector('main');
+   const container = root.current?.querySelector('[data-menu-dialog]') ?? root.current?.querySelector('.pause-panel') ?? focused.closest('.inline-fighter-editor') ?? root.current;
    if (!container) return;
    const options = menuTargets(container);
    const focusItem = (item: HTMLElement) => { if (item === document.activeElement) return; item.focus({ preventScroll: true }); item.scrollIntoView({ block: 'nearest', inline: 'nearest', behavior: 'instant' }); runtime.uiSound('navigate'); };
@@ -151,7 +168,7 @@ export default function App({ online }: AppProps) {
  const start = () => { runtime.uiSound('start'); setRenderReady(false); if (source === 'online') online?.start(); else { void runtime.start({ ...config, seed: Date.now() }); setScreen('match'); } };
  const pause = () => source === 'online' ? online?.pause() : runtime.command({ type: 'pause' });
  const resume = () => { if (!runtime.reclaim()) return; if (source === 'online') { if (!online?.state.isHost || online.state.members.some(member => !member.connected)) return; online.resume(); } else runtime.command({ type: 'resume' }); };
- const open = (page: 'settings' | 'guide') => { setReturnScreen(screen); if (screen === 'match') pause(); setScreen(page); };
+ const open = (page: 'settings' | 'guide') => { if (page === screen) return; setReturnScreen(screen); if (screen === 'match') pause(); navigation.navigate(page); };
  const connect = async (create: boolean) => {
    setOnlineError('');
    if (!online) { setOnlineError(t.backendUnavailable); return; }
@@ -176,7 +193,8 @@ export default function App({ online }: AppProps) {
    : '';
  return <div className={`app ${isMatch ? 'app-match' : ''} screen-${screen}`} ref={root} data-menu-input={menuInput} data-input={menuInput} onClickCapture={event => {
    // WebKit does not focus pointer-clicked buttons; preserve the menu's focus origin.
-   (event.target as HTMLElement).closest<HTMLButtonElement>('button:not(:disabled)')?.focus({ preventScroll: true });
+   const target = (event.target as HTMLElement).closest<HTMLButtonElement>('button:not(:disabled)');
+   if (!target?.hasAttribute('data-virtual-activate')) target?.focus({ preventScroll: true });
  }} onPointerDown={() => { if (!runtime.soundUnlocked) void runtime.unlock(); }}>
    <div className="site-atmosphere" aria-hidden="true" style={{ backgroundImage: manifest ? `url("${manifest.backgrounds.classic}")` : undefined }} />
    {screen !== 'intro' && <header className="app-header">
@@ -196,24 +214,24 @@ export default function App({ online }: AppProps) {
        <div className="title-cast" aria-hidden="true">{(['networks','design','code','hardware'] as const).map((d,i) => <div key={d} style={{ '--fighter-color': disciplineInfo[d].color } as React.CSSProperties}><Avatar manifest={manifest} discipline={d} appearance={{hair:i,shirt:i,pants:i}} animated={!settings.reducedMotion} /></div>)}</div>
       </section>
       <section className="title-menu-area">
-       <nav className="arcade-menu" aria-label={t.titlePrompt}>{(['local','online','practice','settings','guide'] as const).map(mode => <button key={mode} data-testid={`mode-${mode}`} data-autofocus={mode === selectedMode ? true : undefined} aria-label={t[mode]} onFocus={() => setSelectedMode(mode)} onMouseEnter={() => setSelectedMode(mode)} onClick={() => mode === 'local' ? enterLocal() : mode === 'practice' ? enterLocal(true) : mode === 'online' ? (setSource('online'),setScreen('online')) : open(mode)}><span className="menu-pointer" aria-hidden="true" /><strong>{t[mode]}</strong></button>)}</nav>
+       <nav className="arcade-menu" aria-label={t.titlePrompt}>{(['local','online','practice','settings','guide'] as const).map(mode => <button key={mode} data-testid={`mode-${mode}`} data-autofocus={mode === selectedMode ? true : undefined} aria-label={t[mode]} onFocus={() => setSelectedMode(mode)} onClick={() => mode === 'local' ? enterLocal() : mode === 'practice' ? enterLocal(true) : mode === 'online' ? (setSource('online'),navigation.navigate('online')) : open(mode)}><span className="menu-pointer" aria-hidden="true" /><strong>{t[mode]}</strong></button>)}</nav>
        <p className="mode-hint">{selectedMode === 'local' ? t.localHint : selectedMode === 'online' ? t.onlineHint : selectedMode === 'practice' ? t.practiceHint : selectedMode === 'settings' ? t.settingsHint : t.guideHint}</p>
        <div className="title-utility"><button aria-label={t.language} onClick={() => setSettings({ ...settings, language: settings.language === 'es' ? 'en' : 'es' })}>{settings.language.toUpperCase()}</button><button onClick={() => document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen()}><Icon name="fullscreen" />{t.fullscreen}</button>{!runtime.soundUnlocked && <button onClick={() => void runtime.unlock()}><Icon name="sound" />{t.soundLocked}</button>}</div>
       </section>
     </div>}
     {['setup','room','settings','guide','online'].includes(screen) && <div className="page-heading"><button className="back-button" data-ui-sound="back" onClick={back}>← {t.back}</button><div><span className="screen-context">{screen === 'setup' ? source === 'practice' ? t.practice : t.local : screen === 'room' ? `${t.online} / ${t.room} ${online?.state.code ?? ''}` : ''}</span><h1>{screen === 'setup' || screen === 'room' ? t.setup : screen === 'settings' ? t.settings : screen === 'guide' ? t.guide : t.onlineTitle}</h1></div></div>}
-    {(screen === 'setup' || screen === 'room') && <>
+    {(screen === 'setup' || screen === 'room' || ['settings','guide'].includes(screen) && (navigation.contains('setup') || navigation.contains('room'))) && <div hidden={screen !== 'setup' && screen !== 'room'}>
       {screen === 'room' && online && <div className="room-bar"><div className="room-code"><span>{t.room}</span><strong>{online.state.code}</strong><button className="small-button" onClick={() => void copyInvite()}>{copied ? t.copied : t.copy}</button></div><div className="room-quality"><span className={`status-dot ${online.state.status === 'reconnecting' ? 'warning' : ''}`} /><span>{online.state.status === 'reconnecting' ? t.reconnecting : online.state.route === 'direct' ? t.direct : online.state.route === 'relay' ? t.relay : t.connecting}{online.state.ping !== undefined ? ` · ${Math.round(online.state.ping)} ms${online.state.ping > 180 ? ` · ${t.slowConnection}` : ''}` : ''}</span>{online.forceRelay && <label><input type="checkbox" onChange={e => online.forceRelay?.(e.target.checked)} />{t.forceRelay}</label>}</div><div className="room-members">{online.state.members.map(member => <span key={member.id} className={member.ready ? 'member-ready' : ''}>{member.ready ? '✓' : '•'} {member.name}{member.id === online.state.peerId ? ` (${online.state.isHost ? t.host : t.guest})` : ''}</span>)}</div></div>}
-      <Setup config={activeConfig} setConfig={changeConfig} settings={settings} manifest={manifest} devices={runtime.devices} ready={ready} toggleReady={id => source === 'online' ? online?.ready(!online.state.members.find(m => m.id === online.state.peerId)?.ready) : setReady(previous => ({ ...previous, [id]: !previous[id] }))} start={start} online={screen === 'room' ? online : undefined} practice={source === 'practice'} />
-    </>}
+      <Setup config={activeConfig} setConfig={changeConfig} settings={settings} manifest={manifest} devices={runtime.devices} ready={ready} toggleReady={id => setReady(previous => ({ ...previous, [id]: !previous[id] }))} start={start} online={source === 'online' ? online : undefined} practice={source === 'practice'} feedback={runtime.uiSound} />
+    </div>}
     {screen === 'settings' && <Settings settings={settings} manifest={manifest} change={setSettings} feedback={runtime.uiSound} controllers={runtime.controllers} />}
     {screen === 'guide' && <Guide settings={settings} manifest={manifest} />}
     {screen === 'online' && <div className="online-entry"><div className="online-art"><div className="online-orbit" /><div className="online-fighters"><Avatar manifest={manifest} discipline="networks" appearance={{hair:0,shirt:0,pants:0}} animated={!settings.reducedMotion} /><Avatar manifest={manifest} discipline="code" appearance={{hair:2,shirt:2,pants:2}} animated={!settings.reducedMotion} /></div><h2>{t.online}</h2><p>{t.onlineDescription}</p></div><div className="online-form"><label className="field-label"><span>{t.yourName}</span><input value={name} onChange={e => setName(e.target.value)} maxLength={18} placeholder={t.player} autoComplete="nickname" /></label><button className="primary-button" disabled={pending || !name.trim() || !manifest} onClick={() => void connect(true)}>{pending ? t.connecting : t.create}<span>↗</span></button><div className="or-divider"><span />{t.or}<span /></div><label className="field-label"><span>{t.code}</span><input className="code-input" value={code} onChange={e => setCode(e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, ''))} maxLength={12} placeholder="ABCD234567" autoComplete="off" /></label><button className="secondary-button" disabled={pending || !name.trim() || !code.trim() || !manifest} onClick={() => void connect(false)}>{t.join}<span>→</span></button>{(onlineError || online?.state.error) && <p className="inline-error" role="alert">{onlineError || online?.state.error}</p>}<div className="online-explain"><span>⌁</span><p>{t.onlineNote}</p></div></div></div>}
     {screen === 'match' && <div className="match-screen">
-      <div className="match-topbar"><div><span className="status-dot" /><strong>{ARENAS[(snapshot?.config ?? activeConfig).arena].name[settings.language]}</strong><span>{(snapshot?.config ?? activeConfig).practice ? t.practice : (snapshot?.config ?? activeConfig).mode === 'teams' ? t.teams : t.ffa}</span></div><div className="match-clock">{snapshot?.config.practice ? '∞' : snapshot?.config.timeLimit ? formatClock(snapshot.config.timeLimit - snapshot.elapsed) : '∞'}</div><button className="small-button" data-ui-sound="silent" onClick={pause}>Ⅱ {t.pause}</button></div>
+      <div className="match-topbar"><div><span className="status-dot" /><strong>{ARENAS[(snapshot?.config ?? activeConfig).arena].name[settings.language]}</strong><span>{(snapshot?.config ?? activeConfig).practice ? t.practice : t[(snapshot?.config ?? activeConfig).gameMode ?? 'stock']}</span></div><div className="match-clock">{snapshot?.config.practice ? '∞' : snapshot?.config.timeLimit ? formatClock(snapshot.config.timeLimit - snapshot.elapsed) : '∞'}</div><button className="small-button" data-ui-sound="silent" onClick={pause}>Ⅱ {t.pause}</button></div>
       <div className="match-stage"><GameView arena={activeConfig.arena} snapshot={snapshot} snapshotRef={runtime.snapshotRef} settings={settings} manifest={manifest} onReady={() => setRenderReady(true)} />{snapshot?.phase === 'countdown' && renderReady && <div className="countdown-overlay"><span>{Math.ceil(snapshot.countdown) || t.countdownFight}</span><p>{t.countdownReady}</p></div>}{!snapshot && <div className="countdown-overlay">{runtime.error ? <section className="match-error"><h2>{t.interrupted}</h2><p role="alert">{runtime.error}</p><button className="primary-button" onClick={() => window.location.reload()}>{t.reload}</button><button className="secondary-button" onClick={leaveMatch}>{t.lobby}</button></section> : <><span>…</span><p>{t.assetsLoading}</p></>}</div>}</div>
-      {snapshot && <HUD snapshot={snapshot} settings={settings} manifest={manifest} />}
-      {snapshot?.phase === 'paused' && <div className="modal-shade"><section className="pause-panel">{runtime.disconnected && <span className="eyebrow">{t.disconnected}</span>}<h1>{t.pause}</h1>{pauseNotice && <p>{pauseNotice}</p>}<button data-ui-sound="silent" data-autofocus className="primary-button" disabled={source === 'online' && (!online?.state.isHost || online.state.members.some(member => !member.connected)) || runtime.disconnected && !snapshot.config.players.filter(player => player.kind === 'human' && (source !== 'online' || player.peerId === online?.state.peerId) && player.device.startsWith('gamepad:')).every(player => navigator.getGamepads?.()[Number(player.device.split(':')[1])]?.connected)} onClick={resume}>{t.resume}<span>▶</span></button>{source === 'practice' && <button className="secondary-button" onClick={start}>{t.reset} ↻</button>}<button className="secondary-button" onClick={() => open('settings')}>{t.settings}</button><button className="text-button" data-ui-sound="back" onClick={leaveMatch}>{t.lobby}</button></section></div>}
+      {snapshot && <HUD snapshot={snapshot} settings={settings} manifest={manifest} />}{snapshot && source === 'practice' && <TrainingControls snapshot={snapshot} settings={settings} command={command => runtime.command({type:'training',command})} />}
+      {snapshot?.phase === 'paused' && <MenuDialog language={settings.language} title={t.pause} done={t.back} close={resume}><section className="pause-panel">{runtime.disconnected && <span className="eyebrow">{t.disconnected}</span>}<h1>{t.pause}</h1>{pauseNotice && <p>{pauseNotice}</p>}<button data-ui-sound="silent" data-autofocus className="primary-button" disabled={source === 'online' && (!online?.state.isHost || online.state.members.some(member => !member.connected)) || runtime.disconnected && !snapshot.config.players.filter(player => player.kind === 'human' && (source !== 'online' || player.peerId === online?.state.peerId) && player.device.startsWith('gamepad:')).every(player => navigator.getGamepads?.()[Number(player.device.split(':')[1])]?.connected)} onClick={resume}>{t.resume}<span>▶</span></button>{source === 'practice' && <button className="secondary-button" onClick={start}>{t.reset} ↻</button>}<button className="secondary-button" onClick={() => open('settings')}>{t.settings}</button><button className="text-button" data-ui-sound="back" onClick={leaveMatch}>{t.lobby}</button></section></MenuDialog>}
     </div>}
     {screen === 'results' && displaySnapshot && <Results snapshot={displaySnapshot} settings={settings} manifest={manifest} rematch={() => source === 'online' ? leaveMatch() : start()} primaryLabel={source === 'online' ? !online?.state.isHost && online?.state.status !== 'lobby' ? t.waitingHost : t.lobby : t.rematch} waitingForHost={source === 'online' && !online?.state.isHost && online?.state.status !== 'lobby'} leave={source === 'online' ? leaveRoom : leaveMatch} leaveLabel={source === 'online' ? t.leaveRoom : t.lobby} />}
    </main>

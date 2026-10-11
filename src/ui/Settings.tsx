@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import type { AppSettings, AssetsManifest } from '../shared/types';
-import { DEFAULT_SETTINGS, keyName } from './preferences';
+import { DEFAULT_SETTINGS, keyName, bindingConflicts } from './preferences';
 import { ui } from './i18n';
 import type { UiSound } from '../audio';
 import type { ControllerStatus } from '../input';
@@ -18,7 +18,7 @@ export function Settings({ settings, manifest, change, feedback, controllers }: 
  const bindingsRef = useRef<HTMLDivElement>(null);
  const patch = (value: Partial<AppSettings>) => change({ ...settings, ...value });
  const cancelCapture = () => { setCapture(null); setError(''); };
- useMenuCommand(bindingsRef, command => { if (!capture) return false; if (command === 'back' || command === 'pause') cancelCapture(); return true; });
+ useMenuCommand(bindingsRef, command => { if (!capture) return false; if (command === 'back') cancelCapture(); return true; });
  useEffect(() => {
   if (!capture) return;
   const handler = (event: KeyboardEvent) => {
@@ -39,10 +39,10 @@ export function Settings({ settings, manifest, change, feedback, controllers }: 
   { id: 'keyboard' as const, icon: 'keyboard' as const, accent: '#a0e769', label: t.keyboard, detail: es ? 'Cuatro teclados · Asignación de teclas' : 'Four keyboards · Key bindings' },
   { id: 'gamepad' as const, icon: 'gamepad' as const, accent: '#f4bd67', label: t.gamepad, detail: controllers.controllers[0]?.label ?? `${t.gamepadBindings} · ${t.deadZone}` },
  ];
- const actions = ['left','right','down','jump','punch','special','guard','combo'] as const;
+ const actions = ['left','right','down','jump','punch','special','guard','combo','dodge'] as const;
  const buttonNames = ['A / ✕','B / ○','X / □','Y / △','LB / L1','RB / R1','LT / L2','RT / R2','View / Share','Start / Options','LS / L3','RS / R3','↑','↓','←','→','Home / PS'];
  return <div className="settings-home" data-menu-linear>
-  <p className="config-intro">{t.savedAuto}</p>
+  <p className="config-intro">{t.savedAuto}</p>{bindingConflicts(settings).length > 0 && <p className="inline-error" role="status">{t.bindingMigration} {bindingConflicts(settings).join(" · ")}</p>}
   <nav className="settings-categories" aria-label={t.settings}>{sections.map((item, index) => <button className="settings-category" style={{ '--config-accent': item.accent } as CSSProperties} key={item.id} data-autofocus={index === 0 || undefined} onClick={() => setSection(item.id)}><span className="category-icon" aria-hidden="true"><Icon name={item.icon} /></span><span><strong>{item.label}</strong><small>{item.detail}</small></span><span className="category-end" aria-hidden="true"><small>0{index + 1}</small><b>↗</b></span></button>)}</nav>
   {section && <MenuDialog accent={sections.find(item => item.id === section)!.accent} mark={<Icon name={sections.find(item => item.id === section)!.icon} />} language={settings.language} title={sections.find(item => item.id === section)!.label} subtitle={t.savedAuto} done={t.done} close={() => { cancelCapture(); setSection(null); }}>
    <div className="settings-editor" ref={bindingsRef}>
@@ -66,7 +66,7 @@ export function Settings({ settings, manifest, change, feedback, controllers }: 
     </>}
     {section === 'gamepad' && <>
      <ControllerStatusPanel status={controllers} language={settings.language} />
-     {(['jump','punch','special','combo','guard','pause'] as const).map(action => <Choice key={action} label={t[action]} value={settings.gamepadBindings[action]} options={buttonNames.map((label, value) => ({ value, label }))} change={button => {
+     {(['jump','punch','special','combo','guard','dodge','pause'] as const).map(action => <Choice key={action} label={t[action]} value={settings.gamepadBindings[action]} options={buttonNames.map((label, value) => ({ value, label }))} change={button => {
       const bindings = { ...settings.gamepadBindings };
       const occupied = Object.keys(bindings).find(key => key !== action && bindings[key] === button);
       if (occupied) bindings[occupied] = bindings[action];
