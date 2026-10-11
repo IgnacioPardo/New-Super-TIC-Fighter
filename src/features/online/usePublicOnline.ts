@@ -3,6 +3,7 @@ import { PublicClient } from '../../network/PublicClient';
 import type { LobbyState, MatchTicket, PoolPreference, PublicMatchState } from '../../network/publicTypes';
 import type { MatchConfig, MatchSnapshot, PlayerSeat } from '../../shared/types';
 import type { OnlineBridge, OnlineState } from '../../ui/contracts';
+import { emptyInput } from '../../shared/types';
 import { preloadMatchAssets } from '../../assets';
 
 export function usePublicOnline() {
@@ -13,6 +14,8 @@ export function usePublicOnline() {
  const connecting=useRef<Promise<void>|null>(null);
  const localSeats=useRef<PlayerSeat[]>([]),publishAt=useRef(0),lastPhase=useRef(''),generation=useRef(0);
  const pausedRef=useRef(false);pausedRef.current=paused;
+ const localConfig=(value:MatchConfig):MatchConfig=>({...value,players:value.players.map(player=>player.kind==='human'&&!ticket.current?.seatIds.includes(player.id)?{...player,device:'remote'}:player)});
+ const localSnapshot=(value:MatchSnapshot):MatchSnapshot=>({...value,config:localConfig(value.config)});
  const makeClient=()=>{
   if(client.current)return client.current;
   client.current=new PublicClient({
@@ -23,12 +26,13 @@ export function usePublicOnline() {
     void client.current!.connectMatch(next).then(()=>setStatus('lobby')).catch(failure=>{setError(String(failure.message));setStatus('error');});
    },
    onMatchState:state=>{setMatch(state);if(state.phase==='running')setStatus('playing');else if(state.phase==='waiting')setStatus('lobby');},
-   onSnapshot:next=>{
+   onSnapshot:raw=>{
+    const next=localSnapshot(raw);
     snapshotRef.current=pausedRef.current&&next.phase!=='finished'?{...next,phase:'paused'}:next;
     if(next.phase==='finished'){setPaused(false);setStatus('playing');}
     const now=performance.now();if(next.phase!==lastPhase.current||now-publishAt.current>80){lastPhase.current=next.phase;publishAt.current=now;setSnapshot(next);}
    },
-   onResult:(_result,next)=>{snapshotRef.current=next;setSnapshot(next);setPaused(false);setStatus('playing');},
+   onResult:(_result,raw)=>{const next=localSnapshot(raw);snapshotRef.current=next;setSnapshot(next);setPaused(false);setStatus('playing');},
    onError:(code,message)=>{setErrorCode(code);setError(message);},
    onStatus:(next,latency)=>{if(latency!==undefined)setPing(latency);if(next==='reconnecting')setStatus('reconnecting');else if(next==='disconnected')setStatus('error');else setStatus(current=>current==='connecting'||current==='reconnecting'?(ticket.current?'lobby':'lobby'):current);},
   });return client.current;
@@ -57,12 +61,12 @@ export function usePublicOnline() {
   try{if(value)await preloadMatchAssets(ticket.current.config);if(current!==generation.current)return;client.current?.ready(id,value,value);}catch{setErrorCode('assets');setError('Match assets could not load. Retry readiness.');}
  };
  const shownSnapshot=snapshot&&paused&&snapshot.phase!=='finished'?{...snapshot,phase:'paused' as const}:snapshot;
- const state:OnlineState={status,code:ticket.current?.matchId,peerId:ticket.current?.peerId??lobby?.peerId,isHost:false,authority:'server',config:match?.config??ticket.current?.config,members:match?.peers.map(p=>({id:p.peerId,name:match.config.players.find(s=>s.peerId===p.peerId)?.name??'Player',ready:p.seatIds.every(id=>match.seatReadiness[id]),connected:p.connected,seatIds:p.seatIds}))??[],route:'relay',ping,error,snapshot:shownSnapshot,seatReadiness:match?.seatReadiness,pendingEdits:client.current?.pendingEdits??false,pauseReason:paused?'public-local-menu':undefined};
- const bridge:OnlineBridge={state,snapshotRef,create:async()=>{},join:async()=>{},leave:leaveMatch,updateConfig:()=>{},updateSeat:()=>{},claimSeat:()=>{},ready:value=>{for(const id of ticket.current?.seatIds??[])void ready(id,value);},setSeatReady:(id,value)=>{void ready(id,value);},start:()=>{},pause:()=>{pausedRef.current=true;setPaused(true);if(snapshotRef.current)snapshotRef.current={...snapshotRef.current,phase:'paused'};},resume:()=>{pausedRef.current=false;setPaused(false);snapshotRef.current=client.current?.latestSnapshot??null;},rematch:leaveMatch,sendInputs:frames=>{if(!pausedRef.current)client.current?.sendInputs(frames);}};
+ const state:OnlineState={status,code:ticket.current?.matchId,peerId:ticket.current?.peerId??lobby?.peerId,isHost:false,authority:'server',config:match?.config?localConfig(match.config):ticket.current?.config?localConfig(ticket.current.config):undefined,members:match?.peers.map(p=>({id:p.peerId,name:match.config.players.find(s=>s.peerId===p.peerId)?.name??'Player',ready:p.seatIds.every(id=>match.seatReadiness[id]),connected:p.connected,seatIds:p.seatIds}))??[],route:'relay',ping,error,snapshot:shownSnapshot,seatReadiness:match?.seatReadiness,pendingEdits:client.current?.pendingEdits??false,pauseReason:paused?'public-local-menu':undefined};
+ const bridge:OnlineBridge={state,snapshotRef,create:async()=>{},join:async()=>{},leave:leaveMatch,updateConfig:()=>{},updateSeat:()=>{},claimSeat:()=>{},ready:value=>{for(const id of ticket.current?.seatIds??[])void ready(id,value);},setSeatReady:(id,value)=>{void ready(id,value);},start:()=>{},pause:()=>{client.current?.sendInputs((ticket.current?.seatIds??[]).map(id=>emptyInput(id,(snapshotRef.current?.tick??0)+1)));pausedRef.current=true;setPaused(true);if(snapshotRef.current)snapshotRef.current={...snapshotRef.current,phase:'paused'};},resume:()=>{pausedRef.current=false;setPaused(false);snapshotRef.current=client.current?.latestSnapshot?localSnapshot(client.current.latestSnapshot):null;},rematch:leaveMatch,sendInputs:frames=>{if(!pausedRef.current)client.current?.sendInputs(frames);}};
  return {bridge,lobby,match,status,error,errorCode,ping,paused,connect,updateSeats,disconnect,leaveMatch,
   preference:(value:PoolPreference)=>client.current?.setPreference(value),queue:(value:boolean)=>{setError('');client.current?.queue(value);},joinParty:(code:string)=>client.current?.joinParty(code),leaveParty:()=>client.current?.leaveParty(),
-  spectate:async(id:string)=>{setError('');try{const next=await makeClient().spectate(id);setMatch(next);setStatus('playing');}catch{setErrorCode('spectator_limit');setError('Spectating is unavailable.');}},
-  spectateTicket:async(id:string,token:string)=>{setError('');const next=await makeClient().spectateTicket(id,token);ticket.current=null;setMatch(next);setStatus('playing');},
+  spectate:async(id:string)=>{ticket.current=null;setError('');try{const next=await makeClient().spectate(id);setMatch(next);setStatus('playing');}catch{setErrorCode('spectator_limit');setError('Spectating is unavailable.');}},
+  spectateTicket:async(id:string,token:string)=>{ticket.current=null;setError('');const next=await makeClient().spectateTicket(id,token);ticket.current=null;setMatch(next);setStatus('playing');},
   connectTicket:async(next:MatchTicket)=>{ticket.current=next;await makeClient().connectMatch(next);},
   credentials:()=>client.current?.lobbyCredentials,
  };
