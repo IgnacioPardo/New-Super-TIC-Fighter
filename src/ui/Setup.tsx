@@ -66,11 +66,12 @@ export function Setup({config:incomingConfig,setConfig,settings,manifest,devices
   return state!==undefined?typeof state==='boolean'?state:state.ready&&state.assetsReady:online&&!owned(seat)?!!online.state.members.find(member=>member.id===seat.peerId)?.ready:!!ready[seat.id];
  };
  const connected=(seat:PlayerSeat)=>!seat.device.startsWith('gamepad:')||!owned(seat)||!!devices.find(device=>device.id===seat.device&&device.connected)&&!reclaims[seat.id];
+ const freeKeyboard=(seat:PlayerSeat)=>[0,1,2,3].map(index=>`keyboard:${index}`).find(device=>!localHumans.some(player=>player.id!==seat.id&&seatValue(player).device===device));
  const changeSeat=(id:string,updates:Partial<PlayerSeat>)=>{
   const current=config.players.find(player=>player.id===id);if(!current||!owned(current)||readOnly) return;
   invalidateReady?.();
   const next={...seatValue(current),...updates};
-  if(updates.device) {const device=devices.find(device=>device.id===updates.device);if(device?.controllerId) fingerprints.current.set(id,device.controllerId);setReclaims(previous=>({...previous,[id]:false}));}
+  if(updates.device) {const device=devices.find(device=>device.id===updates.device);if(device?.controllerId) fingerprints.current.set(id,device.controllerId);else fingerprints.current.delete(id);setReclaims(previous=>({...previous,[id]:false}));}
   if(online) {setDrafts(previous=>({...previous,[id]:{...previous[id],...updates}}));online.updateSeat(next);}
   else setConfig({...config,players:config.players.map(player=>player.id===id?next:player)});
  };
@@ -107,7 +108,7 @@ export function Setup({config:incomingConfig,setConfig,settings,manifest,devices
  const rosterValid=config.players.length>=2&&config.players.length<=maxFighters&&localHumans.length<=4;
  const allReady=practice||config.players.every(acknowledgedReady);
  const routePending=!!online&&online.state.members.length>1&&online.state.route==='connecting';
- const validation=routePending?t.connecting:bridge?.state.pendingEdits||Object.keys(drafts).length||Object.keys(ruleDraft).length?t.pendingEdits:!rosterValid?`${es?'Se necesitan de 2 a':'2 to'} ${maxFighters} ${es?'luchadores.':'fighters required.'}`:!teamValid?config.gameMode==='survival'?(es?'Supervivencia requiere uno o dos humanos en el equipo A.':'Survival needs one or two humans on team A.'):t.teamInvalid:!devicesValid?t.devicesInvalid:!allReady?t.readyInvalid:'';
+ const validation=routePending?t.connecting:bridge?.state.pendingEdits||Object.keys(drafts).length||Object.keys(ruleDraft).length?t.pendingEdits:!rosterValid?`${es?'Se necesitan de 2 a':'2 to'} ${maxFighters} ${es?'luchadores.':'fighters required.'}`:!teamValid?config.gameMode==='survival'?(es?'Supervivencia requiere uno o dos humanos en el equipo A.':'Survival needs one or two humans on team A.'):t.teamInvalid:!devicesValid?localHumans.some(seat=>!connected(seat))?t.disconnected:t.devicesInvalid:!allReady?t.readyInvalid:'';
  const addSeat=(device?:string)=>{
   if(lockRoster||readOnly||config.players.length>=maxFighters||device&&localHumans.length>=4) return;
   const index=Array.from({length:8},(_,i)=>i).find(index=>!config.players.some(player=>player.id===`p${index+1}`))??config.players.length;
@@ -169,7 +170,7 @@ export function Setup({config:incomingConfig,setConfig,settings,manifest,devices
    <div className="section-heading"><h2>{t.roster}</h2><span className="count-label">{config.players.length} / {maxFighters}</span><p className="seat-join-help">{t.joinController} · {es?'Cada mando edita su luchador. El teclado comparte un cursor.':'Each controller edits its fighter. Keyboard shares one cursor.'}</p>{!practice&&!lockRoster&&!readOnly&&config.players.length<maxFighters&&(host||!!online)&&<button className="small-button add-fighter" onClick={()=>addSeat()}>+ {t.add}</button>}</div>
 
    <div className="fighter-grid" style={{'--roster-columns':visibleSeats+openSeats} as CSSProperties}>
-    {orderedPlayers.map((original,displayIndex)=>{const index=config.players.findIndex(player=>player.id===original.id),seat=seatValue(original),panel=editor(seat.id),playerPages=config.mode==='teams'||!practice&&!lockRoster&&!readOnly&&config.players.length>2&&host?3:2,isCoordinator=coordinator.current===seat.id;return <article key={seat.id} className={`fighter-card fighter-summary ${acknowledgedReady(seat)?'is-ready':''} ${panel.open?'is-editing':''} ${!connected(seat)?'is-disconnected':''}`} hidden={Math.floor(displayIndex/pageSize)!==activePage} data-seat-id={seat.id} data-owner={seat.device} style={{'--fighter-color':disciplineInfo[seat.discipline].color} as CSSProperties}>
+    {orderedPlayers.map((original,displayIndex)=>{const index=config.players.findIndex(player=>player.id===original.id),seat=seatValue(original),panel=editor(seat.id),playerPages=config.mode==='teams'||!practice&&!lockRoster&&!readOnly&&config.players.length>2&&host?3:2,isCoordinator=coordinator.current===seat.id,keyboardFallback=seat.kind==='human'&&owned(seat)&&!readOnly&&!connected(seat)?freeKeyboard(seat):undefined;return <article key={seat.id} className={`fighter-card fighter-summary ${acknowledgedReady(seat)?'is-ready':''} ${panel.open?'is-editing':''} ${!connected(seat)?'is-disconnected':''}`} hidden={Math.floor(displayIndex/pageSize)!==activePage} data-seat-id={seat.id} data-owner={seat.device} style={{'--fighter-color':disciplineInfo[seat.discipline].color} as CSSProperties}>
      <button className="fighter-edit" disabled={!owned(seat)} data-autofocus={index===0||undefined} aria-label={`${t.editFighter}: ${seat.name}`} onClick={()=>{edit(seat.id,{open:!panel.open});}}>
       <span className="fighter-card-top"><span className="seat-number">P{index+1}</span><span className={`ready-light ${acknowledgedReady(seat)?'on':''}`}>{acknowledgedReady(seat)?`✓ ${t.ready}`:t.notReady}</span></span>
       <span className="fighter-preview" data-number={String(index+1).padStart(2,'0')}><Avatar appearance={seat.appearance} discipline={seat.discipline} manifest={manifest} animated={!settings.reducedMotion}/><span className="fighter-stage-line"/></span>
@@ -205,7 +206,7 @@ export function Setup({config:incomingConfig,setConfig,settings,manifest,devices
       </div>
      </div>}
      <div className={`fighter-seat-actions ${!practice&&!editorOnly?'with-ready':''}`}>
-      {!practice&&!editorOnly&&seat.kind==='human'&&<button disabled={!owned(seat)||!connected(seat)||!!drafts[seat.id]} className={`ready-button ${acknowledgedReady(seat)?'confirmed':''}`} onClick={()=>toggleReady(seat.id)}>{acknowledgedReady(seat)?`✓ ${t.ready}`:t.readyButton}</button>}
+      {keyboardFallback?<button className="ready-button keyboard-reclaim" onClick={()=>{changeSeat(seat.id,{device:keyboardFallback});window.dispatchEvent(new Event('menu-transition'));requestAnimationFrame(()=>scope.current?.querySelector<HTMLElement>(`[data-seat-id="${seat.id}"] .fighter-edit`)?.focus({preventScroll:true}));}}>{es?'Usar teclado':'Use keyboard'} {Number(keyboardFallback.split(':')[1])+1} →</button>:!practice&&!editorOnly&&seat.kind==='human'&&<button disabled={!owned(seat)||!connected(seat)||!!drafts[seat.id]} className={`ready-button ${acknowledgedReady(seat)?'confirmed':''}`} onClick={()=>toggleReady(seat.id)}>{acknowledgedReady(seat)?`✓ ${t.ready}`:t.readyButton}</button>}
       {isCoordinator&&<button className="seat-shared-button" onClick={()=>{setSharedDevice(seat.device);scope.current?.querySelector<HTMLButtonElement>('.match-summary')?.focus();}}>{t.sharedControls} ↗</button>}
      </div>
     </article>;})}

@@ -119,6 +119,7 @@
 .game-menu .setup-overview .fighter-summary.is-ready { border-color: var(--fighter-color); }
 .game-menu .fighter-seat-actions { display:flex; flex-direction:column; flex:none; }
 .game-menu .fighter-summary:not(.is-editing) .fighter-seat-actions.with-ready { min-height:64px; }
+.game-menu .setup-overview .fighter-summary .keyboard-reclaim { background:#56d4eb; color:#0c1d27; font-weight:700; }
 .game-menu .setup-overview .fighter-identity { font: 700 24px/1.1 var(--menu-display); }
 .game-menu .setup-overview .fighter-summary.is-editing .fighter-identity { font-size: 19px; }
 .game-menu .setup-overview .fighter-summary:not(.is-editing) .fighter-edit { display:flex; flex-direction:column; justify-content:center; }
@@ -153,6 +154,7 @@
  .profile-fighter-art { height: 250px; }
  .profile-fighter-art .avatar-sprite { transform: scale(2.4); }
  .game-menu .setup-overview .fighter-summary:not(.is-editing) .fighter-identity { font-size:21px; margin-top:3px; }
+ .game-menu .setup-overview .fighter-summary.is-disconnected:not(.is-editing) .fighter-preview { visibility:hidden; }
 }
 @media(max-width:760px) {
  .game-menu > main { padding-inline: 16px; }

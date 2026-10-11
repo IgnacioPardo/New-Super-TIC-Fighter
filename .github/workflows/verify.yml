@@ -58,6 +58,7 @@ jobs:
           node scripts/app-v2-royale-results.mjs
           pnpm e2e:tournament
           node scripts/app-v2-seats.mjs
+          node scripts/app-keyboard-recovery.mjs
           pnpm verify:public
           pnpm verify:competition
       - name: Exercise account storage and virtual passkeys
