@@ -12,7 +12,7 @@ async function open(index) {
   Object.defineProperty(navigator,'getGamepads',{value:()=>[]});
   localStorage.setItem('stf-settings',JSON.stringify({language:'en',reducedMotion:true}));
   localStorage.setItem('stf-match',JSON.stringify({ruleset:'expanded',players:[{id:'p1',name:`Browser ${index}`,discipline:'code',kind:'human',team:0,device:'keyboard:0',appearance:{hair:0,shirt:0,pants:0}},{id:'p2',name:'CPU',discipline:'hardware',kind:'bot',difficulty:'normal',team:1,device:'bot',appearance:{hair:1,shirt:1,pants:1}}]}));
-  const NativeWebSocket=window.WebSocket;window.WebSocket=class extends NativeWebSocket {constructor(...args){super(...args);this.addEventListener('message',event=>{const m=JSON.parse(event.data);if(m.type==='lobby')window.__lobby=m.state;if(m.type==='welcome'&&m.state?.party)window.__lobby=m.state;if(m.type==='match'||m.type==='welcome'&&m.state?.authority==='server')window.__match=m.state;if(m.type==='snapshot'||m.type==='result')window.__snapshot=m.snapshot;});}};
+  const NativeWebSocket=window.WebSocket;window.WebSocket=class extends NativeWebSocket {constructor(...args){super(...args);this.addEventListener('message',event=>{if(event.data==='pong')return;const m=JSON.parse(event.data);if(m.type==='lobby')window.__lobby=m.state;if(m.type==='welcome'&&m.state?.party)window.__lobby=m.state;if(m.type==='match'||m.type==='welcome'&&m.state?.authority==='server')window.__match=m.state;if(m.type==='snapshot'||m.type==='result')window.__snapshot=m.snapshot;});}};
  },index);
  await page.goto(process.env.STF_APP_URL??'http://127.0.0.1:5174');await enterTitle(page);await page.getByTestId('mode-public').click();await page.waitForFunction(()=>window.__lobby?.party.players.length===1);return page;
 }
