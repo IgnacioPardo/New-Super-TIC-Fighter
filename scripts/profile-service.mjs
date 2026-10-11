@@ -133,11 +133,13 @@ try {
   assert.deepEqual((await profile()).local, initial);
   await expect.poll(() => page.evaluate(() => localStorage.getItem('stf-active-profile'))).toBe(userId);
   await page.getByRole('tab', {name:'Account',exact:true}).click();
+  await page.getByRole('tab', {name:'Online progress',exact:true}).click();
   await page.getByRole('button', { name: 'Import guest progress' }).click();
   await waitProfile(p => p.local.completedChallenges.length === 2 && p.local.arcadeClears === 1 && p.local.survivalBest === 4);
   const imported = await profile();
   assert.deepEqual(imported.local, { ...guest, completedChallenges: ['challenge-1', 'challenge-2'] });
   await page.getByRole('tab', {name:'Account',exact:true}).click();
+  await page.getByRole('tab', {name:'Online progress',exact:true}).click();
   await page.getByRole('button', { name: 'Import guest progress' }).click();
   await expect(page.getByRole('button', { name: 'Import guest progress' })).toBeEnabled();
   assert.deepEqual((await profile()).local, imported.local);
@@ -187,6 +189,7 @@ try {
     isUserVerified: true, automaticPresenceSimulation: true,
   } });
   await page.getByRole('tab', {name:'Account',exact:true}).click();
+  await page.getByRole('tab', {name:'Access',exact:true}).click();
   await expect(page.getByRole('button', { name: 'Add passkey' })).toBeEnabled();
   await page.getByRole('button', { name: 'Add passkey' }).click();
   await page.getByRole('tab', {name:'Passkeys',exact:true}).click();
