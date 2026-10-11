@@ -162,11 +162,13 @@ export function Setup({config:incomingConfig,setConfig,settings,manifest,devices
  });
  const openRules=(device?:string)=>{setSharedDevice(device??sharedDevice);setRulesOpen(true);};
  const arena=ARENAS[config.arena];
+ const visibleSeats=Math.min(pageSize,orderedPlayers.length-activePage*pageSize);
+ const openSeats=pageSize>1&&!practice&&!lockRoster&&!readOnly&&(host||!!online)?Math.max(0,Math.min(pageSize,maxFighters-activePage*pageSize)-visibleSeats):0;
  return <div className="setup-layout setup-overview" ref={scope} data-seat-navigation>
   <section className="roster-section">
    <div className="section-heading"><h2>{t.roster}</h2><span className="count-label">{config.players.length} / {maxFighters}</span><p className="seat-join-help">{t.joinController} · {es?'Cada mando edita su luchador. El teclado comparte un cursor.':'Each controller edits its fighter. Keyboard shares one cursor.'}</p>{!practice&&!lockRoster&&!readOnly&&config.players.length<maxFighters&&(host||!!online)&&<button className="small-button add-fighter" onClick={()=>addSeat()}>+ {t.add}</button>}</div>
 
-   <div className="fighter-grid">
+   <div className="fighter-grid" style={{'--roster-columns':visibleSeats+openSeats} as CSSProperties}>
     {orderedPlayers.map((original,displayIndex)=>{const index=config.players.findIndex(player=>player.id===original.id),seat=seatValue(original),panel=editor(seat.id),playerPages=config.mode==='teams'||!practice&&!lockRoster&&!readOnly&&config.players.length>2&&host?3:2,isCoordinator=coordinator.current===seat.id;return <article key={seat.id} className={`fighter-card fighter-summary ${acknowledgedReady(seat)?'is-ready':''} ${panel.open?'is-editing':''} ${!connected(seat)?'is-disconnected':''}`} hidden={Math.floor(displayIndex/pageSize)!==activePage} data-seat-id={seat.id} data-owner={seat.device} style={{'--fighter-color':disciplineInfo[seat.discipline].color} as CSSProperties}>
      <button className="fighter-edit" disabled={!owned(seat)} data-autofocus={index===0||undefined} aria-label={`${t.editFighter}: ${seat.name}`} onClick={()=>{edit(seat.id,{open:!panel.open});}}>
       <span className="fighter-card-top"><span className="seat-number">P{index+1}</span><span className={`ready-light ${acknowledgedReady(seat)?'on':''}`}>{acknowledgedReady(seat)?`✓ ${t.ready}`:t.notReady}</span></span>
@@ -202,9 +204,12 @@ export function Setup({config:incomingConfig,setConfig,settings,manifest,devices
 </>}
       </div>
      </div>}
-     {!practice&&!editorOnly&&seat.kind==='human'&&<button disabled={!owned(seat)||!connected(seat)||!!drafts[seat.id]} className={`ready-button ${acknowledgedReady(seat)?'confirmed':''}`} onClick={()=>toggleReady(seat.id)}>{acknowledgedReady(seat)?`✓ ${t.ready}`:t.readyButton}</button>}
-     {isCoordinator&&<button className="seat-shared-button" onClick={()=>{setSharedDevice(seat.device);scope.current?.querySelector<HTMLButtonElement>('.match-summary')?.focus();}}>{t.sharedControls} ↗</button>}
+     <div className={`fighter-seat-actions ${!practice&&!editorOnly?'with-ready':''}`}>
+      {!practice&&!editorOnly&&seat.kind==='human'&&<button disabled={!owned(seat)||!connected(seat)||!!drafts[seat.id]} className={`ready-button ${acknowledgedReady(seat)?'confirmed':''}`} onClick={()=>toggleReady(seat.id)}>{acknowledgedReady(seat)?`✓ ${t.ready}`:t.readyButton}</button>}
+      {isCoordinator&&<button className="seat-shared-button" onClick={()=>{setSharedDevice(seat.device);scope.current?.querySelector<HTMLButtonElement>('.match-summary')?.focus();}}>{t.sharedControls} ↗</button>}
+     </div>
     </article>;})}
+    {Array.from({length:openSeats},(_,index)=><button key={`open-${index}`} className="empty-fighter-slot" aria-label={`${es?'Ocupar plaza':'Fill seat'} ${config.players.length+index+1}`} onClick={()=>addSeat()}><Icon name="gamepad"/><strong>{es?'ÚNETE AL COMBATE':'JOIN THE FIGHT'}</strong><span>{t.joinController}</span><small>{es?'o haz clic para añadir':'or click to add'}</small></button>)}
    </div>
    <Pager page={activePage} count={pageCount} change={setSeatPage} language={lang} label={t.roster}/>
   </section>

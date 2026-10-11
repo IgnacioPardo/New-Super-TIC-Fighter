@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useState } from 'react';
 import type { CSSProperties } from 'react';
-import type { Language } from '../../shared/types';
+import type { AssetsManifest, Language, PlayerSeat } from '../../shared/types';
+import { Avatar } from '../../ui/Avatar';
+import { names, disciplineInfo } from '../../ui/i18n';
 import { authClient } from './auth-client';
 import { COSMETICS, cosmeticXP, loadProgress, mergeProgress, saveProgress } from './progress';
 import type { LocalProgress } from './progress';
@@ -9,7 +11,7 @@ import { ContentTabs, PagedContent, usePageSize } from '../../ui/ContentPages';
 
 interface ProfileData { userId: string; handle: string; cosmetic: string; local: LocalProgress; verified: { matches: number; wins: number; xp: number } }
 interface AuthConfig { enabled: boolean; google: boolean; github: boolean; passkey: boolean }
-export function Profile({ language }: { language: Language }) {
+export function Profile({ language, manifest, fighter, reducedMotion }: { language: Language; manifest: AssetsManifest|null; fighter: PlayerSeat; reducedMotion: boolean }) {
  const es = language === 'es';
  const [config,setConfig] = useState<AuthConfig>({ enabled:false,google:false,github:false,passkey:false });
  const [profile,setProfile] = useState<ProfileData|null>(null);
@@ -101,6 +103,10 @@ export function Profile({ language }: { language: Language }) {
    ,...(profile?[{id:'security',label:es?'Passkeys':'Passkeys',content:(<section className="feature-panel"><header className="feature-heading"><div><h2>Passkeys</h2><p>{es?'Administra las claves de acceso de tu cuenta.':'Manage your account’s access keys.'}</p></div></header><div className="feature-body">     {passkeys.length>0&&<PagedContent size={pageSize} language={language} label="Passkeys" className="feature-list">{passkeys.map(key=><li key={key.id}><span>{key.name||'Passkey'}</span><button disabled={busy||!providers.length} onClick={()=>void act(async()=>{const r=await authClient.passkey.deletePasskey({id:key.id});if(r.error)throw Error(r.error.message);})}>{es?'Quitar':'Remove'}</button></li>)}</PagedContent>}
 {!passkeys.length&&<p className="config-note">{es?'Aún no has añadido una passkey.':'You have not added a passkey yet.'}</p>}<p className="config-note">{es?'Conserva Google o GitHub para recuperar el acceso.':'Keep Google or GitHub linked for recovery.'}</p></div></section>)}]:[])
   ]}/>
+  <aside className="profile-fighter" aria-label={es?'Tu luchador':'Your fighter'} style={{'--fighter-color':disciplineInfo[fighter.discipline].color} as CSSProperties}>
+   <div className="profile-fighter-art" aria-hidden="true"><Avatar manifest={manifest} discipline={fighter.discipline} appearance={fighter.appearance} animated={!reducedMotion} /></div>
+   <span>{es?'TU LUCHADOR':'YOUR FIGHTER'}</span><strong>{names[fighter.discipline][language]}</strong>
+  </aside>
   {message&&<p className="feature-status" role="status">{message}</p>}
  </div>;
 }

@@ -2,6 +2,14 @@
 
 Research checked on 2026-10-11. This is a design brief for the existing React/Phaser implementation, not a change to gameplay scope. No new generated images or external artwork are needed.
 
+## Menu revision after v2 feedback
+
+The owner kept Settings as the visual reference and explicitly requested that its style remain unchanged. The subsequent menu pass therefore excludes Settings and its dialogs from the new presentation class. Its original icons, typography, panels and selection treatment remain intact.
+
+The title now places three compact choices on the left, with a persistent selected row, and gives the original logo/fighters the right side. Profile places its tools beside the player's configured fighter instead of stretching an account form across the screen. Available desktop fighter bays expose the existing add-seat action; locked rosters remain centered. Secondary modes use restrained rows, concise headings and the same high-contrast selection idea as Settings. Existing fixed-window tabs/pages, controller identities, saved controls and combat HUD are preserved.
+
+Menu headings use Barlow Condensed from the [Google Fonts source distribution](https://github.com/google/fonts/tree/main/ofl/barlowcondensed), with the SIL Open Font License shipped beside the font files and provenance recorded. Original game art supplies the visuals; no generated images or other games' artwork were added. The [Aether Studios developer recap](https://fornace.medium.com/aether-studios-2025-recap-and-2026-preview-64bb2d17f3bb) provides an additional reference for a distinct selected choice and prominent character art, not a layout or asset to copy.
+
 ## What the game should feel like
 
 An industrial arcade cabinet built around the original blue/white/pink logo and layered, hand-cut fighter sprites. The title, selection, combat and result screens should each have one clear job. Original fighters and stage art carry the identity; hard edges, ink outlines, stage rails and bold type carry the UI. Avoid emoji icons, glass panels, decorative numbered sections and glow as the primary focus signal.

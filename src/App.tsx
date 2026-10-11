@@ -251,7 +251,7 @@ export default function App({ online: privateOnline }: AppProps) {
    ? online?.state.members.some(member => !member.connected) ? t.reconnecting
      : pauseMessage(online?.state.pauseReason, settings.language) || (!online?.state.isHost ? t.waitingHost : '')
    : '';
- return <div className={`app ${isMatch ? 'app-match' : ''} screen-${screen}`} ref={root} data-menu-input={menuInput} data-input={menuInput} onClickCapture={event => {
+ return <div className={`app ${isMatch ? 'app-match' : screen === 'intro' || screen === 'settings' ? '' : 'game-menu'} screen-${screen}`} ref={root} data-menu-input={menuInput} data-input={menuInput} onClickCapture={event => {
    // WebKit does not focus pointer-clicked buttons; preserve the menu's focus origin.
    const target = (event.target as HTMLElement).closest<HTMLButtonElement>('button:not(:disabled)');
    if (!target?.hasAttribute('data-virtual-activate')) target?.focus({ preventScroll: true });
@@ -275,7 +275,7 @@ export default function App({ online: privateOnline }: AppProps) {
        <div className="title-cast" aria-hidden="true">{(['networks','design','code','hardware'] as const).map((d,i) => <div key={d} style={{ '--fighter-color': disciplineInfo[d].color } as React.CSSProperties}><Avatar manifest={manifest} discipline={d} appearance={{hair:i,shirt:i,pants:i}} animated={!settings.reducedMotion} /></div>)}</div>
       </section>
       <section className="title-menu-area">
-       <nav className="arcade-menu" aria-label={t.titlePrompt}>{(['local','solo','online-hub'] as const).map(mode => <button key={mode} data-testid={`mode-${mode}`} data-autofocus={mode === selectedMode ? true : undefined} onFocus={() => setSelectedMode(mode)} onClick={() => mode === 'local' ? enterLocal() : navigation.navigate(mode)}><span className="menu-pointer" aria-hidden="true" /><strong>{mode === 'local' ? settings.language === 'es' ? 'JUGAR' : 'PLAY' : mode === 'solo' ? 'SOLO' : 'ONLINE'}</strong></button>)}</nav>
+       <nav className="arcade-menu" aria-label={t.titlePrompt}>{(['local','solo','online-hub'] as const).map(mode => <button key={mode} data-selected={mode === selectedMode} data-testid={`mode-${mode}`} data-autofocus={mode === selectedMode ? true : undefined} onFocus={() => setSelectedMode(mode)} onClick={() => mode === 'local' ? enterLocal() : navigation.navigate(mode)}><span className="menu-pointer" aria-hidden="true" /><strong>{mode === 'local' ? settings.language === 'es' ? 'JUGAR' : 'PLAY' : mode === 'solo' ? 'SOLO' : 'ONLINE'}</strong><span className="title-choice-arrow" aria-hidden="true">›</span></button>)}</nav>
        <p className="mode-hint">{selectedMode === 'local' ? settings.language === 'es' ? 'Combate local · amigos y bots' : 'Local battles · friends and bots' : selectedMode === 'solo' ? settings.language === 'es' ? 'Arcade, desafíos y entrenamiento' : 'Arcade, challenges and training' : settings.language === 'es' ? 'Buscar partida, salas y torneos' : 'Quick play, rooms and tournaments'}</p>
       </section>
     </div>}
@@ -293,7 +293,7 @@ export default function App({ online: privateOnline }: AppProps) {
     {screen === 'public' && <PublicLobby language={settings.language} network={publicNetwork} config={config} editFighters={editPublicFighters} />}
     {screen === 'tournaments' && <Tournaments language={settings.language} network={publicNetwork} config={config} />}
     {screen === 'solo' && <SoloMenu language={settings.language} select={chooseSolo} />}
-    {screen === 'profile' && <Profile language={settings.language} />}
+    {screen === 'profile' && <Profile language={settings.language} manifest={manifest} fighter={config.players.find(player=>player.kind==='human') ?? config.players[0]} reducedMotion={settings.reducedMotion} />}
     {screen === 'room' && matchSet.state && <SetScore state={matchSet.state} language={settings.language} />}
     {screen === 'settings' && <Settings settings={settings} manifest={manifest} change={setSettings} feedback={runtime.uiSound} controllers={runtime.controllers} />}
     {screen === 'guide' && <Guide settings={settings} manifest={manifest} />}
