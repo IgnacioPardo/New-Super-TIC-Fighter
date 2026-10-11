@@ -38,6 +38,12 @@ Detailed evidence and provenance:
 - [V2 desktop cadence and its measurement limits](v2-performance.md), with both raw reports retained.
 - [Historical v1 controller verification](controller-verification.md) and [v1 performance measurements](performance.md), retained with their original scope.
 
+## Paged Settings and Guide
+
+The actual rendered application passed `scripts/app-reader-pages.mjs` in English with Chromium, Firefox and WebKit at 1366×768, 1024×640, 1440×1000 and 390×844. Spanish Chromium passed the same four sizes. Every Settings editor and Guide page was traversed: nine keyboard actions, seven controller bindings and all ten disciplines remained reachable. Visible content stayed inside the viewport, the document had no vertical scrolling, and no page errors occurred. Chromium was rerun after integrating the shared viewport shell and Pager focus repair.
+
+The flows verified persisted volume changes, Escape/B capture cancellation, editor focus restoration, Guide D-pad page/tab navigation and returning to Settings without losing preferences. Additional Chromium `app-menus.mjs` and `app-feedback.mjs` runs passed binding conflicts, native Tab trapping, remapping, pause/settings/resume, real worker fighter movement and Web Audio playback. Client typecheck and production build passed. Controller input came from injected Gamepad API fixtures; this is browser navigation coverage, not physical DualSense or native Safari certification.
+
 ## Material performance observations
 
 Deployed four-match snapshot interval p95 was about 78–86 ms. Connection-lifetime ping RTT p50 was 170–196 ms and p95 238–388 ms. This is enough latency to require a real player judgment of prediction/reconciliation; no South American server locality is promised.
