@@ -18,13 +18,15 @@ try {
  for(const ready of await page.locator('.ready-button:not(:disabled)').all()) await ready.click();await page.locator('.fight-button').click();await page.waitForFunction(()=>window.__snapshot?.phase==='playing');
  for(let attempt=0;attempt<3;attempt++) {
   await page.waitForFunction(()=>window.__snapshot?.fighters.find(f=>f.id==='p1')?.grounded);
-  await page.keyboard.down('w');await page.waitForTimeout(180);await page.keyboard.up('w');await page.waitForTimeout(130);
-  await page.keyboard.down('w');await page.waitForTimeout(180);await page.keyboard.up('w');
+  await page.keyboard.down('w');await page.waitForFunction(()=>!window.__snapshot.fighters.find(f=>f.id==='p1').grounded);await page.keyboard.up('w');
+  await page.waitForFunction(()=>{const fighter=window.__snapshot.fighters.find(f=>f.id==='p1');return !fighter.grounded&&fighter.jumpCooldown<=.01;});
+  await page.keyboard.down('w');await page.waitForFunction(()=>window.__snapshot.fighters.find(f=>f.id==='p1').airJumps===0);await page.keyboard.up('w');
   await page.waitForFunction(()=>window.__snapshot?.fighters.find(f=>f.id==='p1')?.grounded,{},{timeout:5000});await page.waitForTimeout(150);
  }
  await expect(page.getByRole('dialog')).toContainText('Cleared!');assert.equal(await page.locator('.results-screen').count(),0);assert.equal(await page.evaluate(()=>JSON.parse(localStorage.getItem('stf-progress:guest')).completedChallenges.includes('challenge-1')),true);
  await page.screenshot({path:'tmp/qa/v2-challenge-1-cleared.png',fullPage:true});await page.getByRole('button',{name:'Back to modes',exact:true}).click();
  await page.getByRole('button',{name:/LAB Training/}).click();await page.locator('.fight-button').click();await page.waitForFunction(()=>window.__snapshot?.phase==='playing'&&window.__snapshot.config.practice===true);
+ await page.getByRole('button',{name:'Training tools',exact:true}).click();
  await page.getByRole('button',{name:'Record dummy',exact:true}).click();await page.waitForFunction(()=>window.__snapshot.training.recording);await page.keyboard.down('d');await page.waitForTimeout(400);await page.keyboard.up('d');await page.getByRole('button',{name:'Stop recording',exact:true}).click();await page.waitForFunction(()=>!window.__snapshot.training.recording&&window.__snapshot.training.dummyRecording.length>10);
  await page.getByRole('button',{name:'Play dummy',exact:true}).click();await page.waitForFunction(()=>window.__snapshot.training.playback);await page.locator('.match-topbar button').click();await page.waitForFunction(()=>window.__snapshot.phase==='paused');
  const tick=await page.evaluate(()=>window.__snapshot.tick);await page.getByRole('dialog').getByRole('button',{name:'Advance one frame',exact:true}).click();await page.waitForFunction(before=>window.__snapshot.tick>before,tick);assert.equal(await page.evaluate(()=>window.__snapshot.phase),'paused');
