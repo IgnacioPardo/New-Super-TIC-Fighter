@@ -737,6 +737,9 @@ export class Simulation {
       facing,
       age: 0,
       frame: 0,
+      sourceAction: kind === 'echo' ? fighter.action : undefined,
+      originX: kind === 'echo' ? fighter.x : undefined,
+      originY: kind === 'echo' ? fighter.y : undefined,
     };
   }
   private updateEffect(fighter: FighterState): void {
@@ -1394,16 +1397,20 @@ export class Simulation {
       if (rt.echo && state.tick >= rt.echo.at) {
         const f = state.fighters.find((f) => f.id === id)!;
         const e = rt.echo;
-        this.projectile(
-          { ...f, facing: e.facing },
-          'echo',
-          e.x + (e.facing === 1 ? 20 : -140),
-          e.y - 90,
-          120,
-          80,
-          0,
-          0.22,
-        );
+        const source = { ...f, action: e.action, facing: e.facing, x: e.x, y: e.y };
+        const bounds =
+          e.action === 'combo'
+            ? { x: e.x + (e.facing === 1 ? 30 : -140), y: e.y - 96, width: 110, height: 96 }
+            : this.meleeBounds(source);
+        if (e.action === 'special') {
+          this.projectile(source, 'ball', e.x + e.facing * 40, e.y - 75, 45, 20, e.facing * 700, 0.65);
+        } else {
+          this.projectile(source, 'echo', bounds.x, bounds.y, bounds.width, bounds.height, 0, 0.22);
+          const echo = this.projectiles.at(-1)!.effect;
+          echo.sourceAction = e.action;
+          echo.originX = e.x;
+          echo.originY = e.y;
+        }
         rt.echo = undefined;
       }
     }
@@ -1612,7 +1619,7 @@ export class Simulation {
         )
           continue;
         p.hitTargets.push(target.id);
-        this.worldHit(owner, target, p.effect.kind, p.effect.facing);
+        this.worldHit(owner, target, p.effect.kind, p.effect.facing, p.effect.sourceAction);
         if (['wireless', 'usb', 'mechanical'].includes(p.effect.kind)) p.ttl = 0;
       }
     }
@@ -1638,9 +1645,18 @@ export class Simulation {
         }
       }
   }
-  private worldHit(owner: FighterState, target: FighterState, kind: EffectKind, direction: -1 | 1): void {
+  private worldHit(
+    owner: FighterState,
+    target: FighterState,
+    kind: EffectKind,
+    direction: -1 | 1,
+    sourceAction?: PlayerAction,
+  ): void {
     const state = this.requireState(),
-      rule = EFFECT_HITS[kind],
+      rule =
+        kind === 'echo' && sourceAction && sourceAction in MELEE_HITS
+          ? MELEE_HITS[sourceAction as keyof typeof MELEE_HITS]
+          : EFFECT_HITS[kind],
       rt = this.runtimes.get(target.id)!;
     if (target.buffs?.firewall) {
       delete target.buffs.firewall;

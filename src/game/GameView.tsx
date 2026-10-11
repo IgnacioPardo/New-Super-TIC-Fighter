@@ -66,6 +66,7 @@ export function GameView({
     const feedback = new CombatFeedback();
     let sparks: Phaser.GameObjects.Graphics;
     let expansion: Phaser.GameObjects.Graphics;
+    const echoLayers = new Map<string, Phaser.GameObjects.Sprite[]>();
     const labels = new Map<string, Phaser.GameObjects.Text>();
     const platformVisuals: {
       image: Phaser.GameObjects.Image;
@@ -253,6 +254,8 @@ export function GameView({
       drawExpanded(state: MatchSnapshot) {
         expansion.clear();
         const seenLabels = new Set<string>();
+        const seenEchoes = new Set<string>();
+        const es = preferences.current.language === 'es';
         const label = (id: string, text: string, x: number, y: number, color = '#e9f4ff') => {
           seenLabels.add(id);
           let object = labels.get(id);
@@ -323,10 +326,15 @@ export function GameView({
             label(
               'hill',
               objective.contested
-                ? 'CONTESTED'
+                ? es
+                  ? 'DISPUTADA'
+                  : 'CONTESTED'
                 : objective.ownerId
-                  ? (state.config.players.find((p) => p.id === objective.ownerId)?.name ?? 'HILL')
-                  : 'HILL',
+                  ? (state.config.players.find((p) => p.id === objective.ownerId)?.name ??
+                    (es ? 'ZONA' : 'HILL'))
+                  : es
+                    ? 'ZONA'
+                    : 'HILL',
               objective.x + objective.width / 2,
               objective.y - 18,
             );
@@ -349,7 +357,8 @@ export function GameView({
               .fillStyle(active ? 0xff6375 : 0xd6a868, warning ? 0.7 : 0.4)
               .fillRect(593, active ? 450 : 90, 180, active ? 175 : 45);
             expansion.lineStyle(2, warning ? 0xffbd69 : 0xb98856, 0.7).strokeRect(593, 440, 180, 200);
-            if (warning || active) label('press', active ? 'PRESS' : '!', 683, 420, '#ffc773');
+            if (warning || active)
+              label('press', active ? (es ? 'PRENSA' : 'PRESS') : '!', 683, 420, '#ffc773');
           }
           for (const d of state.deployables ?? []) {
             const color = Phaser.Display.Color.HexStringToColor(
@@ -368,6 +377,12 @@ export function GameView({
                 .lineBetween(d.x + 14, d.y + 12, d.x + 14, d.y + 27)
                 .lineBetween(d.x + 34, d.y + 12, d.x + 34, d.y + 27);
             }
+            if (d.kind === 'drone')
+              expansion
+                .lineStyle(2, color, 0.8)
+                .strokeEllipse(d.x - 2, d.y + 4, 26, 10)
+                .strokeEllipse(d.x + d.width + 2, d.y + 4, 26, 10)
+                .strokeCircle(d.x + d.width / 2, d.y + 24, 8);
             if (d.kind === 'board' || d.kind === 'hub') {
               for (let pin = 6; pin < d.width; pin += 9)
                 expansion
@@ -379,6 +394,28 @@ export function GameView({
                 .strokeCircle(d.x + d.width / 2, d.y + d.height / 2, 9)
                 .strokeCircle(d.x + d.width / 2, d.y + d.height / 2, 15);
             }
+            if (d.kind === 'board') {
+              const arduino =
+                state.deployables!.filter((b) => b.ownerId === d.ownerId && b.kind === 'board').indexOf(d) %
+                2;
+              expansion
+                .fillStyle(0xc6d4ce, 0.9)
+                .fillRect(d.x + 2, d.y + 16, 7, 13)
+                .fillStyle(0x26323f, 1)
+                .fillRect(d.x + 16, d.y + 12, arduino ? 24 : 19, arduino ? 10 : 22);
+              if (!arduino)
+                expansion
+                  .lineStyle(1, 0xf0d597, 0.8)
+                  .lineBetween(d.x + 18, d.y + 6, d.x + 35, d.y + 6)
+                  .lineBetween(d.x + 35, d.y + 6, d.x + 35, d.y + 11);
+            }
+            if (d.kind === 'hub')
+              expansion
+                .fillStyle(0xd7e0df, 0.9)
+                .fillRect(d.x + d.width - 13, d.y + 5, 13, 13)
+                .fillRect(d.x + d.width - 13, d.y + 24, 13, 13)
+                .fillStyle(0x252b33, 1)
+                .fillRect(d.x + 18, d.y + 15, 17, 17);
             if (d.kind === 'pad')
               expansion
                 .lineStyle(3, 0xe4db65, 0.9)
@@ -397,14 +434,14 @@ export function GameView({
                 .lineBetween(d.x + 8, d.y + 30, d.x + d.width - 8, d.y + 30);
             }
             const names = {
-              drone: 'DRONE',
+              drone: es ? 'DRON' : 'DRONE',
               board:
                 state.deployables!.filter((b) => b.ownerId === d.ownerId && b.kind === 'board').indexOf(d) % 2
                   ? 'ARDUINO'
                   : 'ESP32',
               hub: 'RASPBERRY Pi',
-              decoy: 'DECOY',
-              pad: 'BOUNCE',
+              decoy: es ? 'SEÑUELO' : 'DECOY',
+              pad: es ? 'SALTO' : 'BOUNCE',
               block: '3D',
             };
             label(d.id, `${names[d.kind]} ${Math.ceil(d.ttl)}s`, d.x + d.width / 2, d.y - 14);
@@ -419,9 +456,9 @@ export function GameView({
           }
           const itemNames = {
             usb: 'USB',
-            fan: 'FAN',
-            firewall: 'FIREWALL',
-            battery: 'BATTERY',
+            fan: es ? 'VENTILADOR' : 'FAN',
+            firewall: es ? 'CORTAFUEGOS' : 'FIREWALL',
+            battery: es ? 'BATERÍA' : 'BATTERY',
             overclock: 'OVERCLOCK',
           };
           for (const item of state.items ?? []) {
@@ -457,7 +494,42 @@ export function GameView({
               expansion
                 .lineStyle(2, 0xffffff, 0.7)
                 .strokeCircle(e.x + e.width / 2, e.y + e.height / 2, e.width * 0.3);
-            if (e.kind === 'echo') label(e.id, 'ECHO', e.x + e.width / 2, e.y - 12);
+            if (e.kind === 'echo') {
+              label(e.id, es ? 'ECO' : 'ECHO', e.x + e.width / 2, e.y - 12);
+              if (owner && e.sourceAction) {
+                seenEchoes.add(e.id);
+                let layers = echoLayers.get(e.id);
+                if (!layers) {
+                  const keys = [
+                    'body',
+                    ...(['hair', 'shirt', 'pants'] as const)
+                      .filter((part) => owner.appearance[part] < art.sheets[part].length)
+                      .map((part) => `${part}-${owner.appearance[part]}`),
+                  ];
+                  layers = keys.map((key) => {
+                    const sprite = this.add
+                      .sprite(0, 0, key)
+                      .setOrigin(0.5, 1)
+                      .setDepth(10)
+                      .setAlpha(0.35)
+                      .setTint(color);
+                    this.addWorld(sprite);
+                    return sprite;
+                  });
+                  echoLayers.set(e.id, layers);
+                }
+                const source = state.fighters.find((f) => f.id === owner.id)!;
+                const fighter = { ...source, action: e.sourceAction, actionTime: 0.2, recovery: 0 };
+                const pose = authoredPose(fighter, owner.discipline, art),
+                  frame = pose?.frame ?? this.frameFor(fighter, owner, performance.now());
+                for (const layer of layers)
+                  layer
+                    .setPosition(e.originX ?? e.x + e.width / 2, e.originY ?? e.y + e.height)
+                    .setFrame(frame)
+                    .setFlipX(e.facing === -1)
+                    .setScale(pose?.scaleX ?? 1, pose?.scaleY ?? 1);
+              }
+            }
             if (e.kind === 'ricochet')
               expansion
                 .lineStyle(2, 0xffffff, 0.9)
@@ -482,6 +554,12 @@ export function GameView({
             }
           }
         }
+        echoLayers.forEach((layers, id) => {
+          if (!seenEchoes.has(id)) {
+            layers.forEach((layer) => layer.destroy());
+            echoLayers.delete(id);
+          }
+        });
         labels.forEach((object, id) => {
           if (!seenLabels.has(id)) {
             object.destroy();
