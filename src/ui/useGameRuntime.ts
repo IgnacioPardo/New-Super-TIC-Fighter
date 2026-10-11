@@ -1,14 +1,15 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { InputManager } from '../input';
-import { AudioManager } from '../audio';
+import { InputManager, type ControllerStatus } from '../input';
+import { AudioManager, type UiSound } from '../audio';
 import { preloadMatchAssets } from '../assets';
 import type { AppSettings, AssetsManifest, MatchConfig, MatchSnapshot, SimulationCommand, SimulationMessage } from '../shared/types';
 import type { OnlineBridge } from './contracts';
 export type MenuCommand = 'up' | 'down' | 'left' | 'right' | 'confirm' | 'back' | 'pause';
-export function useGameRuntime(settings: AppSettings, manifest: AssetsManifest | null, onMenu: (command: MenuCommand) => void, online?: OnlineBridge, onlineActive = false) {
+export function useGameRuntime(settings: AppSettings, manifest: AssetsManifest | null, onMenu: (command: MenuCommand, source: 'keyboard' | 'gamepad') => void, online?: OnlineBridge, onlineActive = false) {
   const [snapshot, setSnapshot] = useState<MatchSnapshot | null>(null);
   const snapshotRef = useRef<MatchSnapshot | null>(null);
   const [devices, setDevices] = useState<{ id: string; label: string; connected: boolean }[]>([]);
+  const [controllers, setControllers] = useState<ControllerStatus>({ available: true, blocked: false, controllers: [] });
   const [soundUnlocked, setSoundUnlocked] = useState(false);
   const [disconnected, setDisconnected] = useState(false);
   const [error, setError] = useState('');
@@ -22,21 +23,21 @@ export function useGameRuntime(settings: AppSettings, manifest: AssetsManifest |
     const manager = new InputManager(settings, () => {
       if (snapshotRef.current?.phase === 'playing' || snapshotRef.current?.phase === 'countdown') {
         if (remote.current) network.current?.pause(); else worker.current?.postMessage({ type: 'pause' });
-      } else menu.current('pause');
+      } else menu.current('pause', 'gamepad');
     }, () => {
       if (!snapshotRef.current || snapshotRef.current.phase === 'finished') return;
       setDisconnected(true);
       if (remote.current) network.current?.pause(); else worker.current?.postMessage({ type: 'pause' });
     });
     input.current = manager;
-    const unsubscribe = manager.subscribeMenu(command => menu.current(command));
+    const unsubscribe = manager.subscribeMenu((command, source) => menu.current(command, source));
     const instance = new Worker(new URL('../simulation/worker.ts', import.meta.url), { type: 'module' });
     worker.current = instance;
     instance.onerror = () => { snapshotRef.current = null; setSnapshot(null); manager.setMode('menu'); setError(settings.language === 'es' ? 'El combate no pudo continuar. Recarga la página para intentarlo de nuevo.' : 'The fight could not continue. Reload the page to try again.'); };
     instance.onmessage = (event: MessageEvent<SimulationMessage>) => {
       if (event.data.type !== 'snapshot' || remote.current) return;
       const next = event.data.snapshot; snapshotRef.current = next;
-      audio.current?.handleEvents(next.events);
+      audio.current?.handleEvents(next.events, next);
       const now = performance.now();
       if (phase.current !== next.phase || now - publishAt.current > 100) { phase.current = next.phase; publishAt.current = now; setSnapshot(next); }
     };
@@ -51,7 +52,7 @@ export function useGameRuntime(settings: AppSettings, manifest: AssetsManifest |
       raf = requestAnimationFrame(poll);
     };
     raf = requestAnimationFrame(poll);
-    const scan = setInterval(() => setDevices(manager.getDevices()), 700);
+    const scan = setInterval(() => { setDevices(manager.getDevices()); setControllers(manager.getControllerStatus()); setSoundUnlocked(audio.current?.unlocked ?? false); }, 250);
     setDevices(manager.getDevices());
     const hidden = () => {
       if (document.hidden && (!remote.current || network.current?.state.isHost) && snapshotRef.current && ['playing', 'countdown'].includes(snapshotRef.current.phase)) {
@@ -69,7 +70,7 @@ export function useGameRuntime(settings: AppSettings, manifest: AssetsManifest |
   }, [manifest]);
   useEffect(() => {
     const next = onlineActive ? online?.state.snapshot ?? null : snapshot;
-    if (onlineActive) { snapshotRef.current = next; if (next) audio.current?.handleEvents(next.events); }
+    if (onlineActive) { snapshotRef.current = next; if (next) audio.current?.handleEvents(next.events, next); }
     const running = !!next && next.phase !== 'finished';
     input.current?.setMode(running && next?.phase !== 'paused' ? 'game' : 'menu');
     const ownedPlayers = running && next ? next.config.players.filter(p => p.kind === 'human' && (!onlineActive || p.peerId === online?.state.peerId)) : [];
@@ -89,6 +90,8 @@ export function useGameRuntime(settings: AppSettings, manifest: AssetsManifest |
   }, []);
   const stop = useCallback(() => { startGeneration.current++; command({ type: 'stop' }); snapshotRef.current = null; setSnapshot(null); setDisconnected(false); input.current?.setPlayers([]); input.current?.setMode('menu'); audio.current?.setScene('menu'); }, [command]);
   const unlock = useCallback(async () => { if (audio.current) { await audio.current.unlock(); setSoundUnlocked(audio.current.unlocked); } }, []);
+  const uiSound = useCallback((cue: UiSound) => { audio.current?.playUi(cue); if (audio.current?.unlocked) setSoundUnlocked(true); }, []);
+  const preferredController = useCallback(() => input.current?.getDevices().find(device => device.id.startsWith('gamepad:') && device.connected)?.id, []);
   const reclaim = useCallback(() => { const restored = input.current?.reclaim() ?? false; setDisconnected(!restored); return restored; }, []);
-  return { snapshot: onlineActive ? online?.state.snapshot ?? null : snapshot, snapshotRef, start, stop, command, devices, soundUnlocked, unlock, disconnected, reclaim, error };
+  return { snapshot: onlineActive ? online?.state.snapshot ?? null : snapshot, snapshotRef, start, stop, command, devices, controllers, preferredController, uiSound, soundUnlocked, unlock, disconnected, reclaim, error };
 }

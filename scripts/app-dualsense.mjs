@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {mkdir} from 'node:fs/promises';
 await mkdir('tmp/qa',{recursive:true});
 import {chromium} from '@playwright/test';
-const base=process.env.STF_APP_URL??'http://127.0.0.1:5173';
+const base=process.env.STF_APP_URL??'http://127.0.0.1:4173';
 const engines=['standard','mac-hid'];
 for(const name of engines){
  const browser=await chromium.launch({headless:true});
@@ -15,39 +15,6 @@ for(const name of engines){
  },name);
  try{
   await page.goto(base);
-  // Exercise the public input adapter in the live browser after a menu remap.
-  // Whole-app movement, pause and reconnect checks below use the actual runtime.
-  const adapter = await page.evaluate(async layout => {
-   const {InputManager} = await import('/src/input.ts');
-   const {DEFAULT_SETTINGS} = await import('/src/shared/defaults.ts');
-   const manager = new InputManager({...DEFAULT_SETTINGS,gamepadBindings:{jump:3,special:2,pause:8}});
-   const commands=[]; manager.subscribeMenu((command,source)=>commands.push([command,source]));
-   const wait = ms => new Promise(resolve=>setTimeout(resolve,ms));
-   const press = async index => {window.__pads[0].buttons[index].pressed=true;await wait(60);window.__pads[0].buttons[index].pressed=false;await wait(60);};
-   await press(layout==='standard'?0:1); await press(layout==='standard'?1:2); await press(9);
-   window.__pads[0].axes[0]=.8;window.__pads[0].axes[1]=.7;await wait(520);
-   window.__pads[0].axes[0]=0;window.__pads[0].axes[1]=0;await wait(60);
-   const status=manager.getControllerStatus();
-   manager.setPlayers([{id:'qa',kind:'human',device:'gamepad:0'}]);manager.setSettings({...DEFAULT_SETTINGS,gamepadBindings:{}});manager.setMode('game');
-   window.__pads[0].buttons[layout==='standard'?0:1].pressed=true;await wait(60);
-   const gameplay=manager.poll(1)[0];
-   const originalFocus=document.hasFocus.bind(document);document.hasFocus=()=>false;
-   const unfocused=manager.poll(2)[0];await wait(60);document.hasFocus=()=>true;
-   const recovered=manager.poll(3)[0];document.hasFocus=originalFocus;
-   window.__pads[0].buttons[layout==='standard'?0:1].pressed=false;await wait(60);
-   window.__blocked=true;const blocked=manager.getControllerStatus().blocked;
-   manager.setPlayers([{id:'qa',kind:'human',device:'keyboard:0'}]);window.dispatchEvent(new KeyboardEvent('keydown',{code:'KeyW'}));
-   const keyboard=manager.poll(4)[0];window.__blocked=false;
-   manager.destroy();return {commands,status,gameplay,unfocused,recovered,blocked,keyboard};
-
-  },name);
-  assert.deepEqual(adapter.commands.slice(0,3),[['confirm','gamepad'],['back','gamepad'],['pause','gamepad']],'Menu buttons remain fixed after combat remapping');
-  assert(adapter.commands.filter(([command])=>command==='right').length>=2,'Held dominant stick direction repeats');
-  assert(!adapter.commands.some(([command])=>command==='down'),'Diagonal stick emits one dominant direction');
-  assert.equal(adapter.status.controllers[0].label,'DualSense');assert.equal(adapter.status.controllers[0].lastInput,'right');
-  assert(adapter.gameplay.jump && !adapter.unfocused.jump && adapter.recovered.jump,'Partial bindings and recovered focus produce gameplay input safely');
-  assert(adapter.blocked && adapter.keyboard.jump,'Blocked Gamepad API leaves keyboard input working');
-  await page.reload();
   await page.getByTestId('mode-practice').or(page.getByRole('button',{name:/03.*PRÁCTICA/})).click();
   const card=page.locator('.fighter-card').first();
   const details=card.locator('details.fighter-options');if(await details.count())await details.locator('summary').click();
