@@ -1,13 +1,13 @@
 import { CONTENT_VERSION, PROTOCOL_VERSION } from '../src/shared/types';
 import { Room } from './room';
+import { MatchDO } from './match';
+import type { Env } from './env';
+import { secret } from './validation';
+import type { MatchAdmission } from './match';
+import { handleAccountRequest } from './accounts';
 
-export { Room };
+export { Room, MatchDO };
 
-interface Env {
-  ROOMS: DurableObjectNamespace;
-  ASSETS: Fetcher;
-  ALLOWED_ORIGINS?: string;
-}
 
 const ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
 const CODE_SIZE = 10;
@@ -142,8 +142,27 @@ export default {
     if (!url.pathname.startsWith('/api/')) return env.ASSETS.fetch(request);
     if (!sameAllowedOrigin(request, env)) return json({ error: 'origin_not_allowed' }, 403);
 
+    const accountResponse = await handleAccountRequest(request, env);
+    if (accountResponse) return accountResponse;
+
     if (url.pathname === '/api/health' && request.method === 'GET') {
       return json({ ok: true, protocolVersion: PROTOCOL_VERSION, contentVersion: CONTENT_VERSION });
+    }
+
+    if (url.pathname === '/api/feasibility' && request.method === 'POST') {
+      if (!env.PUBLIC_FEASIBILITY_KEY || request.headers.get('X-Feasibility-Key') !== env.PUBLIC_FEASIBILITY_KEY) return json({ error: 'feasibility_disabled' }, 403);
+      const config = await request.json() as MatchAdmission['config'];
+      const matchId = crypto.randomUUID();
+      const peerIds = [...new Set(config.players.map(player => player.peerId))];
+      const members = peerIds.map(peerId => ({ peerId: peerId!, token: secret(), seatIds: config.players.filter(p => p.peerId === peerId).map(p => p.id), connected: false, forfeited: false, lastSequence: 0, ready: {} }));
+      const response = await env.MATCHES.get(env.MATCHES.idFromName(matchId), { locationHint: 'enam' }).fetch('https://internal/internal/create', { method: 'POST', body: JSON.stringify({ matchId, config, members }) });
+      if (!response.ok) return response;
+      return json({ matchId, tickets: members.map(member => ({ matchId, peerId: member.peerId, token: member.token, seatIds: member.seatIds, config })) }, 201);
+    }
+    const publicMatch = /^\/api\/matches\/([a-zA-Z0-9_-]{1,64})(\/ws)?$/.exec(url.pathname);
+    if (publicMatch && request.method === 'GET') {
+      if (publicMatch[2] && request.headers.get('Upgrade')?.toLowerCase() !== 'websocket') return json({ error: 'websocket_required' }, 426);
+      return env.MATCHES.get(env.MATCHES.idFromName(publicMatch[1]), { locationHint: 'enam' }).fetch(new Request(`https://internal/internal/${publicMatch[2] ? 'ws' : 'state'}`, { headers: request.headers }));
     }
 
     if (url.pathname === '/api/rooms' && request.method === 'POST') {
