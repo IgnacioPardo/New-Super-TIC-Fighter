@@ -6,7 +6,7 @@ export type Discipline = 'networks' | 'design' | 'code' | 'hardware' | 'ai' | 'r
 export type ArenaId = 'classic' | 'lab' | 'pc' | 'embedded' | 'virtual' | 'arcade';
 export type Difficulty = 'easy' | 'normal' | 'hard' | 'dummy';
 export type PlayerAction = 'idle' | 'walk' | 'jump' | 'crouch' | 'guard' | 'punch' | 'uppercut' | 'sweep' | 'special' | 'combo' | 'hurt' | 'out' | 'air-forward' | 'air-down' | 'dodge' | 'air-dash' | 'recover';
-export interface Appearance { hair: number; shirt: number; pants: number }
+export interface Appearance { hair: number; shirt: number; pants: number; cosmetic?: 'original' | 'copper' | 'neon' | 'prism' }
 export interface PlayerSeat {
   id: string;
   name: string;
@@ -50,6 +50,7 @@ export interface FighterState {
   height: number;
   action: PlayerAction;
   actionTime: number;
+  poseAction?: PlayerAction;
   recovery: number;
   stun: number;
   invulnerable: number;
@@ -99,8 +100,8 @@ export interface ObjectiveState { x: number; y: number; width: number; height: n
 export interface TrainingState { hitboxes: boolean; inputHistory: InputFrame[]; recording: boolean; playback: boolean; dummyRecording: InputFrame[]; playbackIndex: number }
 export interface FighterRuntimeState { previous: InputFrame; buffer?: { action: PlayerAction | 'jump'; expires: number; facing: -1 | 1 }; history: { action: 'left' | 'right' | 'down' | 'jump' | 'punch' | 'special'; tick: number }[]; launched: boolean; effect?: EffectState; effectBottom: number; effectTop: number; attackFacing: -1 | 1; hitTargets?: string[]; lastHitBy?: string; lastHitTick?: number; dodgeRemaining?: number; echo?: { at: number; action: PlayerAction; facing: -1 | 1; x: number; y: number }; bounces?: number }
 export interface BotRuntimeState { random: number; memories: [string, { nextDecision: number; input: InputFrame; moveUntil: number; target?: string; jumpTarget?: number; launchedAt?: number }][]; observations: { tick: number; fighters: FighterState[] }[] }
-export interface SimulationRuntime { fighters: [string, FighterRuntimeState][]; inputs: InputFrame[]; bot?: BotRuntimeState; random: number; nextItem: number; serial: number; trainingInputs?: InputFrame[] }
-export type TrainingCommand = { action: 'reset-damage' | 'reset-position' | 'reset-all' | 'hitboxes' | 'record' | 'playback' | 'frame'; seatId?: string; enabled?: boolean };
+export interface SimulationRuntime { projectiles?: { effect: EffectState; ttl: number; hitTargets: string[]; bounces?: number }[]; fighters: [string, FighterRuntimeState][]; inputs: InputFrame[]; bot?: BotRuntimeState; random: number; nextItem: number; serial: number; trainingInputs?: InputFrame[] }
+export type TrainingCommand = { action: 'reset-damage' | 'reset-position' | 'set-damage' | 'set-position' | 'reset-all' | 'hitboxes' | 'record' | 'playback' | 'frame'; seatId?: string; enabled?: boolean; damage?: number; x?: number; y?: number };
 export interface ArenaDefinition {
   id: ArenaId; name: Record<Language, string>; subtitle: Record<Language, string>;
   platforms: Platform[]; spawns: { x: number; y: number }[]; color: string;
