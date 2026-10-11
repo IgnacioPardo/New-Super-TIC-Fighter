@@ -24,6 +24,7 @@ export function useGameRuntime(settings: AppSettings, manifest: AssetsManifest |
         if (remote.current) network.current?.pause(); else worker.current?.postMessage({ type: 'pause' });
       } else menu.current('pause');
     }, () => {
+      if (!snapshotRef.current || snapshotRef.current.phase === 'finished') return;
       setDisconnected(true);
       if (remote.current) network.current?.pause(); else worker.current?.postMessage({ type: 'pause' });
     });
@@ -71,7 +72,9 @@ export function useGameRuntime(settings: AppSettings, manifest: AssetsManifest |
     if (onlineActive) { snapshotRef.current = next; if (next) audio.current?.handleEvents(next.events); }
     const running = !!next && next.phase !== 'finished';
     input.current?.setMode(running && next?.phase !== 'paused' ? 'game' : 'menu');
-    if (next) input.current?.setPlayers(next.config.players.filter(p => p.kind === 'human' && (!onlineActive || p.peerId === online?.state.peerId)));
+    const ownedPlayers = running && next ? next.config.players.filter(p => p.kind === 'human' && (!onlineActive || p.peerId === online?.state.peerId)) : [];
+    input.current?.setPlayers(ownedPlayers);
+    if (!ownedPlayers.some(player => player.device.startsWith('gamepad:'))) setDisconnected(false);
     audio.current?.setScene(running ? 'match' : 'menu');
   }, [snapshot, online?.state.snapshot, onlineActive, online?.state.peerId]);
   const start = useCallback(async (config: MatchConfig) => {
@@ -84,7 +87,7 @@ export function useGameRuntime(settings: AppSettings, manifest: AssetsManifest |
       worker.current.postMessage({ type: 'start', config: { ...config, seed: Date.now() } });
     } catch (failure) { if (generation === startGeneration.current) setError(failure instanceof Error ? failure.message : 'El combate no pudo iniciarse / The fight could not start.'); }
   }, []);
-  const stop = useCallback(() => { startGeneration.current++; command({ type: 'stop' }); snapshotRef.current = null; setSnapshot(null); input.current?.setMode('menu'); audio.current?.setScene('menu'); }, [command]);
+  const stop = useCallback(() => { startGeneration.current++; command({ type: 'stop' }); snapshotRef.current = null; setSnapshot(null); setDisconnected(false); input.current?.setPlayers([]); input.current?.setMode('menu'); audio.current?.setScene('menu'); }, [command]);
   const unlock = useCallback(async () => { if (audio.current) { await audio.current.unlock(); setSoundUnlocked(audio.current.unlocked); } }, []);
   const reclaim = useCallback(() => { const restored = input.current?.reclaim() ?? false; setDisconnected(!restored); return restored; }, []);
   return { snapshot: onlineActive ? online?.state.snapshot ?? null : snapshot, snapshotRef, start, stop, command, devices, soundUnlocked, unlock, disconnected, reclaim, error };

@@ -17,7 +17,7 @@ Online rooms also support two people on one computer and friends elsewhere. Assi
 | Combo | V | L | K | Num 0 | Y / Triangle |
 | Pause | Escape | Escape | Escape | Escape | Start / Options |
 
-Crouch plus punch gives an uppercut. Crouch plus special gives a sweep. The original direction → crouch → standing special sequence also triggers a combo when completed within half a second. Attacks have recovery time; most require standing on a platform. Guard faces the held direction and blocks ordinary frontal punches. Other attacks bypass it.
+Crouch plus punch gives an uppercut. Crouch plus special gives a sweep. The original direction → crouch → standing special sequence also triggers a combo when completed within half a second. Attacks have recovery time; most require standing on a platform. Face the opponent before holding guard; it locks your facing and blocks ordinary frontal punches. Other attacks bypass it.
 
 Keyboard bindings and controller buttons/dead zone can be changed in Settings. Controllers navigate menus with the stick or D-pad, confirm with the mapped jump button, and go back with the mapped special button. A browser may need a click or key press to unlock sound.
 

@@ -35,6 +35,10 @@ export class InputManager {
   setSettings(settings: AppSettings) { this.settings = settings; this.keys.clear(); }
   setPlayers(players: PlayerSeat[]) {
     this.players = players;
+    if (!players.length) {
+      this.padIdentities.clear(); this.reclaimed.clear(); this.keys.clear();
+      return;
+    }
     const pads = this.pads();
     for (const player of players) {
       if (!player.device.startsWith('gamepad:')) { this.padIdentities.delete(player.id); continue; }
