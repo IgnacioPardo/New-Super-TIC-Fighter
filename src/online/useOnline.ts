@@ -37,7 +37,7 @@ export function useOnline(): OnlineBridge {
     authorityWorker.current?.postMessage({type:'stop'});predictionWorker.current?.postMessage({type:'stop'});
     snapshotRef.current=null;pendingInputs.current=[];latestInputs.current.clear();lastHostInput.current.clear();reported.current='';ownMatch.current='';localTick.current=0;
   };
-  const leave=()=>{client.current?.close();client.current=null;room.current=null;stop();localDevices.current.clear();routes.current.clear();current.current=initialState();setState(current.current);};
+  const leave=()=>{returningToLobby.current=false;client.current?.close();client.current=null;room.current=null;stop();localDevices.current.clear();routes.current.clear();current.current=initialState();setState(current.current);};
   useEffect(()=>{
     const host=new Worker(new URL('../simulation/worker.ts',import.meta.url),{type:'module'});
     const prediction=new Worker(new URL('./prediction.worker.ts',import.meta.url),{type:'module'});
@@ -105,7 +105,7 @@ export function useOnline(): OnlineBridge {
       },
       onSnapshot(snapshot){lastSnapshot.current=performance.now();predictionWorker.current?.postMessage({type:'authority',snapshot,seatIds:room.current?.players.filter(p=>p.peerId===room.current?.peerId).map(p=>p.id)??[]});},
       onStart(matchId,config){
-        reported.current='';localTick.current=0;pendingInputs.current=[];update({error:undefined,status:'playing'});
+        returningToLobby.current=false;reported.current='';localTick.current=0;pendingInputs.current=[];update({error:undefined,status:'playing'});
         if(connection.isHost){ownMatch.current=matchId;authorityWorker.current?.postMessage({type:'start',matchId,config});}
         lastSnapshot.current=performance.now();
       },
