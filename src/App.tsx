@@ -16,7 +16,7 @@ import { defaultSeat, loadConfig, loadSettings } from './ui/preferences';
 import { disciplineInfo, formatLives, names, pauseMessage, ui } from './ui/i18n';
 import { ARENAS } from './shared/content';
 import { Icon } from './ui/Icon';
-import { menuTargets, MenuDialog } from './ui/MenuControls';
+import { menuTargets, MenuDialog, MenuTabs } from './ui/MenuControls';
 import { Intro } from './ui/Intro';
 import { useUiFeedback } from './ui/useUiFeedback';
 import { PublicLobby } from './features/online/PublicLobby';
@@ -27,6 +27,8 @@ import { SoloMenu, SoloStatus } from './features/solo/SoloMenu';
 import { startSolo, observeSolo, advanceArcade, type SoloRequest, type SoloRun } from './features/solo/solo';
 import { useMatchSet } from './ui/useMatchSet';
 import { SetScore } from './ui/SetScore';
+import { ContentTabs, PagedContent, usePageSize } from './ui/ContentPages';
+import './ui/MatchEntryResults.css';
 import { COSMETICS, loadProgress, saveProgress } from './features/profile/progress';
 
 function withProfileCosmetic(config: MatchConfig): MatchConfig {
@@ -57,6 +59,7 @@ export default function App({ online: privateOnline }: AppProps) {
  const [name, setName] = useState(() => localStorage.getItem('stf-name') ?? '');
  const [code, setCode] = useState(() => new URLSearchParams(window.location.search).get('room') ?? '');
  const [onlineError, setOnlineError] = useState('');
+ const [privateEntryMode,setPrivateEntryMode] = useState<'create'|'join'>(() => new URLSearchParams(window.location.search).has('room') ? 'join' : 'create');
  const [pending, setPending] = useState(false);
  const [copied, setCopied] = useState(false);
  const [menuInput, setMenuInput] = useState<'keyboard' | 'gamepad'>('keyboard');
@@ -294,7 +297,15 @@ export default function App({ online: privateOnline }: AppProps) {
     {screen === 'room' && matchSet.state && <SetScore state={matchSet.state} language={settings.language} />}
     {screen === 'settings' && <Settings settings={settings} manifest={manifest} change={setSettings} feedback={runtime.uiSound} controllers={runtime.controllers} />}
     {screen === 'guide' && <Guide settings={settings} manifest={manifest} />}
-    {screen === 'online' && <div className="online-entry"><div className="online-art"><div className="online-orbit" /><div className="online-fighters"><Avatar manifest={manifest} discipline="networks" appearance={{hair:0,shirt:0,pants:0}} animated={!settings.reducedMotion} /><Avatar manifest={manifest} discipline="code" appearance={{hair:2,shirt:2,pants:2}} animated={!settings.reducedMotion} /></div><h2>{t.online}</h2><p>{t.onlineDescription}</p></div><div className="online-form"><label className="field-label"><span>{t.yourName}</span><input value={name} onChange={e => setName(e.target.value)} maxLength={18} placeholder={t.player} autoComplete="nickname" /><small>{t.keyboardText}</small></label><button className="primary-button" disabled={pending || !name.trim() || !manifest} onClick={() => void connect(true)}>{pending ? t.connecting : t.create}<span>↗</span></button><div className="or-divider"><span />{t.or}<span /></div><label className="field-label"><span>{t.code}</span><input className="code-input" value={code} onChange={e => setCode(e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, ''))} maxLength={12} placeholder="ABCD234567" autoComplete="off" /><small>{t.keyboardText}</small></label><button className="secondary-button" disabled={pending || !name.trim() || !code.trim() || !manifest} onClick={() => void connect(false)}>{t.join}<span>→</span></button>{(onlineError || online?.state.error) && <div className="inline-error" role="alert"><p>{onlineError || online?.state.error}</p>{/reload|version/i.test(onlineError || online?.state.error || '') && <button className="small-button" onClick={()=>window.location.reload()}>{t.reload}</button>}</div>}<div className="online-explain"><span>⌁</span><p>{t.onlineNote}</p></div></div></div>}
+    {screen === 'online' && <div className="online-entry">
+      <div className="online-art"><div className="online-fighters"><Avatar manifest={manifest} discipline="networks" appearance={{hair:0,shirt:0,pants:0}} animated={!settings.reducedMotion} /><Avatar manifest={manifest} discipline="code" appearance={{hair:2,shirt:2,pants:2}} animated={!settings.reducedMotion} /></div><h2>{settings.language==='es'?'CON AMIGOS':'WITH FRIENDS'}</h2><p>{t.onlineDescription}</p></div>
+      <div className="online-form"><MenuTabs label={t.onlineTitle} value={privateEntryMode} options={[{value:'create',label:t.create},{value:'join',label:t.join}]} change={setPrivateEntryMode}/>
+       <label className="field-label"><span>{t.yourName}</span><input value={name} onChange={e => setName(e.target.value)} maxLength={18} placeholder={t.player} autoComplete="nickname" /><small>{t.keyboardText}</small></label>
+       {privateEntryMode==='create'?<button className="primary-button" disabled={pending || !name.trim() || !manifest} onClick={() => void connect(true)}>{pending ? t.connecting : t.create}<span>↗</span></button>:<><label className="field-label"><span>{t.code}</span><input className="code-input" value={code} onChange={e => setCode(e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, ''))} maxLength={12} placeholder="ABCD234567" autoComplete="off" /></label><button className="secondary-button" disabled={pending || !name.trim() || !code.trim() || !manifest} onClick={() => void connect(false)}>{t.join}<span>→</span></button></>}
+       {(onlineError || online?.state.error) && <div className="inline-error" role="alert"><p>{onlineError || online?.state.error}</p>{/reload|version/i.test(onlineError || online?.state.error || '') && <button className="small-button" onClick={()=>window.location.reload()}>{t.reload}</button>}</div>}
+       <div className="online-explain"><p>{t.onlineNote}</p></div>
+      </div>
+    </div>}
     {screen === 'match' && <div className="match-screen">
       <div className="match-topbar"><div><span className="status-dot" /><strong>{ARENAS[(snapshot?.config ?? activeConfig).arena].name[settings.language]}</strong><span>{(snapshot?.config ?? activeConfig).practice ? t.practice : t[(snapshot?.config ?? activeConfig).gameMode ?? 'stock']}</span></div><div className="match-clock">{snapshot?.config.practice ? '∞' : snapshot?.config.timeLimit ? formatClock(snapshot.config.timeLimit - snapshot.elapsed) : '∞'}</div><button className="small-button" data-ui-sound="silent" onClick={pause}>Ⅱ {t.pause}</button></div>
       <div className="match-stage"><GameView arena={activeConfig.arena} snapshot={snapshot} snapshotRef={runtime.snapshotRef} settings={settings} manifest={manifest} onReady={() => setRenderReady(true)} />{snapshot?.phase === 'countdown' && renderReady && <div className="countdown-overlay"><span>{Math.ceil(snapshot.countdown) || t.countdownFight}</span><p>{t.countdownReady}</p></div>}{!snapshot && <div className="countdown-overlay">{runtime.error ? <section className="match-error"><h2>{t.interrupted}</h2><p role="alert">{runtime.error}</p><button className="primary-button" onClick={() => window.location.reload()}>{t.reload}</button><button className="secondary-button" onClick={leaveMatch}>{t.lobby}</button></section> : <><span>…</span><p>{t.assetsLoading}</p></>}</div>}</div>
@@ -310,8 +321,17 @@ export default function App({ online: privateOnline }: AppProps) {
  </div>;
 }
 function Results({ snapshot, settings, manifest, rematch, primaryLabel, leave, leaveLabel, waitingForHost, setState }: { setState?: import('./ui/useMatchSet').MatchSetState | null; snapshot: MatchSnapshot; settings: AppSettings; manifest: AssetsManifest | null; rematch: () => void; primaryLabel: string; waitingForHost: boolean; leave: () => void; leaveLabel: string }) {
- const t = ui[settings.language], result = snapshot.result;
+ const t = ui[settings.language], result = snapshot.result, es=settings.language==='es';
+ const fightersPerPage=usePageSize(4,2),scoreRows=usePageSize(4,4);
  const winners = snapshot.config.players.filter(p => result?.winners.includes(p.id));
  const draw = result?.reason === 'draw', interrupted = result?.reason === 'interrupted';
- return <div className="results-screen"><span className="eyebrow">{interrupted ? t.noWinner : result?.reason === 'timeout' ? t.timeout : t.lastStanding}</span><h1>{interrupted ? t.interrupted : draw ? t.draw : t.winner}</h1><div className="result-fighters">{(winners.length ? winners : snapshot.config.players).map(seat => <div key={seat.id} style={{ '--fighter-color': disciplineInfo[seat.discipline].color } as React.CSSProperties}>{!draw && !interrupted && <span className="winner-ribbon" aria-hidden="true">1</span>}<Avatar manifest={manifest} appearance={seat.appearance} discipline={seat.discipline} animated={!settings.reducedMotion} /><h2>{seat.name}</h2><span>{names[seat.discipline][settings.language]}</span></div>)}</div><div className="results-actions"><button data-autofocus disabled={waitingForHost} className="primary-button" onClick={rematch}>{primaryLabel}<span>↻</span></button><button className="secondary-button" onClick={leave}>{leaveLabel}<span>←</span></button></div>{setState && <SetScore state={setState} language={settings.language} />}<div className="result-scoreboard">{snapshot.config.players.map(seat => { const f = snapshot.fighters.find(fighter => fighter.id === seat.id); return <div key={seat.id}><strong>{seat.name}</strong><span>{formatLives(f?.lives ?? 0, settings.language)}</span><span>{Math.round(f?.damage ?? 0)}%</span>{result?.winners.includes(seat.id) && <b>1</b>}</div>; })}</div></div>;
+ return <div className="results-screen">
+  <span className="eyebrow">{interrupted ? t.noWinner : result?.reason === 'timeout' ? t.timeout : t.lastStanding}</span><h1>{interrupted ? t.interrupted : draw ? t.draw : t.winner}</h1>
+  <ContentTabs label={es?'Resultados':'Results'} pages={[
+   {id:'podium',label:es?'Podio':'Podium',content:<PagedContent size={fightersPerPage} language={settings.language} label={es?'Luchadores':'Fighters'} className="result-fighters">{(winners.length ? winners : snapshot.config.players).map(seat => <div key={seat.id} style={{ '--fighter-color': disciplineInfo[seat.discipline].color } as React.CSSProperties}>{!draw && !interrupted && <span className="winner-ribbon" aria-hidden="true">1</span>}<Avatar manifest={manifest} appearance={seat.appearance} discipline={seat.discipline} animated={!settings.reducedMotion} /><h2>{seat.name}</h2><span>{names[seat.discipline][settings.language]}</span></div>)}</PagedContent>},
+   {id:'scores',label:es?'Marcador':'Scoreboard',content:<PagedContent size={scoreRows} language={settings.language} label={es?'Marcador':'Scoreboard'} className="result-scoreboard">{snapshot.config.players.map(seat => {const f=snapshot.fighters.find(fighter=>fighter.id===seat.id);return <div key={seat.id}><strong>{seat.name}</strong><span>{formatLives(f?.lives??0,settings.language)}</span><span>{Math.round(f?.damage??0)}%</span>{result?.winners.includes(seat.id)&&<b>1</b>}</div>;})}</PagedContent>}
+  ]}/>
+  {setState && <SetScore state={setState} language={settings.language} />}
+  <div className="results-actions"><button data-autofocus disabled={waitingForHost} className="primary-button" onClick={rematch}>{primaryLabel}<span>↻</span></button><button className="secondary-button" onClick={leave}>{leaveLabel}<span>←</span></button></div>
+ </div>;
 }
