@@ -22,6 +22,8 @@ The candidate implements the accepted [v2 specification](implementation-plan-v2.
 | Private/public services | 2+2 seats, ownership/readiness, P2P/relay fallback, Royale admission, secure team tournament registration, spectators, capacity ceilings and durable process recovery | Service clients and outages are synthetic; see online report |
 | Deployed Classic | Four clients, 30 seconds, 1,800 ticks/600 snapshots, approximately 59.97 Hz, zero errors/dropped time | One Argentina network; production CPU clock readings are not billing measurements |
 | Deployed Expanded | Eight-client Royale plus three concurrent duels held approximately 60 Hz; zero errors/catchup/dropped time; deployed 2+2 party match produced two authoritative winners | Two bounded 15-second load windows, not a sustained production soak |
+| Browser network disruption | Eight independently rendered Royale clients with synthetic input/snapshot loss, real browser offline/reconnect, and a five-second page freeze; all resumed with zero page/protocol errors | Same Mac/network. Minimized Chromium still reported visible; true hidden-page throttling and OS sleep are not established |
+| Desktop cadence | Actual M4 GPU, headed Chromium, complete Royale worker/rendering; two 25–26-second windows near 60 Hz simulation, warmed WebGL clear p95 9.1 ms | First window had a 159 ms callback hitch; no sustained soak or physical latency claim |
 | Account storage/passkeys | Disposable local D1/Worker plus full browser application; virtual WebAuthn enrollment, logout, fresh passkey login and deletion; idempotent guest upgrade, separate couch progress, protected verified statistics and validation failures | Identity/provider bootstrap is a fixture. This does not prove real Google/GitHub consent or physical passkeys |
 
 Detailed evidence and provenance:
@@ -30,6 +32,7 @@ Detailed evidence and provenance:
 - [Interface, independent seat ownership and complete UI flows](v2-interface-verification.md).
 - [Online authority, deployed load, interruption and capacity evidence](v2-online-verification.md), with sanitized reports under `evidence/v2-online/`.
 - [Account and virtual-passkey exercise](v2-account-verification.md), with `evidence/v2-accounts/local-passkey-roundtrip.json`.
+- [V2 desktop cadence and its measurement limits](v2-performance.md), with both raw reports retained.
 - [Historical v1 controller verification](controller-verification.md) and [v1 performance measurements](performance.md), retained with their original scope.
 
 ## Material performance observations

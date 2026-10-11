@@ -1,0 +1,31 @@
+{
+  "environment": "isolated Playwright Chromium (headed), 1366×768, eight Expanded fighters on Arcade Circuit, real local worker and synthetic keyboard input",
+  "renderer": "ANGLE (Apple, ANGLE Metal Renderer: Apple M4, Unspecified Version)",
+  "seconds": 25.03289999997616,
+  "simulationHz": 60.001038633215906,
+  "rAFMilliseconds": {
+    "count": 2974,
+    "p50": 8.300000000000182,
+    "p95": 9.100000000000364,
+    "p99": 9.300000000000182,
+    "max": 158.60000000000036
+  },
+  "snapshotMilliseconds": {
+    "count": 1502,
+    "p50": 16.699999928474426,
+    "p95": 17.800000071525574,
+    "p99": 19,
+    "max": 165.90000009536743
+  },
+  "inputToWorkerJumpMilliseconds": {
+    "count": 0,
+    "p50": null,
+    "p95": null,
+    "p99": null,
+    "max": null
+  },
+  "hiddenSnapshots": 0,
+  "fighters": 8,
+  "finalPhase": "playing",
+  "errors": []
+}
