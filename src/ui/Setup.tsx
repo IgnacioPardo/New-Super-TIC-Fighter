@@ -48,6 +48,12 @@ export function Setup({ config, setConfig, settings, manifest, devices, ready, t
          return <article className={`fighter-card ${confirmed ? 'is-ready' : ''}`} key={seat.id} style={{ '--fighter-color': color } as React.CSSProperties}>
            <div className="fighter-card-top"><span className="seat-number">P{index + 1}</span><span className="fighter-class-name">{names[seat.discipline][lang]}</span><span className={`ready-light ${confirmed ? 'on' : ''}`}>{confirmed ? t.ready : t.notReady}</span></div>
            <h3 className="fighter-identity">{seat.name}</h3><div className="fighter-preview"><Avatar appearance={seat.appearance} discipline={seat.discipline} manifest={manifest} animated={!settings.reducedMotion} /><span className="fighter-stage-line" /></div>
+           {seat.kind === 'human' && <label className="field-label fighter-device"><span>{t.device}</span><select aria-label={`${t.device} P${index + 1}`} disabled={!owned} value={seat.device} onChange={e => changeSeat(seat.id, { device: e.target.value })}>
+             {[0,1,2,3].map(i => <option key={i} value={`keyboard:${i}`}>{t.keyboard} {i + 1}</option>)}
+             {devices.filter(d => d.id.startsWith('gamepad:') && d.connected).map(d => <option key={d.id} value={d.id}>{d.label}</option>)}
+             {seat.device === 'remote' && <option value="remote">{t.seatRemote}</option>}
+             {seat.device.startsWith('gamepad:') && !devices.some(d => d.id === seat.device && d.connected) && <option value={seat.device}>{t.disconnected}</option>}
+           </select></label>}
            <label className="field-label"><span>{t.discipline}</span><select disabled={!owned} value={seat.discipline} onChange={e => changeSeat(seat.id, { discipline: e.target.value as PlayerSeat['discipline'] })}>{disciplines.map(d => <option value={d} key={d}>{names[d][lang]}</option>)}</select></label>
            <div className="appearance-controls" aria-label={t.appearance}>
              <select aria-label={`${t.appearance} P${index + 1}`} value={part} onChange={e => setAppearancePart(previous => ({ ...previous, [seat.id]: e.target.value as 'hair' | 'shirt' | 'pants' }))}>{(['hair','shirt','pants'] as const).map(option => <option value={option} key={option}>{t[option]}</option>)}</select>
@@ -60,12 +66,7 @@ export function Setup({ config, setConfig, settings, manifest, devices, ready, t
              </select>
              {config.mode === 'teams' && <select aria-label={`${t.team} P${index + 1}`} disabled={!owned} value={seat.team} onChange={e => changeSeat(seat.id, { team: Number(e.target.value) as 0 | 1 })}><option value={0}>◆ A</option><option value={1}>● B</option></select>}
            </div>
-           {seat.kind === 'bot' ? <label className="field-label"><span>{t.difficulty}</span><select value={seat.difficulty ?? 'normal'} disabled={!owned} onChange={e => changeSeat(seat.id, { difficulty: e.target.value as PlayerSeat['difficulty'] })}><option value="easy">{t.easy}</option><option value="normal">{t.normal}</option>{practice && <option value="dummy">{t.dummy}</option>}</select></label> : <label className="field-label"><span>{t.device}</span><select disabled={!owned} value={seat.device} onChange={e => changeSeat(seat.id, { device: e.target.value })}>
-             {[0,1,2,3].map(i => <option key={i} value={`keyboard:${i}`}>{t.keyboard} {i + 1}</option>)}
-             {devices.filter(d => d.id.startsWith('gamepad:') && d.connected).map(d => <option key={d.id} value={d.id}>{d.label}</option>)}
-             {seat.device === 'remote' && <option value="remote">{t.seatRemote}</option>}
-             {seat.device.startsWith('gamepad:') && !devices.some(d => d.id === seat.device && d.connected) && <option value={seat.device}>{t.disconnected}</option>}
-           </select></label>}
+           {seat.kind === 'bot' ? <label className="field-label"><span>{t.difficulty}</span><select value={seat.difficulty ?? 'normal'} disabled={!owned} onChange={e => changeSeat(seat.id, { difficulty: e.target.value as PlayerSeat['difficulty'] })}><option value="easy">{t.easy}</option><option value="normal">{t.normal}</option>{practice && <option value="dummy">{t.dummy}</option>}</select></label> : null}
            {seat.kind === 'human' && seat.device.startsWith('keyboard:') && <div className="seat-keys">{['left','down','right','jump','punch','special','guard','combo'].map(action => <kbd key={action} title={t[action as keyof typeof t]}>{keyName(settings.keyboardBindings[Number(seat.device.split(':')[1])]?.[action] ?? '')}</kbd>)}</div>}
 </div></details>
            <div className="seat-bottom">
@@ -94,6 +95,6 @@ export function Setup({ config, setConfig, settings, manifest, devices, ready, t
      </button>)}</div>
 
    </section>
-     <div className="start-panel"><p className={validation ? 'validation-hint' : 'help-text'}>{validation || (practice ? t.practiceTip : t.readyHelp)}</p><button className="primary-button fight-button" disabled={!!validation || !manifest || !host} onClick={start}>{t.start}<span>↗</span></button></div>
+     <div className="start-panel"><p className={validation ? 'validation-hint' : 'help-text'}>{validation || (practice ? t.practiceTip : t.readyHelp)}</p><button className="primary-button fight-button" data-ui-sound="silent" disabled={!!validation || !manifest || !host} onClick={start}>{t.start}<span>↗</span></button></div>
  </div>;
 }
