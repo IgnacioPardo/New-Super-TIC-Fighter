@@ -15,7 +15,7 @@ No unit tests. TypeScript client/server checks, production build and generated m
 - Chromium, Firefox and WebKit: live canvas, injected controller movement, pause, disconnect, quarantine of a different device and reclaim of the original device.
 - Six four-bot presentation flows: three arenas with full/reduced motion, resize, pause/resume and lobby/remount.
 - Integrated audio: first gesture, hover, click, selection, ready, pause/resume, actual match results and mute. Raw pre-gesture hover produced no audio/media starts; zero effects volume produced no voices. Visibility-handler state was injected. No browser errors; subjective listening is separate.
-- HTTP against the running Cloudflare Worker: all 25 music tracks, exact bytes, GET/HEAD, range and conditional requests. Vite's static preview alone does not implement the Worker's media headers.
+- HTTP against the running Cloudflare Worker: all 26 music tracks, exact bytes, GET/HEAD, range and conditional requests. Vite's static preview alone does not implement the Worker's media headers.
 - Full online and menu/controller lifecycle scripts are part of `pnpm e2e` and run in GitHub Actions. Keyboard-only scenarios isolate themselves from physical controllers connected to the machine.
 
 For the physical Arc diagnosis and its current verification state, see `docs/controller-verification.md`.

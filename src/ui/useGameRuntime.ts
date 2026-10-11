@@ -5,7 +5,7 @@ import { preloadMatchAssets } from '../assets';
 import type { AppSettings, AssetsManifest, MatchConfig, MatchSnapshot, SimulationCommand, SimulationMessage } from '../shared/types';
 import type { OnlineBridge } from './contracts';
 export type MenuCommand = 'up' | 'down' | 'left' | 'right' | 'confirm' | 'back' | 'pause';
-export function useGameRuntime(settings: AppSettings, manifest: AssetsManifest | null, onMenu: (command: MenuCommand, source: 'keyboard' | 'gamepad') => void, online?: OnlineBridge, onlineActive = false) {
+export function useGameRuntime(settings: AppSettings, manifest: AssetsManifest | null, onMenu: (command: MenuCommand, source: 'keyboard' | 'gamepad') => void, online?: OnlineBridge, onlineActive = false, showMatch = false) {
   const [snapshot, setSnapshot] = useState<MatchSnapshot | null>(null);
   const snapshotRef = useRef<MatchSnapshot | null>(null);
   const [devices, setDevices] = useState<{ id: string; label: string; connected: boolean }[]>([]);
@@ -76,8 +76,8 @@ export function useGameRuntime(settings: AppSettings, manifest: AssetsManifest |
     const ownedPlayers = running && next ? next.config.players.filter(p => p.kind === 'human' && (!onlineActive || p.peerId === online?.state.peerId)) : [];
     input.current?.setPlayers(ownedPlayers);
     if (!ownedPlayers.some(player => player.device.startsWith('gamepad:'))) setDisconnected(false);
-    audio.current?.setScene(running ? 'match' : 'menu');
-  }, [snapshot, online?.state.snapshot, onlineActive, online?.state.peerId]);
+    audio.current?.setScene(running && next?.phase !== 'paused' && showMatch ? 'match' : 'menu');
+  }, [snapshot, online?.state.snapshot, onlineActive, online?.state.peerId, showMatch, manifest]);
   const start = useCallback(async (config: MatchConfig) => {
     const generation = ++startGeneration.current;
     setDisconnected(false); setError(''); snapshotRef.current = null; setSnapshot(null); phase.current = '';

@@ -124,6 +124,8 @@ Adapt the remake's blue/white/pink identity to “New Super TIC Fighter.” Use 
 
 Preserve the original eight music recordings, the remake's sixteen-track collection, menu intro, and eighteen gameplay sound effects. Default to the Remake playlist; offer Original and Remake selection and shuffle without immediate repeats. Keep neutral labels where source filenames cannot be reliably matched to song titles.
 
+Owner update, 2026-10-11: add Facundo Pereyra's 8-bit “La leyenda del Hada y el Mago” recording to the Remake playlist (seventeen tracks total). Always use the owner-confirmed Danger Zone recording, Original 04, for the title screen and menus, independently of the selected match playlist. Preserve the historical intro asset.
+
 Use HTML audio for music and Web Audio for short effects. Load the selected music track on demand, never decode/preload the entire archive, and load short effects separately. Provide independent volume/mute controls and clear browser audio-unlock handling. A gamepad-first session can continue silently until a trusted browser gesture enables audio.
 
 Deploy selected runtime media and new artwork; retain the larger design/archive materials as references outside the game bundle.

@@ -18,7 +18,8 @@
     "e2e:transport": "node scripts/network-smoke.mjs && node scripts/network-browser.mjs",
     "e2e:menus": "node scripts/app-menus.mjs && node scripts/app-results-navigation.mjs",
     "e2e:audio": "node scripts/audio-http.mjs",
-    "e2e:controllers": "node scripts/app-dualsense.mjs && node scripts/app-feedback.mjs"
+    "e2e:controllers": "node scripts/app-dualsense.mjs && node scripts/app-feedback.mjs",
+    "e2e:audio-playback": "node scripts/app-audio.mjs"
   },
   "dependencies": {
     "phaser": "4.2.1",
