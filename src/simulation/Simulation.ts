@@ -49,6 +49,8 @@ export class Simulation {
     const rules = structuredClone(config);
     rules.ruleset ??= 'classic';
     if (rules.ruleset === 'classic' && rules.players.some(p=>!['networks','design','code','hardware'].includes(p.discipline))) throw new Error('Classic supports the original four disciplines.');
+    if (rules.gameMode === 'survival') { const humans=rules.players.filter(p=>p.kind==='human').length; if(humans<1||humans>2||!rules.players.some(p=>p.kind==='bot')) throw new Error('Survival requires one or two humans and at least one CPU.'); }
+    if (rules.ruleset === 'classic') { rules.items=false; rules.hazards=false; }
     if (rules.gameMode === 'royale') { rules.lives = 1; rules.timeLimit = 240; rules.mode = 'ffa'; }
     if (rules.gameMode === 'timed' || rules.gameMode === 'hill') rules.timeLimit = rules.timeLimit || 180;
     if (rules.gameMode === 'training') { rules.practice = true; rules.timeLimit = 0; }
@@ -155,6 +157,8 @@ export class Simulation {
   forfeit(seatIds: string[]): MatchSnapshot {
     const state = this.requireState();
     if (state.phase === 'finished') return this.snapshot();
+    const forfeiting = state.fighters.filter(f=>seatIds.includes(f.id)&&!f.eliminated);
+    if(state.config.gameMode==='royale') for(const f of forfeiting) state.scores![f.id].placement=state.fighters.filter(f=>!f.eliminated).length-forfeiting.length+1;
     for (const fighter of state.fighters) {
       if (!seatIds.includes(fighter.id) || fighter.eliminated) continue;
       fighter.lives = 0; fighter.eliminated = true; fighter.action = 'out';
@@ -461,7 +465,8 @@ export class Simulation {
       if (resolved.has(hit.target.id)) continue;
       resolved.add(hit.target.id);
       const { owner, target, effect, action } = hit;
-      if (this.expanded) { this.runtimes.get(owner.id)!.hitTargets?.push(target.id); const rt = this.runtimes.get(target.id)!; rt.lastHitBy = owner.id; rt.lastHitTick = state.tick; if (target.buffs?.firewall) { delete target.buffs.firewall; target.invulnerable = .2; this.event({type:'block',seatId:owner.id,targetId:target.id}); continue; } }
+      const credit = this.runtimes.get(target.id)!; credit.lastHitBy=owner.id; credit.lastHitTick=state.tick;
+      if (this.expanded) { this.runtimes.get(owner.id)!.hitTargets?.push(target.id); if (target.buffs?.firewall) { delete target.buffs.firewall; target.invulnerable = .2; this.event({type:'block',seatId:owner.id,targetId:target.id}); continue; } }
       target.damage = Math.min(200, target.damage + hit.damage * (owner.buffs?.overclock ? 1.25 : 1));
       if (hit.blocked) {
         if (this.expanded) target.guardMeter = Math.max(0, (target.guardMeter ?? 100) - 22);
@@ -491,7 +496,7 @@ export class Simulation {
     const rt = this.runtimes.get(fighter.id)!;
     const credited = rt.lastHitBy && state.tick - (rt.lastHitTick ?? 0) < 480 ? rt.lastHitBy : undefined;
     if (state.scores) { if (credited && state.scores[credited]) state.scores[credited].kos++; else state.scores[fighter.id].selfDestructs++; }
-    this.event({ type: 'fall', seatId: fighter.id, targetId: credited });
+    this.event({ type: 'fall', seatId: fighter.id, creditedTo: credited });
     if (!state.config.practice && (!['timed','hill'].includes(state.config.gameMode ?? 'stock') || state.objective?.suddenDeath !== undefined)) fighter.lives--;
     if (fighter.lives <= 0) {
       fighter.lives = 0; fighter.eliminated = true; fighter.action = 'out';
@@ -566,6 +571,7 @@ export class Simulation {
       if (f.action==='guard') f.action='idle';
       f.guardMeter=Math.min(100,(f.guardMeter ?? 100)+DT*20);
     }
+    locked ||= f.stun > EPSILON;
     if (pressed('punch') && f.buffs?.usb && !locked && f.recovery < EPSILON) {
       this.projectile(f,'usb',f.x+f.facing*40,f.y-65,24,18,900*f.facing,1.4);
       delete f.buffs.usb; f.recovery=.28; this.event({type:'item',seatId:f.id});
@@ -655,7 +661,7 @@ export class Simulation {
     if(supporting && kind!=='drone')y=supporting.y-height;
     // Spawn-clear corridors and one-way surfaces prevent sealing or body traps.
     const spawn=ARENAS[state.config.arena].spawns.find(p=>Math.hypot(p.x-(x+width/2),p.y-(y+height))<110);
-    if(spawn)x=clamp(x+f.facing*140,-120,1400);
+    if(spawn && (kind==='block'||kind==='pad'))x=clamp(x+f.facing*140,-120,1400);
     if(kind==='block'&&!supporting)return;
     list.push({id:`${state.matchId}:d${++this.serial}`,ownerId:f.id,kind,x,y,width,height,hp:kind==='block'?18:kind==='board'?12:kind==='drone'?16:10,ttl:kind==='block'?8:kind==='decoy'?4:kind==='pad'?8:12,cooldown:kind==='board'?1:kind==='hub'?.5:.75,facing:f.facing});
     this.event({type:'deploy',seatId:f.id,discipline:this.seatDiscipline(f.id)});
@@ -674,7 +680,9 @@ export class Simulation {
       if(rt.echo&&state.tick>=rt.echo.at){const f=state.fighters.find(f=>f.id===id)!;const e=rt.echo;this.projectile({...f,facing:e.facing},'echo',e.x+(e.facing===1?20:-140),e.y-90,120,80,0,.22);rt.echo=undefined;}
     }
     for(const p of this.projectiles){
-      p.ttl-=DT;p.effect.age+=DT;p.effect.x+=p.effect.vx*DT;p.effect.y+=p.effect.vy*DT;p.effect.frame=Math.floor(p.effect.age*20)%6;
+      p.ttl-=DT;p.effect.age+=DT;
+      if(p.effect.kind==='usb') p.effect.vy=Math.min(700,p.effect.vy+PHYSICS.gravity*DT*.35);
+      p.effect.x+=p.effect.vx*DT;p.effect.y+=p.effect.vy*DT;p.effect.frame=Math.floor(p.effect.age*20)%6;
       if(p.effect.kind==='ricochet'&&(p.bounces ?? 0)<2){
         const e=p.effect,bounds=this.platforms();
         if(e.x<-200||e.x+e.width>1566||bounds.some(b=>overlaps({x:e.x,y:e.y,width:e.width,height:e.height},b))){e.vx*=-1;e.facing=e.vx>0?1:-1;e.x+=e.vx*DT*2;p.bounces=(p.bounces ?? 0)+1;}
@@ -712,7 +720,7 @@ export class Simulation {
       const occupants=state.fighters.filter(f=>!f.eliminated&&f.grounded&&f.x>=objective.x&&f.x<=objective.x+objective.width&&f.y>=objective.y&&f.y<=objective.y+objective.height);
       const identities=new Set(occupants.map(f=>state.config.mode==='teams'?`team:${state.config.players.find(p=>p.id===f.id)!.team}`:f.id));
       objective.contested=identities.size>1;objective.ownerId=identities.size===1?occupants[0]?.id:undefined;
-      if(identities.size===1)for(const f of occupants)state.scores![f.id].hill+=DT;
+      if(identities.size===1)for(const f of occupants)state.scores![f.id].hill+=DT/occupants.length;
     }
     if(state.config.gameMode==='royale'&&objective){
       const amount=clamp((state.elapsed-30)/180,0,1);objective.safeLeft=-220+amount*820;objective.safeRight=1586-amount*820;
@@ -730,7 +738,6 @@ export class Simulation {
   }
   private resolveWorldCombat(): void {
     const state=this.requireState();
-    for(const p of this.projectiles){const owner=state.fighters.find(f=>f.id===p.effect.ownerId);if(!owner)continue;for(const target of state.fighters){if(target.eliminated||target.invulnerable>EPSILON||target.stun>EPSILON||p.hitTargets.includes(target.id)||!this.enemy(owner,target)||!overlaps(this.effectBounds(p.effect),bodyBounds(target)))continue;p.hitTargets.push(target.id);this.worldHit(owner,target,p.effect.kind,p.effect.facing);if(['wireless','usb','mechanical'].includes(p.effect.kind))p.ttl=0;}}
     for(const p of this.projectiles)for(const d of state.deployables ?? []) {
       const owner=state.fighters.find(f=>f.id===p.effect.ownerId),defender=state.fighters.find(f=>f.id===d.ownerId);
       if(!owner||!defender||p.ttl<=0||!this.enemy(owner,defender)||p.hitTargets.includes(d.id)||!overlaps(this.effectBounds(p.effect),d))continue;
@@ -738,8 +745,10 @@ export class Simulation {
       if(d.kind==='decoy'||['wireless','usb','mechanical','ricochet'].includes(p.effect.kind))p.ttl=0;
       this.event({type:'hit',seatId:owner.id,targetId:d.ownerId});
     }
+    for(const p of this.projectiles){if(p.ttl<=0)continue;const owner=state.fighters.find(f=>f.id===p.effect.ownerId);if(!owner)continue;for(const target of state.fighters){if(p.ttl<=0)break;if(target.eliminated||target.invulnerable>EPSILON||target.stun>EPSILON||p.hitTargets.includes(target.id)||!this.enemy(owner,target)||!overlaps(this.effectBounds(p.effect),bodyBounds(target)))continue;p.hitTargets.push(target.id);this.worldHit(owner,target,p.effect.kind,p.effect.facing);if(['wireless','usb','mechanical'].includes(p.effect.kind))p.ttl=0;}}
     for(const d of state.deployables ?? [])for(const owner of state.fighters){
-      if(owner.eliminated||owner.id===d.ownerId||!isAttack(owner.action)||owner.actionTime<ATTACKS[owner.action].windup)continue;
+      const defender=state.fighters.find(f=>f.id===d.ownerId);
+      if(!defender||!this.enemy(owner,defender)||owner.eliminated||owner.id===d.ownerId||!isAttack(owner.action)||owner.actionTime<ATTACKS[owner.action].windup)continue;
       const rt=this.runtimes.get(owner.id)!;if(rt.hitTargets?.includes(d.id))continue;
       const bounds=rt.effect?this.effectBounds(rt.effect):this.meleeBounds(owner);
       if(overlaps(bounds,d)){rt.hitTargets?.push(d.id);d.hp-=owner.action==='combo'?10:6;this.event({type:'hit',seatId:owner.id,targetId:d.ownerId});}
@@ -749,7 +758,7 @@ export class Simulation {
     const state=this.requireState(),rule=EFFECT_HITS[kind],rt=this.runtimes.get(target.id)!;
     if(target.buffs?.firewall){delete target.buffs.firewall;target.invulnerable=.2;this.event({type:'block',seatId:owner.id,targetId:target.id});return;}
     if(target.action==='guard'&&target.facing===-direction&&(target.guardMeter ?? 100)>0){target.guardMeter=Math.max(0,(target.guardMeter ?? 100)-20);target.damage=Math.min(200,target.damage+1);this.event({type:'block',seatId:owner.id,targetId:target.id});return;}
-    const k=target.damage;target.damage=Math.min(200,k+rule.damage);target.vx=direction*rule.xScale*(rule.xBase+k);target.vy=-rule.yScale*(rule.yBase+k);target.grounded=false;target.action='hurt';target.actionTime=0;target.stun=.4;target.recovery=0;
+    const k=target.damage;target.damage=Math.min(200,k+rule.damage*(owner.buffs?.overclock?1.25:1));target.vx=direction*rule.xScale*(rule.xBase+k);target.vy=-rule.yScale*(rule.yBase+k);target.grounded=false;target.action='hurt';target.actionTime=0;target.stun=.4;target.recovery=0;
     rt.launched=true;rt.effect=undefined;rt.buffer=undefined;rt.lastHitBy=owner.id;rt.lastHitTick=state.tick;this.event({type:'hit',seatId:owner.id,targetId:target.id,discipline:this.seatDiscipline(owner.id)});
   }
   private checkExpandedResult(): boolean {
@@ -761,7 +770,7 @@ export class Simulation {
       const bots=state.fighters.filter(f=>state.config.players.find(p=>p.id===f.id)?.kind==='bot');
       if(bots.length&&bots.every(f=>f.eliminated)){
         const o=state.objective!;if(!o.nextWave)o.nextWave=state.elapsed+2;
-        if(state.elapsed>=o.nextWave){o.wave=(o.wave ?? 1)+1;o.nextWave=0;for(const f of bots){f.lives=1;f.eliminated=false;const spawn=ARENAS[state.config.arena].spawns[bots.indexOf(f)%ARENAS[state.config.arena].spawns.length];Object.assign(f,{x:spawn.x,y:spawn.y,vx:0,vy:0,damage:Math.min(80,(o.wave-1)*5),stun:0,invulnerable:1,grounded:true,action:'idle',recovery:0,airJumps:1,airDash:true,recoveryAvailable:true});this.resetRuntime(f.id);const seat=state.config.players.find(p=>p.id===f.id)!;seat.difficulty=o.wave>=5?'hard':'normal';}this.event({type:'wave'});}
+        if(state.elapsed>=o.nextWave){o.wave=(o.wave ?? 1)+1;o.nextWave=0;for(const f of bots){f.lives=1;f.eliminated=false;const spawn=ARENAS[state.config.arena].spawns[bots.indexOf(f)%ARENAS[state.config.arena].spawns.length];Object.assign(f,{x:spawn.x,y:spawn.y,vx:0,vy:0,damage:0,stun:0,invulnerable:1,grounded:true,action:'idle',recovery:0,airJumps:1,airDash:true,recoveryAvailable:true});this.resetRuntime(f.id);const seat=state.config.players.find(p=>p.id===f.id)!;seat.difficulty=o.wave>=5?'hard':'normal';}this.event({type:'wave'});}
       }
       return true;
     }

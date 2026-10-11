@@ -1,7 +1,7 @@
 import { ARENAS, ATTACKS, NAVIGATION, PHYSICS } from '../shared/content';
 import type { AttackAction } from '../shared/content';
 import { emptyInput } from '../shared/types';
-import type { ArenaId, BotRuntimeState, FighterState, InputFrame, MatchConfig, MatchSnapshot, PlayerSeat } from '../shared/types';
+import type { ArenaId, BotRuntimeState, FighterState, InputFrame, MatchConfig, MatchSnapshot, PlayerSeat, Platform } from '../shared/types';
 import { clamp, supportingPlatform } from './geometry';
 
 interface BotMemory { nextDecision: number; input: InputFrame; moveUntil: number; target?: string; jumpTarget?: number; launchedAt?: number }
@@ -53,14 +53,18 @@ export class Random {
   }
 }
 
-function nextPlatform(arena: ArenaId, from: number, to: number): number | undefined {
+function nextPlatform(arena: ArenaId, from: number, to: number, platforms: Platform[], expanded: boolean): number | undefined {
+  const edges: [number,number][] = expanded ? platforms.flatMap((a,i)=>platforms.flatMap((b,j)=>{
+    if(i===j)return [];const rise=a.y-b.y,gap=Math.max(0,b.x-a.x-a.width,a.x-b.x-b.width);
+    return rise<=300 && rise>=-400 && gap<=(rise>0?340:440) ? [[i,j] as [number,number]]:[];
+  })) : [...NAVIGATION[arena]].map(([a,b])=>[a,b]);
   const queue: number[][] = [[from]];
   const visited = new Set([from]);
   while (queue.length) {
     const path = queue.shift()!;
     const current = path[path.length - 1];
     if (current === to) return path[1];
-    for (const [a, b] of NAVIGATION[arena]) {
+    for (const [a, b] of edges) {
       if (a !== current || visited.has(b)) continue;
       visited.add(b); queue.push([...path, b]);
     }
@@ -77,6 +81,7 @@ export class Bots {
     else { this.memories.clear(); this.observations.length = 0; }
   }
   observe(tick: number, fighters: FighterState[]): void {
+    if (!this.config.players.some(seat=>seat.kind==='bot')) return;
     this.observations.push({ tick, fighters: fighters.map(fighter => ({ ...fighter })) });
     while (this.observations.length > 30) this.observations.shift();
   }
@@ -88,7 +93,7 @@ export class Bots {
     const view = [...this.observations].reverse().find(observation => observation.tick <= tick - delay);
     if (!view) return emptyInput(seat.id, tick);
     const previous = this.memories.get(seat.id);
-    if (previous && tick < previous.nextDecision) return { ...previous.input, tick, left: previous.input.left && tick < previous.moveUntil, right: previous.input.right && tick < previous.moveUntil };
+    if (previous && tick < previous.nextDecision) return { ...previous.input, tick, left: previous.input.left && tick < previous.moveUntil, right: previous.input.right && tick < previous.moveUntil, jump: previous.input.jump && tick === previous.input.tick, dodge: previous.input.dodge && tick === previous.input.tick };
     const observedSelf = view.fighters.find(fighter => fighter.id === seat.id);
     const input = emptyInput(seat.id, tick);
     if (!observedSelf || observedSelf.eliminated) return input;
@@ -109,6 +114,7 @@ export class Bots {
     let jumpTarget = previous?.jumpTarget;
     let launchedAt = previous?.launchedAt;
     let leavingPlatform = false;
+    if (jumpTarget !== undefined && !platforms[jumpTarget]) {jumpTarget=undefined;launchedAt=undefined;}
     if (jumpTarget !== undefined) {
       const landing = platforms[jumpTarget];
       const pending = tick - (launchedAt ?? tick) <= delay;
@@ -122,7 +128,7 @@ export class Bots {
       }
     }
     if (jumpTarget === undefined && from >= 0 && to >= 0 && from !== to) {
-      const destination = nextPlatform(this.config.arena, from, to);
+      const destination = nextPlatform(this.config.arena, from, to, platforms, this.config.ruleset==='expanded');
       if (destination !== undefined) {
         const start = platforms[from];
         const finish = platforms[destination];
@@ -196,7 +202,12 @@ export class Bots {
         if (me.x < state.objective.safeLeft + 80) { input.left = false; input.right = true; }
         if (me.x > (state.objective.safeRight ?? 1366) - 80) { input.right = false; input.left = true; }
       }
+      if (this.config.hazards && this.config.arena==='embedded' && (state?.elapsed ?? 0)%7>4.5 && me.x>550&&me.x<816&&me.y>400) {
+        input.left=me.x<683;input.right=me.x>=683;input.jump=me.grounded;
+      }
       if (!me.grounded) {
+        const landing=jumpTarget!==undefined?platforms[jumpTarget]:undefined;
+        if(landing && me.y>landing.y && me.vy>-180 && (me.airJumps ?? 0)>0) input.jump=true;
         const rescue = platforms.filter(p => p.y > me.y - 150).sort((a,b) => Math.abs(a.x+a.width/2-me.x)-Math.abs(b.x+b.width/2-me.x))[0];
         if (rescue && me.y > rescue.y - 30 && me.vy > 0) {
           input.jump = (me.airJumps ?? 0) > 0;

@@ -51,6 +51,19 @@ try {
   const state=s.snapshot();assert.ok(state.fighters.every(f=>Number.isFinite(f.x)&&Number.isFinite(f.y)));if(mode!=='survival')assert.equal(state.phase,'finished');
   report.matches.push({mode,tick:state.tick,phase:state.phase,result:state.result,wallMs:Math.round(performance.now()-startAt)});
  }
+ // Objective/item/deployable edge cases run through complete authorities.
+ const edge=start({...DEFAULT_CONFIG,gameMode:'training',practice:true,arena:'lab',items:true,hazards:true,players:[createSeat(0,{discipline:'iot'}),createSeat(1,{kind:'bot',device:'bot',difficulty:'dummy'})]});
+ for(const kind of ['usb','fan','firewall','battery','overclock']) {
+  edge.training({action:'reset-all'});place(edge,'p1',600,600);let seeded=edge.snapshot();seeded.items=[{id:`exercise-${kind}`,kind,x:600,y:550,ttl:15}];seeded.fighters[0].airJumps=0;seeded.fighters[0].airDash=false;seeded.fighters[0].recoveryAvailable=false;edge.restore(seeded);edge.step();
+  if(kind==='battery'){assert.equal(edge.snapshot().fighters[0].airDash,true);assert.equal(edge.snapshot().fighters[0].recoveryAvailable,true);}else assert.ok(edge.snapshot().fighters[0].buffs[kind]>0);
+  if(kind==='usb'){input(edge,'p1',{punch:true});for(let i=0;i<8;i++)edge.step();assert.ok(edge.snapshot().effects.some(e=>e.kind==='usb'&&e.vy>0));}
+ }
+ const hill=start({...DEFAULT_CONFIG,gameMode:'hill',mode:'teams',arena:'lab',players:Array.from({length:4},(_,i)=>createSeat(i,{team:i<2?0:1,kind:'human',device:`keyboard:${i}`}))});
+ place(hill,'p1',600,600);place(hill,'p2',700,600);place(hill,'p3',200,450);place(hill,'p4',1150,450);const hillBefore=hill.snapshot();hill.step();assert.ok(Math.abs(hill.snapshot().scores.p1.hill+hill.snapshot().scores.p2.hill-hillBefore.scores.p1.hill-hillBefore.scores.p2.hill-1/60)<1e-8);
+ const tie=start({...DEFAULT_CONFIG,gameMode:'royale',arena:'arcade',players:Array.from({length:8},(_,i)=>createSeat(i))});let tsnap=tie.snapshot();for(const id of ['p1','p2'])Object.assign(tsnap.fighters.find(f=>f.id===id),{y:1201,grounded:false});tie.restore(tsnap);tie.step();assert.equal(tie.snapshot().scores.p1.placement,7);assert.equal(tie.snapshot().scores.p2.placement,7);tie.forfeit(['p3','p4']);assert.equal(tie.snapshot().scores.p3.placement,5);assert.equal(tie.snapshot().scores.p4.placement,5);
+ const coop=start({...DEFAULT_CONFIG,gameMode:'survival',timeLimit:0,players:[createSeat(0),createSeat(1),createSeat(2,{kind:'bot',device:'bot',difficulty:'dummy'})]});coop.forfeit(['p3']);for(let i=0;i<125;i++)coop.step();assert.equal(coop.snapshot().objective.wave,2);assert.equal(coop.snapshot().fighters.find(f=>f.id==='p3').eliminated,false);
+ const strictClassic=start({...DEFAULT_CONFIG,ruleset:'classic',hazards:true,items:true,arena:'virtual',practice:true});assert.equal(strictClassic.snapshot().config.hazards,false);assert.equal(strictClassic.snapshot().config.items,false);for(let i=0;i<500;i++)strictClassic.step();assert.deepEqual(strictClassic.snapshot().platforms,ARENAS.virtual.platforms);assert.equal(strictClassic.snapshot().items.length,0);
+ report.edgeCases=['five item effects','ballistic USB','one team Hill point per tick','shared Royale fall placement','shared Royale forfeit placement','two-human Survival wave respawn','Classic hazards/items disabled'];
  // Missing ruleset preserves Classic's single jump and original movement.
  const classic=start({...DEFAULT_CONFIG,ruleset:undefined,practice:true});place(classic,'p1',600,600);input(classic,'p1',{jump:true});input(classic,'p1',{});const first=classic.snapshot().fighters[0].vy;input(classic,'p1',{jump:true});assert.ok(classic.snapshot().fighters[0].vy>first);report.movement.push('Classic single jump preserved');
  console.log(JSON.stringify(report,null,2));
