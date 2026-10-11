@@ -130,7 +130,9 @@ Deploy selected runtime media and new artwork; retain the larger design/archive 
 
 ### React interface and controls
 
-The primary journey is title → Local / Online / Practice → player setup → match → results → rematch/lobby.
+The primary journey is intro → title → Local / Online / Practice → player setup → match → results → rematch/lobby. The owner requested a separate intro on 11 October 2026 while preserving the existing title-screen layout. The intro uses the refined Overdrive logo, original fighters and a continue prompt; room invitation links bypass it.
+
+The owner-selected refined Overdrive identity is also integrated in the title artwork slot, responsive header, browser/touch icons, share preview and repository banner. The title menu, fighter group and tagline retain their existing placement. The NES black-box artwork remains a separate concept study.
 
 Player setup covers seat/device assignment, names, appearance, discipline, teams, bots, arena/rules, and readiness. Online setup adds room creation, shareable link/code, route, measured ping, reconnection status, and actionable errors. Every menu supports keyboard, pointer, and controller navigation.
 

@@ -4,6 +4,7 @@
 import assert from 'node:assert/strict';
 import { mkdir } from 'node:fs/promises';
 import { chromium } from '@playwright/test';
+import { enterTitle } from './enter-title.mjs';
 
 const base = process.env.STF_APP_URL ?? 'http://127.0.0.1:5173';
 const browser = await chromium.launch({ headless: true });
@@ -75,6 +76,7 @@ async function onlineEntry(session, name, code) {
 }
 
 async function openOnline(page) {
+  await enterTitle(page);
   const mode = page.getByTestId('mode-online');
   if (await mode.count()) await mode.click();
   else await page.getByRole('button', { name: /02.*ONLINE/ }).click();

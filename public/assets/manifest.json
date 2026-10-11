@@ -229,7 +229,7 @@
     "pc": "/assets/backgrounds/pc.svg"
   },
   "font": "/assets/arcade.ttf",
-  "logo": "/assets/logo.png",
+  "logo": "/assets/branding/overdrive.svg",
   "audio": {
     "intro": "/assets/audio/intro.mp3",
     "original": [

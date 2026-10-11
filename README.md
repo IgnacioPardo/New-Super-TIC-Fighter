@@ -106,6 +106,8 @@ Run the frontend and room service before browser exercises. Set `STF_APP_URL=htt
 
 Vite is configured to forward `/api` requests and WebSockets to the local room service. Runtime art and audio are already committed; the original source archives are not required for ordinary development.
 
+The selected Overdrive logo is used on the intro/title screens, responsive header, browser icons and link preview. To republish the unchanged design masters and their provenance, run `python3 scripts/import-branding.py`. The historical logo remains preserved. Regenerate this README's banner with `python3 docs/readme/generate-banner.py`.
+
 ### Under the hood
 
 | Layer | Technology | Owns |

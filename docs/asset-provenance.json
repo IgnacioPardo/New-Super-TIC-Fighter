@@ -3196,5 +3196,47 @@
     "sourceSha256": "73b871d4e976220b6995b73b3b2134a95404085012443756fded139ab60dc8cc",
     "output": "public/assets/logo.png",
     "correction": null
+  },
+  {
+    "source": "docs/logo-concepts/02-overdrive/polished/overdrive-primary.svg",
+    "sourceSha256": "b29f5406228627ba92870e7778c1e76029e0f972b30ac44b1d8bea84c8cecc2e",
+    "output": "public/assets/branding/overdrive.svg",
+    "correction": "Owner-selected, code-authored Overdrive branding. Copied unchanged from the refined master; historical logo and source artwork retained."
+  },
+  {
+    "source": "docs/logo-concepts/02-overdrive/polished/overdrive-horizontal.svg",
+    "sourceSha256": "8b6bc66810f5f80f547561cb122678683945f30ff1b115598e780ce209c7c178",
+    "output": "public/assets/branding/overdrive-horizontal.svg",
+    "correction": "Owner-selected, code-authored Overdrive branding. Copied unchanged from the refined master; historical logo and source artwork retained."
+  },
+  {
+    "source": "docs/logo-concepts/02-overdrive/polished/overdrive-icon.svg",
+    "sourceSha256": "569507dbf9b55f1fb68d9f8e886ac25a5d160d0d4797b4a328b1f9a9b423a05a",
+    "output": "public/assets/branding/overdrive-icon.svg",
+    "correction": "Owner-selected, code-authored Overdrive branding. Copied unchanged from the refined master; historical logo and source artwork retained."
+  },
+  {
+    "source": "docs/logo-concepts/02-overdrive/polished/overdrive-icon-micro.svg",
+    "sourceSha256": "41eb1247c8812308e87f61285a2cd9d6cd273a83a5946fd18057338a3145f414",
+    "output": "public/assets/branding/overdrive-icon-micro.svg",
+    "correction": "Owner-selected, code-authored Overdrive branding. Copied unchanged from the refined master; historical logo and source artwork retained."
+  },
+  {
+    "source": "docs/logo-concepts/02-overdrive/polished/overdrive-icon-180.png",
+    "sourceSha256": "8469e0b1f5a69a9021b88f8892ec4439c525ef9737fe70c7c36c1bc05cb87f01",
+    "output": "public/assets/branding/apple-touch-icon.png",
+    "correction": "Owner-selected, code-authored Overdrive branding. Copied unchanged from the refined master; historical logo and source artwork retained."
+  },
+  {
+    "source": "docs/logo-concepts/02-overdrive/polished/favicon.ico",
+    "sourceSha256": "4d5eeb1cfd11713b1ad3e854437e3dc23afc0f271080de8b6fa941eadf456e43",
+    "output": "public/assets/branding/favicon.ico",
+    "correction": "Owner-selected, code-authored Overdrive branding. Copied unchanged from the refined master; historical logo and source artwork retained."
+  },
+  {
+    "source": "docs/logo-concepts/02-overdrive/polished/use-cases-social-card.png",
+    "sourceSha256": "ea139a2eb4cca840d584065abdbac8a338ca068674898dcb843f0beb3789c8be",
+    "output": "public/assets/branding/social-card.png",
+    "correction": "Owner-selected, code-authored Overdrive branding. Copied unchanged from the refined master; historical logo and source artwork retained."
   }
 ]

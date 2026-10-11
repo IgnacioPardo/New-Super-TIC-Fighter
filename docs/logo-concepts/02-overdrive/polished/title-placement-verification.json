@@ -1,0 +1,71 @@
+{
+  "viewport": {
+    "width": 1440,
+    "height": 810
+  },
+  "method": "Isolated browser DOM logo replacement; no source edits",
+  "before": {
+    ".title-screen": {
+      "x": 72,
+      "y": 0,
+      "width": 1296,
+      "height": 758
+    },
+    ".title-poster": {
+      "x": 72,
+      "y": 68.65625,
+      "width": 762.09375,
+      "height": 620.6875
+    },
+    ".title-menu-area": {
+      "x": 891.6875,
+      "y": 126,
+      "width": 476.3125,
+      "height": 506
+    },
+    ".title-cast": {
+      "x": 72,
+      "y": 404.953125,
+      "width": 762.09375,
+      "height": 234.890625
+    },
+    ".title-tagline": {
+      "x": 72,
+      "y": 666.84375,
+      "width": 762.09375,
+      "height": 22.5
+    }
+  },
+  "after": {
+    ".title-screen": {
+      "x": 72,
+      "y": 0,
+      "width": 1296,
+      "height": 758
+    },
+    ".title-poster": {
+      "x": 72,
+      "y": 68.796875,
+      "width": 762.09375,
+      "height": 620.390625
+    },
+    ".title-menu-area": {
+      "x": 891.6875,
+      "y": 126,
+      "width": 476.3125,
+      "height": 506
+    },
+    ".title-cast": {
+      "x": 72,
+      "y": 404.796875,
+      "width": 762.09375,
+      "height": 234.890625
+    },
+    ".title-tagline": {
+      "x": 72,
+      "y": 666.6875,
+      "width": 762.09375,
+      "height": 22.5
+    }
+  }
+}

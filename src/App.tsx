@@ -13,13 +13,14 @@ import { defaultSeat, loadConfig, loadSettings } from './ui/preferences';
 import { disciplineInfo, names, ui } from './ui/i18n';
 import { ARENAS } from './shared/content';
 import { Icon } from './ui/Icon';
+import { Intro } from './ui/Intro';
 
-type Screen = 'title' | 'setup' | 'online' | 'room' | 'match' | 'results' | 'settings' | 'guide';
+type Screen = 'intro' | 'title' | 'setup' | 'online' | 'room' | 'match' | 'results' | 'settings' | 'guide';
 export interface AppProps { online?: OnlineBridge }
 export default function App({ online }: AppProps) {
  const [settings, setSettings] = useState<AppSettings>(loadSettings);
  const [config, setConfig] = useState<MatchConfig>(loadConfig);
- const [screen, setScreen] = useState<Screen>('title');
+ const [screen, setScreen] = useState<Screen>(() => new URLSearchParams(window.location.search).get('room') ? 'title' : 'intro');
  const [returnScreen, setReturnScreen] = useState<Screen>('title');
  const [source, setSource] = useState<'local' | 'online' | 'practice'>('local');
  const [ready, setReady] = useState<Record<string, boolean>>({});
@@ -39,6 +40,7 @@ export default function App({ online }: AppProps) {
  const t = ui[settings.language];
  const runtime = useGameRuntime(settings, manifest, command => menuHandler.current(command), online, source === 'online' && !!online?.state.snapshot);
  const snapshot = runtime.snapshot;
+ const enterTitle = useCallback((fromGamepad = false) => { setMenuInput(fromGamepad ? 'gamepad' : 'keyboard'); void runtime.unlock(); setScreen('title'); }, [runtime.unlock]);
  const activeConfig = source === 'online' ? online?.state.config ?? config : config;
  if (snapshot) lastSnapshot.current = snapshot;
  useEffect(() => {
@@ -74,11 +76,13 @@ export default function App({ online }: AppProps) {
    if (screen === 'match') {
      if (snapshot?.phase === 'paused') { if (!runtime.reclaim()) return; if (source === 'online') { if (online?.state.isHost && !online.state.members.some(member => !member.connected)) online.resume(); } else runtime.command({ type: 'resume' }); } else { if (source === 'online') online?.pause(); else runtime.command({ type: 'pause' }); }
    } else if (screen === 'settings' || screen === 'guide') setScreen(returnScreen);
+   else if (screen === 'title') setScreen('intro');
    else if (screen === 'room') leaveRoom();
    else if (screen === 'results') { if (source === 'online' && !online?.state.isHost && online?.state.status !== 'lobby') leaveRoom(); else leaveMatch(); }
    else setScreen('title');
  }, [screen, returnScreen, source, online, runtime.command, snapshot?.phase, runtime.disconnected, runtime.reclaim]);
  menuHandler.current = command => {
+   if (screen === 'intro') { if (command === 'confirm' || command === 'pause') enterTitle(true); return; }
    if (command === 'back' || command === 'pause') { back(); return; }
    const focused = document.activeElement as HTMLElement;
    const container = root.current?.querySelector('.pause-panel') ?? root.current?.querySelector('main');
@@ -123,8 +127,8 @@ export default function App({ online }: AppProps) {
  const isMatch = screen === 'match';
  return <div className={`app ${isMatch ? 'app-match' : ''} screen-${screen}`} ref={root} onPointerDown={() => { if (!runtime.soundUnlocked) void runtime.unlock(); }}>
    <div className="site-atmosphere" aria-hidden="true" style={{ backgroundImage: manifest ? `url("${manifest.backgrounds.classic}")` : undefined }} />
-   <header className="app-header">
-     <button className="brand-button" aria-label="New Super TIC Fighter" onClick={() => { if (isMatch) pause(); else setScreen('title'); }}><span className="brand-new">NEW</span>{manifest ? <img src={manifest.logo} alt="Super TIC Fighter" /> : <span className="brand-fallback">SUPER TIC <em>FIGHTER</em></span>}</button>
+   {screen !== 'intro' && <header className="app-header">
+     <button className="brand-button" aria-label="New Super TIC Fighter" onClick={() => { if (isMatch) pause(); else setScreen('title'); }}><picture><source media="(max-width: 760px)" srcSet="/assets/branding/overdrive-icon.svg" /><img src="/assets/branding/overdrive-horizontal.svg" alt="" width="918" height="138" /></picture></button>
      <div className="header-status"><span className="status-dot" /><span>{source === 'online' && online?.state.code ? `${t.room} ${online.state.code}` : 'CLASSIC REBORN'}</span></div>
      <div className="header-actions">
        {!runtime.soundUnlocked && <button className="sound-unlock" title={t.soundHint} onClick={() => void runtime.unlock()}>♪ <span>{t.soundLocked}</span></button>}
@@ -132,11 +136,12 @@ export default function App({ online }: AppProps) {
        <button className="language-button" aria-label={t.language} onClick={() => setSettings({ ...settings, language: settings.language === 'es' ? 'en' : 'es' })}>{settings.language.toUpperCase()}</button>
        {screen !== 'settings' && <button className="icon-button" title={t.settings} aria-label={t.settings} onClick={() => open('settings')}><Icon name="settings" /></button>}
      </div>
-   </header>
+   </header>}
    <main>
+    {screen === 'intro' && <Intro manifest={manifest} settings={settings} onContinue={enterTitle} />}
     {screen === 'title' && <div className="title-screen">
       <section className="title-poster" aria-label="New Super TIC Fighter">
-       <div className="hero-logo"><span className="new-stamp">NEW</span>{manifest ? <img src={manifest.logo} alt="Super TIC Fighter" /> : <h1>SUPER TIC<br /><em>FIGHTER</em></h1>}</div>
+       <div className="hero-logo"><img src={manifest?.logo ?? '/assets/branding/overdrive.svg'} alt="New Super TIC Fighter" width="1208" height="630" fetchPriority="high" /></div>
        <div className="title-cast" aria-hidden="true">{(['networks','design','code','hardware'] as const).map((d,i) => <div key={d} style={{ '--fighter-color': disciplineInfo[d].color } as React.CSSProperties}><Avatar manifest={manifest} discipline={d} appearance={{hair:i,shirt:i,pants:i}} animated={!settings.reducedMotion} /></div>)}</div>
        <p className="title-tagline">{t.subtitle}</p>
       </section>
@@ -162,7 +167,7 @@ export default function App({ online }: AppProps) {
     </div>}
     {screen === 'results' && displaySnapshot && <Results snapshot={displaySnapshot} settings={settings} manifest={manifest} rematch={() => source === 'online' ? leaveMatch() : start()} primaryLabel={source === 'online' ? !online?.state.isHost && online?.state.status !== 'lobby' ? settings.language === 'es' ? 'ESPERANDO AL ANFITRIÓN' : 'WAITING FOR HOST' : t.lobby : t.rematch} waitingForHost={source === 'online' && !online?.state.isHost && online?.state.status !== 'lobby'} leave={source === 'online' ? leaveRoom : leaveMatch} leaveLabel={source === 'online' ? settings.language === 'es' ? 'SALIR DE LA SALA' : 'LEAVE ROOM' : t.lobby} />}
    </main>
-   {!isMatch && <footer className="app-footer"><span className="footer-mark">STF</span><span>{menuInput === 'gamepad' ? t.gamepadHelp : t.menuHelp}</span><button onClick={() => open('guide')}>{t.guide} <span>?</span></button></footer>}
+   {!isMatch && screen !== 'intro' && <footer className="app-footer"><span className="footer-mark">STF</span><span>{menuInput === 'gamepad' ? t.gamepadHelp : t.menuHelp}</span><button onClick={() => open('guide')}>{t.guide} <span>?</span></button></footer>}
    {(assetError || online?.state.error && source === 'online' && screen !== 'online') && <div className="global-error" role="alert">{assetError || online?.state.error}</div>}
  </div>;
 }

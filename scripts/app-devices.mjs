@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {mkdir} from 'node:fs/promises';
 await mkdir('tmp/qa',{recursive:true});
 import {chromium,firefox,webkit} from '@playwright/test';
+import {enterTitle} from './enter-title.mjs';
 const base=process.env.STF_APP_URL??'http://127.0.0.1:5173';
 const engines=process.env.STF_BROWSERS?.split(',')??['chromium','firefox','webkit'];
 for(const name of engines){
@@ -14,7 +15,7 @@ for(const name of engines){
   Object.defineProperty(navigator,'getGamepads',{value:()=>window.__pads});
  });
  try{
-  await page.goto(base);await page.getByTestId('mode-practice').or(page.getByRole('button',{name:/03.*PRÁCTICA/})).click();
+  await page.goto(base);await enterTitle(page);await page.getByTestId('mode-practice').or(page.getByRole('button',{name:/03.*PRÁCTICA/})).click();
   const card=page.locator('.fighter-card').first();
   const details=card.locator('details.fighter-options');if(await details.count())await details.locator('summary').click();
   await card.locator('select').filter({has:page.locator('option[value="gamepad:0"]')}).selectOption('gamepad:0');

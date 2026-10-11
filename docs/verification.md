@@ -22,6 +22,30 @@ Verified on 2026-10-11. No unit tests were written or run. Verification uses the
 
 ## Production and acceptance gates
 
+### Separate intro, local verification — 11 October 2026
+
+- `pnpm build` and `pnpm e2e:intro` pass. The intro exercises ordinary keys, Enter/Space, click on the background, simultaneous simulated A+Start without a second activation, return via Escape, ES/EN, reduced motion, and room-link bypass/code preservation.
+- Visually reviewed at 1440×810, 1366×768, 390×844, 667×375 and 1280×480. The complete intro fits each viewport and the continue prompt remains visible. [Desktop capture](evidence/intro-screen.png).
+- Measured the existing title screen before/after the change: poster, menu, fighter group, tagline, hero-logo and overall title bounds were unchanged at 1440×810. Its existing markup, styling and logo were preserved.
+- Menu/settings/practice regression, a real two-browser online match with authoritative movement and shared pause/resume, and the Chromium/Firefox/WebKit device flows pass. Controller events were injected; this is not physical-controller certification. No new unit tests were introduced.
+- These intro checks ran against the local app. This entry does not claim deployment of the intro.
+
+### Refined logo integration, local verification — 11 October 2026
+
+- Integrated the unchanged Overdrive primary in the title artwork slot, matching the existing intro. Desktop headers use the horizontal signature; headers at 760 px and below use the square icon. Browser/touch icons, share metadata and README banner are updated. The NES composition remains a concept; no menu or fighter layout was replaced.
+- Compared title screen, poster, menu, fighter group and tagline bounds before/after at 1440×810, 1920×1080, 390×844 and 667×375: all unchanged within 0.15 CSS px. [Desktop capture](evidence/branding/title-1440.png), [mobile capture](evidence/branding/title-390.png), [measured evidence](evidence/branding/verification.json).
+- Production bundle branding checks passed in Chromium, Firefox and WebKit: all seven brand assets return image responses; responsive header sources and aspect ratios are correct; icons are declared; header controls do not overlap; the accessible brand button returns from settings to the title. No uncaught page errors were observed.
+- Existing intro, menu/settings and practice flows pass against the local production preview. All three browser engines also passed live canvas/worker rendering, simulated-controller movement, pause and same-device reclaim. Controller input was injected, not physical hardware.
+- TypeScript and Vite production build pass. One initial bundle attempt failed to resolve the installed Phaser dependency; the subsequent build succeeded without a source or dependency change. Existing Phaser chunk-size warning remains. The full asset reimport was not run because it requires historical source archives; the standalone brand publisher and its byte-for-byte outputs were verified.
+- This integration was verified locally, not deployed. The share image's public URL will become available with deployment; the local asset and metadata were checked.
+
+### Title composition sizing refinement — 11 October 2026
+
+- Enlarged the title logo by 18% on desktop and 12% on mobile; reduced the title fighters by approximately 10%. The intro and gameplay sprite sizes are unchanged.
+- Visually reviewed desktop/mobile captures and measured the existing title, poster, menu, fighter platform and tagline at 1440×810, 1920×1080, 390×844 and 667×375: layout anchors remain unchanged. Updated the branding evidence images. Production build passes.
+
+### Remaining acceptance gates
+
 - Public HTTPS deployment, production media range/header checks, and full multiplayer verification on the deployed service are recorded separately in `docs/hosting.md` when completed.
 - Physical Xbox/PlayStation controllers and native Safari hardware have not been certified. WebKit automation and injected gamepad events do not establish hardware compatibility.
 - A real session involving the owner and friends on separate networks remains the acceptance gate, including Argentina/South America latency observations. Same-machine browser clients do not establish those network conditions.
