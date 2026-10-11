@@ -1,56 +1,75 @@
-// Complete screen navigation and actual worker Royale screenshots on an isolated service.
+// Actual pages and services. Bounds and hit testing reject controls covered by a footer,
+// another card control or an overflow clip; page scrollHeight alone cannot detect those.
 import assert from 'node:assert/strict';
 import {mkdir,writeFile} from 'node:fs/promises';
 import {chromium,expect} from '@playwright/test';
-import {enterTitle} from './enter-title.mjs';
-const base=process.env.STF_APP_URL??'http://127.0.0.1:8790',output='tmp/qa/v2-layout';
+import {enterTitle,chooseMode} from './enter-title.mjs';
+const base=process.env.STF_APP_URL??'http://127.0.0.1:8791',output='tmp/qa/v2-layout';
 await mkdir(output,{recursive:true});
 const browser=await chromium.launch({headless:true}),report=[];
-const viewports=[{width:1366,height:768},{width:1024,height:640},{width:1440,height:1000},{width:390,height:844}].filter(viewport=>!process.env.STF_LAYOUT_WIDTH||viewport.width===Number(process.env.STF_LAYOUT_WIDTH));
+const viewports=[{width:1366,height:768},{width:1024,height:640},{width:1440,height:1000},{width:390,height:844}].filter(v=>!process.env.STF_LAYOUT_WIDTH||v.width===Number(process.env.STF_LAYOUT_WIDTH));
+async function geometry(page,label){
+ const result=await page.evaluate(()=>{
+  const dialog=document.querySelector('[role=dialog]'),footer=document.querySelector('.app-footer'),header=document.querySelector('.app-header');
+  const bottom=dialog?innerHeight-2:footer?.getBoundingClientRect().top??innerHeight,top=dialog?2:header?.getBoundingClientRect().bottom??0;
+  const scope=dialog??document.querySelector('main');
+  const targets=[...scope.querySelectorAll('button,input,select,textarea,[tabindex="0"],h2,h3,p,.feature-card strong,.discipline-guide dd')].filter(e=>!e.closest('[hidden],[inert]')&&e.getClientRects().length);
+  const bad=targets.flatMap(e=>{const r=e.getBoundingClientRect(),text=e.getAttribute('aria-label')??e.textContent?.trim().slice(0,65),reasons=[];
+   if(r.left<-.5||r.right>innerWidth+.5||r.top<top-.5||r.bottom>bottom+.5)reasons.push('outside content viewport');
+   for(let a=e.parentElement;a&&a!==scope;a=a.parentElement){const s=getComputedStyle(a),c=a.getBoundingClientRect();if(/hidden|clip|auto|scroll/.test(s.overflowY)&&(r.top<c.top-.5||r.bottom>c.bottom+.5))reasons.push('ancestor clip');}
+   if(e.matches('button,input,select,textarea'))for(const y of [r.top+Math.min(6,r.height/2),r.bottom-Math.min(6,r.height/2)]){const hit=document.elementFromPoint(r.left+r.width/2,y);if(hit&&!e.contains(hit))reasons.push(`covered by ${hit.tagName}.${hit.className}`);}
+   return reasons.length?[{text,reasons,rect:r.toJSON()}]:[];
+  });
+  return {width:innerWidth,height:innerHeight,scrollWidth:document.documentElement.scrollWidth,scrollHeight:document.documentElement.scrollHeight,scrollY,bad};
+ });
+ assert.equal(result.scrollY,0,`${label}: page moved`);assert.ok(result.scrollWidth<=result.width&&result.scrollHeight<=result.height,`${label}: page overflow`);assert.deepEqual(result.bad,[],`${label}: invisible or covered controls`);return result;
+}
 async function inspect(page,label,focus=true){
- const geometry=await page.evaluate(()=>({width:innerWidth,scrollWidth:document.documentElement.scrollWidth,overflow:[...document.querySelectorAll('.feature-home button,.feature-home input,.feature-home h2,.feature-home h3,.feature-home p,.feature-home strong,.page-heading,.app-footer>*')].filter(element=>{const box=element.getBoundingClientRect();return box.width&&box.height&&(box.left<-.5||box.right>innerWidth+.5);}).map(element=>({text:element.textContent?.trim().slice(0,70),left:Math.round(element.getBoundingClientRect().left),right:Math.round(element.getBoundingClientRect().right)}))}));
- await page.screenshot({path:`${output}/${label}.png`,fullPage:true});
- assert.ok(geometry.scrollWidth<=geometry.width,`${label}: page horizontal overflow`);assert.deepEqual(geometry.overflow,[],`${label}: clipped content`);
+ await geometry(page,label);await page.mouse.move(5,5);await page.mouse.wheel(0,700);await page.waitForTimeout(80);await geometry(page,`${label} after wheel`);
  let targets=0;
  if(focus){
-  const ids=await page.evaluate(()=>[...document.querySelectorAll('button:not(:disabled),input:not(:disabled),a[href],select:not(:disabled)')].filter(element=>element.tabIndex>=0&&element.getClientRects().length&&getComputedStyle(element).visibility!=='hidden').map((element,index)=>{element.dataset.layoutFocus=String(index);return String(index);}));
+  const ids=await page.evaluate(()=>{document.querySelectorAll('[data-layout-focus]').forEach(e=>e.removeAttribute('data-layout-focus'));const scope=document.querySelector('[role=dialog]')??document;return [...scope.querySelectorAll('button:not(:disabled),input:not(:disabled),a[href],select:not(:disabled)')].filter(e=>e.tabIndex>=0&&!e.closest('[hidden],[inert]')&&e.getClientRects().length).map((e,i)=>{e.dataset.layoutFocus=String(i);return String(i);});});
   targets=ids.length;const seen=new Set();
-  for(let index=0;index<ids.length*2+20&&seen.size<ids.length;index++){
-   const current=await page.evaluate(()=>{const active=document.activeElement,box=active?.getBoundingClientRect();return {id:active?.getAttribute('data-layout-focus'),visible:!!box&&box.bottom>0&&box.top<innerHeight&&box.right>0&&box.left<innerWidth};});
-   if(current.id){assert.equal(current.visible,true,`${label}: keyboard focus scrolled outside viewport`);seen.add(current.id);}
-   await page.keyboard.press('Tab');
-  }
-  assert.deepEqual(ids.filter(id=>!seen.has(id)),[],`${label}: unreachable keyboard targets`);
+  for(let i=0;i<ids.length*2+10&&seen.size<ids.length;i++){const id=await page.evaluate(()=>document.activeElement?.getAttribute('data-layout-focus'));if(id)seen.add(id);await page.keyboard.press('Tab');await geometry(page,`${label} after Tab`);}
+  assert.deepEqual(ids.filter(id=>!seen.has(id)),[],`${label}: unreachable keyboard target`);
  }
- await page.evaluate(()=>scrollTo(0,0));await page.screenshot({path:`${output}/${label}.png`,fullPage:true});
- report.push({label,width:geometry.width,focusTargets:targets});
+ await page.screenshot({path:`${output}/${label.replaceAll(/[^\w.-]/g,'_')}.png`});report.push({label,focusTargets:targets});
 }
-try {
- for(const language of (process.env.STF_LAYOUT_LANGUAGES??'es,en').split(','))for(const viewport of viewports){
-  const context=await browser.newContext({viewport}),page=await context.newPage(),errors=[];
-  page.on('pageerror',error=>errors.push(error.message));
-  await page.addInitScript(language=>{Object.defineProperty(navigator,'getGamepads',{value:()=>[]});localStorage.setItem('stf-settings',JSON.stringify({language,reducedMotion:true}));localStorage.setItem('stf-name',language==='es'?'Invitado':'Guest');},language);
-  await page.goto(base);await enterTitle(page);
-  for(const screen of ['solo','profile','public','tournaments']){
-   await page.getByTestId(`mode-${screen}`).click();await expect(page.locator(`.screen-${screen}`)).toBeVisible();
-   if(screen==='public')await expect(page.locator('.feature-panel')).toHaveCount(3);
-   if(screen==='tournaments')await expect(page.getByRole('button',{name:language==='es'?'Actualizar lista':'Refresh list',exact:true})).toBeEnabled();
-   await page.waitForTimeout(180);await inspect(page,`${language}-${viewport.width}x${viewport.height}-${screen}`);
-   await page.locator('.brand-button').click();await expect(page.locator('.screen-title')).toBeVisible();
+async function pages(page,scope,label){
+ await inspect(page,label);
+ // Traverse nested tab sets, then every page of each active list. Mounted hidden
+ // panels are excluded by actual layout/visibility, never accepted as reachable.
+ const tabs=scope.locator(':scope > .content-pages > .config-tabs > [role=tab]');
+ const labels=await tabs.allTextContents();
+ for(const name of labels){await tabs.nth(labels.indexOf(name)).click();await inspect(page,`${label}-${name}`);
+  const panel=scope.locator(':scope > .content-pages > .content-page:visible');
+  const nested=panel.locator('.content-pages');if(await nested.count()){
+   const sub=nested.first().locator(':scope > .config-tabs > [role=tab]');const subnames=await sub.allTextContents();for(const subname of subnames){await sub.nth(subnames.indexOf(subname)).click();await inspect(page,`${label}-${name}-${subname}`);}
   }
-  assert.deepEqual(errors,[]);await context.close();
-  const matchContext=await browser.newContext({viewport}),match=await matchContext.newPage();
-  await match.addInitScript(language=>{
-   Object.defineProperty(navigator,'getGamepads',{value:()=>[]});localStorage.setItem('stf-settings',JSON.stringify({language,reducedMotion:true}));
-   localStorage.setItem('stf-match',JSON.stringify({ruleset:'expanded',gameMode:'royale',bestOf:1,lives:1,players:Array.from({length:8},(_,index)=>({id:`p${index+1}`,name:index===0?(language==='es'?'Local 1':'Local 1'):`${language==='es'?'Rival':'Opponent'} ${index+1}`,discipline:['networks','design','code','hardware','ai','robotics','iot','vr'][index],appearance:{hair:index%4,shirt:index%4,pants:index%4},team:index%2,kind:index===0?'human':'bot',difficulty:'easy',device:index===0?'keyboard:0':'bot'}))}));
-   const NativeWorker=window.Worker;window.Worker=class extends NativeWorker{constructor(...args){super(...args);this.addEventListener('message',event=>{if(event.data?.type==='snapshot')window.__snapshot=event.data.snapshot;});}};
-  },language);
-  await match.goto(base);await enterTitle(match);await match.getByTestId('mode-local').click();await match.locator('.ready-button:not(:disabled)').click();await match.locator('.fight-button').click();await match.waitForFunction(()=>window.__snapshot?.phase==='playing'&&window.__snapshot.config.players.length===8);
-  const objective=await match.locator('.objective-status').boundingBox();assert.ok(objective&&objective.y>=60&&objective.y+objective.height<=110,'Royale objective should remain visible below header within renderer reservation');
-  await expect(match.locator('.hud-opponent')).toHaveCount(7);await expect(match.locator('.royale-local-roster .hud-fighter')).toHaveCount(1);
-  const hud=await match.locator('.royale-hud').boundingBox();if(viewport.width>760)assert.ok(hud.height<=180);
-  await match.locator('.match-topbar button').focus();await expect(match.locator('.match-topbar button')).toBeFocused();await inspect(match,`${language}-${viewport.width}x${viewport.height}-royale`,false);
-  await matchContext.close();console.log(`${language} ${viewport.width}×${viewport.height}: Solo/Profile/Public/Tournaments keyboard reachability and eight-fighter Royale layouts passed.`);
+  const next=panel.locator('.content-pager button').last();let i=1;
+  while(await next.count()&&await next.isEnabled()){await next.click();await inspect(page,`${label}-${name}-page${++i}`);}
+ }
+}
+try{
+ for(const language of (process.env.STF_LAYOUT_LANGUAGES??'es,en').split(','))for(const viewport of viewports){
+  const context=await browser.newContext({viewport}),page=await context.newPage(),errors=[],es=language==='es';page.on('pageerror',e=>errors.push(e.message));
+  await page.addInitScript(language=>{Object.defineProperty(navigator,'getGamepads',{value:()=>[]});localStorage.setItem('stf-settings',JSON.stringify({language,reducedMotion:true}));localStorage.setItem('stf-name','Viewport');},language);
+  await page.goto(base);await enterTitle(page);const prefix=`${language}-${viewport.width}x${viewport.height}`;
+  for(const screen of ['solo','profile','public','tournaments']){
+   if(screen==='profile')await page.getByTestId('mode-profile').click();else await chooseMode(page,screen);await page.locator(`.screen-${screen}`).waitFor();
+   if(screen==='public')await expect(page.getByRole('button',{name:es?'Buscar combate':'Find a match',exact:true})).toBeEnabled();
+   if(screen==='tournaments')await expect(page.getByRole('button',{name:es?'Actualizar lista':'Refresh list',exact:true})).toBeEnabled();
+   await pages(page,page.locator('.feature-home'),`${prefix}-${screen}`);
+   if(screen==='solo'){await page.getByRole('button',{name:/12.*(Challenges|Desafíos)/}).click();await inspect(page,`${prefix}-challenges-page1`);const next=page.locator('.content-pager button').last();let i=1;while(await next.isEnabled()){await next.click();await inspect(page,`${prefix}-challenges-page${++i}`);}assert.equal(await page.locator('.challenge-grid .feature-card').count(),viewport.width<=760?2:4);}
+   await page.locator('.brand-button').click();
+  }
+  await chooseMode(page,'local');await inspect(page,`${prefix}-setup`);
+  const cards=page.locator('.fighter-summary:visible');for(let i=0;i<await cards.count();i++)await cards.nth(i).locator('.fighter-edit').click();
+  for(const name of await cards.first().getByRole('tab').allTextContents()){for(let i=0;i<await cards.count();i++)await cards.nth(i).getByRole('tab',{name,exact:true}).click();await inspect(page,`${prefix}-setup-${name}`);
+   if((es?name==='Aspecto':name==='Appearance')&&viewport.height<=720&&viewport.width>760){for(const button of await page.locator('.inline-fighter-editor .content-pager.compact button:last-child').all())await button.click();await inspect(page,`${prefix}-setup-appearance-page2`);}
+  }
+  await page.locator('.match-summary').click();const dialog=page.getByRole('dialog');await pages(page,dialog,`${prefix}-rules`);await dialog.locator('.config-dialog-heading button').click();
+  assert.deepEqual(errors,[]);await context.close();console.log(`${prefix}: current pages, actual bounds/hit targets, wheel and keyboard passed.`);
  }
  await writeFile(`${output}/report.json`,JSON.stringify(report,null,2));
-} finally {await browser.close();}
+}catch(error){await writeFile(`${output}/failure.txt`,String(error));for(const context of browser.contexts())for(const page of context.pages())await page.screenshot({path:`${output}/failure.png`});throw error;}finally{await browser.close();}

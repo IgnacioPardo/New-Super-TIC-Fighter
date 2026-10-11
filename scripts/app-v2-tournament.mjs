@@ -18,13 +18,14 @@ try{
   },index);
   await page.goto(base);await enterTitle(page);await chooseMode(page,'tournaments');await page.waitForFunction(()=>window.__lobby?.party.players.length===1);
   if(index===0){
+   await page.getByRole('tab',{name:'Create',exact:true}).click();
    await page.getByRole('textbox',{name:'Competition name',exact:true}).fill('QA browser tournament');
    const response=page.waitForResponse(r=>new URL(r.url()).pathname==='/api/tournaments'&&r.request().method()==='POST');
    await page.getByRole('button',{name:'Create competition',exact:true}).click();id=(await(await response).json()).id;assert.ok(id);
   }else{
    await page.getByRole('textbox',{name:'Competition code',exact:true}).fill(id);await page.getByRole('button',{name:'Open invite',exact:true}).click();
   }
-  await page.getByRole('button',{name:'Enter player',exact:true}).click();await expect(page.locator('.competition-home')).toContainText(`QA Entrant ${index+1}`);
+  await page.getByRole('button',{name:'Enter player',exact:true}).click();await page.getByRole('tab',{name:'Entrants',exact:true}).click();await expect(page.locator('.competition-home')).toContainText(`QA Entrant ${index+1}`);await page.getByRole('tab',{name:'Competition',exact:true}).click();
  }
  await expect(pages[0].getByRole('button',{name:'Start competition',exact:true})).toBeEnabled();await pages[0].getByRole('button',{name:'Start competition',exact:true}).click();
  const played=new Set();
