@@ -29,6 +29,7 @@ The candidate implements the accepted [v2 specification](implementation-plan-v2.
 | Browser network disruption | Eight independently rendered Royale clients with synthetic input/snapshot loss, real browser offline/reconnect, and a five-second page freeze; all resumed with zero page/protocol errors | Same Mac/network. Minimized Chromium still reported visible; true hidden-page throttling and OS sleep are not established |
 | Desktop cadence | Actual M4 GPU, headed Chromium, complete Royale worker/rendering; two 25–26-second windows near 60 Hz simulation, warmed WebGL clear p95 9.1 ms | First window had a 159 ms callback hitch; no sustained soak or physical latency claim |
 | Account storage/passkeys | Disposable local D1/Worker plus full browser application; virtual WebAuthn enrollment, logout, fresh passkey login and deletion; idempotent guest upgrade, separate couch progress, protected verified statistics and validation failures | Identity/provider bootstrap is a fixture. This does not prove real Google/GitHub consent or physical passkeys |
+| Production sign-in | Native Arc: actual Google consent, refresh and fresh sign-in; explicit GitHub linking and fresh sign-in to the same game account; owner-operated macOS Touch ID passkey enrollment and sign-in | Same Mac; cross-device progress and synced passkeys remain unverified |
 
 Detailed evidence and provenance:
 
@@ -54,7 +55,7 @@ Royale JSON application traffic measured approximately 230 KB per player per sec
 ## Remaining acceptance coverage
 
 - Owner-deferred physical v2 DualSense play in Arc and a real separate-network Argentina match.
-- Production Google consent, session refresh, logout and repeat sign-in passed in native Arc on 2026-10-11. GitHub explicit linking exposed a different-email configuration issue; see the [account follow-up](v2-account-verification.md) and the release's `production-oauth.json` for the subsequent retry. Physical passkey and cross-device progress remain separate acceptance checks.
+- Cross-device progress and passkey sync. Production Google, GitHub linking/sign-in and physical Touch ID enrollment/sign-in passed in native Arc on 2026-10-11; see the [account follow-up](v2-account-verification.md) and the release's `production-oauth.json`.
 - Sustained reference-desktop rendering/input-response measurements and human balance/playability across the complete roster/modes.
 - Native Safari, additional physical gamepads, true OS sleep/wake, production eviction and natural free-tier daily rollover.
 
