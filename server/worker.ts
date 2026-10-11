@@ -1,12 +1,13 @@
 import { CONTENT_VERSION, PROTOCOL_VERSION } from '../src/shared/types';
 import { Room } from './room';
 import { MatchDO } from './match';
+import { LobbyDO } from './lobby';
 import type { Env } from './env';
 import { secret } from './validation';
 import type { MatchAdmission } from './match';
-import { handleAccountRequest } from './accounts';
+import { handleAccountRequest, getAccountIdentity } from './accounts';
 
-export { Room, MatchDO };
+export { Room, MatchDO, LobbyDO };
 
 
 const ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
@@ -148,6 +149,17 @@ export default {
     if (url.pathname === '/api/health' && request.method === 'GET') {
       return json({ ok: true, protocolVersion: PROTOCOL_VERSION, contentVersion: CONTENT_VERSION });
     }
+
+    if (url.pathname === '/api/lobby' && request.method === 'GET') return env.LOBBY.get(env.LOBBY.idFromName('global'), { locationHint: 'enam' }).fetch('https://internal/internal/state');
+    if (url.pathname === '/api/lobby/ws' && request.method === 'GET') {
+      if (request.headers.get('Upgrade')?.toLowerCase() !== 'websocket') return json({error:'websocket_required'},426);
+      const identity = await getAccountIdentity(request, env);
+      const headers = new Headers(request.headers); headers.delete('X-Verified-User');
+      if (identity) headers.set('X-Verified-User',identity.userId);
+      return env.LOBBY.get(env.LOBBY.idFromName('global'), { locationHint: 'enam' }).fetch(new Request('https://internal/internal/ws',{headers}));
+    }
+    const spectator = /^\/api\/activities\/([a-zA-Z0-9_-]{1,64})\/spectate$/.exec(url.pathname);
+    if (spectator && request.method === 'GET') return env.LOBBY.get(env.LOBBY.idFromName('global')).fetch(`https://internal/internal/spectate?matchId=${spectator[1]}`);
 
     if (url.pathname === '/api/feasibility' && request.method === 'POST') {
       if (!env.PUBLIC_FEASIBILITY_KEY || request.headers.get('X-Feasibility-Key') !== env.PUBLIC_FEASIBILITY_KEY) return json({ error: 'feasibility_disabled' }, 403);
