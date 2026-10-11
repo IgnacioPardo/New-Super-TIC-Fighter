@@ -4,7 +4,7 @@ import {fileURLToPath} from 'node:url';
 // Exercise the running Worker and imported music through actual HTTP requests.
 const root=fileURLToPath(new URL('..',import.meta.url)).replace(/\/$/,''),origin=process.env.STF_AUDIO_ORIGIN??process.env.STF_SERVER_URL??'http://127.0.0.1:8787';
 const manifest=JSON.parse(readFileSync(root+'/public/assets/manifest.json','utf8'));
-const paths=[manifest.audio.intro,...manifest.audio.original,...manifest.audio.remake];
+const paths=[...new Set([manifest.audio.intro,manifest.audio.menu,...manifest.audio.original,...manifest.audio.remake])];
 const report=[];
 for(const path of paths){
  const source=readFileSync(root+'/public'+path),head=await fetch(origin+path,{method:'HEAD'});

@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
-import type { AppSettings } from '../shared/types';
+import type { AppSettings, AssetsManifest } from '../shared/types';
 import { DEFAULT_SETTINGS, keyName } from './preferences';
 import { ui } from './i18n';
-export function Settings({ settings, change }: { settings: AppSettings; change: (settings: AppSettings) => void }) {
+export function Settings({ settings, manifest, change }: { settings: AppSettings; manifest: AssetsManifest | null; change: (settings: AppSettings) => void }) {
  const t = ui[settings.language];
  const [tab, setTab] = useState<'sound' | 'display' | 'controls'>('sound');
  const [seat, setSeat] = useState(0);
@@ -30,8 +30,8 @@ export function Settings({ settings, change }: { settings: AppSettings; change: 
     <div className="setting-title"><span>♪</span><h2>{t.music} & {t.effects}</h2></div>
     <label className="volume-field"><span>{t.music}<b>{Math.round(settings.musicVolume * 100)}%</b></span><input type="range" min="0" max="1" step=".01" value={settings.musicVolume} onChange={e => patch({ musicVolume: Number(e.target.value) })} /></label>
     <label className="volume-field"><span>{t.effects}<b>{Math.round(settings.effectsVolume * 100)}%</b></span><input type="range" min="0" max="1" step=".01" value={settings.effectsVolume} onChange={e => patch({ effectsVolume: Number(e.target.value) })} /></label>
-    <label className="field-label"><span>{t.playlist}</span><select value={settings.playlist} onChange={e => patch({ playlist: e.target.value as AppSettings['playlist'] })}><option value="remake">{t.remake} · 16 {settings.language === 'es' ? 'pistas' : 'tracks'}</option><option value="original">{t.original} · 8 {settings.language === 'es' ? 'pistas' : 'tracks'}</option></select></label>
-    <p className="setting-note">{settings.language === 'es' ? 'La banda sonora original del juego. Selección aleatoria sin repetir la última pista.' : 'The game’s original recordings. Shuffled without repeating the last track.'}</p>
+    <label className="field-label"><span>{t.playlist}</span><select value={settings.playlist} onChange={e => patch({ playlist: e.target.value as AppSettings['playlist'] })}>{(['remake', 'original'] as const).map(playlist => <option key={playlist} value={playlist}>{t[playlist]}{manifest ? ` · ${manifest.audio[playlist].length} ${settings.language === 'es' ? 'pistas' : 'tracks'}` : ''}</option>)}</select></label>
+    <p className="setting-note">{settings.language === 'es' ? 'Música de combate: selección aleatoria sin repetir la última pista. Danger Zone suena en la pantalla de título y los menús.' : 'Match music is shuffled without repeating the last track. Danger Zone plays on the title screen and menus.'}</p>
    </>}
    {tab === 'display' && <>
     <div className="setting-title"><span>◈</span><h2>{t.camera} & {t.language}</h2></div>
