@@ -83,7 +83,7 @@ async function openOnline(page) {
 
 async function openFighterOptions(card) {
   await card.locator('.fighter-edit').click();
-  await card.getByRole('tab', { name: 'Jugador / Control' }).click();
+  await card.getByRole('tab', { name: 'Jugador' }).click();
 }
 
 async function waitRoster(page, count, predicate = () => true) {
@@ -138,7 +138,7 @@ async function scenarioTwoPlusTwo() {
   assert.equal(room.players.filter(player => player.kind === 'human').length, 4);
   assert.equal(room.players.filter(player => player.peerId !== room.hostPeerId).length, 2);
 
-  await host.page.locator('.match-summary').click();
+  await host.page.locator('.match-summary').click();await host.page.getByRole('tab',{name:'Partida',exact:true}).click();
   await host.page.getByRole('button', { name: /^Modo:/ }).click();
   await host.page.keyboard.press('Escape');
   await host.page.waitForFunction(() => window.__stfRoom?.config.mode === 'teams');
@@ -230,7 +230,7 @@ async function scenarioTwoPlusOnePlusOne() {
 async function scenarioSurvival() {
  const host=await openSession('survival host'),guest=await openSession('survival guest');
  const code=await onlineEntry(host,'Coop A');await onlineEntry(guest,'Coop B',code);await waitRoster(host.page,2);
- await host.page.locator('.match-summary').click();await host.page.getByRole('button',{name:/^Objetivo:/}).focus();
+ await host.page.locator('.match-summary').click();await host.page.getByRole('tab',{name:'Partida',exact:true}).click();await host.page.getByRole('button',{name:/^Objetivo:/}).focus();
  await host.page.keyboard.press('ArrowRight');await host.page.keyboard.press('ArrowRight');await host.page.keyboard.press('ArrowRight');
  assert.equal(await host.page.getByRole('button',{name:'Objetivo: Supervivencia',exact:true}).count(),1,'Rapid shared objective edits preserve the latest draft');await host.page.keyboard.press('Escape');
  await host.page.waitForFunction(()=>window.__stfRoom?.config.gameMode==='survival'&&window.__stfRoom.players.length===4);
@@ -302,7 +302,7 @@ async function scenarioGuestFinishedLobby() {
   const code = await onlineEntry(host, 'Host F');
   await onlineEntry(guest, 'Guest F', code);
   await waitRoster(host.page, 2);
-  await host.page.locator('.match-summary').click();
+  await host.page.locator('.match-summary').click();await host.page.getByRole('tab',{name:'Partida',exact:true}).click();
   await host.page.getByRole('button', { name: /^Vidas:/ }).focus();
   await host.page.keyboard.press('ArrowLeft');
   await host.page.keyboard.press('ArrowLeft');

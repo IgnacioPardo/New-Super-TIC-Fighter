@@ -115,9 +115,12 @@ try {
   assert.deepEqual(authConfig, { enabled: true, google: false, github: false, passkey: true });
   assert.equal((await page.request.get(`${origin}/api/profile`)).status(), 401);
   assert.equal((await page.request.get(`${origin}/api/auth/passkey/generate-register-options`)).status(), 401);
+  await page.getByRole('tab', {name:'Account',exact:true}).click();
   await expect(page.getByRole('button', { name: 'Continue with Google' })).toBeDisabled();
   await expect(page.getByRole('button', { name: 'Continue with GitHub' })).toBeDisabled();
+  await page.getByRole('tab', {name:'Profile',exact:true}).click();
   await page.getByRole('textbox', { name: 'Public name' }).fill('Guest Renamed');
+  await page.getByRole('tab', {name:'Styles',exact:true}).click();
   await page.getByRole('button', { name: 'Copper', exact: false }).click();
   await page.getByRole('button', { name: 'Save profile', exact: true }).click();
   await expect.poll(() => page.evaluate(() => localStorage.getItem('stf-name'))).toBe('Guest Renamed');
@@ -129,16 +132,20 @@ try {
   await expect(page.getByRole('heading', { name: 'Account Pilot', exact: true })).toBeVisible();
   assert.deepEqual((await profile()).local, initial);
   await expect.poll(() => page.evaluate(() => localStorage.getItem('stf-active-profile'))).toBe(userId);
+  await page.getByRole('tab', {name:'Account',exact:true}).click();
   await page.getByRole('button', { name: 'Import guest progress' }).click();
   await waitProfile(p => p.local.completedChallenges.length === 2 && p.local.arcadeClears === 1 && p.local.survivalBest === 4);
   const imported = await profile();
   assert.deepEqual(imported.local, { ...guest, completedChallenges: ['challenge-1', 'challenge-2'] });
+  await page.getByRole('tab', {name:'Account',exact:true}).click();
   await page.getByRole('button', { name: 'Import guest progress' }).click();
   await expect(page.getByRole('button', { name: 'Import guest progress' })).toBeEnabled();
   assert.deepEqual((await profile()).local, imported.local);
   assert.deepEqual(await page.evaluate(() => JSON.parse(localStorage.getItem('stf-progress:guest'))), guest);
   assert.deepEqual(await page.evaluate(() => JSON.parse(localStorage.getItem('stf-progress:couch:p2'))), couch);
+  await page.getByRole('tab', {name:'Profile',exact:true}).click();
   await page.getByRole('textbox', { name: 'Public name' }).fill('Passkey Pilot');
+  await page.getByRole('tab', {name:'Styles',exact:true}).click();
   await page.getByRole('button', { name: 'Copper', exact: false }).click();
   await page.getByRole('button', { name: 'Save profile', exact: true }).click();
   await waitProfile(p => p.handle === 'Passkey Pilot' && p.cosmetic === 'copper');
@@ -148,6 +155,7 @@ try {
   await page.evaluate(({ userId, earned }) => localStorage.setItem(`stf-progress:${userId}`, JSON.stringify(earned)), { userId, earned });
   await page.reload();
   await waitProfile(p => p.local.completedChallenges.length === 3 && p.local.survivalBest === 5);
+  await page.getByRole('tab', {name:'Styles',exact:true}).click();
   await expect(page.getByRole('button', { name: 'Neon', exact: false })).toBeEnabled();
   await page.getByRole('button', { name: 'Neon', exact: false }).click();
   await page.getByRole('button', { name: 'Save profile', exact: true }).click();
@@ -178,8 +186,10 @@ try {
     protocol: 'ctap2', transport: 'internal', hasResidentKey: true, hasUserVerification: true,
     isUserVerified: true, automaticPresenceSimulation: true,
   } });
+  await page.getByRole('tab', {name:'Account',exact:true}).click();
   await expect(page.getByRole('button', { name: 'Add passkey' })).toBeEnabled();
   await page.getByRole('button', { name: 'Add passkey' }).click();
+  await page.getByRole('tab', {name:'Passkeys',exact:true}).click();
   await expect(page.getByRole('button', { name: 'Remove', exact: true })).toHaveCount(1, { timeout: 15000 });
   const credentials = (await cdp.send('WebAuthn.getCredentials', { authenticatorId })).credentials;
   assert.equal(credentials.length, 1);
@@ -188,16 +198,23 @@ try {
   await page.screenshot({ path: resolve(output, 'passkey-enrolled.png'), fullPage: true });
   report.passed.push('virtual WebAuthn enrollment persists a discoverable localhost credential and lists it in profile');
 
+  await page.getByRole('tab', {name:'Account',exact:true}).click();
   await page.getByRole('button', { name: 'Sign out', exact: true }).click();
+  await expect.poll(()=>page.evaluate(()=>localStorage.getItem('stf-active-profile'))).toBe(null);
+  await page.getByRole('tab', {name:'Profile',exact:true}).click();
   await expect(page.getByRole('heading', { name: 'Local profile', exact: true })).toBeVisible();
   await expect(page.getByRole('textbox', { name: 'Public name' })).toHaveValue('Guest Renamed');
+  await page.getByRole('tab', {name:'Styles',exact:true}).click();
   await expect(page.locator('.cosmetic-options .selected strong')).toHaveText('Copper');
   assert.equal((await page.request.get(`${origin}/api/profile`)).status(), 401);
   assert.equal((await fetch(`${origin}/api/profile`, { headers: { Cookie: `better-auth.session_token=${signed}` } })).status, 401);
   assert.equal(await page.evaluate(() => localStorage.getItem('stf-active-profile')), null);
   await page.evaluate(id => localStorage.removeItem(`stf-progress:${id}`), userId);
   // No cookie injection after this point: the WebAuthn response must authenticate.
+  await page.getByRole('tab', {name:'Account',exact:true}).click();
   await page.getByRole('button', { name: 'Sign in with passkey', exact: true }).click();
+  await expect.poll(()=>page.evaluate(()=>localStorage.getItem('stf-active-profile'))).toBe(userId);
+  await page.getByRole('tab', {name:'Profile',exact:true}).click();
   await expect(page.getByRole('heading', { name: 'Passkey Pilot', exact: true })).toBeVisible({ timeout: 15000 });
   assert.equal((await profile()).cosmetic, 'neon');
   assert.deepEqual((await profile()).local, earned);
@@ -208,6 +225,7 @@ try {
   report.passed.push('logout restores saved guest name/Copper and invalidates session; fresh virtual passkey assertion creates authenticated session and restores account name/Neon/progress without account cache');
   report.authenticatorCounter = { before: initialCounter, after: signedInCredentials[0].signCount };
 
+  await page.getByRole('tab', {name:'Passkeys',exact:true}).click();
   await page.getByRole('button', { name: 'Remove', exact: true }).click();
   await expect(page.getByRole('button', { name: 'Remove', exact: true })).toHaveCount(0);
   const keys = await page.request.get(`${origin}/api/auth/passkey/list-user-passkeys`);

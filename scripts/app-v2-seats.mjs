@@ -25,7 +25,7 @@ for(const engine of (process.env.STF_BROWSERS??'chromium,firefox,webkit').split(
   // Holding an input through a transition must not move the newly opened menu.
   await pads([0],1);await expect(card(1).locator('.inline-fighter-editor')).toHaveCount(0);await pads([0],0);await expect(card(1).locator('.inline-fighter-editor')).toHaveCount(1);
   // A native keyboard text field owns its input while other seats keep editing.
-  await card(3).getByRole('tab',{name:'Player / Controller'}).click();const name=card(3).getByRole('textbox',{name:'Name P3'});await name.fill('Zoë / 日本語');await name.focus();
+  await card(3).getByRole('tab',{name:'Player'}).click();const name=card(3).getByRole('textbox',{name:'Name P3'});await name.fill('Zoë / 日本語');await name.focus();
   await pads([1],13);await pads([1],15);await expect(name).toBeFocused();await expect(name).toHaveValue('Zoë / 日本語');
   await page.keyboard.press('Escape');await expect(name).not.toBeFocused();await expect(card(3).locator('.inline-fighter-editor')).toHaveCount(1);
   // Only coordinator can open rules; other pad input is contained by that dialog.

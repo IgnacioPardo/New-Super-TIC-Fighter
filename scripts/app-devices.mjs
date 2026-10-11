@@ -18,8 +18,8 @@ for(const name of engines){
   await page.goto(base);await page.getByTestId('intro-continue').waitFor();await tap(0);await expect(page.getByTestId('mode-local')).toBeFocused();
   await tap(13);await expect(page.getByTestId('mode-solo')).toBeFocused();await tap(0);
   for(let i=0;i<4;i++)await tap(13);await expect(page.getByRole('button',{name:/LAB.*Entrenamiento/})).toBeFocused();await tap(0);
-  await expect(page.locator('.fighter-edit').first()).toBeFocused();await tap(0);await tap(15);
-  await expect(page.getByRole('tab',{name:'Jugador / Control'})).toHaveAttribute('aria-selected','true');await tap(13);await tap(13);
+  await expect(page.locator('.fighter-edit').first()).toBeFocused();await tap(0);await tap(15);await tap(15);
+  await expect(page.getByRole('tab',{name:'Controles'})).toHaveAttribute('aria-selected','true');await tap(13);
   await expect(page.getByRole('button',{name:'Control: QA Xbox-compatible virtual pad',exact:true})).toHaveAttribute('data-controller-focus','true');await tap(1);
   await tap(13);await tap(0);await expect(page.locator('.match-summary')).toBeFocused();await tap(0);
   await page.getByRole('button',{name:/^Escenario:/}).focus();await tap(15);await tap(15);await expect(page.getByRole('button',{name:'Escenario: Dentro de la PC',exact:true})).toBeFocused();await tap(1);

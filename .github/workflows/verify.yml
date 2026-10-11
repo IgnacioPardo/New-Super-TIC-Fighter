@@ -45,6 +45,9 @@ jobs:
           done
           curl --fail --silent http://127.0.0.1:4173/api/health
           pnpm e2e
+          node scripts/app-v2-title.mjs
+          node scripts/app-v2-private-entry.mjs
+          node scripts/app-v2-training.mjs
           pnpm e2e:audio
           pnpm e2e:expanded
           pnpm e2e:solo

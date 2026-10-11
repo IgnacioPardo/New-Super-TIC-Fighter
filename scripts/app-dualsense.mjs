@@ -19,7 +19,7 @@ for(const name of engines){
   await enterTitle(page);
   await chooseMode(page,'practice');
   await page.locator('.fighter-edit').first().click();
-  await page.getByRole('tab',{name:'Jugador / Control'}).click();
+  await page.getByRole('tab',{name:'Controles'}).click();
   assert.match(await page.getByRole('button',{name:/^Control:/}).innerText(),/DualSense/,'Connected controller is assigned automatically');
   await page.keyboard.press('Escape');
   await page.locator('.fight-button').click();await page.waitForFunction(()=>window.__snapshot?.phase==='playing');
