@@ -1,3 +1,4 @@
+import { wireSnapshot } from '../src/network/snapshot';
 import { Simulation } from '../src/simulation/Simulation';
 import { CONTENT_VERSION, PROTOCOL_VERSION, emptyInput, type InputFrame, type MatchConfig, type MatchResult, type MatchSnapshot } from '../src/shared/types';
 import type { MatchClientMessage, MatchMetrics, MatchServerMessage, PublicMatchState } from '../src/network/publicTypes';
@@ -17,6 +18,8 @@ export class MatchDO {
   private simulation=new Simulation();
   private timer?:ReturnType<typeof setTimeout>;
   private nextTickAt=0;
+  private timerCount=0;
+  private lastTimerWall=0;
   private lastCheckpointAt=0;
   private inputQueues=new Map<string,InputFrame[]>();
   private inputTicks=new Map<string,number>();
@@ -51,7 +54,7 @@ export class MatchDO {
       return json({matchId:value.matchId,spectatorToken:this.match.spectatorToken},201);
     }
     if(!this.match)return json({error:'match_not_found'},404);
-    if(path==='/internal/state')return json(this.publicState());
+    if(path==='/internal/state'){if(this.match.startedAt&&this.match.phase==='running')this.match.metrics.wallMs=Math.max(this.match.metrics.wallMs,Date.now()-this.match.startedAt);return json(this.publicState());}
     if(path==='/internal/ws'&&request.headers.get('Upgrade')?.toLowerCase()==='websocket'){
       if(this.state.getWebSockets().length>this.match.members.length+MAX_SPECTATORS+8)return json({error:'connection_limit'},429);
       const pair=new WebSocketPair();this.state.acceptWebSocket(pair[1]);pair[1].serializeAttachment({});
@@ -63,7 +66,7 @@ export class MatchDO {
     if(typeof data!=='string'||data.length>24*1024){ws.close(1009,'packet too large');return;}
     let message:MatchClientMessage;try{message=JSON.parse(data);}catch{this.error(ws,'invalid_json','Invalid match message.');return;}
     if(!record(message)||typeof message.type!=='string')return this.error(ws,'invalid_message','Invalid match message.');
-    const now=Date.now(),rate=this.rates.get(ws)??{at:now,count:0};if(now-rate.at>=1000){rate.at=now;rate.count=0;}this.rates.set(ws,rate);if(++rate.count>35)return this.error(ws,'rate_limited','Send at most twenty batched input packets per second.');
+    const now=this.clock(),rate=this.rates.get(ws)??{at:now,count:0};if(now-rate.at>=1000){rate.at=now;rate.count=0;}this.rates.set(ws,rate);if(++rate.count>35)return this.error(ws,'rate_limited','Send at most twenty batched input packets per second.');
     if(message.type==='hello')return this.hello(ws,message);
     const attachment=ws.deserializeAttachment() as Attachment;
     const member=this.match?.members.find(item=>item.peerId===attachment.peerId);
@@ -97,7 +100,7 @@ export class MatchDO {
     const match=this.match;if(!match)return;
     if(match.phase==='waiting'&&Date.now()-match.createdAt>=WAIT_MS)this.interrupt('players did not become ready');
     if(match.phase==='running'){
-      for(const member of match.members)if(!member.connected&&!member.forfeited&&Date.now()-(member.disconnectedAt??Date.now())>=RECONNECT_MS)this.forfeit(member);
+      for(const member of match.members)if(!member.connected&&!member.forfeited&&this.clock()-(member.disconnectedAt??this.clock())>=RECONNECT_MS)this.forfeit(member);
       if(!this.timer)this.startTimer();
     }
     if(match.phase==='finished'&&!match.published)await this.publishResult();
@@ -111,7 +114,7 @@ export class MatchDO {
       const peerId=`spectator-${crypto.randomUUID()}`;ws.serializeAttachment({peerId,spectator:true});this.send(ws,{type:'welcome',peerId,state:this.publicState(),spectator:true});return;
     }
     const member=match.members.find(item=>item.peerId===message.peerId&&item.token===message.token);
-    if(!member||member.forfeited||match.phase==='running'&&member.disconnectedAt&&Date.now()-member.disconnectedAt>RECONNECT_MS){this.error(ws,'invalid_ticket','Your ticket or fifteen-second reconnect window expired.');ws.close(1008);return;}
+    if(!member||member.forfeited||match.phase==='running'&&member.disconnectedAt&&this.clock()-member.disconnectedAt>RECONNECT_MS){this.error(ws,'invalid_ticket','Your ticket or fifteen-second reconnect window expired.');ws.close(1008);return;}
     const old=this.socketFor(member.peerId);if(old&&old!==ws)old.close(4001,'reconnected elsewhere');
     ws.serializeAttachment({peerId:member.peerId});member.connected=true;member.disconnectedAt=undefined;this.save();
     this.send(ws,{type:'welcome',peerId:member.peerId,state:this.publicState(),spectator:false});
@@ -122,32 +125,38 @@ export class MatchDO {
     const match=this.match!;match.phase='running';match.startedAt=Date.now();match.checkpoint=this.simulation.createMatch(match.config,match.matchId);this.save();this.broadcastState();this.startTimer();
     void this.state.storage.setAlarm(Date.now()+RECONNECT_MS);
   }
-  private startTimer():void{if(this.timer||this.match?.phase!=='running')return;this.nextTickAt=performance.now()+DT;this.scheduleTick();}
-  private scheduleTick():void{this.timer=setTimeout(()=>{this.timer=undefined;this.tick();},Math.max(0,this.nextTickAt-performance.now()));}
+  private startTimer():void{if(this.timer||this.match?.phase!=='running')return;this.nextTickAt=Date.now()+DT;this.lastTimerWall=Date.now();this.scheduleTick();}
+  private scheduleTick():void{
+    // Workers clocks only advance after I/O. A fractional zero-delay retry can
+    // spin indefinitely on an unchanged clock. Timer callbacks always own at
+    // least one simulation step, and fixed 17/17/16ms delays never busy-loop.
+    const delay=++this.timerCount%3===0?16:17;
+    this.timer=setTimeout(()=>{this.timer=undefined;this.tick();},delay);
+  }
   private tick():void{
     const match=this.match;if(!match||match.phase!=='running')return;
-    const now=performance.now();let count=0;
+    const now=Date.now();let count=0;const wallAdvanced=now>this.lastTimerWall;this.lastTimerWall=now;
     match.metrics.maxLatenessMs=Math.max(match.metrics.maxLatenessMs,now-this.nextTickAt);
     try{
-      while(performance.now()+0.1>=this.nextTickAt&&count<6&&match.phase==='running'){
+      while((count===0||wallAdvanced&&now>=this.nextTickAt)&&count<6&&match.phase==='running'){
         const before=performance.now();const frames:InputFrame[]=[];
         for(const member of match.members){
           if(member.forfeited)continue;
-          if(!member.connected&&Date.now()-(member.disconnectedAt??Date.now())>=RECONNECT_MS){this.forfeit(member);continue;}
+          if(!member.connected&&this.clock()-(member.disconnectedAt??this.clock())>=RECONNECT_MS){this.forfeit(member);continue;}
           for(const id of member.seatIds){
             const queue=this.inputQueues.get(id);
             if(member.connected&&queue?.length)frames.push(queue.shift()!);
-            else if(!member.connected||Date.now()-(this.lastInputAt.get(id)??0)>250)frames.push(emptyInput(id,this.inputTicks.get(id)??0));
+            else if(!member.connected||this.clock()-(this.lastInputAt.get(id)??0)>250)frames.push(emptyInput(id,this.inputTicks.get(id)??0));
           }
         }
         if(match.phase!=='running')break;
         match.checkpoint=this.simulation.step(frames);const cpu=performance.now()-before;
         match.metrics.ticks++;match.metrics.tickCpuMs+=cpu;match.metrics.maxTickCpuMs=Math.max(match.metrics.maxTickCpuMs,cpu);count++;this.nextTickAt+=DT;
-        if(match.metrics.ticks%3===0){this.snapshotSequence++;match.metrics.snapshots++;this.broadcast({type:'snapshot',sequence:this.snapshotSequence,snapshot:match.checkpoint,serverTime:Date.now()},true);}
+        if(match.metrics.ticks%3===0){this.snapshotSequence++;match.metrics.snapshots++;this.broadcast({type:'snapshot',sequence:this.snapshotSequence,snapshot:wireSnapshot(match.checkpoint),serverTime:Date.now()},true);}
         if(match.checkpoint.result)this.finish(match.checkpoint);
       }
       if(count>1)match.metrics.catchupTicks+=count-1;
-      if(this.nextTickAt<performance.now()-100){match.metrics.droppedTimeMs+=performance.now()-this.nextTickAt;this.nextTickAt=performance.now()+DT;}
+      if(wallAdvanced&&this.nextTickAt<now-100){match.metrics.droppedTimeMs+=now-this.nextTickAt;this.nextTickAt=now+DT;}
       match.metrics.wallMs=Date.now()-(match.startedAt??Date.now());
       if(Date.now()-this.lastCheckpointAt>=5000){this.lastCheckpointAt=Date.now();match.metrics.checkpointCount++;this.save();}
       if(match.phase==='running')this.scheduleTick();
@@ -182,9 +191,10 @@ export class MatchDO {
   }
   private disconnect(ws:WebSocket):void{
     const id=(ws.deserializeAttachment() as Attachment)?.peerId,member=this.match?.members.find(m=>m.peerId===id);if(!member||this.socketFor(member.peerId))return;
-    member.connected=false;member.disconnectedAt=Date.now();for(const seatId of member.seatIds)this.inputQueues.delete(seatId);this.save();this.broadcastState();
+    member.connected=false;member.disconnectedAt=this.clock();for(const seatId of member.seatIds)this.inputQueues.delete(seatId);this.save();this.broadcastState();
     if(this.match?.phase==='running')void this.state.storage.setAlarm(Date.now()+RECONNECT_MS);
   }
+  private clock():number{const match=this.match;return Math.max(Date.now(),match?(match.startedAt??match.createdAt)+match.metrics.ticks*DT:0);}
   private socketFor(id:string):WebSocket|undefined{return this.state.getWebSockets().find(s=>s.readyState===WebSocket.OPEN&&(s.deserializeAttachment() as Attachment)?.peerId===id);}
   private publicState():PublicMatchState{const m=this.match!;return{matchId:m.matchId,authority:'server',phase:m.phase,config:m.config,peers:m.members.map(p=>({peerId:p.peerId,connected:p.connected,seatIds:p.seatIds,reconnectUntil:p.disconnectedAt?p.disconnectedAt+RECONNECT_MS:undefined,forfeited:p.forfeited})),seatReadiness:Object.assign({},...m.members.map(p=>p.ready)),snapshot:m.checkpoint,result:m.checkpoint?.result,resultId:m.resultId,interrupted:m.interrupted,metrics:m.metrics,verified:true};}
   private save():void{if(this.match)this.state.storage.sql.exec('INSERT INTO public_match(id,data) VALUES(1,?) ON CONFLICT(id) DO UPDATE SET data=excluded.data',JSON.stringify(this.match));}
