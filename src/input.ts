@@ -1,6 +1,6 @@
 import { emptyInput, type AppSettings, type InputFrame, type PlayerSeat } from './shared/types';
 
-type MenuCommand = 'up' | 'down' | 'left' | 'right' | 'confirm' | 'back' | 'pause';
+export type MenuCommand = 'up' | 'down' | 'left' | 'right' | 'confirm' | 'back' | 'pause';
 const editing = () => {
   const element = document.activeElement;
   return element instanceof HTMLElement && (element.isContentEditable || /^(INPUT|SELECT|TEXTAREA)$/.test(element.tagName));
@@ -11,7 +11,7 @@ export class InputManager {
   private settings: AppSettings;
   private players: PlayerSeat[] = [];
   private keys = new Set<string>();
-  private listeners = new Set<(command: MenuCommand) => void>();
+  private listeners = new Set<(command: MenuCommand, source: 'keyboard' | 'gamepad') => void>();
   private mode: 'menu' | 'game' = 'menu';
   private focused = document.hasFocus();
   private connected = new Set<number>();
@@ -59,7 +59,7 @@ export class InputManager {
     this.reclaimed.clear(); this.keys.clear(); return true;
   }
   setMode(mode: 'menu' | 'game') { if (this.mode !== mode) { this.mode = mode; this.keys.clear(); this.menuDirections.clear(); } }
-  subscribeMenu(listener: (command: MenuCommand) => void) { this.listeners.add(listener); return () => { this.listeners.delete(listener); }; }
+  subscribeMenu(listener: (command: MenuCommand, source: 'keyboard' | 'gamepad') => void) { this.listeners.add(listener); return () => { this.listeners.delete(listener); }; }
   getDevices() {
     return [
       ...Array.from({length: 4}, (_, index) => ({id: `keyboard:${index}`, label: `Keyboard ${index + 1}`, connected: true})),
@@ -95,13 +95,16 @@ export class InputManager {
     this.keys.clear(); this.listeners.clear();
   }
   private pads = (): (Gamepad | null)[] => navigator.getGamepads ? Array.from(navigator.getGamepads()) : [];
-  private emit(command: MenuCommand) { for (const listener of this.listeners) listener(command); }
+  private emit(command: MenuCommand, source: 'keyboard' | 'gamepad' = 'keyboard') { for (const listener of this.listeners) listener(command, source); }
   private blur = () => { this.focused = false; this.keys.clear(); this.menuDirections.clear(); };
   private focus = () => { this.focused = true; this.keys.clear(); };
   private visibility = () => { if (document.hidden) this.blur(); else this.focused = document.hasFocus(); };
   private keyUp = (event: KeyboardEvent) => { this.keys.delete(event.code); };
   private keyDown = (event: KeyboardEvent) => {
-    if (editing() || event.metaKey || event.ctrlKey || event.altKey) return;
+    if (event.defaultPrevented || event.metaKey || event.ctrlKey || event.altKey) return;
+    const textInput = document.activeElement instanceof HTMLElement && (document.activeElement.isContentEditable || document.activeElement.matches('input:not([type=range]):not([type=checkbox]), textarea'));
+    if (this.mode === 'game' && editing()) return;
+    if (this.mode === 'menu' && textInput && !['Escape', 'Enter', 'ArrowUp', 'ArrowDown'].includes(event.code)) return;
     this.keys.add(event.code);
     if (event.code === 'Escape') {
       event.preventDefault();
@@ -110,7 +113,7 @@ export class InputManager {
     }
     if (this.mode === 'menu') {
       const command = ({ArrowUp:'up', ArrowDown:'down', ArrowLeft:'left', ArrowRight:'right', Enter:'confirm', Space:'confirm'} as Record<string, MenuCommand>)[event.code];
-      if (command && this.listeners.size) { event.preventDefault(); if (!event.repeat) this.emit(command); }
+      if (command && this.listeners.size) { event.preventDefault(); if (!event.repeat || ['up', 'down', 'left', 'right'].includes(command)) this.emit(command); }
     } else if (this.settings.keyboardBindings.some(bindings => Object.values(bindings).includes(event.code))) event.preventDefault();
   };
   private scan = () => {
@@ -124,20 +127,25 @@ export class InputManager {
       const buttons = pad.buttons.map(button => button.pressed);
       const edge = (index: number) => buttons[index] && !previous[index];
       if (this.focused && !document.hidden && (this.mode === 'menu' || !editing())) {
-        const pauseButton = this.settings.gamepadBindings.pause ?? 9;
-        if (edge(pauseButton)) { if (this.mode === 'game') this.onPause?.(); else this.emit('pause'); }
+        const pauseButton = this.mode === 'menu' ? 9 : this.settings.gamepadBindings.pause ?? 9;
+        if (edge(pauseButton)) { if (this.mode === 'game') this.onPause?.(); else this.emit('pause', 'gamepad'); }
         if (this.mode === 'menu') {
-          if (edge(this.settings.gamepadBindings.jump ?? 0)) this.emit('confirm');
-          if (edge(this.settings.gamepadBindings.special ?? 1)) this.emit('back');
+          if (edge(0)) this.emit('confirm', 'gamepad');
+          if (edge(1)) this.emit('back', 'gamepad');
           const deadZone = Math.max(.4, this.settings.gamepadDeadZone ?? .22);
+          const x = pad.axes[0] ?? 0, y = pad.axes[1] ?? 0;
+          const horizontal = Math.abs(x) > Math.abs(y);
           const directions: [MenuCommand, boolean][] = [
-            ['left', (pad.axes[0] ?? 0) < -deadZone || !!buttons[14]], ['right', (pad.axes[0] ?? 0) > deadZone || !!buttons[15]],
-            ['up', (pad.axes[1] ?? 0) < -deadZone || !!buttons[12]], ['down', (pad.axes[1] ?? 0) > deadZone || !!buttons[13]],
+            ['left', (horizontal && x < -deadZone) || !!buttons[14]], ['right', (horizontal && x > deadZone) || !!buttons[15]],
+            ['up', (!horizontal && y < -deadZone) || !!buttons[12]], ['down', (!horizontal && y > deadZone) || !!buttons[13]],
           ];
-          for (const [command, held] of directions) {
+          // A diagonal D-pad press is one menu direction, never two focus moves.
+          const direction = directions.find(([, held]) => held)?.[0];
+          for (const [command] of directions) {
+            const held = command === direction;
             const key = `${pad.index}:${command}`, next = this.menuDirections.get(key);
             if (!held) this.menuDirections.delete(key);
-            else if (next === undefined || now >= next) { this.emit(command); this.menuDirections.set(key, now + (next === undefined ? 350 : 120)); }
+            else if (next === undefined || now >= next) { this.emit(command, 'gamepad'); this.menuDirections.set(key, now + (next === undefined ? 350 : 120)); }
           }
         }
       }

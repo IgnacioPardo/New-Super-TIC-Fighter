@@ -81,8 +81,8 @@ async function openOnline(page) {
 }
 
 async function openFighterOptions(card) {
-  const details = card.locator('details.fighter-options');
-  if (await details.count() && await details.getAttribute('open') === null) await details.locator('summary').click();
+  await card.locator('.fighter-edit').click();
+  await card.page().getByRole('tab', { name: 'Jugador / Control' }).click();
 }
 
 async function waitRoster(page, count, predicate = () => true) {
@@ -99,12 +99,13 @@ async function addHumanHost(host, count) {
   await waitRoster(page, count, room => room.players.at(-1).kind === 'bot');
   const card = page.locator('.fighter-card').last();
   await openFighterOptions(card);
-  await card.locator('.seat-kind-row select').first().selectOption('human');
+  await page.getByRole('button', { name: 'Jugador: Bot', exact: true }).click();
+  await page.keyboard.press('Escape');
   await page.waitForFunction(({ count }) => window.__stfRoom?.players.length === count && window.__stfRoom.players.at(-1).kind === 'human', { count }, { timeout: 12_000 });
 }
 
 async function ready(session, name) {
-  const card = session.page.locator('.fighter-card').filter({ has: session.page.locator(`input[value="${name}"]`) });
+  const card = session.page.locator('.fighter-card').filter({ hasText: name });
   await card.getByRole('button', { name: 'Estoy listo', exact: true }).click();
   await session.page.waitForFunction(() => window.__stfRoom?.readiness[window.__stfRoom.peerId]?.ready, null, { timeout: 20_000 });
 }
@@ -134,11 +135,14 @@ async function scenarioTwoPlusTwo() {
   assert.equal(room.players.filter(player => player.kind === 'human').length, 4);
   assert.equal(room.players.filter(player => player.peerId !== room.hostPeerId).length, 2);
 
-  await host.page.locator('.rules-controls .field-label select').first().selectOption('teams');
+  await host.page.locator('.match-summary').click();
+  await host.page.getByRole('button', { name: /^Modo:/ }).click();
+  await host.page.keyboard.press('Escape');
   await host.page.waitForFunction(() => window.__stfRoom?.config.mode === 'teams');
-  const guestCard = guest.page.locator('.fighter-card').filter({ has: guest.page.locator('input[value="Guest A"]') });
+  const guestCard = guest.page.locator('.fighter-card').filter({ hasText: 'Guest A' });
   await openFighterOptions(guestCard);
-  await guestCard.locator('.seat-kind-row select').last().selectOption('0');
+  await guest.page.getByRole('button', { name: /^Equipo:/ }).click();
+  await guest.page.keyboard.press('Escape');
   await host.page.waitForFunction(() => window.__stfRoom?.players.filter(player => player.team === 0).length === 2);
   const teams = await host.page.evaluate(() => window.__stfRoom.players.map(player => player.team));
   assert.deepEqual(teams.sort(), [0, 0, 1, 1]);
@@ -282,7 +286,11 @@ async function scenarioGuestFinishedLobby() {
   const code = await onlineEntry(host, 'Host F');
   await onlineEntry(guest, 'Guest F', code);
   await waitRoster(host.page, 2);
-  await host.page.locator('.rules-controls .rule-pair select').first().selectOption('1');
+  await host.page.locator('.match-summary').click();
+  await host.page.getByRole('button', { name: /^Vidas:/ }).focus();
+  await host.page.keyboard.press('ArrowLeft');
+  await host.page.keyboard.press('ArrowLeft');
+  await host.page.keyboard.press('Escape');
   await host.page.waitForFunction(() => window.__stfRoom?.config.lives === 1);
   await ready(host, 'Host F');
   await ready(guest, 'Guest F');

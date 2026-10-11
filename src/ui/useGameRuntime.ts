@@ -4,8 +4,9 @@ import { AudioManager } from '../audio';
 import { preloadMatchAssets } from '../assets';
 import type { AppSettings, AssetsManifest, MatchConfig, MatchSnapshot, SimulationCommand, SimulationMessage } from '../shared/types';
 import type { OnlineBridge } from './contracts';
-export type MenuCommand = 'up' | 'down' | 'left' | 'right' | 'confirm' | 'back' | 'pause';
-export function useGameRuntime(settings: AppSettings, manifest: AssetsManifest | null, onMenu: (command: MenuCommand) => void, online?: OnlineBridge, onlineActive = false, showMatch = false) {
+import type { MenuCommand } from '../input';
+export type { MenuCommand } from '../input';
+export function useGameRuntime(settings: AppSettings, manifest: AssetsManifest | null, onMenu: (command: MenuCommand, source?: 'keyboard' | 'gamepad') => void, online?: OnlineBridge, onlineActive = false, showMatch = false) {
   const [snapshot, setSnapshot] = useState<MatchSnapshot | null>(null);
   const snapshotRef = useRef<MatchSnapshot | null>(null);
   const [devices, setDevices] = useState<{ id: string; label: string; connected: boolean }[]>([]);
@@ -29,7 +30,7 @@ export function useGameRuntime(settings: AppSettings, manifest: AssetsManifest |
       if (remote.current) network.current?.pause(); else worker.current?.postMessage({ type: 'pause' });
     });
     input.current = manager;
-    const unsubscribe = manager.subscribeMenu(command => menu.current(command));
+    const unsubscribe = manager.subscribeMenu((command, source) => menu.current(command, source));
     const instance = new Worker(new URL('../simulation/worker.ts', import.meta.url), { type: 'module' });
     worker.current = instance;
     instance.onerror = () => { snapshotRef.current = null; setSnapshot(null); manager.setMode('menu'); setError(settings.language === 'es' ? 'El combate no pudo continuar. Recarga la página para intentarlo de nuevo.' : 'The fight could not continue. Reload the page to try again.'); };

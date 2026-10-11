@@ -14,6 +14,8 @@ for(const name of (process.env.STF_BROWSERS??'chromium,firefox,webkit').split(',
  page.on('pageerror',error=>errors.push(error.message));
  page.on('request',request=>{if(request.url().endsWith('.mp3'))requests.add(new URL(request.url()).pathname);});
  await page.addInitScript(()=>{
+  // Audio QA must not consume unrelated input from controllers connected to the Mac.
+  Object.defineProperty(navigator,'getGamepads',{value:()=>[]});
   const NativeAudio=window.Audio,NativeWorker=window.Worker;
   window.__music=[];
   window.Audio=class extends NativeAudio{constructor(...args){super(...args);window.__music.push(this);}};
@@ -32,13 +34,14 @@ for(const name of (process.env.STF_BROWSERS??'chromium,firefox,webkit').split(',
   assert.equal(audio.menu,'/assets/audio/original/04.mp3');
   assert.deepEqual([...requests],[audio.menu],'Only menu music loads before a match');
   await page.getByTestId('mode-settings').click();
-  const playlist=page.locator('.settings-panel select').first();
-  await expect(playlist.locator('option[value=remake]')).toHaveText(`Remake · ${audio.remake.length} pistas`);
-  await playlist.selectOption('original');await menu();
+  await page.locator('.settings-category').first().click();
+  const playlist=page.getByRole('button',{name:/^Banda sonora:/});
+  await expect(playlist).toContainText(`Remake · ${audio.remake.length} pistas`);
+  await playlist.click();await menu();
   await page.evaluate(()=>{const a=window.__music.at(-1);a.currentTime=a.duration-.15;});
   await page.waitForFunction(()=>window.__music.at(-1).currentTime<2);
   await menu();
-  await page.locator('.back-button').click();
+  await page.keyboard.press('Escape');await page.locator('.back-button').click();
   await page.getByTestId('mode-guide').click();await menu();await page.locator('.back-button').click();
   await page.getByTestId('mode-online').click();await menu();await page.locator('.back-button').click();
   await page.getByTestId('mode-practice').click();await menu();
@@ -47,7 +50,8 @@ for(const name of (process.env.STF_BROWSERS??'chromium,firefox,webkit').split(',
   const original=await playing();assert(audio.original.includes(original.path));assert.equal(original.loop,false);
   await page.keyboard.press('Escape');await page.locator('.pause-panel').waitFor();await menu();
   await page.locator('.pause-panel').getByRole('button',{name:'AJUSTES',exact:true}).click();
-  await page.locator('.settings-panel select').first().selectOption('remake');await menu();
+  await page.locator('.settings-category').first().click();
+  await page.getByRole('button',{name:/^Banda sonora:/}).click();await page.keyboard.press('Escape');await menu();
   await page.locator('.back-button').click();await menu();
   await page.locator('.pause-panel .primary-button').click();
   await page.waitForFunction(()=>window.__snapshot?.phase==='playing');

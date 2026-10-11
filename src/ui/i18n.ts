@@ -12,6 +12,7 @@ export const disciplineInfo: Record<Discipline, { symbol: string; color: string;
 export const disciplines: Discipline[] = ['networks', 'design', 'code', 'hardware'];
 export const ui = {
  es: {
+  done: 'Listo', sound: 'Sonido', display: 'Pantalla', editFighter: 'Editar luchador', savedAuto: 'Los cambios se guardan automáticamente.', configHelp: '↑ ↓ Mover · ← → Ajustar · Enter Elegir · Esc Volver',
   local: 'LOCAL', online: 'ONLINE', practice: 'PRÁCTICA', settings: 'AJUSTES', guide: 'CÓMO JUGAR', back: 'Volver',
   subtitle: 'CUATRO DISCIPLINAS. UNA ÚLTIMA VIDA.', localHint: 'Hasta 4 en la misma pantalla', onlineHint: 'Invita a tus amigos', practiceHint: 'Entrena tu próximo combo',
   titlePrompt: 'ELIGE TU COMBATE', titleFoot: 'HECHO PARA AJUSTAR CUENTAS ENTRE AMIGOS', setup: 'Prepara el combate', roster: 'Luchadores', rules: 'Reglas', arena: 'Escenario',
@@ -39,12 +40,13 @@ export const ui = {
   stanceGuide: 'Agacharse + Golpe = uppercut. Agacharse + Especial = barrido.',
   movementGuide: 'Un salto. Control en el aire. Puedes atravesar plataformas al subir.',
   teamsGuide: 'En equipos, las vidas son individuales. La ropa no define tu equipo: busca el símbolo A o B.',
-  loading: 'CARGANDO', menuHelp: '↑ ↓ Elegir · Enter Confirmar · Esc Volver', gamepadHelp: '✚ Elegir · A / ✕ Confirmar · B / ○ Volver',
+  loading: 'CARGANDO', menuHelp: '↑ ↓ Elegir · Enter Confirmar · Esc Volver', gamepadHelp: '↑ ↓ Mover · ← → Ajustar · A / ✕ Confirmar · B / ○ Volver',
   readyButton: 'Estoy listo', change: 'Cambiar', disconnected: 'Mando desconectado', reclaim: 'Conecta y confirma el mismo mando para continuar.',
   controlsHint: 'Selecciona una tecla para cambiarla. Cada asiento tiene su propio teclado o mando.', bindingConflict: 'Esa tecla ya está asignada. Elige otra.', pressKey: 'Pulsa una tecla…',
   gamepadBindings: 'Botones del mando', deadZone: 'Zona muerta', about: 'El clásico vuelve. Los golpes también.',
  },
  en: {
+  done: 'Done', sound: 'Sound', display: 'Display', editFighter: 'Edit fighter', savedAuto: 'Changes are saved automatically.', configHelp: '↑ ↓ Move · ← → Adjust · Enter Choose · Esc Back',
   local: 'LOCAL', online: 'ONLINE', practice: 'PRACTICE', settings: 'SETTINGS', guide: 'HOW TO PLAY', back: 'Back',
   subtitle: 'FOUR DISCIPLINES. ONE LAST LIFE.', localHint: 'Up to 4 on one screen', onlineHint: 'Invite your friends', practiceHint: 'Train your next combo',
   titlePrompt: 'CHOOSE YOUR FIGHT', titleFoot: 'MADE TO SETTLE THINGS BETWEEN FRIENDS', setup: 'Prepare your fight', roster: 'Fighters', rules: 'Rules', arena: 'Arena',
@@ -72,7 +74,7 @@ export const ui = {
   stanceGuide: 'Crouch + Punch = uppercut. Crouch + Special = sweep.',
   movementGuide: 'One jump. Air control. Pass through platforms from below.',
   teamsGuide: 'Team lives belong to each fighter. Clothing doesn’t define your team: look for the A or B symbol.',
-  loading: 'LOADING', menuHelp: '↑ ↓ Choose · Enter Confirm · Esc Back', gamepadHelp: '✚ Choose · A / ✕ Confirm · B / ○ Back',
+  loading: 'LOADING', menuHelp: '↑ ↓ Choose · Enter Confirm · Esc Back', gamepadHelp: '↑ ↓ Move · ← → Adjust · A / ✕ Confirm · B / ○ Back',
   readyButton: 'I’m ready', change: 'Change', disconnected: 'Controller disconnected', reclaim: 'Reconnect and confirm the same controller to continue.',
   controlsHint: 'Select a key to change it. Each seat uses its own keyboard or controller.', bindingConflict: 'That key is already assigned. Choose another.', pressKey: 'Press a key…',
   gamepadBindings: 'Controller buttons', deadZone: 'Dead zone', about: 'The classic returns. So do the punches.',

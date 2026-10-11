@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import type { AppSettings, AssetsManifest, MatchConfig, MatchSnapshot } from './shared/types';
 import { GameView } from './game/GameView';
 import { Avatar } from './ui/Avatar';
@@ -13,6 +13,7 @@ import { defaultSeat, loadConfig, loadSettings } from './ui/preferences';
 import { disciplineInfo, names, ui } from './ui/i18n';
 import { ARENAS } from './shared/content';
 import { Icon } from './ui/Icon';
+import { menuTargets } from './ui/MenuControls';
 
 type Screen = 'title' | 'setup' | 'online' | 'room' | 'match' | 'results' | 'settings' | 'guide';
 export interface AppProps { online?: OnlineBridge }
@@ -37,7 +38,7 @@ export default function App({ online }: AppProps) {
  const lastSnapshot = useRef<MatchSnapshot | null>(null);
  const root = useRef<HTMLDivElement>(null);
  const t = ui[settings.language];
- const runtime = useGameRuntime(settings, manifest, command => menuHandler.current(command), online, source === 'online' && !!online?.state.snapshot, screen === 'match');
+ const runtime = useGameRuntime(settings, manifest, (command, device) => { if (device) setMenuInput(device); menuHandler.current(command); }, online, source === 'online' && !!online?.state.snapshot, screen === 'match');
  const snapshot = runtime.snapshot;
  const activeConfig = source === 'online' ? online?.state.config ?? config : config;
  if (snapshot) lastSnapshot.current = snapshot;
@@ -56,10 +57,9 @@ export default function App({ online }: AppProps) {
    if (source === 'online' && online?.state.snapshot && screen === 'room') { setRenderReady(false); setScreen(online.state.snapshot.phase === 'finished' ? 'results' : 'match'); }
  }, [online?.state.status, online?.state.code, online?.state.snapshot, source, screen]);
  useEffect(() => { if (snapshot?.phase === 'finished' && ['match', 'settings', 'guide'].includes(screen)) setScreen('results'); }, [snapshot?.phase, screen]);
- useEffect(() => {
+ useLayoutEffect(() => {
    if (screen !== 'match' || snapshot?.phase === 'paused') {
-     const timer = setTimeout(() => (root.current?.querySelector<HTMLElement>('[data-autofocus]:not(:disabled)') ?? root.current?.querySelector<HTMLElement>('main button:not(:disabled), main input:not(:disabled), .pause-panel button:not(:disabled)'))?.focus({ preventScroll: true }), 30);
-     return () => clearTimeout(timer);
+     (root.current?.querySelector<HTMLElement>('[data-autofocus]:not(:disabled)') ?? root.current?.querySelector<HTMLElement>('main button:not(:disabled), main input:not(:disabled), .pause-panel button:not(:disabled)'))?.focus({ preventScroll: true });
    }
  }, [screen, snapshot?.phase]);
  const changeConfig = (next: MatchConfig) => { setConfig(next); setReady({}); };
@@ -79,13 +79,16 @@ export default function App({ online }: AppProps) {
    else setScreen('title');
  }, [screen, returnScreen, source, online, runtime.command, snapshot?.phase, runtime.disconnected, runtime.reclaim]);
  menuHandler.current = command => {
-   if (command === 'back' || command === 'pause') { back(); return; }
    const focused = document.activeElement as HTMLElement;
-   const container = root.current?.querySelector('.pause-panel') ?? root.current?.querySelector('main');
+   const dialog = root.current?.querySelector<HTMLElement>('[data-menu-dialog]');
+   const commandTarget = dialog && !dialog.contains(focused) ? dialog : focused;
+   if (commandTarget && !commandTarget.dispatchEvent(new CustomEvent('menu-command', { detail: command, bubbles: true, cancelable: true }))) return;
+   if (command === 'back' || command === 'pause') { back(); return; }
+   const container = root.current?.querySelector('[data-menu-dialog]') ?? root.current?.querySelector('.pause-panel') ?? root.current?.querySelector('main');
    if (!container) return;
-   const options = Array.from(container.querySelectorAll<HTMLElement>('button:not(:disabled), input:not(:disabled), select:not(:disabled), summary, a[href]')).filter(item => item.offsetParent !== null);
+   const options = menuTargets(container);
    if (!options.length) return;
-   if (command === 'confirm') { if (focused?.tagName === 'BUTTON' || focused?.tagName === 'A' || focused?.tagName === 'SUMMARY' || focused?.matches('input[type="checkbox"]')) focused.click(); else if (!options.includes(focused)) options[0].focus(); return; }
+   if (command === 'confirm') { if (focused?.tagName === 'BUTTON' || focused?.tagName === 'A' || focused?.tagName === 'SUMMARY' || focused?.matches('input[type="checkbox"]')) focused.click(); else if (focused?.matches('input:not([type=range]), textarea')) options[Math.min(options.length - 1, options.indexOf(focused) + 1)]?.focus(); else if (!options.includes(focused)) options[0].focus(); return; }
    if ((command === 'left' || command === 'right') && focused?.tagName === 'SELECT') {
      const select = focused as HTMLSelectElement, direction = command === 'left' ? -1 : 1;
      select.selectedIndex = Math.max(0, Math.min(select.options.length - 1, select.selectedIndex + direction));
@@ -97,6 +100,10 @@ export default function App({ online }: AppProps) {
    }
    const index = options.indexOf(focused), direction = ['up', 'left'].includes(command) ? -1 : 1;
    if (index < 0) { options[0].focus(); return; }
+   if (container.hasAttribute('data-menu-linear') || focused.closest('[data-menu-linear]')) {
+     if (command === 'up' || command === 'down') options[Math.max(0, Math.min(options.length - 1, index + direction))].focus();
+     return;
+   }
    const horizontal = command === 'left' || command === 'right', origin = focused.getBoundingClientRect();
    const ox = origin.x + origin.width / 2, oy = origin.y + origin.height / 2;
    const candidates = options.filter(item => item !== focused).map(item => {
@@ -104,7 +111,7 @@ export default function App({ online }: AppProps) {
      const along = horizontal ? dx : dy, across = horizontal ? dy : dx;
      return { item, along, score: Math.abs(along) + Math.abs(across) * 3 };
    }).filter(item => item.along * direction > 5).sort((a, b) => a.score - b.score);
-   (candidates[0]?.item ?? options[(index + direction + options.length) % options.length]).focus();
+   candidates[0]?.item.focus();
  };
  useEffect(() => { const connected = () => setMenuInput('gamepad'); const key = () => setMenuInput('keyboard'); window.addEventListener('gamepadconnected', connected); window.addEventListener('keydown', key); return () => { window.removeEventListener('gamepadconnected', connected); window.removeEventListener('keydown', key); }; }, []);
  const start = () => { setRenderReady(false); if (source === 'online') online?.start(); else { void runtime.start({ ...config, seed: Date.now() }); setScreen('match'); } };
@@ -121,7 +128,10 @@ export default function App({ online }: AppProps) {
  const copyInvite = async () => { if (!online?.state.code) return; const link = new URL(window.location.href); link.search = ''; link.searchParams.set('room', online.state.code); await navigator.clipboard.writeText(link.toString()); setCopied(true); setTimeout(() => setCopied(false), 2500); };
  const displaySnapshot = snapshot ?? lastSnapshot.current;
  const isMatch = screen === 'match';
- return <div className={`app ${isMatch ? 'app-match' : ''} screen-${screen}`} ref={root} onPointerDown={() => { if (!runtime.soundUnlocked) void runtime.unlock(); }}>
+ return <div className={`app ${isMatch ? 'app-match' : ''} screen-${screen}`} ref={root} data-menu-input={menuInput} onClickCapture={event => {
+   // WebKit does not focus pointer-clicked buttons; preserve the menu's focus origin.
+   (event.target as HTMLElement).closest<HTMLButtonElement>('button:not(:disabled)')?.focus({ preventScroll: true });
+ }} onPointerDown={() => { if (!runtime.soundUnlocked) void runtime.unlock(); }}>
    <div className="site-atmosphere" aria-hidden="true" style={{ backgroundImage: manifest ? `url("${manifest.backgrounds.classic}")` : undefined }} />
    <header className="app-header">
      <button className="brand-button" aria-label="New Super TIC Fighter" onClick={() => { if (isMatch) pause(); else setScreen('title'); }}><span className="brand-new">NEW</span>{manifest ? <img src={manifest.logo} alt="Super TIC Fighter" /> : <span className="brand-fallback">SUPER TIC <em>FIGHTER</em></span>}</button>
@@ -141,7 +151,7 @@ export default function App({ online }: AppProps) {
        <p className="title-tagline">{t.subtitle}</p>
       </section>
       <section className="title-menu-area">
-       <nav className="arcade-menu" aria-label={t.titlePrompt}>{(['local','online','practice','settings','guide'] as const).map(mode => <button key={mode} data-testid={`mode-${mode}`} data-autofocus={mode === 'local' ? true : undefined} aria-label={t[mode]} onFocus={() => setSelectedMode(mode)} onMouseEnter={() => setSelectedMode(mode)} onClick={() => mode === 'local' ? enterLocal() : mode === 'practice' ? enterLocal(true) : mode === 'online' ? (setSource('online'),setScreen('online')) : open(mode)}><span className="menu-pointer" aria-hidden="true" /><strong>{t[mode]}</strong></button>)}</nav>
+       <nav className="arcade-menu" aria-label={t.titlePrompt}>{(['local','online','practice','settings','guide'] as const).map(mode => <button key={mode} data-testid={`mode-${mode}`} data-autofocus={mode === selectedMode ? true : undefined} aria-label={t[mode]} onFocus={() => setSelectedMode(mode)} onMouseEnter={() => setSelectedMode(mode)} onClick={() => mode === 'local' ? enterLocal() : mode === 'practice' ? enterLocal(true) : mode === 'online' ? (setSource('online'),setScreen('online')) : open(mode)}><span className="menu-pointer" aria-hidden="true" /><strong>{t[mode]}</strong></button>)}</nav>
        <p className="mode-hint">{selectedMode === 'local' ? t.localHint : selectedMode === 'online' ? t.onlineHint : selectedMode === 'practice' ? t.practiceHint : selectedMode === 'settings' ? t.controls : t.guideIntro}</p>
        <div className="title-utility"><button aria-label={t.language} onClick={() => setSettings({ ...settings, language: settings.language === 'es' ? 'en' : 'es' })}>{settings.language.toUpperCase()}</button><button onClick={() => document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen()}><Icon name="fullscreen" />{t.fullscreen}</button>{!runtime.soundUnlocked && <button onClick={() => void runtime.unlock()}><Icon name="sound" />{t.soundLocked}</button>}</div>
       </section>
@@ -162,7 +172,7 @@ export default function App({ online }: AppProps) {
     </div>}
     {screen === 'results' && displaySnapshot && <Results snapshot={displaySnapshot} settings={settings} manifest={manifest} rematch={() => source === 'online' ? leaveMatch() : start()} primaryLabel={source === 'online' ? !online?.state.isHost && online?.state.status !== 'lobby' ? settings.language === 'es' ? 'ESPERANDO AL ANFITRIÓN' : 'WAITING FOR HOST' : t.lobby : t.rematch} waitingForHost={source === 'online' && !online?.state.isHost && online?.state.status !== 'lobby'} leave={source === 'online' ? leaveRoom : leaveMatch} leaveLabel={source === 'online' ? settings.language === 'es' ? 'SALIR DE LA SALA' : 'LEAVE ROOM' : t.lobby} />}
    </main>
-   {!isMatch && <footer className="app-footer"><span className="footer-mark">STF</span><span>{menuInput === 'gamepad' ? t.gamepadHelp : t.menuHelp}</span><button onClick={() => open('guide')}>{t.guide} <span>?</span></button></footer>}
+   {!isMatch && <footer className="app-footer"><span className="footer-mark">STF</span><span>{menuInput === 'gamepad' ? t.gamepadHelp : (['setup', 'room', 'settings'].includes(screen) ? t.configHelp : t.menuHelp)}</span><button onClick={() => open('guide')}>{t.guide} <span>?</span></button></footer>}
    {(assetError || online?.state.error && source === 'online' && screen !== 'online') && <div className="global-error" role="alert">{assetError || online?.state.error}</div>}
  </div>;
 }
