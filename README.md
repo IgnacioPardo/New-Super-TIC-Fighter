@@ -113,6 +113,8 @@ Standard gamepads use stick/D-pad for movement, A/Cross for jump, X/Square for p
 
 Menus always use A/Cross to confirm and B/Circle to go back, independently of combat remapping. An available controller is assigned to the first human fighter on setup entry; each fighter's device selector stays visible. Settings shows detected controllers, recent input, button mappings, and stick dead zone. Unplugging a controller pauses play and requires explicit reclaim.
 
+In setup, a disconnected controller's fighter card offers **Use keyboard N**. It selects a free keyboard layout without changing your fighter or saved bindings; confirm Ready again to play.
+
 **Physically checked in v1:** the owner confirmed Bluetooth DualSense menu navigation and gameplay on macOS with Arc. The v2 hardware check is deferred by the owner. Xbox, other controller/browser combinations, and native Safari still need verification. The [controller record](docs/controller-verification.md) separates that hands-on check from injected input exercises and includes the Arc detection workaround.
 
 ## Development

@@ -39,6 +39,8 @@ Additional controllers press A / Cross to join an available seat. Each controlle
 
 Devices cannot silently take an occupied seat. Disconnect/reconnect preserves ownership and requires deliberate reclaim when necessary. Binding conflicts are shown rather than overwriting existing mappings. Default dodge mappings are added only without overriding saved controls. Menu confirm/back stay fixed when combat buttons are remapped. B/Escape closes one layer, and held buttons must release across transitions.
 
+If setup reports **Controller disconnected**, choose **Use keyboard N** on that fighter's card. This assigns an unused local keyboard layout while keeping the fighter, appearance and custom bindings. Confirm readiness again before starting. Reconnecting the original controller remains available; switching to keyboard is an explicit choice and does not take another player's layout.
+
 ## Results, reconnects and free capacity
 
 Stock uses last standing, with existing stock timeout ties. Timed KO counts KOs minus self-destructs. Hill earns uncontested zone time; Timed/Hill ties enter short sudden death. Royale gives one life, a shrinking safe zone and a four-minute limit; simultaneous eliminations share placement. Local Royale cameras frame surviving local fighters and show offscreen indicators, with a compact opponent roster.
