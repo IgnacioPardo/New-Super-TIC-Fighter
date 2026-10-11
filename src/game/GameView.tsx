@@ -47,6 +47,7 @@ export function GameView({ snapshot, snapshotRef, settings, manifest, arena = 'c
     let zoom = 1;
     let centerX = 683;
     let centerY = 384;
+    let stageBounds = { left: 0, right: 1366, top: 300, bottom: 650 };
     class FightScene extends Phaser.Scene {
       constructor() { super('fight'); }
       preload() {
@@ -71,6 +72,12 @@ export function GameView({ snapshot, snapshotRef, settings, manifest, arena = 'c
         arenaId = id;
         const arena = ARENAS[id as keyof typeof ARENAS];
         if (!arena) return;
+        stageBounds = {
+          left: Math.min(...arena.platforms.map(p => p.x)),
+          right: Math.max(...arena.platforms.map(p => p.x + p.width)),
+          top: Math.min(...arena.platforms.map(p => p.y)),
+          bottom: Math.max(...arena.platforms.map(p => p.y + p.height)),
+        };
         background.setTexture(`background-${id}`);
         platformGroup.clear(true, true);
         for (const [i, p] of arena.platforms.entries()) {
@@ -126,11 +133,16 @@ export function GameView({ snapshot, snapshotRef, settings, manifest, arena = 'c
         const fraction = Math.min(1, (performance.now() - received) / (1000 / 60));
         const living = state.fighters.filter(f => !f.eliminated);
         if (preferences.current.camera === 'adaptive' && living.length) {
-          const minX = Math.min(...living.map(f => f.x)), maxX = Math.max(...living.map(f => f.x));
-          const minY = Math.min(...living.map(f => f.y - 96)), maxY = Math.max(...living.map(f => f.y));
-          const desiredZoom = Math.min(1.38, Math.max(.65, Math.min(1366 / Math.max(760, maxX - minX + 420), 768 / Math.max(500, maxY - minY + 320))));
-          const desiredX = Phaser.Math.Clamp((minX + maxX) / 2, 250, 1116);
-          const desiredY = Phaser.Math.Clamp((minY + maxY) / 2 + 75, 230, 690);
+          // The complete platform layout anchors the shot. Falling or launched fighters
+          // may add bounded headroom, but cannot drag the arena into a screen corner.
+          const minX = Math.min(stageBounds.left - 72, ...living.map(f => Phaser.Math.Clamp(f.x - 160, stageBounds.left - 180, stageBounds.right)));
+          const maxX = Math.max(stageBounds.right + 72, ...living.map(f => Phaser.Math.Clamp(f.x + 160, stageBounds.left, stageBounds.right + 180)));
+          const minY = Math.min(stageBounds.top - 160, ...living.map(f => Phaser.Math.Clamp(f.y - 160, stageBounds.top - 300, stageBounds.bottom)));
+          const maxY = stageBounds.bottom + 150;
+          const desiredZoom = Math.min(1.15, Math.max(.8, Math.min(1366 / (maxX - minX), 768 / (maxY - minY))));
+          const desiredX = (minX + maxX) / 2;
+          // Reserve space below the landing surfaces for the fixed HUD.
+          const desiredY = Math.max((minY + maxY) / 2, stageBounds.bottom - 239 / desiredZoom);
           const smoothing = preferences.current.reducedMotion ? 1 : 1 - Math.exp(-Math.min(delta, 50) / 220);
           zoom = Phaser.Math.Linear(zoom, desiredZoom, smoothing); centerX = Phaser.Math.Linear(centerX, desiredX, smoothing); centerY = Phaser.Math.Linear(centerY, desiredY, smoothing);
         } else { zoom = 1; centerX = 683; centerY = 384; }
