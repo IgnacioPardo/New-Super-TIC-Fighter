@@ -1,0 +1,226 @@
+// Full application online lifecycle through visible UI, real workers and room WebSockets.
+// Run with the app on :5173 and Wrangler on :8787. Playwright fault injection closes
+// real browser WebSockets; no game state or simulation output is fabricated.
+import assert from 'node:assert/strict';
+import { mkdir } from 'node:fs/promises';
+import { chromium } from '@playwright/test';
+
+const base = process.env.STF_APP_URL ?? 'http://127.0.0.1:5173';
+const browser = await chromium.launch({ headless: true });
+const sessions = [];
+const errors = [];
+await mkdir('tmp/qa', { recursive: true });
+
+async function openSession(label) {
+  const context = await browser.newContext({ viewport: { width: 1440, height: 1000 } });
+  const page = await context.newPage();
+  const sockets = [];
+  await page.routeWebSocket('**/api/rooms/*/ws', route => {
+    sockets.push(route);
+    route.connectToServer();
+  });
+  page.on('pageerror', error => errors.push(`${label}: ${error.message}`));
+  await page.addInitScript(() => {
+    window.__stfObserved = { rooms: [], controls: [], snapshots: 0 };
+    const NativeWorker = window.Worker;
+    window.Worker = class extends NativeWorker {
+      constructor(...args) {
+        super(...args);
+        this.addEventListener('message', event => {
+          const snapshot = event.data?.type === 'snapshot' ? event.data.snapshot : event.data;
+          if (snapshot?.matchId && Array.isArray(snapshot.fighters)) {
+            window.__stfSnapshot = snapshot;
+            window.__stfObserved.snapshots++;
+          }
+        });
+      }
+    };
+    const NativeSocket = window.WebSocket;
+    window.WebSocket = class extends NativeSocket {
+      constructor(...args) {
+        super(...args);
+        this.addEventListener('message', event => {
+          if (typeof event.data !== 'string') return;
+          try {
+            const message = JSON.parse(event.data);
+            if (message.type === 'room' || message.type === 'welcome') {
+              window.__stfRoom = message.state;
+              window.__stfObserved.rooms.push({ type: message.type, phase: message.state.phase, matchId: message.state.matchId, hostPeerId: message.state.hostPeerId, players: message.state.players.length, routes: message.state.routes });
+              window.__stfObserved.rooms = window.__stfObserved.rooms.slice(-150);
+            } else if (['start', 'pause', 'resume', 'result', 'forfeit', 'error'].includes(message.type)) {
+              window.__stfObserved.controls.push(message);
+              window.__stfObserved.controls = window.__stfObserved.controls.slice(-100);
+            }
+          } catch { /* non-JSON messages are outside the room protocol */ }
+        });
+      }
+    };
+  });
+  sessions.push({ label, context, page, sockets });
+  return sessions.at(-1);
+}
+
+async function onlineEntry(session, name, code) {
+  const { page } = session;
+  await page.goto(code ? `${base}/?room=${code}` : base);
+  await page.getByRole('button', { name: /02.*ONLINE/ }).click();
+  await page.getByPlaceholder('Jugador', { exact: true }).fill(name);
+  if (code) await page.getByRole('button', { name: /ENTRAR/ }).click();
+  else await page.getByRole('button', { name: /CREAR SALA/ }).click();
+  await page.locator('.room-code strong').waitFor({ timeout: 15_000 });
+  await page.waitForFunction(() => !!window.__stfRoom?.peerId, null, { timeout: 15_000 });
+  return page.locator('.room-code strong').innerText();
+}
+
+async function waitRoster(page, count, predicate = () => true) {
+  await page.waitForFunction(({ count }) => window.__stfRoom?.players.length === count, { count }, { timeout: 12_000 });
+  await page.locator('.fighter-card').first().waitFor();
+  const room = await page.evaluate(() => window.__stfRoom);
+  assert(predicate(room), `Unexpected roster: ${JSON.stringify(room.players)}`);
+  return room;
+}
+
+async function addHumanHost(host, count) {
+  const { page } = host;
+  await page.locator('.add-fighter').click();
+  await waitRoster(page, count, room => room.players.at(-1).kind === 'bot');
+  await page.locator('.fighter-card').last().locator('.seat-kind-row select').first().selectOption('human');
+  await page.waitForFunction(({ count }) => window.__stfRoom?.players.length === count && window.__stfRoom.players.at(-1).kind === 'human', { count }, { timeout: 12_000 });
+}
+
+async function ready(session, name) {
+  const card = session.page.locator('.fighter-card').filter({ has: session.page.locator(`input[value="${name}"]`) });
+  await card.getByRole('button', { name: 'Estoy listo', exact: true }).click();
+  await session.page.waitForFunction(() => window.__stfRoom?.readiness[window.__stfRoom.peerId]?.ready, null, { timeout: 20_000 });
+}
+
+async function startAndWait(host, others, expectedSeats) {
+  await host.page.locator('.fight-button:not(:disabled)').waitFor({ timeout: 20_000 });
+  await host.page.locator('.fight-button').click();
+  for (const session of [host, ...others]) {
+    await session.page.waitForFunction(expected => window.__stfSnapshot?.phase === 'playing' && window.__stfSnapshot.config.players.length === expected, expectedSeats, { timeout: 20_000 });
+    assert.equal(await session.page.evaluate(() => window.__stfObserved.snapshots > 0), true);
+  }
+  const matchIds = await Promise.all([host, ...others].map(session => session.page.evaluate(() => window.__stfSnapshot.matchId)));
+  assert.equal(new Set(matchIds).size, 1, 'Every browser must render the same live round');
+  return matchIds[0];
+}
+
+async function scenarioTwoPlusTwo() {
+  const host = await openSession('2+2 host');
+  const guest = await openSession('2+2 guest');
+  const code = await onlineEntry(host, 'Host A');
+  assert.equal(await onlineEntry(guest, 'Guest A', code), code);
+  await waitRoster(host.page, 2);
+  await addHumanHost(host, 3);
+  await guest.page.locator('.add-fighter').click();
+  const room = await waitRoster(host.page, 4, state => state.players.filter(player => player.peerId === state.hostPeerId).length === 2);
+  await waitRoster(guest.page, 4);
+  assert.equal(room.players.filter(player => player.kind === 'human').length, 4);
+  assert.equal(room.players.filter(player => player.peerId !== room.hostPeerId).length, 2);
+
+  await host.page.locator('.rules-controls .field-label select').first().selectOption('teams');
+  await host.page.waitForFunction(() => window.__stfRoom?.config.mode === 'teams');
+  await guest.page.locator('.fighter-card').filter({ has: guest.page.locator('input[value="Guest A"]') }).locator('.seat-kind-row select').last().selectOption('0');
+  await host.page.waitForFunction(() => window.__stfRoom?.players.filter(player => player.team === 0).length === 2);
+  const teams = await host.page.evaluate(() => window.__stfRoom.players.map(player => player.team));
+  assert.deepEqual(teams.sort(), [0, 0, 1, 1]);
+  await guest.page.locator('.room-quality input[type="checkbox"]').check();
+  await guest.page.waitForFunction(() => window.__stfRoom?.routes[window.__stfRoom.peerId] === 'relay', null, { timeout: 10_000 });
+  await ready(host, 'Host A');
+  await ready(guest, 'Guest A');
+  await startAndWait(host, [guest], 4);
+
+  const guestSeat = await guest.page.evaluate(() => window.__stfRoom.players.find(player => player.name === 'Guest A').id);
+  const before = await host.page.evaluate(id => window.__stfSnapshot.fighters.find(fighter => fighter.id === id).x, guestSeat);
+  await guest.page.keyboard.down('d');
+  await guest.page.waitForTimeout(500);
+  await guest.page.keyboard.up('d');
+  await host.page.waitForTimeout(150);
+  const after = await host.page.evaluate(id => window.__stfSnapshot.fighters.find(fighter => fighter.id === id).x, guestSeat);
+  assert(after > before + 30, `Forced-relay guest input did not move its fighter: ${before} -> ${after}`);
+
+  assert(guest.sockets.length, 'Playwright must observe the room WebSocket');
+  const guestPeerId = await guest.page.evaluate(() => window.__stfRoom.peerId);
+  await guest.sockets.at(-1).close({ code: 1012, reason: 'QA relay disconnect' });
+  await host.page.waitForFunction(() => window.__stfSnapshot?.phase === 'paused', null, { timeout: 10_000 });
+  await host.page.waitForFunction(peerId => window.__stfRoom?.peers.find(peer => peer.peerId === peerId)?.connected === false, guestPeerId, { timeout: 10_000 });
+  await guest.page.waitForFunction(() => window.__stfObserved.rooms.filter(message => message.type === 'welcome').length > 1, null, { timeout: 15_000 });
+  await guest.page.waitForFunction(() => window.__stfRoom?.peers.find(peer => peer.peerId === window.__stfRoom.peerId)?.connected, null, { timeout: 15_000 });
+  await host.page.waitForFunction(peerId => window.__stfRoom?.peers.find(peer => peer.peerId === peerId)?.connected, guestPeerId, { timeout: 15_000 });
+  await host.page.getByRole('button', { name: /CONTINUAR/ }).click();
+  await Promise.all([host, guest].map(session => session.page.waitForFunction(() => window.__stfSnapshot?.phase === 'playing', null, { timeout: 10_000 })));
+  console.log(`2+2 teams ${code}: four humans, forced relay movement, actual guest WebSocket fault, reconnect and resume passed.`);
+}
+
+async function scenarioTwoPlusOnePlusOne() {
+  const host = await openSession('2+1+1 host');
+  const guest1 = await openSession('2+1+1 guest 1');
+  const guest2 = await openSession('2+1+1 guest 2');
+  const code = await onlineEntry(host, 'Host B');
+  await waitRoster(host.page, 1);
+  await addHumanHost(host, 2);
+  await onlineEntry(guest1, 'Guest B1', code);
+  await onlineEntry(guest2, 'Guest B2', code);
+  const room = await waitRoster(host.page, 4);
+  assert.equal(room.players.filter(player => player.kind === 'human').length, 4, 'All four 2+1+1 seats must be human');
+  assert.deepEqual(Object.values(Object.groupBy(room.players, player => player.peerId)).map(players => players.length).sort(), [1, 1, 2]);
+  await Promise.all([ready(host, 'Host B'), ready(guest1, 'Guest B1'), ready(guest2, 'Guest B2')]);
+  await startAndWait(host, [guest1, guest2], 4);
+
+  await host.page.close(); // real host tab loss, including its authority Worker and transport
+  for (const guest of [guest1, guest2]) {
+    await guest.page.waitForFunction(() => window.__stfObserved.controls.some(message => message.type === 'result' && message.result?.reason === 'interrupted'), null, { timeout: 23_000 });
+    await guest.page.waitForFunction(() => window.__stfRoom?.phase === 'lobby', null, { timeout: 23_000 });
+    assert.equal(await guest.page.locator('.results-screen').filter({ hasText: /VICTORIA|VICTORY/ }).count(), 0, 'Host loss must never show a winner');
+    await guest.page.getByRole('button', { name: /VOLVER A LA SALA/ }).click();
+    await guest.page.locator('.room-code strong').waitFor({ timeout: 8_000 });
+  }
+  const newHost = await guest1.page.evaluate(() => window.__stfRoom.hostPeerId);
+  assert.equal(newHost, await guest1.page.evaluate(() => window.__stfRoom.peerId), 'First remaining guest should host the new lobby');
+  console.log(`2+1+1 ${code}: four human seats across three browsers, host tab loss, interrupted result and new lobby passed.`);
+}
+
+async function scenarioBots() {
+  const host = await openSession('bot host');
+  const guest = await openSession('bot guest');
+  const code = await onlineEntry(host, 'Host C');
+  await onlineEntry(guest, 'Guest C', code);
+  await waitRoster(host.page, 2);
+  await host.page.locator('.add-fighter').click();
+  await waitRoster(host.page, 3, room => room.players.filter(player => player.kind === 'bot').length === 1);
+  await host.page.locator('.add-fighter').click();
+  const room = await waitRoster(host.page, 4, state => state.players.filter(player => player.kind === 'bot').length === 2);
+  assert.equal(room.players.filter(player => player.kind === 'bot').length, 2);
+  await ready(host, 'Host C');
+  await ready(guest, 'Guest C');
+  await startAndWait(host, [guest], 4);
+  assert.equal(await host.page.evaluate(() => window.__stfSnapshot.config.players.filter(player => player.kind === 'bot').length), 2);
+  console.log(`Bot room ${code}: two human browsers plus two bot seats entered a live Worker round.`);
+}
+
+try {
+  const scenarios = {
+    '2+2': scenarioTwoPlusTwo,
+    '2+1+1': scenarioTwoPlusOnePlusOne,
+    bots: scenarioBots,
+  };
+  const selected = process.env.STF_LIFECYCLE_SCENARIO;
+  assert(!selected || selected in scenarios, `Unknown scenario: ${selected}`);
+  for (const [name, run] of Object.entries(scenarios)) {
+    if (!selected || selected === name) await run();
+  }
+  assert.equal(errors.length, 0, errors.join('\n'));
+  console.log('Full application online lifecycle passed without page errors.');
+} catch (error) {
+  for (const session of sessions) {
+    if (session.page.isClosed()) continue;
+    const detail = await session.page.evaluate(() => ({ room: window.__stfRoom, snapshot: window.__stfSnapshot && { phase: window.__stfSnapshot.phase, matchId: window.__stfSnapshot.matchId, result: window.__stfSnapshot.result }, observations: window.__stfObserved })).catch(() => null);
+    console.log(`${session.label}:`, JSON.stringify(detail).slice(-2800));
+    console.log(`${session.label} body:`, (await session.page.locator('body').innerText().catch(() => '')).slice(-2500));
+    await session.page.screenshot({ path: `tmp/qa/lifecycle-${session.label.replaceAll(/[^a-z0-9]+/gi, '-').toLowerCase()}.png`, fullPage: true }).catch(() => {});
+  }
+  throw error;
+} finally {
+  await browser.close();
+}
