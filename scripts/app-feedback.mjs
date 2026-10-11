@@ -29,7 +29,7 @@ try{
  await press(0);
  for(let i=0;i<4;i++)await press(13);await expect(page.getByRole('button',{name:/LAB.*Entrenamiento/})).toBeFocused();await press(0);
  await page.locator('.fighter-edit').first().click();
- await page.getByRole('tab',{name:'Jugador / Control'}).click();
+ await page.getByRole('tab',{name:'Controles',exact:true}).click();
  await expect(page.getByRole('button',{name:/^Control:/})).toContainText('DualSense');
  await press(1);
  await page.locator('.seat-shared-button').click();await page.locator('.fight-button').focus();await press(0);
