@@ -293,6 +293,7 @@ async function scenarioGuestFinishedLobby() {
   await host.page.getByRole('button', { name: /^Vidas:/ }).focus();
   await host.page.keyboard.press('ArrowLeft');
   await host.page.keyboard.press('ArrowLeft');
+  assert.equal(await host.page.getByRole('button', { name: 'Vidas: 1', exact: true }).count(), 1, 'Rapid arrow presses update the online editor before a room round trip');
   await host.page.keyboard.press('Escape');
   await host.page.waitForFunction(() => window.__stfRoom?.config.lives === 1);
   await ready(host, 'Host F');

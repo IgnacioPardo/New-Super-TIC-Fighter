@@ -22,10 +22,17 @@ export function Setup({ config, setConfig, settings, manifest, devices, ready, t
  const [editing, setEditing] = useState<string | null>(null);
  const [editorTab, setEditorTab] = useState<'fighter' | 'player'>('fighter');
  const [rulesOpen, setRulesOpen] = useState(false);
+ // Online editors keep a local draft so repeated input never waits on a room echo.
+ const [seatDraft, setSeatDraft] = useState<Partial<PlayerSeat>>({});
+ const [rulesDraft, setRulesDraft] = useState<Partial<MatchConfig>>({});
  const host = !online || online.state.isHost;
  const owned = (seat: PlayerSeat) => !online || seat.peerId === online.state.peerId || (host && seat.kind === 'bot');
  const confirmed = (seat: PlayerSeat) => seat.kind === 'bot' || (online ? online.state.members.find(member => member.id === seat.peerId)?.ready : ready[seat.id]);
  const changeSeat = (id: string, updates: Partial<PlayerSeat>) => {
+  if (online && id === editing) {
+   if (!Object.keys(seatDraft).length) online.ready(false);
+   setSeatDraft(previous => ({ ...previous, ...updates })); return;
+  }
   const players = config.players.map(player => player.id === id ? { ...player, ...updates } : player);
   if (online) online.updateSeat(players.find(player => player.id === id)!); else setConfig({ ...config, players });
  };
@@ -36,7 +43,23 @@ export function Setup({ config, setConfig, settings, manifest, devices, ready, t
  const allReady = practice || config.players.every(confirmed);
  const routePending = !!online && online.state.members.length > 1 && online.state.route === 'connecting';
  const validation = routePending ? t.connecting : !rosterValid ? t.seatsInvalid : !teamValid ? t.teamInvalid : !devicesValid ? t.devicesInvalid : !allReady ? t.readyInvalid : '';
- const update = (patch: Partial<MatchConfig>) => host && (online ? online.updateConfig({ ...config, ...patch }) : setConfig({ ...config, ...patch }));
+ const update = (patch: Partial<MatchConfig>) => {
+  if (!host) return;
+  if (online && rulesOpen) {
+   if (!Object.keys(rulesDraft).length) online.ready(false);
+   setRulesDraft(previous => ({ ...previous, ...patch }));
+  } else if (online) online.updateConfig({ ...config, ...patch });
+  else setConfig({ ...config, ...patch });
+ };
+ const closeFighter = () => {
+  const current = config.players.find(player => player.id === editing);
+  if (online && current && owned(current) && Object.keys(seatDraft).length) online.updateSeat({ ...current, ...seatDraft });
+  setEditing(null); setSeatDraft({});
+ };
+ const closeRules = () => {
+  if (online && host && Object.keys(rulesDraft).length) online.updateConfig({ ...config, ...rulesDraft });
+  setRulesOpen(false); setRulesDraft({});
+ };
  const addSeat = () => {
   const available = [0,1,2,3].find(index => !config.players.some(player => player.id === `p${index + 1}`)) ?? config.players.length;
   const seat = defaultSeat(available, !!online && host, lang);
@@ -44,15 +67,16 @@ export function Setup({ config, setConfig, settings, manifest, devices, ready, t
   else update({ players: [...config.players, seat] });
  };
  const deviceLabel = (seat: PlayerSeat) => seat.kind === 'bot' ? `${t.bot} · ${t[seat.difficulty ?? 'normal']}` : seat.device.startsWith('keyboard:') ? `${t.keyboard} ${Number(seat.device.split(':')[1]) + 1}` : seat.device === 'remote' || !owned(seat) ? t.seatRemote : `${t.gamepad} ${Number(seat.device.split(':')[1]) + 1}`;
- const seat = config.players.find(player => player.id === editing);
- const index = seat ? config.players.indexOf(seat) : -1;
- const arena = ARENAS[config.arena];
+ const index = config.players.findIndex(player => player.id === editing);
+ const seat = index < 0 ? undefined : online ? { ...config.players[index], ...seatDraft } : config.players[index];
+ const rules = online && rulesOpen ? { ...config, ...rulesDraft } : config;
+ const arena = ARENAS[rules.arena];
  return <div className="setup-layout setup-overview">
   <section className="roster-section">
    <div className="section-heading"><h2>{t.roster}</h2><span className="count-label">{config.players.length} / 4</span></div>
    <div className="fighter-grid">
     {config.players.map((player, playerIndex) => <article className={`fighter-card fighter-summary ${confirmed(player) ? 'is-ready' : ''}`} key={player.id} data-seat-id={player.id} style={{ '--fighter-color': disciplineInfo[player.discipline].color } as React.CSSProperties}>
-     <button className="fighter-edit" data-autofocus={playerIndex === 0 || undefined} aria-label={`${t.editFighter}: ${player.name}`} onClick={() => { setEditing(player.id); setEditorTab('fighter'); }}>
+     <button className="fighter-edit" data-autofocus={playerIndex === 0 || undefined} aria-label={`${t.editFighter}: ${player.name}`} onClick={() => { setSeatDraft({}); setEditing(player.id); setEditorTab('fighter'); }}>
       <span className="fighter-card-top"><span className="seat-number">P{playerIndex + 1}</span><span className={`ready-light ${confirmed(player) ? 'on' : ''}`}>{confirmed(player) ? `✓ ${t.ready}` : t.notReady}</span></span>
       <span className="fighter-preview" data-number={String(playerIndex + 1).padStart(2, '0')}><Avatar appearance={player.appearance} discipline={player.discipline} manifest={manifest} animated={!settings.reducedMotion} /><span className="fighter-stage-line" /></span>
       <strong className="fighter-identity">{player.name}</strong><span className="fighter-discipline">{names[player.discipline][lang]}{config.mode === 'teams' && ` · ${player.team === 0 ? '◆ A' : '● B'}`}</span>
@@ -63,12 +87,12 @@ export function Setup({ config, setConfig, settings, manifest, devices, ready, t
     {!practice && config.players.length < 4 && <button className="add-fighter" onClick={addSeat}><span aria-hidden="true">+</span>{t.add}</button>}
    </div>
   </section>
-  <button className="match-summary" onClick={() => setRulesOpen(true)} aria-label={`${t.rules} · ${t.arena}`}>
+  <button className="match-summary" onClick={() => { setRulesDraft({}); setRulesOpen(true); }} aria-label={`${t.rules} · ${t.arena}`}>
    <span className="arena-thumbnail" style={{ backgroundImage: manifest ? `url("${manifest.backgrounds[arena.id]}")` : undefined }}><svg viewBox="0 0 1366 768" aria-hidden="true">{arena.platforms.map((platform, i) => <rect key={i} {...platform} />)}</svg></span>
    <span><small>{t.arena} / {t.rules}</small><strong>{arena.name[lang]}</strong><span>{practice ? t.practice : `${config.mode === 'teams' ? t.teams : t.ffa} · ${config.lives} ${t.lives.toLowerCase()} · ${config.timeLimit ? `${config.timeLimit / 60} min` : t.unlimited}`}</span></span><span className="summary-change">{host ? t.change : t.waitHost} <b aria-hidden="true">›</b></span>
   </button>
   <div className="start-panel"><p className={validation ? 'validation-hint' : 'help-text'} role="status">{validation || (practice ? t.practiceTip : t.readyHelp)}</p><button className="primary-button fight-button" data-ui-sound="silent" disabled={!!validation || !manifest || !host} onClick={start}>{t.start}<span>↗</span></button></div>
-  {seat && <MenuDialog accent={disciplineInfo[seat.discipline].color} mark={`P${index + 1}`} language={settings.language} title={seat.name} subtitle={owned(seat) ? t.editFighter : t.seatRemote} done={t.done} close={() => setEditing(null)}>
+  {seat && <MenuDialog accent={disciplineInfo[seat.discipline].color} mark={`P${index + 1}`} language={settings.language} title={seat.name} subtitle={owned(seat) ? t.editFighter : t.seatRemote} done={t.done} close={closeFighter}>
    <div className="fighter-editor" style={{ '--fighter-color': disciplineInfo[seat.discipline].color } as React.CSSProperties}>
     <div className="editor-preview" data-number={String(index + 1).padStart(2, '0')}><Avatar appearance={seat.appearance} discipline={seat.discipline} manifest={manifest} animated={!settings.reducedMotion} /><strong>{names[seat.discipline][lang]}</strong><p>{disciplineInfo[seat.discipline].special[lang]}</p></div>
     <div className="editor-fields">
@@ -97,15 +121,15 @@ export function Setup({ config, setConfig, settings, manifest, devices, ready, t
     </div>
    </div>
   </MenuDialog>}
-  {rulesOpen && <MenuDialog mark={<Icon name="arena" />} language={settings.language} title={`${t.arena} / ${t.rules}`} subtitle={!host ? t.waitHost : undefined} done={t.done} close={() => setRulesOpen(false)}>
+  {rulesOpen && <MenuDialog mark={<Icon name="arena" />} language={settings.language} title={`${t.arena} / ${t.rules}`} subtitle={!host ? t.waitHost : undefined} done={t.done} close={closeRules}>
    <div className="rules-editor"><div className="arena-preview" style={{ backgroundImage: manifest ? `url("${manifest.backgrounds[arena.id]}")` : undefined }}><svg viewBox="0 0 1366 768" aria-hidden="true">{arena.platforms.map((platform, i) => <rect key={i} {...platform} />)}</svg><span>{arena.subtitle[lang]}</span></div>
     <div className="editor-fields">
-     <Choice label={t.arena} value={config.arena} disabled={!host} options={Object.values(ARENAS).map(value => ({ value: value.id, label: value.name[lang] }))} change={arena => update({ arena })} />
+     <Choice label={t.arena} value={rules.arena} disabled={!host} options={Object.values(ARENAS).map(value => ({ value: value.id, label: value.name[lang] }))} change={arena => update({ arena })} />
      {!practice && <>
-      <Choice label={lang === 'es' ? 'Modo' : 'Mode'} value={config.mode} disabled={!host} options={[{ value: 'ffa', label: t.ffa }, { value: 'teams', label: t.teams }]} change={mode => update({ mode })} />
-      <Choice label={t.lives} value={config.lives} disabled={!host} options={[1,2,3,4,5,6,7,8,9].map(value => ({ value, label: `${value}` }))} change={lives => update({ lives })} />
-      <Choice label={t.time} value={config.timeLimit} disabled={!host} options={[60,120,180,300,600,900,0].map(value => ({ value, label: value ? `${value / 60} min` : t.unlimited }))} change={timeLimit => update({ timeLimit })} />
-      {config.mode === 'teams' && <Choice label={t.friendly} value={Number(config.friendlyFire)} disabled={!host} options={[{ value: 0, label: t.off }, { value: 1, label: t.on }]} change={value => update({ friendlyFire: !!value })} />}
+      <Choice label={lang === 'es' ? 'Modo' : 'Mode'} value={rules.mode} disabled={!host} options={[{ value: 'ffa', label: t.ffa }, { value: 'teams', label: t.teams }]} change={mode => update({ mode })} />
+      <Choice label={t.lives} value={rules.lives} disabled={!host} options={[1,2,3,4,5,6,7,8,9].map(value => ({ value, label: `${value}` }))} change={lives => update({ lives })} />
+      <Choice label={t.time} value={rules.timeLimit} disabled={!host} options={[60,120,180,300,600,900,0].map(value => ({ value, label: value ? `${value / 60} min` : t.unlimited }))} change={timeLimit => update({ timeLimit })} />
+      {rules.mode === 'teams' && <Choice label={t.friendly} value={Number(rules.friendlyFire)} disabled={!host} options={[{ value: 0, label: t.off }, { value: 1, label: t.on }]} change={value => update({ friendlyFire: !!value })} />}
      </>}
     </div>
    </div>
