@@ -45,7 +45,7 @@ async function connect(code, credentials) {
 }
 
 function send(connection, message) { connection.ws.send(JSON.stringify(message)); }
-function next(connection, type, predicate = () => true) { return connection.stream.next(message => message.type === type && predicate(message)); }
+function next(connection, type, predicate = () => true, timeoutMs = 3000) { return connection.stream.next(message => message.type === type && predicate(message), timeoutMs).catch(() => { throw new Error(`Timed out waiting for ${type}`); }); }
 
 try {
   const health = await (await fetch(`${base}/api/health`)).json();
@@ -102,7 +102,40 @@ try {
   send(recovered, { type: 'rematch' });
   const lobby = await next(guest, 'room', message => message.state.phase === 'lobby');
   assert.equal(lobby.state.readiness[guest.welcome.peerId].ready, false);
-  console.log(`Room ${created.code}: host + guest, 2+2 seats, relay, authority, reconnect, resume, result, rematch passed.`);
+  send(recovered, { type: 'ready', ready: true, assetsReady: true });
+  send(guest, { type: 'ready', ready: true, assetsReady: true });
+  await next(recovered, 'room', message => message.state.readiness[guest.welcome.peerId]?.ready && message.state.readiness[host.welcome.peerId]?.ready);
+  send(recovered, { type: 'start' });
+  await next(guest, 'start');
+  recovered.ws.close();
+  await next(guest, 'pause');
+  const interrupted = await next(guest, 'result', message => message.result.reason === 'interrupted', 20_000);
+  assert.deepEqual(interrupted.result.winners, []);
+  const migrated = await next(guest, 'room', message => message.state.phase === 'lobby' && message.state.hostPeerId === guest.welcome.peerId);
+  assert.equal(migrated.state.hostPeerId, guest.welcome.peerId);
+
+  // Simulate a signaling-only outage after both peers have reported a direct route.
+  // Actual ICE and data channels are exercised separately by network-browser.mjs.
+  const directCreated = await (await fetch(`${base}/api/rooms`, { method: 'POST' })).json();
+  const directHost = await connect(directCreated.code, { hostToken: directCreated.hostToken });
+  const directGuest = await connect(directCreated.code, {});
+  send(directHost, { type: 'seats', players: [seat('directHost', directHost.welcome.peerId, 0)] });
+  send(directGuest, { type: 'seats', players: [seat('directGuest', directGuest.welcome.peerId, 1)] });
+  await next(directHost, 'room', message => message.state.players.length === 2);
+  send(directHost, { type: 'route', route: 'direct' });
+  send(directGuest, { type: 'route', route: 'direct' });
+  send(directHost, { type: 'ready', ready: true, assetsReady: true });
+  send(directGuest, { type: 'ready', ready: true, assetsReady: true });
+  await next(directHost, 'room', message => message.state.readiness[directHost.welcome.peerId]?.ready && message.state.readiness[directGuest.welcome.peerId]?.ready && message.state.routes[directGuest.welcome.peerId] === 'direct');
+  send(directHost, { type: 'start' });
+  const directRound = await next(directHost, 'start');
+  directHost.ws.close();
+  directGuest.ws.close();
+  await new Promise(resolve => setTimeout(resolve, 16_000));
+  const directRecovered = await connect(directCreated.code, { peerId: directHost.welcome.peerId, reconnectToken: directHost.welcome.reconnectToken });
+  assert.equal(directRecovered.welcome.state.matchId, directRound.matchId);
+  assert.equal(directRecovered.welcome.state.phase, 'playing');
+  console.log(`Rooms ${created.code}/${directCreated.code}: relay authority, reconnect, rematch, host loss migration, and simulated direct-route signaling outage passed.`);
 } finally {
   for (const ws of sockets) ws.close();
 }

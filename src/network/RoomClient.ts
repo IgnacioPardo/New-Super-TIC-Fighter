@@ -3,6 +3,7 @@ import type { InputFrame, MatchConfig, MatchResult, MatchSnapshot, PlayerSeat } 
 import type { ClientMessage, RoomClientOptions, RoomCredentials, RoomState, Route, ServerMessage, SignalData, TransportStatus } from './types';
 
 interface PeerLink {
+  peerId: string;
   pc: RTCPeerConnection;
   control?: RTCDataChannel;
   gameplay?: RTCDataChannel;
@@ -10,8 +11,6 @@ interface PeerLink {
   fallbackTimer?: ReturnType<typeof setTimeout>;
   retryTimer?: ReturnType<typeof setTimeout>;
   candidates: RTCIceCandidateInit[];
-  lastSnapshot: number;
-  lastInput: number;
   pingMs?: number;
 }
 
@@ -73,12 +72,16 @@ export class RoomClient {
   private readonly baseUrl: string;
   private socket?: WebSocket;
   private room?: RoomState;
+  private code?: string;
   private credentials?: RoomCredentials;
+  private retryStoredJoin = false;
   private links = new Map<string, PeerLink>();
   private closed = false;
   private forcedRelay = false;
   private reconnectStarted = 0;
   private reconnectTimer?: ReturnType<typeof setTimeout>;
+  private guestFallbackTimer?: ReturnType<typeof setTimeout>;
+  private guestFallbackExpired = false;
   private pingTimer?: ReturnType<typeof setInterval>;
   private sequence = 0;
   private lastInputSequences = new Map<string, number>();
@@ -103,6 +106,7 @@ export class RoomClient {
     const created = await response.json() as { code: string; hostToken: string };
     if (!/^[A-Z2-9]{10}$/.test(created.code) || typeof created.hostToken !== 'string') throw new Error('Invalid room creation response.');
     this.credentials = { hostToken: created.hostToken };
+    this.retryStoredJoin = false;
     rememberCredentials(created.code, this.credentials);
     return this.connect(created.code);
   }
@@ -112,7 +116,9 @@ export class RoomClient {
     this.closed = false;
     const normalized = code.trim().toUpperCase();
     if (!/^[A-Z2-9]{10}$/.test(normalized)) throw new Error('Room codes have ten letters or digits.');
-    this.credentials = credentials ?? storedCredentials(normalized) ?? {};
+    const stored = credentials ? undefined : storedCredentials(normalized);
+    this.retryStoredJoin = !!stored;
+    this.credentials = credentials ?? stored ?? {};
     return this.connect(normalized);
   }
 
@@ -167,10 +173,13 @@ export class RoomClient {
     if (this.forcedRelay === forced) return;
     this.forcedRelay = forced;
     if (forced) {
+      if (this.guestFallbackTimer) clearTimeout(this.guestFallbackTimer);
+      this.guestFallbackTimer = undefined;
       for (const peerId of [...this.links.keys()]) this.disposeLink(peerId);
       this.reportRoute('relay');
       for (const peer of this.room?.peers ?? []) if (peer.peerId !== this.room?.peerId) this.status(peer.peerId, 'relay', true);
     } else {
+      this.guestFallbackExpired = false;
       this.reportRoute('connecting');
       this.syncPeers();
     }
@@ -179,8 +188,11 @@ export class RoomClient {
   close(): void {
     this.closed = true;
     if (this.reconnectTimer) clearTimeout(this.reconnectTimer);
+    if (this.guestFallbackTimer) clearTimeout(this.guestFallbackTimer);
     if (this.pingTimer) clearInterval(this.pingTimer);
     this.reconnectTimer = undefined;
+    this.guestFallbackTimer = undefined;
+    this.guestFallbackExpired = false;
     this.pingTimer = undefined;
     this.pendingWelcome?.reject(new Error('Room connection closed.'));
     this.pendingWelcome = undefined;
@@ -189,12 +201,14 @@ export class RoomClient {
     if (socket) { socket.onclose = null; socket.close(); }
     for (const peerId of [...this.links.keys()]) this.disposeLink(peerId);
     this.room = undefined;
+    this.code = undefined;
     this.lastInputSequences.clear();
     this.lastSnapshots.clear();
     this.lastControl.clear();
   }
 
   private connect(code: string): Promise<RoomState> {
+    this.code = code;
     return new Promise((resolve, reject) => {
       this.pendingWelcome = { resolve, reject };
       this.openSocket(code);
@@ -256,6 +270,7 @@ export class RoomClient {
         this.pendingWelcome = undefined;
         this.options.onRoomState?.(message.state);
         this.syncPeers();
+        if (this.forcedRelay && message.state.routes[message.peerId] !== 'relay') this.reportRoute('relay');
         if (previous?.matchId && previous.matchId === message.state.matchId && this.isHost) {
           if (previous.phase === 'paused' && message.state.phase === 'playing') this.send({ type: 'pause', reason: previous.pauseReason });
           if (previous.phase === 'playing' && previous.resumeAt && message.state.phase === 'paused') this.send({ type: 'resume' });
@@ -278,10 +293,23 @@ export class RoomClient {
       case 'forfeit': this.acceptControl(message); break;
       case 'pong': {
         const pingMs = Math.max(0, Math.round(performance.now() - message.nonce));
-        if (this.room && !this.isHost) this.reportRoute(this.links.get(this.room.hostPeerId)?.route === 'direct' ? 'direct' : 'relay', pingMs);
+        if (this.room && !this.isHost) {
+          const direct = this.links.get(this.room.hostPeerId);
+          this.reportRoute(direct?.route === 'direct' ? 'direct' : 'relay', direct?.route === 'direct' ? direct.pingMs : pingMs);
+        }
         break;
       }
       case 'error':
+        if (message.code === 'reconnect_expired' && this.retryStoredJoin && this.code && !this.room) {
+          this.retryStoredJoin = false;
+          this.credentials = {};
+          try { sessionStorage.removeItem(credentialKey(this.code)); } catch { /* storage may be disabled */ }
+          const previous = this.socket;
+          this.socket = undefined;
+          if (previous) { previous.onclose = null; previous.close(); }
+          this.openSocket(this.code);
+          break;
+        }
         this.options.onError?.(message.code, message.message);
         if (this.pendingWelcome) { this.pendingWelcome.reject(new Error(message.message)); this.pendingWelcome = undefined; }
         break;
@@ -301,7 +329,7 @@ export class RoomClient {
     if (message.type === 'result' && message.result) { this.room.phase = 'finished'; this.room.result = message.result; this.options.onResult?.(message.result); }
     if (message.type === 'forfeit' && message.seatIds) this.options.onForfeit?.(message.seatIds);
     this.options.onRoomState?.(this.room);
-    if (this.isHost && message.type !== 'forfeit') this.broadcastDirectControl(message);
+    if (this.isHost) this.broadcastDirectControl(message);
   }
 
   private acceptInput(from: string, sequence: number, frames: InputFrame[]): void {
@@ -327,9 +355,24 @@ export class RoomClient {
         this.status(peer.peerId, 'disconnected', false, 'Peer disconnected');
         continue;
       }
-      if (this.forcedRelay) { this.status(peer.peerId, 'relay', true); continue; }
+      if (this.forcedRelay) {
+        this.status(peer.peerId, 'relay', true);
+        if (room.routes[room.peerId] !== 'relay') this.reportRoute('relay');
+        continue;
+      }
       if (this.isHost && !this.links.has(peer.peerId)) void this.makeOffer(peer.peerId);
-      if (!this.isHost && peer.peerId === room.hostPeerId && !this.links.has(peer.peerId)) this.status(peer.peerId, 'connecting', true);
+      if (!this.isHost && peer.peerId === room.hostPeerId && !this.links.has(peer.peerId)) {
+        this.status(peer.peerId, this.guestFallbackExpired ? 'relay' : 'connecting', true);
+        if (typeof RTCPeerConnection === 'undefined') { this.guestFallbackExpired = true; this.reportRoute('relay'); }
+        else if (!this.guestFallbackExpired && !this.guestFallbackTimer) this.guestFallbackTimer = setTimeout(() => {
+          this.guestFallbackTimer = undefined;
+          if (!this.links.get(peer.peerId) || this.links.get(peer.peerId)?.route !== 'direct') {
+            this.guestFallbackExpired = true;
+            this.reportRoute('relay');
+            this.status(peer.peerId, 'relay', true, 'Direct connection timed out');
+          }
+        }, RTC_TIMEOUT_MS);
+      }
     }
     for (const peerId of [...this.links.keys()]) if (!room.peers.some(peer => peer.peerId === peerId)) this.disposeLink(peerId);
   }
@@ -337,7 +380,7 @@ export class RoomClient {
   private newLink(peerId: string): PeerLink {
     this.disposeLink(peerId);
     const pc = new RTCPeerConnection({ iceServers: [{ urls: 'stun:stun.cloudflare.com:3478' }] });
-    const link: PeerLink = { pc, route: 'connecting', candidates: [], lastSnapshot: -1, lastInput: -1 };
+    const link: PeerLink = { peerId, pc, route: 'connecting', candidates: [] };
     this.links.set(peerId, link);
     pc.onicecandidate = event => { if (event.candidate) this.send({ type: 'signal', to: peerId, data: { candidate: event.candidate.toJSON() } }); };
     pc.onconnectionstatechange = () => {
@@ -350,8 +393,9 @@ export class RoomClient {
   }
 
   private async makeOffer(peerId: string): Promise<void> {
-    if (this.forcedRelay || !this.room || typeof RTCPeerConnection === 'undefined') { this.status(peerId, 'relay', true); return; }
-    const link = this.newLink(peerId);
+    if (this.forcedRelay || !this.room || typeof RTCPeerConnection === 'undefined') { this.status(peerId, 'relay', true); this.reportRoute('relay'); return; }
+    let link: PeerLink;
+    try { link = this.newLink(peerId); } catch { this.status(peerId, 'relay', true, 'Direct connection unavailable'); this.reportRoute('relay'); return; }
     this.attachChannel(peerId, link.pc.createDataChannel('control', { ordered: true }));
     this.attachChannel(peerId, link.pc.createDataChannel('gameplay', { ordered: false, maxRetransmits: 0 }));
     try {
@@ -364,7 +408,12 @@ export class RoomClient {
     if (this.forcedRelay || !this.room || (from !== this.room.hostPeerId && !this.isHost) || typeof RTCPeerConnection === 'undefined') return;
     let link = this.links.get(from);
     if ('description' in data) {
-      if (data.description.type === 'offer' && !this.isHost) link = this.newLink(from);
+      if (data.description.type === 'offer' && !this.isHost) {
+        if (this.guestFallbackTimer) clearTimeout(this.guestFallbackTimer);
+        this.guestFallbackTimer = undefined;
+        this.guestFallbackExpired = false;
+        try { link = this.newLink(from); } catch { this.reportRoute('relay'); return; }
+      }
       if (!link) return;
       try {
         await link.pc.setRemoteDescription(data.description);
@@ -397,6 +446,9 @@ export class RoomClient {
     const link = this.links.get(peerId);
     if (!link || this.forcedRelay || link.control?.readyState !== 'open' || link.gameplay?.readyState !== 'open') return;
     if (link.fallbackTimer) clearTimeout(link.fallbackTimer);
+    if (this.guestFallbackTimer) clearTimeout(this.guestFallbackTimer);
+    this.guestFallbackTimer = undefined;
+    this.guestFallbackExpired = false;
     link.fallbackTimer = undefined;
     link.route = 'direct';
     this.status(peerId, 'direct', true);
@@ -425,12 +477,16 @@ export class RoomClient {
     if (packet.type === 'ping' && channel === 'control' && typeof packet.nonce === 'number') { this.sendDirectControl(peerId, { type: 'pong', nonce: packet.nonce }); return; }
     if (packet.type === 'pong' && channel === 'control' && typeof packet.nonce === 'number') {
       const link = this.links.get(peerId);
-      if (link) { link.pingMs = Math.max(0, Math.round(performance.now() - packet.nonce)); this.status(peerId, link.route, true, undefined, link.pingMs); }
+      if (link) {
+        link.pingMs = Math.max(0, Math.round(performance.now() - packet.nonce));
+        this.status(peerId, link.route, true, undefined, link.pingMs);
+        if (!this.isHost) this.reportRoute(link.route, link.pingMs);
+      }
       return;
     }
     if (packet.type === 'input' && channel === 'gameplay' && this.isHost && packet.matchId === this.room?.matchId && packet.sequence !== undefined && packet.frames) this.acceptInput(peerId, packet.sequence, packet.frames);
     if (packet.type === 'snapshot' && channel === 'gameplay' && !this.isHost && peerId === this.room?.hostPeerId && packet.matchId === this.room?.matchId && packet.sequence !== undefined && packet.snapshot) this.acceptSnapshot(packet.sequence, packet.snapshot, packet.acknowledgements);
-    if (channel === 'control' && ['start', 'pause', 'resume', 'result'].includes(packet.type) && peerId === this.room?.hostPeerId) this.acceptControl(packet);
+    if (channel === 'control' && ['start', 'pause', 'resume', 'result', 'forfeit'].includes(packet.type) && peerId === this.room?.hostPeerId) this.acceptControl(packet);
     if (channel === 'control' && packet.type === 'pause' && this.isHost && packet.matchId === this.room?.matchId) {
       if (!this.send({ type: 'pause', reason: packet.reason })) this.acceptControl({ ...packet, controlId: packet.controlId ?? crypto.randomUUID() });
     }
@@ -450,7 +506,10 @@ export class RoomClient {
   private sendGameplay(link: PeerLink, packet: DirectPacket): boolean {
     const channel = link.gameplay;
     if (channel?.readyState !== 'open') return false;
-    if (channel.bufferedAmount > MAX_GAMEPLAY_BUFFER) return true; // stale update is superseded next tick
+    if (channel.bufferedAmount > MAX_GAMEPLAY_BUFFER) {
+      this.status(link.peerId, 'direct', true, 'Direct queue congested; next update will resynchronize');
+      return true; // stale update is superseded next tick
+    }
     channel.send(JSON.stringify(packet));
     return true;
   }
@@ -482,6 +541,14 @@ export class RoomClient {
 
   private send(message: ClientMessage): boolean {
     if (this.socket?.readyState !== WebSocket.OPEN) return false;
+    if (this.socket.bufferedAmount > MAX_GAMEPLAY_BUFFER && (message.type === 'input' || message.type === 'snapshot')) {
+      this.status(this.room?.hostPeerId ?? '', 'relay', true, 'Relay queue congested; next update will resynchronize');
+      return false;
+    }
+    if (this.socket.bufferedAmount > MAX_GAMEPLAY_BUFFER * 8) {
+      this.socket.close(1013, 'room connection overloaded');
+      return false;
+    }
     this.socket.send(JSON.stringify(message));
     return true;
   }
