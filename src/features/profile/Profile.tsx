@@ -22,9 +22,16 @@ export function Profile({ language }: { language: Language }) {
   const configured = await fetch('/api/auth-config').then(r => {if(!r.ok)throw Error('offline');return r.json();}); setConfig(configured);
   if (!configured.enabled) return;
   const response = await fetch('/api/profile');
-  if (response.status === 401) { localStorage.removeItem('stf-active-profile');setProfile(null);setLocal(loadProgress());return; }
+  if (response.status === 401) {
+   const guest=loadProgress(),saved=localStorage.getItem('stf-guest-cosmetic')??localStorage.getItem('stf-cosmetic');
+   const style=COSMETICS.find(item=>item.id===saved&&item.xp<=cosmeticXP(guest))?.id??'original';
+   localStorage.removeItem('stf-active-profile');localStorage.setItem('stf-cosmetic',style);
+   setProfile(null);setLocal(guest);setHandle(localStorage.getItem('stf-name')??'');setCosmetic(style);setProviders([]);setPasskeys([]);
+   window.dispatchEvent(new Event('stf-profile'));return;
+  }
   if (!response.ok) throw Error('offline');
   const next:ProfileData = await response.json(); setProfile(next);const merged=mergeProgress(next.local,loadProgress(next.userId));setLocal(merged);setHandle(next.handle);setCosmetic(next.cosmetic);
+  if(!localStorage.getItem('stf-active-profile'))localStorage.setItem('stf-guest-cosmetic',localStorage.getItem('stf-cosmetic')??'original');
   saveProgress(merged,next.userId);localStorage.setItem('stf-active-profile',next.userId);localStorage.setItem('stf-cosmetic',next.cosmetic);window.dispatchEvent(new Event('stf-profile'));
   const [keys,accounts] = await Promise.all([authClient.passkey.listUserPasskeys(),authClient.listAccounts()]);
   setPasskeys(keys.data ?? []);setProviders(accounts.data?.map(a=>a.providerId) ?? []);
@@ -40,7 +47,7 @@ export function Profile({ language }: { language: Language }) {
  const persist=async(progress=local)=>{
   if(!handle.trim())return;
   if(profile){const result=await fetch('/api/profile',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({handle,cosmetic,local:progress})});if(!result.ok)throw Error('profile');}
-  else {localStorage.setItem('stf-name',handle.trim());localStorage.setItem('stf-cosmetic',cosmetic);saveProgress(progress);}
+  else {localStorage.setItem('stf-name',handle.trim());localStorage.setItem('stf-cosmetic',cosmetic);localStorage.setItem('stf-guest-cosmetic',cosmetic);saveProgress(progress);}
   window.dispatchEvent(new Event('stf-profile'));setMessage(es?'Perfil guardado.':'Profile saved.');
  };
  const xp=cosmeticXP(local,profile?.verified.xp ?? 0);
@@ -65,7 +72,7 @@ export function Profile({ language }: { language: Language }) {
      <p className="config-note">{es?'Las partidas locales y de práctica no cuentan como victorias online.':'Local and practice matches do not count as online wins.'}</p>
      <div className="feature-actions"><button disabled={busy} onClick={()=>void act(async()=>{const progress=mergeProgress(local,loadProgress());await persist(progress);})}>{es?'Incorporar progreso de invitado':'Import guest progress'}</button>
      <button disabled={busy||!providers.length} onClick={()=>void act(async()=>{const r=await authClient.passkey.addPasskey({name:'Super TIC Fighter'});if(r.error)throw Error(r.error.message);})}>{es?'Añadir passkey':'Add passkey'}</button>
-     <button disabled={busy} onClick={()=>void act(async()=>{await authClient.signOut();localStorage.removeItem('stf-active-profile');setProfile(null);setProviders([]);setPasskeys([]);})}>{es?'Cerrar sesión':'Sign out'}</button></div>
+     <button disabled={busy} onClick={()=>void act(async()=>{const result=await authClient.signOut();if(result.error)throw Error(result.error.message);})}>{es?'Cerrar sesión':'Sign out'}</button></div>
      {passkeys.length>0&&<ul className="feature-list">{passkeys.map(key=><li key={key.id}><span>{key.name||'Passkey'}</span><button disabled={busy||!providers.length} onClick={()=>void act(async()=>{const r=await authClient.passkey.deletePasskey({id:key.id});if(r.error)throw Error(r.error.message);})}>{es?'Quitar':'Remove'}</button></li>)}</ul>}
     </>}
     <p className="config-note">{es?'Las passkeys requieren una cuenta vinculada. Conserva Google o GitHub para recuperar el acceso.':'Enroll a passkey after linking an account. Keep Google or GitHub linked for recovery.'}</p>
