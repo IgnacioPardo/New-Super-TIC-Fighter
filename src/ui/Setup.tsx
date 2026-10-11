@@ -12,7 +12,7 @@ import { Choice, MenuDialog, MenuTabs, menuTargets } from './MenuControls';
 const palettes = {hair:['#164d43','#657822','#5c2f82','#53351f'],shirt:['#24b26d','#75c321','#5734c7','#a72547'],pants:['#7de4dc','#65c052','#b574d4','#d3a479']};
 type SeatEditor = {open:boolean; tab:'fighter'|'player'};
 type ReadyBridge = OnlineBridge & {setSeatReady?:(id:string,ready:boolean,assetsReady:boolean)=>void;state:OnlineBridge['state'] & {pendingEdits?:boolean;seatReadiness?:Record<string,boolean|{ready:boolean;assetsReady:boolean}>}};
-export function Setup({config,setConfig,settings,manifest,devices,ready,toggleReady,start,online,practice,feedback,invalidateReady,readOnly=false,lockRules=false,lockRoster=false,lockDiscipline=false,editorOnly=false}: {
+export function Setup({config:incomingConfig,setConfig,settings,manifest,devices,ready,toggleReady,start,online,practice,feedback,invalidateReady,readOnly=false,lockRules=false,lockRoster=false,lockDiscipline=false,editorOnly=false}: {
  config:MatchConfig;setConfig:(config:MatchConfig)=>void;settings:AppSettings;manifest:AssetsManifest|null;
  devices:{id:string;label:string;connected:boolean;controllerId?:string}[];ready:Record<string,boolean>;toggleReady:(id:string)=>void;start:()=>void;
  online?:OnlineBridge;practice:boolean;readOnly?:boolean;lockRules?:boolean;lockRoster?:boolean;lockDiscipline?:boolean;editorOnly?:boolean;invalidateReady?:()=>void;feedback?:(cue:'navigate'|'change'|'back'|'confirm'|'error')=>void;
@@ -20,6 +20,16 @@ export function Setup({config,setConfig,settings,manifest,devices,ready,toggleRe
  const t=ui[settings.language],lang=settings.language,es=lang==='es';
  const bridge=online as ReadyBridge|undefined;
  const host=!online||online.state.isHost;
+ const [ruleDraft,setRuleDraft]=useState<Partial<MatchConfig>>({});
+ const config=online&&host?{...incomingConfig,...ruleDraft}:incomingConfig;
+ useEffect(()=>{
+  setRuleDraft(previous=>{
+   if(!host||online?.state.error&&!online.state.pendingEdits) return Object.keys(previous).length?{}:previous;
+   const next={...previous};let changed=false;
+   for(const [key,value] of Object.entries(previous)) if(JSON.stringify(incomingConfig[key as keyof MatchConfig])===JSON.stringify(value)) {delete next[key as keyof MatchConfig];changed=true;}
+   return changed?next:previous;
+  });
+ },[incomingConfig,host,online?.state.error,online?.state.pendingEdits]);
  const scope=useRef<HTMLDivElement>(null);
  const [editors,setEditors]=useState<Record<string,SeatEditor>>({});
  const [drafts,setDrafts]=useState<Record<string,Partial<PlayerSeat>>>({});
@@ -72,7 +82,7 @@ export function Setup({config,setConfig,settings,manifest,devices,ready,toggleRe
   if(bridge.setSeatReady) for(const seat of localHumans) {const value=!!ready[seat.id]&&connected(seat)&&!drafts[seat.id]&&!bridge.state.pendingEdits,key=`${value}:${!!manifest}`;if(sentReadiness.current.get(seat.id)!==key) {sentReadiness.current.set(seat.id,key);bridge.setSeatReady(seat.id,value,!!manifest);}}
   else {const value=localHumans.length>0&&localHumans.every(seat=>ready[seat.id]&&connected(seat))&&!bridge.state.pendingEdits&&Object.keys(drafts).length===0&&!!manifest;if(sentReadiness.current.get('peer')!==String(value)) {sentReadiness.current.set('peer',String(value));bridge.ready(value);}}
  },[ready,manifest,drafts,bridge?.state.pendingEdits,reclaims]);
- const update=(patch:Partial<MatchConfig>)=>{if(!host||readOnly) return;invalidateReady?.();if(online) online.updateConfig({...config,...patch});else setConfig({...config,...patch});};
+ const update=(patch:Partial<MatchConfig>)=>{if(!host||readOnly) return;invalidateReady?.();if(online) {const {players:_players,...rules}=patch;setRuleDraft(previous=>({...previous,...rules}));online.updateConfig({...config,...patch});}else setConfig({...config,...patch});};
  const changeMode=(gameMode:NonNullable<MatchConfig['gameMode']>)=>{
   let players=config.players;
   if(gameMode==='survival') {
@@ -91,7 +101,7 @@ export function Setup({config,setConfig,settings,manifest,devices,ready,toggleRe
  const rosterValid=config.players.length>=2&&config.players.length<=maxFighters&&localHumans.length<=4;
  const allReady=practice||config.players.every(acknowledgedReady);
  const routePending=!!online&&online.state.members.length>1&&online.state.route==='connecting';
- const validation=routePending?t.connecting:bridge?.state.pendingEdits||Object.keys(drafts).length?t.pendingEdits:!rosterValid?`${es?'Se necesitan de 2 a':'2 to'} ${maxFighters} ${es?'luchadores.':'fighters required.'}`:!teamValid?config.gameMode==='survival'?(es?'Supervivencia requiere uno o dos humanos en el equipo A.':'Survival needs one or two humans on team A.'):t.teamInvalid:!devicesValid?t.devicesInvalid:!allReady?t.readyInvalid:'';
+ const validation=routePending?t.connecting:bridge?.state.pendingEdits||Object.keys(drafts).length||Object.keys(ruleDraft).length?t.pendingEdits:!rosterValid?`${es?'Se necesitan de 2 a':'2 to'} ${maxFighters} ${es?'luchadores.':'fighters required.'}`:!teamValid?config.gameMode==='survival'?(es?'Supervivencia requiere uno o dos humanos en el equipo A.':'Survival needs one or two humans on team A.'):t.teamInvalid:!devicesValid?t.devicesInvalid:!allReady?t.readyInvalid:'';
  const addSeat=(device?:string)=>{
   if(lockRoster||readOnly||config.players.length>=maxFighters||device&&localHumans.length>=4) return;
   const index=Array.from({length:8},(_,i)=>i).find(index=>!config.players.some(player=>player.id===`p${index+1}`))??config.players.length;
@@ -185,7 +195,7 @@ export function Setup({config,setConfig,settings,manifest,devices,ready,toggleRe
     {!practice&&!lockRoster&&!readOnly&&config.players.length<maxFighters&&(host||!!online)&&<button className="add-fighter" onClick={()=>addSeat()}><span aria-hidden="true">+</span>{t.add}</button>}
    </div>
   </section>
-  <button className="match-summary" onClick={()=>openRules()} aria-label={`${t.rules} · ${t.arena}`}><span className="arena-thumbnail" style={{backgroundImage:manifest?`url("${manifest.backgrounds[arena.id]??manifest.backgrounds.classic}")`:undefined}}><svg viewBox="0 0 1366 768" aria-hidden="true">{arena.platforms.map((platform,i)=><rect key={i} {...platform}/>)}</svg></span><span><small>{t.arena} / {t.rules}</small><strong>{arena.name[lang]}</strong><span>{t[config.ruleset??'classic']} · {t[config.gameMode??'stock']} · {config.mode==='teams'?t.teams:t.ffa}</span></span><span className="summary-change">{host?t.change:t.waitHost} <b aria-hidden="true">›</b></span></button>
+  <button className="match-summary" onClick={()=>openRules()} aria-label={`${t.rules} · ${t.arena}`}><span className="arena-thumbnail" style={{backgroundImage:manifest?`url("${manifest.backgrounds[arena.id]??manifest.backgrounds.classic}")`:undefined}}><svg viewBox="0 0 1366 768" aria-hidden="true">{arena.platforms.map((platform,i)=><rect key={i} {...platform}/>)}</svg></span><span><small>{t.arena} / {t.rules}</small><strong>{arena.name[lang]}</strong><span>{t[config.ruleset??'classic']} · {t[config.gameMode??'stock']} · {config.mode==='teams'?t.teams:t.ffa}</span></span><span className="summary-change">{readOnly?(es?'El servidor fija las reglas y el comienzo':'Server controls rules and start'):host?t.change:t.waitHost} <b aria-hidden="true">›</b></span></button>
   {!editorOnly&&<div className="start-panel"><p className={validation?'validation-hint':'help-text'} role="status">{validation||(practice?t.practiceTip:t.readyHelp)}</p><button className="primary-button fight-button" data-ui-sound="silent" disabled={!!validation||!manifest||!host} onClick={start}>{readOnly?(es?'El servidor inicia cuando todos están listos':'Server starts when everyone is ready'):t.start}<span>↗</span></button></div>}
   {rulesOpen&&<MenuDialog mark={<Icon name="arena"/>} language={lang} title={`${t.arena} / ${t.rules}`} subtitle={readOnly?(es?'El servidor fija estas reglas.':'The server sets these rules.'):lockRules?(es?'Este modo fija sus reglas.':'This mode sets its rules.'):!host?t.waitHost:undefined} done={t.done} close={closeRules}>
    <div className="rules-editor"><div className="arena-preview" style={{backgroundImage:manifest?`url("${manifest.backgrounds[arena.id]??manifest.backgrounds.classic}")`:undefined}}><svg viewBox="0 0 1366 768" aria-hidden="true">{arena.platforms.map((platform,i)=><rect key={i} {...platform}/>)}</svg><span>{arena.subtitle[lang]}</span></div><div className="editor-fields">
