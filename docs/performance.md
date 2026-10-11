@@ -65,3 +65,7 @@ all reset states, response-body sizes, and corrected `httpOnlyInitialSize`),
 `/tmp/stf-listener-lifecycle-playtest.json` (callback identity comparison), and
 the execution output from `/tmp/stf-listener-lifecycle-playtest.cjs` (five
 recreations). No repository files changed for this check.
+
+Production cold transfer on the deployed HTTPS service measured **4,559,823 encoded bytes (4.56 MB decimal)** through the first fully rendered online match, using Chromium CDP `Network.loadingFinished.encodedDataLength`. It includes 235 completed non-music HTTP responses and the 606-byte room creation response, excluding streaming MP3 and generated blob URLs. Compressible assets negotiated zstd over HTTP/2 or HTTP/3. This is measured encoded transfer, distinct from the earlier gzip estimate.
+
+A 370-second shared pause on production retained elapsed 5.1833333333 seconds, the same match identity, and connected peers. The host resumed through a 3.254-second countdown; the following 311 ticks covered 5.1833 simulated seconds in 5.1823 wall seconds. The attempted CDP freeze did not actually stop execution, so this confirms long shared pause/resume only. Actual hidden-tab throttling and operating-system sleep remain unverified.

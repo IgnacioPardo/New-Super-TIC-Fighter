@@ -17,6 +17,9 @@ Verified on 2026-10-11. No unit tests were written or run. Verification uses the
 - Reconnect verification checked real guest movement and host input acknowledgements after restoring the same peer identity. Result verification checked exact authoritative stocks, damage, winner, and visible scoreboards on both clients.
 - Foreground simulation cadence, ten practice resets, and six game-view recreations were measured. A Phaser visibility-listener leak was fixed with a reproducible dependency patch; independent repeated-mount checks stayed at one canvas, three workers, and stable listener counts. Hardware, measurement limits, and initial transfer estimates are in `docs/performance.md`.
 
+- The camera now anchors its framing to the complete arena. All three stages were visually checked at spawn, during an offstage fall, after respawn, and after live resizing at 1366×768, 1440×1000, 1920×1080, and 1680×1050. The canvas remained centered and landing surfaces stayed in view.
+- Actual production clients passed the same five online lifecycle scenarios plus an unforced direct WebRTC match. A 370-second shared UI pause retained the exact match/time and resumed through the normal countdown without catch-up. This did not establish a genuinely frozen renderer or hidden tab.
+
 ## Production and acceptance gates
 
 - Public HTTPS deployment, production media range/header checks, and full multiplayer verification on the deployed service are recorded separately in `docs/hosting.md` when completed.

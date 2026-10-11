@@ -3,6 +3,9 @@ on:
   push:
     branches: [main]
   pull_request:
+concurrency:
+  group: verify-${{ github.ref }}
+  cancel-in-progress: true
 permissions:
   contents: read
 jobs:
@@ -16,6 +19,7 @@ jobs:
           node-version: 24
           cache: pnpm
       - run: pnpm install --frozen-lockfile
+      - run: python3 scripts/make-audio-headers.py --check
       - run: pnpm typecheck
       - run: pnpm exec tsc -p tsconfig.server.json --noEmit
       - run: pnpm build
@@ -38,6 +42,7 @@ jobs:
           done
           curl --fail --silent http://127.0.0.1:4173/api/health
           pnpm e2e
+          pnpm e2e:audio
       - name: Preserve failed browser screenshots
         if: failure()
         uses: actions/upload-artifact@v4

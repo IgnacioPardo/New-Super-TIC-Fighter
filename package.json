@@ -16,7 +16,8 @@
     "e2e:devices": "node scripts/app-devices.mjs",
     "e2e:lifecycle": "node scripts/app-network-lifecycle.mjs",
     "e2e:transport": "node scripts/network-smoke.mjs && node scripts/network-browser.mjs",
-    "e2e:menus": "node scripts/app-menus.mjs"
+    "e2e:menus": "node scripts/app-menus.mjs",
+    "e2e:audio": "node scripts/audio-http.mjs"
   },
   "dependencies": {
     "phaser": "4.2.1",
