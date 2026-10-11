@@ -190,6 +190,8 @@ try {
 
   await page.getByRole('button', { name: 'Sign out', exact: true }).click();
   await expect(page.getByRole('heading', { name: 'Local profile', exact: true })).toBeVisible();
+  await expect(page.getByRole('textbox', { name: 'Public name' })).toHaveValue('Guest Renamed');
+  await expect(page.locator('.cosmetic-options .selected strong')).toHaveText('Copper');
   assert.equal((await page.request.get(`${origin}/api/profile`)).status(), 401);
   assert.equal((await fetch(`${origin}/api/profile`, { headers: { Cookie: `better-auth.session_token=${signed}` } })).status, 401);
   assert.equal(await page.evaluate(() => localStorage.getItem('stf-active-profile')), null);
@@ -203,7 +205,7 @@ try {
   assert.ok(signedInCredentials[0].signCount > initialCounter);
   assert.equal(await page.evaluate(() => localStorage.getItem('stf-active-profile')), userId);
   await page.screenshot({ path: resolve(output, 'passkey-authenticated.png'), fullPage: true });
-  report.passed.push('logout invalidates session; fresh virtual passkey assertion creates authenticated session and restores profile without account cache');
+  report.passed.push('logout restores saved guest name/Copper and invalidates session; fresh virtual passkey assertion creates authenticated session and restores account name/Neon/progress without account cache');
   report.authenticatorCounter = { before: initialCounter, after: signedInCredentials[0].signCount };
 
   await page.getByRole('button', { name: 'Remove', exact: true }).click();
