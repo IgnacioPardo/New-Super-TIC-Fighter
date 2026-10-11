@@ -36,6 +36,16 @@ export function useOnline(): OnlineBridge {
     const host=new Worker(new URL('../simulation/worker.ts',import.meta.url),{type:'module'});
     const prediction=new Worker(new URL('./prediction.worker.ts',import.meta.url),{type:'module'});
     authorityWorker.current=host;predictionWorker.current=prediction;
+    host.onerror=()=>{
+      if(!client.current?.isHost||!ownMatch.current)return;
+      update({error:'El combate se interrumpió. Recarga la página antes de volver a jugar. / The fight stopped. Reload before playing again.'});
+      client.current.reportResult({winners:[],reason:'interrupted'});
+    };
+    prediction.onerror=()=>{
+      if(!client.current||client.current.isHost)return;
+      update({error:'No se pudo continuar el combate. Recarga para reconectar. / The fight could not continue. Reload to reconnect.'});
+      client.current.pause('Un jugador necesita reconectar / A player needs to reconnect');
+    };
     host.onmessage=({data}:MessageEvent<SimulationMessage>)=>{
       if(data.type!=='snapshot'||!client.current?.isHost||data.snapshot.matchId!==ownMatch.current)return;
       const next=data.snapshot;publish(next);
