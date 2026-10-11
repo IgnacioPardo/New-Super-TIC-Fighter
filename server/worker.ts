@@ -2,12 +2,13 @@ import { CONTENT_VERSION, PROTOCOL_VERSION } from '../src/shared/types';
 import { Room } from './room';
 import { MatchDO } from './match';
 import { LobbyDO } from './lobby';
+import { TournamentDO } from './tournament';
 import type { Env } from './env';
 import { secret } from './validation';
 import type { MatchAdmission } from './match';
 import { handleAccountRequest, getAccountIdentity } from './accounts';
 
-export { Room, MatchDO, LobbyDO };
+export { Room, MatchDO, LobbyDO, TournamentDO };
 
 
 const ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
@@ -160,6 +161,23 @@ export default {
     }
     const spectator = /^\/api\/activities\/([a-zA-Z0-9_-]{1,64})\/spectate$/.exec(url.pathname);
     if (spectator && request.method === 'GET') return env.LOBBY.get(env.LOBBY.idFromName('global')).fetch(`https://internal/internal/spectate?matchId=${spectator[1]}`);
+
+    if (url.pathname === '/api/tournaments' && request.method === 'GET') {
+      if (!env.DB) return json([]);
+      const rows = await env.DB.prepare("SELECT data FROM tournament_state WHERE visibility='public' ORDER BY updated_at DESC LIMIT 30").all<{data:string}>();
+      return json(rows.results.map(row=>JSON.parse(row.data)));
+    }
+    if (url.pathname === '/api/tournaments' && request.method === 'POST') {
+      const value = await request.json() as Record<string,unknown>;
+      const id = crypto.randomUUID();
+      return env.TOURNAMENTS.get(env.TOURNAMENTS.idFromName(id),{locationHint:'enam'}).fetch('https://internal/internal/create',{method:'POST',body:JSON.stringify({...value,id})});
+    }
+    const competition = /^\/api\/tournaments\/([a-zA-Z0-9_-]{1,64})(?:\/(join|start|tickets|spectate|ws))?$/.exec(url.pathname);
+    if (competition) {
+      const action=competition[2]??'state';
+      if (['join','start','spectate','tickets'].includes(action) && request.method !== 'POST' || ['state','ws'].includes(action) && request.method !== 'GET') return json({error:'method_not_allowed'},405);
+      return env.TOURNAMENTS.get(env.TOURNAMENTS.idFromName(competition[1]),{locationHint:'enam'}).fetch(new Request(`https://internal/internal/${action}${url.search}`,request));
+    }
 
     if (url.pathname === '/api/feasibility' && request.method === 'POST') {
       if (!env.PUBLIC_FEASIBILITY_KEY || request.headers.get('X-Feasibility-Key') !== env.PUBLIC_FEASIBILITY_KEY) return json({ error: 'feasibility_disabled' }, 403);

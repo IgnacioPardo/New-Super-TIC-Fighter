@@ -16,6 +16,8 @@ export function validConfig(value: unknown, publicMatch = false): value is Match
   if (value.gameMode !== undefined && !['stock','timed','hill','royale','survival','training'].includes(String(value.gameMode))) return false;
   if (value.bestOf !== undefined && ![1,3,5].includes(Number(value.bestOf))) return false;
   if (value.items !== undefined && typeof value.items !== 'boolean' || value.hazards !== undefined && typeof value.hazards !== 'boolean') return false;
+  if(value.ruleset!=='expanded' && value.players.some(player=>record(player)&&!['networks','design','code','hardware'].includes(String(player.discipline))))return false;
+  if(publicMatch&&value.mode==='teams'&&[0,1].some(team=>(value.players as unknown[]).filter(player=>record(player)&&player.team===team).length!==2))return false;
   const max = value.gameMode === 'royale' ? 8 : 4;
   return value.players.length <= max && new Set(value.players.map(player => record(player) ? player.id : '')).size === value.players.length &&
     value.players.every(player => validSeat(player, record(player) && player.kind === 'bot' ? 'bot' : 'human') && (!publicMatch || player.kind === 'human')) &&

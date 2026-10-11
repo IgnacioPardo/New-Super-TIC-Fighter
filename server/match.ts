@@ -49,6 +49,7 @@ export class MatchDO {
       if(!record(value)||typeof value.matchId!=='string'||!validConfig(value.config,true)||value.config.players.length<2||!Array.isArray(value.members)||!value.members.length)return json({error:'invalid_match'},400);
       const seats=value.members.flatMap(member=>member.seatIds);
       if(seats.length!==value.config.players.length||new Set(seats).size!==seats.length||value.members.some(member=>typeof member.peerId!=='string'||typeof member.token!=='string'||!member.seatIds.length||member.seatIds.some(id=>!value.config.players.some(p=>p.id===id&&p.peerId===member.peerId))))return json({error:'invalid_ownership'},400);
+      try{this.simulation.createMatch(value.config,value.matchId);}catch{return json({error:'invalid_simulation_rules'},400);}
       this.match={...value,phase:'waiting',createdAt:Date.now(),members:value.members.map(member=>({...member,connected:false,disconnectedAt:Date.now(),forfeited:false,lastSequence:0,ready:{}})),metrics:freshMetrics(),spectatorToken:value.spectatorToken??secret()};
       this.save();await this.state.storage.setAlarm(Date.now()+WAIT_MS);
       return json({matchId:value.matchId,spectatorToken:this.match.spectatorToken},201);

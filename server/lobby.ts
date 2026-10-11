@@ -28,7 +28,10 @@ export class LobbyDO {
     if(url.pathname==='/internal/state')return json({capacity:this.capacity(),parties:this.publicParties(),activities:this.activities(),onlinePlayers:this.onlinePlayers()});
     if(url.pathname==='/internal/peer'&&request.method==='POST'){
       const {peerId,token}=await request.json() as {peerId:string;token:string};const peer=this.store.peers.find(p=>p.id===peerId&&p.token===token&&this.socketFor(p.id));
-      return peer?json({peerId:peer.id,players:peer.players,userId:peer.userId,browserId:peer.id}):json({error:'invalid_peer'},403);
+      return peer?json({peerId:peer.id,players:peer.players,userId:peer.userId,browserId:peer.id,available:!peer.ticket||!this.store.reservations.some(r=>r.matchId===peer.ticket!.matchId&&!r.released)}):json({error:'invalid_peer'},403);
+    }
+    if(url.pathname==='/internal/tournament_tickets'&&request.method==='POST'){
+      const {tickets}=await request.json() as {tickets:MatchTicket[]};for(const ticket of tickets){const peer=this.store.peers.find(p=>p.id===ticket.peerId);if(!peer)continue;peer.ticket=ticket;const socket=this.socketFor(peer.id);if(socket)this.send(socket,{type:'match',ticket});}this.save();return json({ok:true});
     }
     if(url.pathname==='/internal/reserve'&&request.method==='POST'){
       const value=await request.json() as {matchId:string;playerCount:number;durationSeconds:number};
@@ -77,6 +80,7 @@ export class LobbyDO {
         if(party.leaderId!==peer.id||typeof message.queued!=='boolean')return this.error(ws,'party_leader','Only the party leader queues the party.');
         const peers=this.partyPeers(party.id),count=peers.flatMap(p=>p.players).length,max=party.preference.pool==='teams'?2:party.preference.pool==='duel'?2:party.preference.pool==='ffa'?4:8;
         if(message.queued&&(!count||count>max||peers.some(p=>!this.socketFor(p.id)||p.ticket&&this.store.reservations.some(r=>r.matchId===p.ticket!.matchId&&!r.released))))return this.error(ws,'party_not_compatible',party.preference.pool==='teams'?'Public teams allow at most two humans in each party. Larger couch groups can use FFA, Royale or private rooms.':'Every party member must be connected and available for the selected pool.');
+        if(message.queued&&party.preference.ruleset==='classic'&&peers.flatMap(p=>p.players).some(p=>!['networks','design','code','hardware'].includes(p.discipline)))return this.error(ws,'fighter_not_classic','Choose an original discipline for the Classic pool.');
         if(message.queued&&this.env.PUBLIC_ENABLED!=='true')return this.error(ws,'public_disabled','Public matches are disabled while feasibility is being measured.');party.queuedAt=message.queued?Date.now():undefined;break;
       }
       case 'ping':if(Number.isFinite(message.nonce))this.send(ws,{type:'pong',nonce:message.nonce,now:Date.now()});return;
