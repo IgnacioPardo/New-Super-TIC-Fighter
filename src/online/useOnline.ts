@@ -77,7 +77,13 @@ export function useOnline(): OnlineBridge {
         const previous=room.current;room.current=next;
         if (returningToLobby.current && connection.isHost && next.phase === 'finished') { returningToLobby.current=false; connection.rematch(); }
         // A refreshed browser cannot recover the authority worker destroyed by refresh.
-        if(connection.isHost&&next.matchId&&next.phase!=='lobby'&&next.phase!=='finished'&&ownMatch.current!==next.matchId&&previous===null){connection.reportResult({winners:[],reason:'interrupted'});}
+        if(connection.isHost&&next.matchId&&ownMatch.current!==next.matchId&&previous===null){
+          if(next.phase==='finished')connection.rematch();
+          else if(next.phase!=='lobby'){
+            returningToLobby.current=true;
+            connection.reportResult({winners:[],reason:'interrupted'});
+          }
+        }
         if(next.phase==='lobby'&&previous?.phase!=='lobby'){stop();}
         const statuses=[...routes.current.values()].filter(status=>next.peers.some(peer=>peer.peerId===status.peerId));
         update({code:next.code,peerId:next.peerId,isHost:connection.isHost,config:localize({...next.config,players:next.players}),
@@ -153,7 +159,7 @@ export function useOnline(): OnlineBridge {
     updateSeat:claim,claimSeat:claim,
     ready(value){if(!value){client.current?.setReady(false,false);return;}const active=client.current,config=room.current?.config;if(config)void preloadMatchAssets(config).then(()=>{if(client.current===active)active?.setReady(true,true);}).catch(error=>update({error:String(error)}));},
     start(){client.current?.start();},pause(){client.current?.pause('Pausa solicitada / Pause requested');},resume(){client.current?.resume();},
-    rematch(){const connection=client.current;if(!connection||room.current?.phase==='lobby')return;if(!connection.isHost){leave();return;}if(room.current?.phase==='finished')connection.rematch();else if(room.current?.phase==='playing'||room.current?.phase==='paused'){returningToLobby.current=true;authorityWorker.current?.postMessage({type:'stop'});connection.reportResult({winners:[],reason:'interrupted'});}},
+    rematch(){const connection=client.current;if(!connection||room.current?.phase==='lobby')return;if(!connection.isHost){if(room.current?.phase!=='finished')leave();return;}if(room.current?.phase==='finished')connection.rematch();else if(room.current?.phase==='playing'||room.current?.phase==='paused'){returningToLobby.current=true;authorityWorker.current?.postMessage({type:'stop'});connection.reportResult({winners:[],reason:'interrupted'});}},
     sendInputs(inputs){
       if(!client.current||!snapshotRef.current)return;
       localTick.current=Math.max(localTick.current+1,snapshotRef.current.tick+1);
