@@ -1,0 +1,15 @@
+CREATE TABLE IF NOT EXISTS user (id TEXT PRIMARY KEY NOT NULL, name TEXT NOT NULL, email TEXT NOT NULL UNIQUE, email_verified INTEGER NOT NULL DEFAULT 0, image TEXT, created_at INTEGER NOT NULL, updated_at INTEGER NOT NULL);
+CREATE TABLE IF NOT EXISTS session (id TEXT PRIMARY KEY NOT NULL, token TEXT NOT NULL UNIQUE, expires_at INTEGER NOT NULL, user_id TEXT NOT NULL REFERENCES user(id) ON DELETE CASCADE, ip_address TEXT, user_agent TEXT, created_at INTEGER NOT NULL, updated_at INTEGER NOT NULL);
+CREATE INDEX IF NOT EXISTS session_user ON session(user_id);
+CREATE TABLE IF NOT EXISTS account (id TEXT PRIMARY KEY NOT NULL, account_id TEXT NOT NULL, provider_id TEXT NOT NULL, user_id TEXT NOT NULL REFERENCES user(id) ON DELETE CASCADE, access_token TEXT, refresh_token TEXT, id_token TEXT, access_token_expires_at INTEGER, refresh_token_expires_at INTEGER, scope TEXT, password TEXT, created_at INTEGER NOT NULL, updated_at INTEGER NOT NULL);
+CREATE INDEX IF NOT EXISTS account_user ON account(user_id);
+CREATE UNIQUE INDEX IF NOT EXISTS account_provider_identity ON account(provider_id, account_id);
+CREATE TABLE IF NOT EXISTS verification (id TEXT PRIMARY KEY NOT NULL, identifier TEXT NOT NULL, value TEXT NOT NULL, expires_at INTEGER NOT NULL, created_at INTEGER, updated_at INTEGER);
+CREATE INDEX IF NOT EXISTS verification_identifier ON verification(identifier);
+CREATE TABLE IF NOT EXISTS passkey (id TEXT PRIMARY KEY NOT NULL, name TEXT, public_key TEXT NOT NULL, user_id TEXT NOT NULL REFERENCES user(id) ON DELETE CASCADE, credential_id TEXT NOT NULL UNIQUE, counter INTEGER NOT NULL, device_type TEXT NOT NULL, backed_up INTEGER NOT NULL, transports TEXT, created_at INTEGER, aaguid TEXT);
+CREATE INDEX IF NOT EXISTS passkey_user ON passkey(user_id);
+CREATE TABLE IF NOT EXISTS rate_limit (id TEXT PRIMARY KEY NOT NULL, key TEXT NOT NULL UNIQUE, count INTEGER NOT NULL, last_request INTEGER NOT NULL);
+CREATE TABLE IF NOT EXISTS profile (user_id TEXT PRIMARY KEY NOT NULL REFERENCES user(id) ON DELETE CASCADE, handle TEXT NOT NULL, cosmetic TEXT NOT NULL DEFAULT 'original', local_progress TEXT NOT NULL DEFAULT '{}', updated_at INTEGER NOT NULL);
+CREATE TABLE IF NOT EXISTS verified_result (id TEXT PRIMARY KEY NOT NULL, match_id TEXT NOT NULL, user_id TEXT NOT NULL REFERENCES user(id) ON DELETE CASCADE, won INTEGER NOT NULL, xp INTEGER NOT NULL, played_at INTEGER NOT NULL, mode TEXT NOT NULL);
+CREATE INDEX IF NOT EXISTS verified_result_user ON verified_result(user_id);
+CREATE TABLE IF NOT EXISTS tournament_index (id TEXT PRIMARY KEY NOT NULL, title TEXT NOT NULL, visibility TEXT NOT NULL, state TEXT NOT NULL, created_at INTEGER NOT NULL, updated_at INTEGER NOT NULL);
