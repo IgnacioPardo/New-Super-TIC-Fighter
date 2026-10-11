@@ -67,6 +67,7 @@ export interface EffectState {
   id: string; ownerId: string; kind: EffectKind;
   x: number; y: number; width: number; height: number; // top-left bounds
   vx: number; vy: number; facing: -1 | 1; age: number; frame: number;
+  sourceAction?: PlayerAction; originX?: number; originY?: number;
 }
 export interface GameplayEvent {
   id: string; tick: number;
