@@ -14,6 +14,8 @@ The candidate implements the accepted [v2 specification](implementation-plan-v2.
 | Expanded combat/content | Complete shared simulation authorities for ten kits, six arenas, objectives, five items, bounded deployables and bot recovery; 600 consecutive checkpoint-restored ticks compared with uninterrupted authorities | Selected edge scenarios deliberately seed engine states |
 | Rendered combat | Ten full browser applications with actual keyboard inputs, readiness, worker simulation, grounded/airborne Special, airborne Signature recovery and aerial punch; 50 captures across six arenas; zero page errors | Isolated Chromium keyboard input, not physical controller input |
 | Independent setup | Four injected gamepads editing concurrently, keyboard text coexistence, coordinator dialog ownership, reconnect/reclaim and nested navigation; Chromium, Firefox and WebKit | Injected controllers; WebKit is not native Safari |
+| Private mixed/co-op UI | Actual 2+2 relay, 2+1+1 host-loss recovery, direct human/bot play, refresh/results/rematch and two-browser Survival first wave | Both browsers share one Mac; deliberate socket interruption |
+| Royale presentation | Eight active worker fighters, actual keyboard movement/jump, camera following, direction-correct separated offscreen names, detailed local resource panels and compact opponents | Synthetic keyboard input; remaining physical check is separate |
 | Solo and sets | Actual three-double-jump challenge completion and persisted achievement; Training recording/playback, frame advance and reset; two winning bouts complete a best-of-three set | Full human completion of all twelve challenges and all eight Arcade bouts is not established by this sample |
 | Public UI | Two independent browser clients queue a duel, edit/acknowledge fighter details, ready each seat, move through server snapshots, pause locally, navigate Settings/Guide/resume, and forfeit into authoritative results | Both browsers share the development Mac/network |
 | Tournament UI | Four independent browser contexts create/enter a bracket, play six authoritative BO3 bouts with deliberate UI forfeits, advance three bracket games, produce a champion and restore a tournament deep link; zero page errors | Forfeits exercise result ownership/advancement, not combat balance |
@@ -25,6 +27,7 @@ The candidate implements the accepted [v2 specification](implementation-plan-v2.
 Detailed evidence and provenance:
 
 - [Gameplay and authored asset provenance](v2-gameplay-verification.md), with reports under `evidence/v2-gameplay/`.
+- [Interface, independent seat ownership and complete UI flows](v2-interface-verification.md).
 - [Online authority, deployed load, interruption and capacity evidence](v2-online-verification.md), with sanitized reports under `evidence/v2-online/`.
 - [Account and virtual-passkey exercise](v2-account-verification.md), with `evidence/v2-accounts/local-passkey-roundtrip.json`.
 - [Historical v1 controller verification](controller-verification.md) and [v1 performance measurements](performance.md), retained with their original scope.
