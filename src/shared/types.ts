@@ -71,6 +71,7 @@ export interface MatchSnapshot {
   effects: EffectState[];
   events: GameplayEvent[];
   result?: MatchResult;
+  acknowledgedInputs?: InputFrame[]; // Last inputs consumed by authority, for guest reconciliation.
 }
 export interface Platform { x: number; y: number; width: number; height: number }
 export interface ArenaDefinition {
