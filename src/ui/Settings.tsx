@@ -30,7 +30,7 @@ export function Settings({ settings, change }: { settings: AppSettings; change: 
     <div className="setting-title"><span>♪</span><h2>{t.music} & {t.effects}</h2></div>
     <label className="volume-field"><span>{t.music}<b>{Math.round(settings.musicVolume * 100)}%</b></span><input type="range" min="0" max="1" step=".01" value={settings.musicVolume} onChange={e => patch({ musicVolume: Number(e.target.value) })} /></label>
     <label className="volume-field"><span>{t.effects}<b>{Math.round(settings.effectsVolume * 100)}%</b></span><input type="range" min="0" max="1" step=".01" value={settings.effectsVolume} onChange={e => patch({ effectsVolume: Number(e.target.value) })} /></label>
-    <label className="field-label"><span>{t.playlist}</span><select value={settings.playlist} onChange={e => patch({ playlist: e.target.value as AppSettings['playlist'] })}><option value="remake">{t.remake} · 16 tracks</option><option value="original">{t.original} · 8 tracks</option></select></label>
+    <label className="field-label"><span>{t.playlist}</span><select value={settings.playlist} onChange={e => patch({ playlist: e.target.value as AppSettings['playlist'] })}><option value="remake">{t.remake} · 16 {settings.language === 'es' ? 'pistas' : 'tracks'}</option><option value="original">{t.original} · 8 {settings.language === 'es' ? 'pistas' : 'tracks'}</option></select></label>
     <p className="setting-note">{settings.language === 'es' ? 'La banda sonora original del juego. Selección aleatoria sin repetir la última pista.' : 'The game’s original recordings. Shuffled without repeating the last track.'}</p>
    </>}
    {tab === 'display' && <>
