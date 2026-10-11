@@ -30,6 +30,7 @@ interface Hit {
 export class Simulation {
   private state?: MatchSnapshot;
   private readonly inputs = new Map<string, InputFrame>();
+  private readonly consumedInputs = new Map<string, InputFrame>();
   private readonly runtimes = new Map<string, FighterRuntime>();
   private bots?: Bots;
 
@@ -41,7 +42,7 @@ export class Simulation {
     const rules = structuredClone(config);
     rules.lives = clamp(Math.trunc(rules.lives) || 3, 1, 9);
     rules.timeLimit = rules.practice ? 0 : Math.max(0, rules.timeLimit);
-    this.inputs.clear(); this.runtimes.clear();
+    this.inputs.clear(); this.consumedInputs.clear(); this.runtimes.clear();
     this.state = {
       matchId, tick: 0, elapsed: 0, phase: 'countdown', countdown: 3,
       config: rules, fighters: [], effects: [], events: [],
@@ -95,6 +96,10 @@ export class Simulation {
       const seat = state.config.players.find(player => player.id === fighter.id)!;
       const input = seat.kind === 'bot' && !options.prediction ? this.bots!.input(seat, state.tick) : this.inputs.get(fighter.id) ?? emptyInput(fighter.id, state.tick);
       this.updateFighter(fighter, input);
+      // Only a human frame actually received and consumed is acknowledged.
+      // Idle fallback frames use authority ticks and cannot acknowledge a
+      // guest's independently numbered inputs. Respawn/pause keep this receipt.
+      if (seat.kind === 'human' && this.inputs.has(fighter.id)) this.consumedInputs.set(fighter.id, { ...this.runtimes.get(fighter.id)!.previous });
     }
     // Every collision reads this common post-movement, pre-hit state, so trades
     // survive interruption and never depend on the arrival order of inputs.
@@ -134,8 +139,15 @@ export class Simulation {
     this.checkResult(); this.syncEffects();
     return this.snapshot();
   }
-  stop(): void { this.state = undefined; this.inputs.clear(); this.runtimes.clear(); this.bots = undefined; }
-  snapshot(): MatchSnapshot { this.syncEffects(); return structuredClone(this.requireState()); }
+  stop(): void { this.state = undefined; this.inputs.clear(); this.consumedInputs.clear(); this.runtimes.clear(); this.bots = undefined; }
+  snapshot(): MatchSnapshot {
+    this.syncEffects();
+    const snapshot = structuredClone(this.requireState()) as MatchSnapshot & { acknowledgedInputs: InputFrame[] };
+    snapshot.acknowledgedInputs = [...this.consumedInputs.values()]
+      .filter(input => snapshot.config.players.some(seat => seat.id === input.seatId && seat.kind === 'human'))
+      .map(input => ({ ...input }));
+    return snapshot;
+  }
 
   /** Startup and movement prediction cannot decide damage, stocks or results. */
   predict(inputs: InputFrame[] = []): MatchSnapshot { return this.step(inputs, { prediction: true }); }
@@ -143,8 +155,8 @@ export class Simulation {
   /** Adopt visible authority for bounded guest movement/startup prediction.
    * Hidden combo/bot history deliberately resets; authority still decides hits.
    */
-  restore(snapshot: MatchSnapshot, previousInputs: InputFrame[] = []): void {
-    this.state = structuredClone(snapshot); this.inputs.clear(); this.runtimes.clear();
+  restore(snapshot: MatchSnapshot & { acknowledgedInputs?: InputFrame[] }, previousInputs: InputFrame[] = snapshot.acknowledgedInputs ?? []): void {
+    this.state = structuredClone(snapshot); this.inputs.clear(); this.consumedInputs.clear(); this.runtimes.clear();
     this.bots = new Bots(this.state.config);
     for (const fighter of this.state.fighters) {
       this.resetRuntime(fighter.id);
@@ -152,6 +164,7 @@ export class Simulation {
       const previousInput = previousInputs.find(input => input.seatId === fighter.id);
       if (previousInput) {
         runtime.previous = { ...previousInput };
+        this.consumedInputs.set(fighter.id, { ...previousInput });
         if (this.state.phase === 'playing') this.inputs.set(fighter.id, { ...previousInput });
       }
       runtime.launched = fighter.action === 'hurt'; runtime.attackFacing = fighter.facing;
@@ -380,7 +393,7 @@ export class Simulation {
         if (state.config.mode === 'teams' && !state.config.friendlyFire && ownerSeat.team === targetSeat.team) continue;
         if (!overlaps(bounds, bodyBounds(target))) continue;
         const direction = runtime.attackFacing;
-        if ((owner.action === 'punch' || owner.action === 'uppercut') && (target.x - owner.x) * direction < -20) continue;
+        if ((owner.action === 'punch' || owner.action === 'uppercut') && (target.x - owner.x) * direction <= -20) continue;
         const blocked = owner.action === 'punch' && target.action === 'guard' && target.facing === -direction;
         const k = target.damage;
         const rule = effect ? EFFECT_HITS[effect.kind] : MELEE_HITS[owner.action as keyof typeof MELEE_HITS];

@@ -12,9 +12,12 @@ It never advances more than one tick to catch up after browser suspension.
   countdown. Both clear input history and buffered requests.
 - `forfeit(ids)` eliminates only those seats and applies ordinary team/FFA
   victory rules. `stop()` releases the current round.
-- `snapshot()` returns a deep copy. `restore(snapshot, previousInputs?)` adopts
-  public authoritative state for prediction. Pass last acknowledged input
-  frames to preserve button edges. Hidden combo and bot history resets.
+- `snapshot()` returns a deep copy with `acknowledgedInputs`: the last frame
+  actually consumed for each human seat. Received-but-unprocessed input and
+  generated idle frames never acknowledge guest sequence numbers; pause and
+  respawn preserve the last receipt. `restore(snapshot, previousInputs?)` adopts
+  public authoritative state for prediction, using those acknowledgements by
+  default to preserve button edges. Hidden combo and bot history resets.
 - `predict(frames?)` advances movement/startup without deciding hits, stocks, or
   results. Render/audio must use confirmed authority for those outcomes.
 
