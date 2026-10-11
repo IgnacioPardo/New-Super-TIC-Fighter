@@ -5,7 +5,7 @@ import type { MatchClientMessage, MatchMetrics, MatchServerMessage, PublicMatchS
 import type { Env } from './env';
 import { json, record, secret, validConfig, validFrames } from './validation';
 
-export interface MatchMember { peerId:string; token:string; seatIds:string[]; seatUserIds?:Record<string,string>; connected:boolean; disconnectedAt?:number; forfeited:boolean; lastSequence:number; ready:Record<string,boolean> }
+export interface MatchMember { peerId:string; token:string; seatIds:string[]; seatUserIds?:Record<string,string>; connected:boolean; disconnectedAt?:number; lastSeenAt?:number; forfeited:boolean; lastSequence:number; ready:Record<string,boolean> }
 export interface MatchAdmission { matchId:string; config:MatchConfig; members:MatchMember[]; reservationId?:string; tournamentId?:string; tournamentGameId?:string; spectatorToken?:string }
 interface StoredMatch extends MatchAdmission { phase:'waiting'|'running'|'finished'; createdAt:number; startedAt?:number; finishedAt?:number; checkpoint?:MatchSnapshot; resultId?:string; interrupted?:boolean; published?:boolean; metrics:MatchMetrics; recoveryGeneration?:number }
 interface Attachment { peerId?:string; spectator?:boolean }
@@ -23,6 +23,7 @@ export class MatchDO {
   private clockAnchorAt=0;
   private clockAnchorTick=0;
   private lastCheckpointAt=0;
+  private lastHeartbeatCheckAt=0;
   private inputQueues=new Map<string,InputFrame[]>();
   private inputTicks=new Map<string,number>();
   private lastInputAt=new Map<string,number>();
@@ -75,11 +76,11 @@ export class MatchDO {
     const attachment=ws.deserializeAttachment() as Attachment;
     const member=this.match?.members.find(item=>item.peerId===attachment.peerId);
     if(!attachment.peerId)return this.error(ws,'join_required','Authenticate the match connection first.');
-    if(message.type==='ping'){if(Number.isFinite(message.nonce))this.send(ws,{type:'pong',nonce:message.nonce,now});return;}
+    if(message.type==='ping'){if(Number.isFinite(message.nonce)){if(member)member.lastSeenAt=now;this.send(ws,{type:'pong',nonce:message.nonce,now});}return;}
     if(!member||attachment.spectator)return this.error(ws,'spectator_read_only','Spectators cannot control fighters.');
     if(message.type==='ready'){
       if(this.match?.phase!=='waiting'||!member.seatIds.includes(message.seatId)||typeof message.ready!=='boolean'||typeof message.assetsReady!=='boolean')return this.error(ws,'invalid_ready','Only your own waiting seats can be readied.');
-      member.ready[message.seatId]=message.ready&&message.assetsReady;this.save();this.broadcastState();
+      member.ready[message.seatId]=message.ready&&message.assetsReady;member.lastSeenAt=now;this.save();this.broadcastState();
       if(this.match.members.every(m=>m.connected&&m.seatIds.every(id=>m.ready[id])))this.begin();return;
     }
     if(message.type==='forfeit'){this.forfeit(member);return;}
@@ -88,7 +89,7 @@ export class MatchDO {
       if(member.forfeited||match.phase!=='running')return;
       if(!Number.isSafeInteger(message.sequence)||message.sequence<=member.lastSequence)return;
       if(!validFrames(message.frames,new Set(member.seatIds),24)||message.frames.some(frame=>frame.tick>(match.checkpoint?.tick??0)+180))return this.error(ws,'invalid_input','Input must belong to your seat and use a bounded increasing tick.');
-      member.lastSequence=message.sequence;match.metrics.inputPackets++;
+      member.lastSequence=message.sequence;member.lastSeenAt=now;match.metrics.inputPackets++;
       for(const frame of message.frames){
         if(frame.tick<=(this.inputTicks.get(frame.seatId)??-1))continue;
         this.inputTicks.set(frame.seatId,frame.tick);this.lastInputAt.set(frame.seatId,now);
@@ -104,6 +105,7 @@ export class MatchDO {
     const match=this.match;if(!match)return;
     if(match.phase==='waiting'&&Date.now()-match.createdAt>=WAIT_MS)this.interrupt('players did not become ready');
     if(match.phase==='running'){
+      this.checkHeartbeats();
       this.forfeitMembers(match.members.filter(member=>!member.connected&&!member.forfeited&&this.clock()-(member.disconnectedAt??this.clock())>=RECONNECT_MS));
       if(!this.timer)this.startTimer();
     }
@@ -120,13 +122,13 @@ export class MatchDO {
     const member=match.members.find(item=>item.peerId===message.peerId&&item.token===message.token);
     if(!member||member.forfeited||match.phase==='running'&&member.disconnectedAt&&this.clock()-member.disconnectedAt>RECONNECT_MS){this.error(ws,'invalid_ticket','Your ticket or fifteen-second reconnect window expired.');ws.close(1008);return;}
     const old=this.socketFor(member.peerId);if(old&&old!==ws)old.close(4001,'reconnected elsewhere');
-    ws.serializeAttachment({peerId:member.peerId});member.connected=true;member.disconnectedAt=undefined;this.save();
+    ws.serializeAttachment({peerId:member.peerId});member.connected=true;member.disconnectedAt=undefined;member.lastSeenAt=this.clock();this.save();
     this.send(ws,{type:'welcome',peerId:member.peerId,state:this.publicState(),spectator:false,inputSequence:member.lastSequence});
     if(match.phase==='finished'&&match.checkpoint?.result)this.send(ws,{type:'result',resultId:match.resultId!,result:match.checkpoint.result,snapshot:match.checkpoint,verified:true});
     this.broadcastState();
   }
   private begin():void{
-    const match=this.match!;match.phase='running';match.startedAt=Date.now();this.clockAnchorAt=match.startedAt;this.clockAnchorTick=0;match.checkpoint=this.simulation.createMatch(match.config,match.matchId);this.save();this.broadcastState();this.startTimer();
+    const match=this.match!;match.phase='running';match.startedAt=Date.now();for(const member of match.members)member.lastSeenAt=match.startedAt;this.clockAnchorAt=match.startedAt;this.clockAnchorTick=0;match.checkpoint=this.simulation.createMatch(match.config,match.matchId);this.save();this.broadcastState();this.startTimer();
     void this.state.storage.setAlarm(Date.now()+RECONNECT_MS);
   }
   private startTimer():void{if(this.timer||this.match?.phase!=='running')return;this.nextTickAt=Date.now()+DT;this.lastTimerWall=Date.now();this.scheduleTick();}
@@ -143,7 +145,7 @@ export class MatchDO {
     match.metrics.maxLatenessMs=Math.max(match.metrics.maxLatenessMs,now-this.nextTickAt);
     try{
       while((count===0||wallAdvanced&&now>=this.nextTickAt)&&count<6&&match.phase==='running'){
-        const before=performance.now();const frames:InputFrame[]=[];this.forfeitMembers(match.members.filter(member=>!member.connected&&!member.forfeited&&this.clock()-(member.disconnectedAt??this.clock())>=RECONNECT_MS));
+        const before=performance.now();const frames:InputFrame[]=[];if(this.clock()-this.lastHeartbeatCheckAt>=1000){this.lastHeartbeatCheckAt=this.clock();this.checkHeartbeats();}this.forfeitMembers(match.members.filter(member=>!member.connected&&!member.forfeited&&this.clock()-(member.disconnectedAt??this.clock())>=RECONNECT_MS));
         for(const member of match.members){
           if(member.forfeited)continue;
           for(const id of member.seatIds){
@@ -195,8 +197,17 @@ export class MatchDO {
   }
   private disconnect(ws:WebSocket):void{
     const id=(ws.deserializeAttachment() as Attachment)?.peerId,member=this.match?.members.find(m=>m.peerId===id);if(!member||this.socketFor(member.peerId))return;
-    member.connected=false;member.disconnectedAt=this.clock();for(const seatId of member.seatIds)this.inputQueues.delete(seatId);this.save();this.broadcastState();
+    member.connected=false;member.disconnectedAt??=this.clock();for(const seatId of member.seatIds)this.inputQueues.delete(seatId);this.save();this.broadcastState();
     if(this.match?.phase==='running')void this.state.storage.setAlarm(Date.now()+RECONNECT_MS);
+  }
+  private checkHeartbeats():void{
+    const match=this.match;if(!match||match.phase!=='running')return;let changed=false;
+    for(const member of match.members){if(!member.connected||member.forfeited)continue;const socket=this.socketFor(member.peerId),autoAt=socket?this.state.getWebSocketAutoResponseTimestamp(socket)?.getTime()??0:0;member.lastSeenAt=Math.max(member.lastSeenAt??match.startedAt??this.clock(),autoAt);
+      // TCP close handshakes can stall when a browser goes offline. Active raw
+      // pings use the DO auto response; no extra websocket handler stays awake.
+      if(this.clock()-member.lastSeenAt>5000){member.connected=false;member.disconnectedAt=member.lastSeenAt;for(const id of member.seatIds)this.inputQueues.delete(id);socket?.close(4002,'heartbeat timed out');changed=true;}
+    }
+    if(changed){this.save();this.broadcastState();}
   }
   private clock():number{const match=this.match;return Math.max(Date.now(),match&&this.clockAnchorAt?this.clockAnchorAt+(match.metrics.ticks-this.clockAnchorTick)*DT:0);}
   private socketFor(id:string):WebSocket|undefined{return this.state.getWebSockets().find(s=>s.readyState===WebSocket.OPEN&&(s.deserializeAttachment() as Attachment)?.peerId===id);}
