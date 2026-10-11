@@ -2,6 +2,7 @@
 import assert from 'node:assert/strict';
 import {mkdir} from 'node:fs/promises';
 import {chromium,expect} from '@playwright/test';
+import {enterTitle} from './enter-title.mjs';
 const base=process.env.STF_APP_URL??'http://127.0.0.1:5173';
 await mkdir('tmp/qa',{recursive:true});
 const browser=await chromium.launch({headless:true});
@@ -17,6 +18,7 @@ await page.addInitScript(()=>{
 });
 try{
  await page.goto(base);
+ await enterTitle(page);
  await page.getByTestId('mode-settings').click();
  await page.locator('.volume-field input').first().focus();await page.keyboard.press('Home');
  await page.locator('.volume-field input').nth(1).focus();await page.keyboard.press('Home');
@@ -33,6 +35,7 @@ try{
  await page.locator('.settings-panel select').nth(1).selectOption('fixed');
  await page.locator('.toggle-field input[type=checkbox]').check();
  await page.reload();
+ await enterTitle(page);
  await page.getByTestId('mode-settings').click();
  assert.equal(await page.locator('.volume-field input').first().inputValue(),'0');
  assert.equal(await page.locator('.volume-field input').nth(1).inputValue(),'0');

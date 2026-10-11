@@ -1,3 +1,4 @@
+import { enterTitle } from './enter-title.mjs';
 // Complete menu-to-match exercise with real Web Audio, workers and injected controller input.
 import assert from 'node:assert/strict';
 import { chromium, expect } from '@playwright/test';
@@ -17,7 +18,7 @@ await page.addInitScript(()=>{
 const press=async button=>{await page.evaluate(button=>{window.__pad.buttons[button]={pressed:true,value:1,touched:true};},button);await page.waitForTimeout(90);await page.evaluate(button=>{window.__pad.buttons[button]={pressed:false,value:0,touched:false};},button);await page.waitForTimeout(90);};
 try{
  await page.goto(process.env.STF_APP_URL??'http://127.0.0.1:4173');
- if(await page.getByTestId('intro-start').count())await page.getByTestId('intro-start').click();
+ await enterTitle(page);
  await page.getByTestId('mode-local').focus();
  await page.locator('.title-tagline').click(); // Mouse modality must not make controller focus invisible.
  await page.getByTestId('mode-local').focus();

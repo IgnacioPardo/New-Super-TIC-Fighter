@@ -101,5 +101,6 @@ manifest = {
 }
 (out / 'manifest.json').write_text(json.dumps(manifest, indent=2)+'\n')
 (root / 'docs/asset-provenance.json').write_text(json.dumps(provenance, indent=2)+'\n')
+subprocess.run([sys.executable, str(root / 'scripts/import-branding.py')], check=True)
 subprocess.run([sys.executable, str(root / 'scripts/make-audio-headers.py')], check=True)
 print(f'Imported {len(provenance)} source records; {sum(len(v) for v in effects.values())} effect frames and {len(audio["effects"])} sound effects.')

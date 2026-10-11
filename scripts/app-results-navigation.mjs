@@ -1,3 +1,4 @@
+import { enterTitle } from './enter-title.mjs';
 // Real complete-app regression: UI setup -> native worker result -> title -> settings/guide.
 // No simulation adapter, fabricated snapshot, or direct simulation command.
 import assert from 'node:assert/strict';
@@ -14,6 +15,7 @@ await page.addInitScript(()=>{
 });
 try {
  await page.goto(process.env.STF_APP_URL??'http://127.0.0.1:4173');
+ await enterTitle(page);
  await page.getByTestId('mode-local').click();
  await page.locator('.rule-pair select').first().selectOption('1');
  for(const button of await page.locator('.ready-button:not(:disabled)').all())await button.click();

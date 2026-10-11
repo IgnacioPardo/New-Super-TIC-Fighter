@@ -4,7 +4,8 @@ Run from any directory with Python 3 and Pillow:
     python3 /path/to/STF/docs/readme/generate-banner.py
 
 Sources: public/assets/backgrounds/classic.png, fighters/*.png, arcade.ttf,
-and manifest.json. Original source paths/hashes are recorded in
+manifest.json and docs/logo-concepts/02-overdrive/polished/overdrive-primary.png.
+Original source paths/hashes are recorded in
 docs/asset-provenance.json. This is promotional layout artwork, not a
 gameplay screenshot. No historical source files are modified.
 """
@@ -43,13 +44,11 @@ def label(position, text, size, color=WHITE):
 draw.rectangle((0, 0, WIDTH, 7), fill=CYAN)
 draw.rectangle((WIDTH - 350, 0, WIDTH, 7), fill=PINK)
 draw.line((68, 637, 1532, 637), fill="#33425a", width=2)
-label((72, 66), "NEW", 24, PINK)
-label((72, 154), "SUPER TIC", 65, "#203c57")
-label((68, 148), "SUPER TIC", 65)
-label((72, 246), "FIGHTER", 80, "#203c57")
-label((68, 240), "FIGHTER", 80)
-label((72, 377), "FOUR DISCIPLINES.", 22, CYAN)
-label((72, 419), "ONE LAST LIFE.", 22, PINK)
+logo = Image.open(ROOT / 'docs/logo-concepts/02-overdrive/polished/overdrive-primary.png').convert('RGBA')
+logo.thumbnail((660, 345), Image.Resampling.LANCZOS)
+canvas.paste(logo, (44, 32), logo)
+label((72, 415), "FOUR DISCIPLINES.", 22, CYAN)
+label((72, 457), "ONE LAST LIFE.", 22, PINK)
 label((72, 539), "ESTE GOLPE COMPILA.", 17)
 label((72, 665), "ORIGINAL SPRITES. CLASSIC COMBAT.", 16, "#a7b8d2")
 

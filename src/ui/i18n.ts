@@ -12,6 +12,7 @@ export const disciplineInfo: Record<Discipline, { symbol: string; color: string;
 export const disciplines: Discipline[] = ['networks', 'design', 'code', 'hardware'];
 export const ui = {
  es: {
+  introPrompt: 'PULSA UNA TECLA PARA COMENZAR', introInputHint: 'O haz clic · A / ✕ en el mando',
   local: 'LOCAL', online: 'ONLINE', practice: 'PRÁCTICA', settings: 'AJUSTES', guide: 'CÓMO JUGAR', back: 'Volver',
   subtitle: 'CUATRO DISCIPLINAS. UNA ÚLTIMA VIDA.', localHint: 'Hasta 4 en la misma pantalla', onlineHint: 'Invita a tus amigos', practiceHint: 'Entrena tu próximo combo',
   titlePrompt: 'ELIGE TU COMBATE', titleFoot: 'HECHO PARA AJUSTAR CUENTAS ENTRE AMIGOS', setup: 'Prepara el combate', roster: 'Luchadores', rules: 'Reglas', arena: 'Escenario',
@@ -45,6 +46,7 @@ export const ui = {
   gamepadBindings: 'Botones del mando', deadZone: 'Zona muerta', about: 'El clásico vuelve. Los golpes también.',
  },
  en: {
+  introPrompt: 'PRESS ANY KEY TO START', introInputHint: 'Or click · A / ✕ on your controller',
   local: 'LOCAL', online: 'ONLINE', practice: 'PRACTICE', settings: 'SETTINGS', guide: 'HOW TO PLAY', back: 'Back',
   subtitle: 'FOUR DISCIPLINES. ONE LAST LIFE.', localHint: 'Up to 4 on one screen', onlineHint: 'Invite your friends', practiceHint: 'Train your next combo',
   titlePrompt: 'CHOOSE YOUR FIGHT', titleFoot: 'MADE TO SETTLE THINGS BETWEEN FRIENDS', setup: 'Prepare your fight', roster: 'Fighters', rules: 'Rules', arena: 'Arena',

@@ -1,5 +1,7 @@
 # Playing New Super TIC Fighter
 
+The opening intro shows the new logo and original fighters. Press a key, click/tap anywhere, or use the controller's confirm/Start button to reach the existing title menu. Escape from that menu returns to the intro. Room invitation links skip the intro and keep their room code. Keyboard/pointer entry also requests browser audio unlock; a controller-only session can enable sound from the title menu if the browser requires a click.
+
 Choose **Local** for two to four people on one computer, **Online** to create or join a shared room, or **Practice** for a bot or stationary training opponent. Each fighter chooses a discipline, hair, shirt, trousers, and a control device. Open **Jugador / Control** to change names, devices, bot difficulty, and team assignment. Everyone confirms readiness before the host starts an online round.
 
 Online rooms also support two people on one computer and friends elsewhere. Assign different keyboard presets or controllers to the two local fighters; each remote browser assigns its own devices. Copy the invitation link from the room. There are no accounts or public matchmaking.

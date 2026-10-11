@@ -1,3 +1,4 @@
+import { enterTitle } from './enter-title.mjs';
 // Whole-app device and rendering exercise. Injected pads are not physical-hardware certification.
 import assert from 'node:assert/strict';
 import {mkdir} from 'node:fs/promises';
@@ -15,6 +16,7 @@ for(const name of engines){
  },name);
  try{
   await page.goto(base);
+  await enterTitle(page);
   await page.getByTestId('mode-practice').or(page.getByRole('button',{name:/03.*PRÁCTICA/})).click();
   const card=page.locator('.fighter-card').first();
   const details=card.locator('details.fighter-options');if(await details.count())await details.locator('summary').click();

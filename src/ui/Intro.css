@@ -1,0 +1,46 @@
+.app.screen-intro { background: #0b111c; }
+.screen-intro > main { max-width: none; padding: 0; }
+.screen-intro .site-atmosphere { opacity: .38; filter: saturate(.35); background-position: center; }
+.screen-intro .site-atmosphere::after { background: radial-gradient(ellipse at 50% 36%, #10243922, #090f1dd9 78%), linear-gradient(0deg, #070c14, transparent 75%); }
+.intro-screen { position: relative; min-height: 100svh; padding: clamp(24px,4svh,48px) 24px 20px; display: flex; align-items: center; flex-direction: column; justify-content: center; isolation: isolate; overflow: hidden; }
+.intro-art { position: relative; display: flex; flex-direction: column; align-items: center; width: min(1080px,100%); pointer-events: none; }
+.intro-logo { position: relative; z-index: 2; width: min(740px,74vw,82svh); height: auto; display: block; animation: intro-arrive .65s ease-out both; }
+.intro-cast { display: flex; align-items: flex-end; justify-content: space-around; position: relative; width: min(850px,90%); height: clamp(165px,26svh,250px); margin-top: 8px; }
+.intro-cast::after { content: ''; position: absolute; bottom: -7px; left: 1%; right: 1%; height: 8px; border-top: 2px solid #6f899c; background: repeating-linear-gradient(115deg,#152333 0 34px,#22394a 34px 39px); box-shadow: 0 4px 0 #050a10; z-index: -1; }
+.intro-fighter { display: flex; justify-content: center; align-items: flex-end; width: 22%; height: 100%; }
+.intro-fighter-right { transform: scaleX(-1); }
+.intro-fighter .avatar { width: 92px; height: 126px; }
+.intro-fighter .avatar-sprite { transform: scale(2.15); filter: drop-shadow(3px 4px 0 #0008); }
+.intro-fighter .avatar-glow { display: none; }
+.intro-continue { position: static; display: flex; align-items: center; flex-direction: column; gap: 14px; background: transparent; border: 0; color: #f5faff; margin-top: clamp(28px,5svh,52px); padding: 12px 22px; }
+.intro-continue::after { content: ''; position: absolute; inset: 0; z-index: 4; cursor: pointer; }
+.intro-prompt { font: clamp(16px,1.8vw,25px) Arcade,Impact,sans-serif; line-height: 1.6; text-align: center; text-shadow: 3px 3px #03070e; animation: intro-prompt 2.4s ease-in-out infinite; }
+.intro-input-hint { color: #a8bfce; font: 13px 'Trebuchet MS',sans-serif; line-height: 1.5; text-align: center; }
+.intro-continue:focus-visible { outline: none; box-shadow: none; }
+.intro-continue:focus-visible .intro-prompt { text-decoration: underline; text-decoration-color: #42bdf0; text-underline-offset: 10px; text-decoration-thickness: 2px; }
+.intro-continue:hover .intro-prompt { color: #9fe7ff; }
+.intro-continue:not(:disabled):active { transform: none; }
+.intro-tagline { margin: 24px 0 0; color: #8b9eaf; font-size: 11px; font-weight: 700; letter-spacing: 1.8px; text-align: center; }
+@keyframes intro-arrive { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes intro-prompt { 0%,100% { opacity: 1; } 50% { opacity: .65; } }
+@media (min-height: 950px) and (min-width: 761px) { .intro-fighter .avatar-sprite { transform: scale(2.6); } }
+@media (max-width: 760px) {
+  .intro-screen { padding: 40px 16px 30px; }
+  .intro-logo { width: min(94vw,620px); }
+  .intro-cast { width: 96%; height: clamp(145px,24vh,185px); margin-top: 16px; }
+  .intro-fighter .avatar-sprite { transform: scale(1.5); }
+  .intro-fighter .avatar { width: 70px; }
+  .intro-continue { margin-top: 42px; padding: 10px 5px; }
+  .intro-prompt { font-size: clamp(13px,3.1vw,20px); }
+  .intro-tagline { max-width: 300px; line-height: 1.8; font-size: 10px; }
+}
+@media (max-height: 560px) {
+  .intro-screen { padding: 12px 16px; }
+  .intro-logo { width: min(58svh,74vw); }
+  .intro-cast { height: 122px; width: min(570px,94%); margin-top: 0; }
+  .intro-fighter .avatar-sprite { transform: scale(1.25); }
+  .intro-continue { margin-top: 15px; gap: 6px; padding: 8px; }
+  .intro-prompt { font-size: clamp(12px,2.4vw,17px); }
+  .intro-tagline { margin-top: 10px; line-height: 1.3; }
+}
+@media (prefers-reduced-motion: reduce) { .intro-logo,.intro-prompt { animation: none; } }
