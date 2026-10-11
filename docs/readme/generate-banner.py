@@ -87,5 +87,5 @@ for index, (name, color) in enumerate(disciplines):
     text_width = draw.textlength(name, font=font(13))
     label((x + (168 - text_width) / 2, 537), name, 13, color)
 
-label((1151, 70), "IN DEVELOPMENT", 16, "#a7b8d2")
+label((1151, 70), "PLAYABLE PREVIEW", 16, "#a7b8d2")
 canvas.save(Path(__file__).with_name("banner.png"), optimize=True)
