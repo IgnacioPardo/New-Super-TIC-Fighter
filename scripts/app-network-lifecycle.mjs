@@ -211,7 +211,7 @@ async function scenarioTwoPlusOnePlusOne() {
     await guest.page.waitForFunction(() => window.__stfObserved.controls.some(message => message.type === 'result' && message.result?.reason === 'interrupted'), null, { timeout: 23_000 });
     await guest.page.waitForFunction(() => window.__stfRoom?.phase === 'lobby', null, { timeout: 23_000 });
     assert.equal(await guest.page.locator('.results-screen').filter({ hasText: /VICTORIA|VICTORY/ }).count(), 0, 'Host loss must never show a winner');
-    await guest.page.getByRole('button', { name: /VOLVER A LA SALA/ }).click();
+    if (await guest.page.locator('.results-screen').isVisible()) await guest.page.getByRole('button', { name: /VOLVER A LA SALA/ }).click();
     await guest.page.locator('.room-code strong').waitFor({ timeout: 8_000 });
     assert.equal(await guest.page.locator('.room-code strong').innerText(), code, 'Remaining guests must stay in the promoted lobby');
   }
@@ -329,7 +329,11 @@ try {
   const selected = process.env.STF_LIFECYCLE_SCENARIO;
   assert(!selected || selected in scenarios, `Unknown scenario: ${selected}`);
   for (const [name, run] of Object.entries(scenarios)) {
-    if (selected === name || !selected && !['host-refresh', 'guest-finished-lobby'].includes(name)) await run();
+    if (!selected || selected === name) {
+      const first = sessions.length;
+      await run();
+      await Promise.all(sessions.splice(first).map(session => session.context.close()));
+    }
   }
   assert.equal(errors.length, 0, errors.join('\n'));
   console.log('Full application online lifecycle passed without page errors.');
