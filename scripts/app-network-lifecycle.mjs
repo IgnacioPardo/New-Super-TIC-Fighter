@@ -279,8 +279,16 @@ async function scenarioGuestFinishedLobby() {
   await guest.page.keyboard.up('d');
   await guest.page.locator('.results-screen').waitFor({ timeout: 10_000 });
   const guestPeerId = await guest.page.evaluate(() => window.__stfRoom.peerId);
-  assert.equal(await guest.page.getByRole('button', { name: /VOLVER A LA SALA/ }).isDisabled(), true, 'Guest should wait for host rematch before returning to setup');
+  assert.equal(await guest.page.getByRole('button', { name: /ESPERANDO AL ANFITRIÓN|WAITING FOR HOST/ }).isDisabled(), true, 'Guest should wait for host rematch before returning to setup');
   await host.page.locator('.results-screen').waitFor({ timeout: 10_000 });
+  const hostFinal = await host.page.evaluate(() => window.__stfSnapshot);
+  const guestResult = await guest.page.evaluate(() => window.__stfObserved.controls.findLast(message => message.type === 'result'));
+  assert.equal(hostFinal.phase, 'finished');
+  assert.equal(guestResult.snapshot?.phase, 'finished', 'Reliable result control must carry the final authoritative snapshot');
+  assert.deepEqual(guestResult.result, hostFinal.result, 'Both browsers must receive the same winners');
+  const outcome = fighters => fighters.map(({ id, lives, damage }) => ({ id, lives, damage }));
+  assert.deepEqual(outcome(guestResult.snapshot.fighters), outcome(hostFinal.fighters), 'Guest must receive exact final fighter stocks and damage');
+  assert.equal(await guest.page.locator('.result-scoreboard').innerText(), await host.page.locator('.result-scoreboard').innerText(), 'Both result screens must show identical stocks and damage');
   await host.page.getByRole('button', { name: /VOLVER A LA SALA/ }).click();
   await guest.page.waitForFunction(() => window.__stfRoom?.phase === 'lobby', null, { timeout: 10_000 });
   if (await guest.page.locator('.results-screen').isVisible()) await guest.page.getByRole('button', { name: /VOLVER A LA SALA/ }).click();

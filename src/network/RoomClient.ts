@@ -146,9 +146,9 @@ export class RoomClient {
     this.acceptControl({ type: 'resume', matchId: this.room.matchId, resumeAt: Date.now() + 3000, controlId: crypto.randomUUID() });
   }
   rematch(): void { this.send({ type: 'rematch' }); }
-  reportResult(result: MatchResult): void {
-    if (this.send({ type: 'result', result }) || !this.isHost || !this.room?.matchId) return;
-    this.acceptControl({ type: 'result', matchId: this.room.matchId, result, controlId: crypto.randomUUID() });
+  reportResult(result: MatchResult, snapshot?: MatchSnapshot): void {
+    if (this.send({ type: 'result', result, snapshot }) || !this.isHost || !this.room?.matchId) return;
+    this.acceptControl({ type: 'result', matchId: this.room.matchId, result, snapshot, controlId: crypto.randomUUID() });
   }
 
   sendInputs(frames: InputFrame[]): void {
@@ -343,21 +343,26 @@ export class RoomClient {
     if (message.type === 'start' && message.matchId && message.config) { this.room.matchId = message.matchId; this.room.phase = 'playing'; this.options.onStart?.(message.matchId, message.config); }
     if (message.type === 'pause') { this.room.phase = 'paused'; this.room.pauseReason = message.reason ?? 'Paused'; this.options.onPause?.(this.room.pauseReason); }
     if (message.type === 'resume' && message.resumeAt) { this.room.phase = 'playing'; this.room.resumeAt = message.resumeAt; this.room.pauseReason = undefined; this.options.onResume?.(message.resumeAt); }
-    if (message.type === 'result' && message.result) { this.room.phase = 'finished'; this.room.result = message.result; this.options.onResult?.(message.result); }
+    if (message.type === 'result' && message.result) {
+      this.room.phase = 'finished'; this.room.result = message.result;
+      const finalSnapshot = message.snapshot;
+      const snapshot = finalSnapshot && finalSnapshot.matchId === this.room.matchId && finalSnapshot.phase === 'finished' ? finalSnapshot : undefined;
+      this.options.onResult?.(message.result, snapshot);
+    }
     if (message.type === 'forfeit' && message.seatIds) this.options.onForfeit?.(message.seatIds);
     this.options.onRoomState?.(this.room);
     if (this.isHost) this.broadcastDirectControl(message);
   }
 
   private acceptInput(from: string, sequence: number, frames: InputFrame[]): void {
-    if (!this.room || !this.isHost || !validDirectInput(frames, this.room, from)) return;
+    if (!this.room || !this.isHost || this.room.phase !== 'playing' || !Number.isSafeInteger(sequence) || sequence < 0 || !validDirectInput(frames, this.room, from)) return;
     if (sequence <= (this.lastInputSequences.get(from) ?? -1)) return;
     this.lastInputSequences.set(from, sequence);
     this.options.onInput?.(from, frames);
   }
 
   private acceptSnapshot(sequence: number, snapshot: MatchSnapshot, acknowledgements: Record<string, number> = {}): void {
-    if (!this.room || this.isHost || snapshot?.matchId !== this.room.matchId) return;
+    if (!this.room || this.isHost || !Number.isSafeInteger(sequence) || sequence < 0 || snapshot?.matchId !== this.room.matchId) return;
     // Unreliable direct snapshots can arrive after a reliable pause/result
     // control. Never let an older phase reopen a finished or paused round.
     if (this.room.phase === 'lobby' || this.room.phase === 'finished' && snapshot.phase !== 'finished' ||
