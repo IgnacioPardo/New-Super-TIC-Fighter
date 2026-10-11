@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { PublicClient } from '../../network/PublicClient';
 import type { LobbyState, MatchTicket, PoolPreference, PublicMatchState } from '../../network/publicTypes';
 import type { MatchConfig, MatchSnapshot, PlayerSeat } from '../../shared/types';
@@ -52,6 +52,7 @@ export function usePublicOnline() {
  return {bridge,lobby,match,status,error,errorCode,ping,paused,connect,updateSeats,disconnect,leaveMatch,
   preference:(value:PoolPreference)=>client.current?.setPreference(value),queue:(value:boolean)=>{setError('');client.current?.queue(value);},joinParty:(code:string)=>client.current?.joinParty(code),leaveParty:()=>client.current?.leaveParty(),
   spectate:async(id:string)=>{setError('');try{const next=await makeClient().spectate(id);setMatch(next);setStatus('playing');}catch{setErrorCode('spectator_limit');setError('Spectating is unavailable.');}},
+  spectateTicket:async(id:string,token:string)=>{setError('');const next=await makeClient().spectateTicket(id,token);ticket.current=null;setMatch(next);setStatus('playing');},
   connectTicket:async(next:MatchTicket)=>{ticket.current=next;await makeClient().connectMatch(next);},
   credentials:()=>client.current?.lobbyCredentials,
  };

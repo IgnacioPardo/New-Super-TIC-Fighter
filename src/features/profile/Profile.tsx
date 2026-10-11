@@ -24,10 +24,11 @@ export function Profile({ language }: { language: Language }) {
   const response = await fetch('/api/profile');
   if (response.status === 401) { setProfile(null); setLocal(loadProgress()); return; }
   if (!response.ok) throw Error('offline');
-  const next:ProfileData = await response.json(); setProfile(next);setLocal(next.local);setHandle(next.handle);setCosmetic(next.cosmetic);
-  saveProgress(next.local,next.userId);localStorage.setItem('stf-active-profile',next.userId);localStorage.setItem('stf-cosmetic',next.cosmetic);
+  const next:ProfileData = await response.json(); setProfile(next);const merged=mergeProgress(next.local,loadProgress(next.userId));setLocal(merged);setHandle(next.handle);setCosmetic(next.cosmetic);
+  saveProgress(merged,next.userId);localStorage.setItem('stf-active-profile',next.userId);localStorage.setItem('stf-cosmetic',next.cosmetic);
   const [keys,accounts] = await Promise.all([authClient.passkey.listUserPasskeys(),authClient.listAccounts()]);
   setPasskeys(keys.data ?? []);setProviders(accounts.data?.map(a=>a.providerId) ?? []);
+  if(JSON.stringify(merged)!==JSON.stringify(next.local)){const saved=await fetch('/api/profile',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({local:merged})});if(!saved.ok)throw Error('sync');}
  },[]);
  useEffect(()=>{let mounted=true;void refresh().catch(()=>{if(mounted)setMessage(es?'El perfil online no está disponible. Tu progreso local está guardado.':'Online profile is unavailable. Your local progress is saved.');});return()=>{mounted=false;};},[refresh]);
  const act=async(task:()=>Promise<unknown>)=>{setBusy(true);setMessage('');try{await task();await refresh();}catch{setMessage(es?'No se completó la operación. Puedes volver a intentarlo; tu progreso sigue guardado.':'The operation did not finish. You can retry; your progress is still saved.');}finally{setBusy(false);}};
