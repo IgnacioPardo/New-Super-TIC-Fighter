@@ -34,9 +34,111 @@ function json(value: unknown, status = 200): Response {
   return Response.json(value, { status, headers: { 'Cache-Control': 'no-store' } });
 }
 
+function audioRange(value: string, size: number): { start: number; end: number } | 'unsatisfiable' | undefined {
+  // Multiple ranges and malformed units may be ignored; media elements use one range.
+  const match = /^bytes=(\d*)-(\d*)$/i.exec(value.trim());
+  if (!match || (!match[1] && !match[2])) return;
+  const length = BigInt(size);
+  if (!match[1]) {
+    const suffix = BigInt(match[2]);
+    if (!suffix || !length) return 'unsatisfiable';
+    return { start: suffix >= length ? 0 : size - Number(suffix), end: size - 1 };
+  }
+  const start = BigInt(match[1]);
+  const end = match[2] ? BigInt(match[2]) : length - 1n;
+  if (start >= length || end < start) return 'unsatisfiable';
+  return { start: Number(start), end: end >= length ? size - 1 : Number(end) };
+}
+
+function matchesIfRange(value: string, headers: Headers): boolean {
+  if (value.startsWith('"')) return value === headers.get('ETag');
+  const modified = headers.get('Last-Modified');
+  return !!modified && Number.isFinite(Date.parse(value)) && Date.parse(value) === Date.parse(modified);
+}
+
+function audioSlice(body: ReadableStream<Uint8Array>, start: number, end: number): ReadableStream<Uint8Array> {
+  const reader = body.getReader();
+  let offset = 0;
+  let stopped = false;
+  const stop = async (reason?: unknown) => {
+    if (stopped) return;
+    stopped = true;
+    try { await reader.cancel(reason); } finally { reader.releaseLock(); }
+  };
+  return new ReadableStream<Uint8Array>({
+    async pull(controller) {
+      try {
+        while (!stopped) {
+          const { value, done } = await reader.read();
+          if (done) {
+            stopped = true;
+            reader.releaseLock();
+            controller.error(new Error('Audio asset ended before the requested range.'));
+            return;
+          }
+          const chunkStart = offset;
+          offset += value.byteLength;
+          if (offset <= start) continue;
+          controller.enqueue(value.subarray(Math.max(0, start - chunkStart), Math.min(value.byteLength, end + 1 - chunkStart)));
+          if (offset > end) {
+            controller.close();
+            await stop();
+          }
+          return;
+        }
+      } catch (error) {
+        if (!stopped) {
+          controller.error(error);
+          await stop(error);
+        }
+      }
+    },
+    cancel: stop,
+  });
+}
+
+async function audioAsset(request: Request, assets: Fetcher): Promise<Response> {
+  if (request.method !== 'GET' && request.method !== 'HEAD') return assets.fetch(request);
+  const sourceHeaders = new Headers(request.headers);
+  sourceHeaders.delete('Range');
+  sourceHeaders.delete('If-Range');
+  sourceHeaders.set('Accept-Encoding', 'identity');
+  // A GET body preserves workerd's length metadata when its HTTP layer handles HEAD.
+  const asset = await assets.fetch(new Request(request, { method: 'GET', headers: sourceHeaders }));
+  if (asset.status !== 200 || asset.headers.get('Content-Type')?.split(';')[0] !== 'audio/mpeg') return asset;
+  const headers = new Headers(asset.headers);
+  headers.set('Accept-Ranges', 'bytes');
+  headers.set('Cache-Control', `${headers.get('Cache-Control') ?? 'public, max-age=86400'}, no-transform`);
+  const full = () => new Response(asset.body, { status: 200, headers });
+  const value = request.headers.get('Range');
+  const validator = request.headers.get('If-Range');
+  // Range applies to GET. HEAD retains the full representation's headers and no body.
+  if (!value || request.method === 'HEAD' || (validator && !matchesIfRange(validator, headers))) return full();
+  const size = Number(headers.get('Content-Length'));
+  if (!headers.has('Content-Length') || !Number.isSafeInteger(size) || size < 0 || (headers.has('Content-Encoding') && headers.get('Content-Encoding') !== 'identity')) return full();
+  const range = audioRange(value, size);
+  if (!range) return full();
+  if (range === 'unsatisfiable') {
+    await asset.body?.cancel();
+    headers.set('Content-Range', `bytes */${size}`);
+    headers.set('Content-Length', '0');
+    return new Response(null, { status: 416, headers });
+  }
+  if (!asset.body) return full();
+  headers.set('Content-Range', `bytes ${range.start}-${range.end}/${size}`);
+  headers.set('Content-Length', String(range.end - range.start + 1));
+  // workerd derives Content-Length from the body; setting the header alone is ignored.
+  const { readable, writable } = new FixedLengthStream(range.end - range.start + 1);
+  void audioSlice(asset.body, range.start, range.end).pipeTo(writable).catch(() => {
+    // pipeTo propagates any source error to the response stream through abort.
+  });
+  return new Response(readable, { status: 206, headers });
+}
+
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     const url = new URL(request.url);
+    if (url.pathname.startsWith('/assets/audio/') && url.pathname.endsWith('.mp3')) return audioAsset(request, env.ASSETS);
     if (!url.pathname.startsWith('/api/')) return env.ASSETS.fetch(request);
     if (!sameAllowedOrigin(request, env)) return json({ error: 'origin_not_allowed' }, 403);
 

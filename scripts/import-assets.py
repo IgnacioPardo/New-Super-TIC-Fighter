@@ -1,7 +1,7 @@
 """Reproducibly import the owner's runtime media without modifying historical sources."""
 from pathlib import Path
 from PIL import Image
-import argparse, colorsys, hashlib, json, re, shutil
+import argparse, colorsys, hashlib, json, re, shutil, subprocess, sys
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--drive', type=Path, default=Path('/Users/nacho/Downloads/Super TIC Fighter Remake'))
@@ -93,4 +93,5 @@ manifest = {
 }
 (out / 'manifest.json').write_text(json.dumps(manifest, indent=2)+'\n')
 (root / 'docs/asset-provenance.json').write_text(json.dumps(provenance, indent=2)+'\n')
+subprocess.run([sys.executable, str(root / 'scripts/make-audio-headers.py')], check=True)
 print(f'Imported {len(provenance)} source records; {sum(len(v) for v in effects.values())} effect frames and {len(audio["effects"])} sound effects.')
