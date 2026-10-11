@@ -48,8 +48,9 @@ export default function App({ online }: AppProps) {
  useEffect(() => { if (!config.practice) localStorage.setItem('stf-match', JSON.stringify(config)); }, [config]);
  useEffect(() => { localStorage.setItem('stf-name', name); }, [name]);
  useEffect(() => {
-   if (online?.state.code && source === 'online' && online.state.status === 'lobby' && ['online', 'title'].includes(screen)) setScreen('room');
-   if (source === 'online' && online?.state.snapshot && online.state.snapshot.phase !== 'finished' && screen === 'room') { setRenderReady(false); setScreen('match'); }
+   if (online?.state.code && source === 'online' && ['lobby', 'playing'].includes(online.state.status) && ['online', 'title'].includes(screen)) setScreen('room');
+   if (source === 'online' && online?.state.snapshot && screen === 'room') { setRenderReady(false); setScreen(online.state.snapshot.phase === 'finished' ? 'results' : 'match'); }
+   if (source === 'online' && online?.state.status === 'idle' && ['room', 'match', 'results'].includes(screen)) { setSource('local'); setScreen('title'); }
  }, [online?.state.status, online?.state.code, online?.state.snapshot, source, screen]);
  useEffect(() => { if (snapshot?.phase === 'finished' && ['match', 'settings', 'guide'].includes(screen)) setScreen('results'); }, [snapshot?.phase, screen]);
  useEffect(() => {
