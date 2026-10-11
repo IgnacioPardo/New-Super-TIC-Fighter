@@ -1,7 +1,7 @@
 import { ARENAS, ATTACKS, NAVIGATION, PHYSICS } from '../shared/content';
 import type { AttackAction } from '../shared/content';
 import { emptyInput } from '../shared/types';
-import type { ArenaId, FighterState, InputFrame, MatchConfig, PlayerSeat } from '../shared/types';
+import type { ArenaId, BotRuntimeState, FighterState, InputFrame, MatchConfig, MatchSnapshot, PlayerSeat } from '../shared/types';
 import { clamp, supportingPlatform } from './geometry';
 
 interface BotMemory { nextDecision: number; input: InputFrame; moveUntil: number; target?: string; jumpTarget?: number; launchedAt?: number }
@@ -43,6 +43,8 @@ function anticipateMotion(observed: FighterState, input: InputFrame | undefined,
 export class Random {
   private value: number;
   constructor(seed: number) { this.value = seed >>> 0 || 0x9e3779b9; }
+  state(): number { return this.value; }
+  restore(value: number): void { this.value = value >>> 0; }
   next(): number {
     let value = this.value;
     value ^= value << 13; value ^= value >>> 17; value ^= value << 5;
@@ -78,9 +80,11 @@ export class Bots {
     this.observations.push({ tick, fighters: fighters.map(fighter => ({ ...fighter })) });
     while (this.observations.length > 30) this.observations.shift();
   }
-  input(seat: PlayerSeat, tick: number): InputFrame {
+  serialize(): BotRuntimeState { return structuredClone({ random: this.random.state(), memories: [...this.memories.entries()], observations: this.observations }); }
+  restore(state: BotRuntimeState): void { this.random.restore(state.random); this.memories.clear(); for (const [id, memory] of state.memories) this.memories.set(id, structuredClone(memory)); this.observations.splice(0, this.observations.length, ...structuredClone(state.observations)); }
+  input(seat: PlayerSeat, tick: number, state?: MatchSnapshot): InputFrame {
     if (seat.difficulty === 'dummy') return emptyInput(seat.id, tick);
-    const delay = seat.difficulty === 'easy' ? 24 : 12;
+    const delay = seat.difficulty === 'easy' ? 24 : seat.difficulty === 'hard' ? 6 : 12;
     const view = [...this.observations].reverse().find(observation => observation.tick <= tick - delay);
     if (!view) return emptyInput(seat.id, tick);
     const previous = this.memories.get(seat.id);
@@ -94,9 +98,11 @@ export class Bots {
     const me = { ...observedSelf, ...anticipateMotion(observedSelf, previous?.input, delay, previous ? clamp(previous.moveUntil - (tick - delay), 0, delay) : 0) };
     const enemies = view.fighters.filter(fighter => !fighter.eliminated && fighter.id !== seat.id &&
       (this.config.mode !== 'teams' || this.config.players.find(player => player.id === fighter.id)?.team !== seat.team));
-    const target = enemies.sort((a, b) => Math.abs(a.x - me.x) + Math.abs(a.y - me.y) * 2 - Math.abs(b.x - me.x) - Math.abs(b.y - me.y) * 2)[0];
+    let target = enemies.sort((a, b) => Math.abs(a.x - me.x) + Math.abs(a.y - me.y) * 2 - Math.abs(b.x - me.x) - Math.abs(b.y - me.y) * 2)[0];
     if (!target) return input;
-    const platforms = ARENAS[this.config.arena].platforms;
+    const decoy=state?.deployables?.filter(d=>d.kind==='decoy'&&d.ownerId!==seat.id&&enemies.some(e=>e.id===d.ownerId)).sort((a,b)=>Math.abs(a.x-me.x)-Math.abs(b.x-me.x))[0];
+    if(decoy && Math.abs(decoy.x-me.x)<Math.abs(target.x-me.x)+80 && this.random.next()<.75) target={...target,id:decoy.ownerId,x:decoy.x+decoy.width/2,y:decoy.y+decoy.height};
+    const platforms = state?.platforms?.filter(p => p.active !== false) ?? ARENAS[this.config.arena].platforms;
     let desiredX = target.x;
     const from = supportingPlatform(observedSelf, platforms);
     const to = supportingPlatform(target, platforms);
@@ -152,7 +158,7 @@ export class Bots {
     if (desiredX > me.x + 22) input.right = true;
     const close = Math.abs(distance) < 66 && Math.abs(target.y - me.y) < PHYSICS.standingHeight;
     const inRange = Math.abs(distance) < 380 && Math.abs(target.y - me.y) < 110;
-    const mistake = this.random.next() < (seat.difficulty === 'easy' ? 0.24 : 0.07);
+    const mistake = this.random.next() < (seat.difficulty === 'easy' ? 0.24 : seat.difficulty === 'hard' ? .025 : 0.07);
     if (me.grounded && jumpTarget === undefined && me.recovery <= delay / 60 && me.stun === 0 && !mistake) {
       if (close) {
         if (me.facing !== targetFacing) { input.left = targetFacing === -1; input.right = targetFacing === 1; }
@@ -179,6 +185,34 @@ export class Bots {
     }
     if (mistake) { input.left = false; input.right = false; input.jump = false; }
     if (mistake && input.jump === false && launchedAt === tick) { jumpTarget = undefined; launchedAt = undefined; }
+    if (this.config.ruleset === 'expanded') {
+      // Objectives and recovery share the same delayed observation as combat.
+      if (this.config.gameMode === 'hill' && state?.objective && !close) {
+        const zoneX = state.objective.x + state.objective.width / 2;
+        input.left = zoneX < me.x - 25; input.right = zoneX > me.x + 25;
+        if (me.grounded && me.y > state.objective.y + state.objective.height && me.jumpCooldown < .15) input.jump = true;
+      }
+      if (state?.objective?.safeLeft !== undefined) {
+        if (me.x < state.objective.safeLeft + 80) { input.left = false; input.right = true; }
+        if (me.x > (state.objective.safeRight ?? 1366) - 80) { input.right = false; input.left = true; }
+      }
+      if (!me.grounded) {
+        const rescue = platforms.filter(p => p.y > me.y - 150).sort((a,b) => Math.abs(a.x+a.width/2-me.x)-Math.abs(b.x+b.width/2-me.x))[0];
+        if (rescue && me.y > rescue.y - 30 && me.vy > 0) {
+          input.jump = (me.airJumps ?? 0) > 0;
+          if (!input.jump && me.recoveryAvailable && me.y > rescue.y + 60) input.special = true;
+          if (!input.jump && !input.special && me.airDash && Math.abs(me.x - clamp(me.x,rescue.x+35,rescue.x+rescue.width-35)) > 90) input.dodge = true;
+        }
+        if (close && me.recovery < .1 && me.stun === 0) { input.punch = true; input.down = target.y > me.y + 50; }
+      }
+      const threat = target.action in ATTACKS && close && me.stun === 0;
+      if (threat && seat.difficulty === 'hard' && (me.dodgeCooldown ?? 0) < .01 && this.random.next() < .45) {
+        input.dodge = true; input.punch = input.special = input.combo = false;
+        input.left = target.x > me.x; input.right = target.x < me.x;
+      }
+      const obstacle = state?.deployables?.find(d => d.ownerId !== me.id && Math.abs(d.x+d.width/2-me.x)<90 && Math.abs(d.y+d.height-me.y)<100);
+      if (obstacle && !input.jump && me.recovery < .1) input.punch = true;
+    }
     // Schedule a release using our known movement, rather than holding a full
     // reaction interval past the destination. This is a normal input release,
     // with no speed/rules advantage, and keeps Easy's 400ms reaction usable.
