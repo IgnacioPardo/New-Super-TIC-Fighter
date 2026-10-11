@@ -37,7 +37,7 @@ A desktop browser remake of **Super TIC Fighter**, the school-computing platform
 Guests play immediately. Optional Google/GitHub accounts and passkeys synchronize cosmetics and verified results. If a controller-only session starts silently, click or press a key to enable browser audio. Public pause opens a local menu while the match continues. Private P2P hosts must keep their tab active.
 
 <details>
-<summary><strong>See the current title screen</strong></summary>
+<summary><strong>See the historical v1 title screen</strong></summary>
 
 ![Overdrive logo, original fighters, and the arcade title menu](docs/evidence/branding/title-1440.png)
 
@@ -109,11 +109,11 @@ These are the keyboard defaults; bindings can be changed in Settings. The [playi
 
 **Crouch + punch** triggers an uppercut. **Crouch + special** triggers a sweep. Combos also support the original direction → crouch → standing special sequence, with a 500 ms window. Guard blocks ordinary frontal punches; specials, combos, uppercuts, and sweeps bypass it.
 
-Standard gamepads use stick/D-pad for movement, A/Cross for jump, X/Square for punch, B/Circle for special, Y/Triangle for combo, right bumper for guard, and Start/Options for pause. Escape pauses on keyboard.
+Standard gamepads use stick/D-pad for movement, A/Cross for jump, X/Square for punch, B/Circle for special, Y/Triangle for combo, right bumper for guard, left bumper for dodge/air dash, and Start/Options for pause. Escape pauses on keyboard.
 
 Menus always use A/Cross to confirm and B/Circle to go back, independently of combat remapping. An available controller is assigned to the first human fighter on setup entry; each fighter's device selector stays visible. Settings shows detected controllers, recent input, button mappings, and stick dead zone. Unplugging a controller pauses play and requires explicit reclaim.
 
-**Physically checked:** the owner confirmed Bluetooth DualSense menu navigation and gameplay on macOS with Arc. Xbox, other controller/browser combinations, and native Safari still need verification. The [controller record](docs/controller-verification.md) separates that hands-on check from injected input exercises and includes the Arc detection workaround.
+**Physically checked in v1:** the owner confirmed Bluetooth DualSense menu navigation and gameplay on macOS with Arc. The v2 hardware check is deferred by the owner. Xbox, other controller/browser combinations, and native Safari still need verification. The [controller record](docs/controller-verification.md) separates that hands-on check from injected input exercises and includes the Arc detection workaround.
 
 ## Development
 
@@ -124,7 +124,7 @@ pnpm install --frozen-lockfile
 pnpm build
 ```
 
-Start the room service in one terminal, then Vite in another:
+Apply local account/competition migrations with `pnpm exec wrangler d1 migrations apply DB --local`. Start the room service in one terminal, then Vite in another:
 
 ```sh
 # Terminal 1: room service and built assets
@@ -179,8 +179,9 @@ The selected Overdrive logo appears on the intro/title screens, responsive heade
 | Interface | React + Tailwind CSS | Menus, setup, HUD, settings, results |
 | Game view | Phaser | Sprites, animation, arena, camera, effects |
 | Simulation | Framework-independent TypeScript in a Web Worker | Fixed 60 Hz rules, movement, combat, bots, lives, outcomes |
-| Transport | WebRTC + WebSockets | Direct gameplay, room coordination, relay fallback |
-| Hosting | Cloudflare Workers + SQLite Durable Objects + Static Assets | Rooms, signaling, relay, application/media delivery |
+| Transport | WebRTC + WebSockets | Private P2P/relay and public server gameplay, presence, parties |
+| Hosting | Cloudflare Workers + SQLite Durable Objects + Static Assets | Lobby, matches, competitions, private rooms, application/media delivery |
+| Accounts | Better Auth + D1/Drizzle | Google/GitHub, passkeys, profiles, verified results |
 
 **The simulation owns the rules.** Phaser renders snapshots; React presents UI state. Local humans, remote humans, and bots feed the same action model. See the [simulation guide](src/simulation/README.md) for its API, timing, and integration boundaries.
 
@@ -191,8 +192,9 @@ src/
   game/             Phaser rendering and camera
   ui/               Setup, HUD, settings, guide, and controls
   network/          Room signaling and WebRTC/relay transports
-  online/           Host authority and guest prediction integration
-server/             Cloudflare Worker and room Durable Object
+  online/           Private authority and prediction integration
+  features/         Solo, public online, competition, profile and training UI
+server/             Cloudflare Worker, Durable Objects, accounts, D1 migrations
 public/assets/      Imported fighters, effects, platforms, portraits, and audio
 scripts/            Asset tooling and complete application/service exercises
 docs/               Accepted plan, historical research, and asset provenance
@@ -206,11 +208,11 @@ Use Arc for hands-on playtesting; isolated Playwright runs may cover Chromium, F
 
 ## Release status
 
-The [verification record](docs/verification.md) documents complete matches, all three arenas, browser/worker rendering, direct and relayed multiplayer, reconnection, results/rematches, and production media checks. Later branding and soundtrack entries identify their local verification separately from deployment.
+The [v2 verification record](docs/verification-v2.md) distinguishes executed browser/service flows, deployed measurements, synthetic inputs and remaining acceptance. The [v1 record](docs/verification.md) remains historical evidence.
 
-- **Automated:** Chromium, Firefox, and WebKit application flows; real browser audio and transports; injected controller coverage. Individual scripts and their limits are recorded in the verification docs.
-- **Hands-on:** Arc keyboard playtesting and the owner's Bluetooth DualSense menu/gameplay confirmation on macOS, recorded in [controller verification](docs/controller-verification.md).
-- **Still to validate:** the owner/friends session across separate networks, Xbox and other physical device combinations, native Safari, long host background/sleep/wake behavior, and production quota exhaustion.
+- **Observed:** ten-kit/six-arena combat and checkpoint restoration, concurrent controller editors, solo/training/sets, public browser duels, durable tournaments, virtual passkeys and deployed four-match load at approximately 60 Hz.
+- **Owner-deferred:** physical v2 Arc/DualSense and a match across separate Argentina Internet connections.
+- **Other limits:** reference-desktop sustained rendering/balance, true OS sleep/wake, natural quota rollover and additional hardware. Real provider authentication is reported separately from local virtual-passkey exercises.
 
 ## From the archive to the browser
 
@@ -219,11 +221,11 @@ The remake draws on the **2017 original**, the **2020 Unity remake**, and the re
 | Read next | What it explains |
 | :--- | :--- |
 | [Hosting and maintenance](docs/hosting.md) | Deployment, GitHub status, free limits, rollback |
-| [Verification](docs/verification.md) | Measured results and remaining acceptance coverage |
+| [V2 verification](docs/verification-v2.md) | Measured results and remaining acceptance coverage |
 | [Controller verification](docs/controller-verification.md) | Physical DualSense check, injected coverage, Arc troubleshooting |
 | [Audio polish sources](docs/audio-polish-sources.md) | Added samples, CC0 licenses, mix behavior, verification |
 | [Soundtrack additions](docs/soundtrack-additions.json) | Credits and hashes for the added Rata Blanca arrangement |
-| [Implementation plan](docs/implementation-plan.md) | Accepted scope, architecture, milestones, release gates |
+| [V2 implementation plan](docs/implementation-plan-v2.md) | Accepted scope, architecture, milestones, release gates |
 | [Game understanding](docs/game-understanding.md) | The game's identity and what the recovered sources establish |
 | [Original gameplay reference](docs/original-gameplay-reference.md) | Combat values, timing, collision rules, source anchors |
 | [Remake history](docs/remake-history.md) | How the Unity version evolved |

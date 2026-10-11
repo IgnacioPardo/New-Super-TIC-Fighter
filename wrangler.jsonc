@@ -6,6 +6,7 @@
   "compatibility_flags": ["nodejs_compat"],
   "d1_databases": [{"binding":"DB","database_name":"new-super-tic-fighter-profiles","database_id":"56746be7-6196-4bde-aa0d-d48a3e557247","migrations_dir":"server/migrations"}],
   "workers_dev": true,
+  "vars": { "PUBLIC_ENABLED": "true" },
   "assets": {
     "directory": "./dist",
     "binding": "ASSETS",

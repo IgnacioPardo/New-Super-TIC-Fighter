@@ -1,0 +1,45 @@
+# V2 release candidate verification
+
+Recorded 2026-10-11. This document distinguishes implemented behavior, exercised application/service flows, and owner acceptance. No unit tests were added. Original source archives remain read-only.
+
+## Release status
+
+The candidate implements the accepted [v2 specification](implementation-plan-v2.md). The owner explicitly deferred the physical v2 Arc/DualSense check and an Argentina match across separate Internet connections until later. These remain acceptance gates; the v1 physical confirmation is not relabeled as v2 evidence. The version remains `2.0.0-rc.1` until those checks and the remaining release coverage below are complete.
+
+## Observed checks
+
+| Area | Actual execution | Limits |
+| --- | --- | --- |
+| Compilation | Client and server TypeScript checks, audio-header consistency, production Vite bundle | Build success alone does not establish gameplay quality |
+| Expanded combat/content | Complete shared simulation authorities for ten kits, six arenas, objectives, five items, bounded deployables and bot recovery; 600 consecutive checkpoint-restored ticks compared with uninterrupted authorities | Selected edge scenarios deliberately seed engine states |
+| Rendered combat | Ten full browser applications with actual keyboard inputs, readiness, worker simulation, grounded/airborne Special, airborne Signature recovery and aerial punch; 50 captures across six arenas; zero page errors | Isolated Chromium keyboard input, not physical controller input |
+| Independent setup | Four injected gamepads editing concurrently, keyboard text coexistence, coordinator dialog ownership, reconnect/reclaim and nested navigation; Chromium, Firefox and WebKit | Injected controllers; WebKit is not native Safari |
+| Solo and sets | Actual three-double-jump challenge completion and persisted achievement; Training recording/playback, frame advance and reset; two winning bouts complete a best-of-three set | Full human completion of all twelve challenges and all eight Arcade bouts is not established by this sample |
+| Public UI | Two independent browser clients queue a duel, edit/acknowledge fighter details, ready each seat, move through server snapshots, pause locally, navigate Settings/Guide/resume, and forfeit into authoritative results | Both browsers share the development Mac/network |
+| Tournament UI | Four independent browser contexts create/enter a bracket, play six authoritative BO3 bouts with deliberate UI forfeits, advance three bracket games, produce a champion and restore a tournament deep link; zero page errors | Forfeits exercise result ownership/advancement, not combat balance |
+| Private/public services | 2+2 seats, ownership/readiness, P2P/relay fallback, Royale admission, secure team tournament registration, spectators, capacity ceilings and durable process recovery | Service clients and outages are synthetic; see online report |
+| Deployed Classic | Four clients, 30 seconds, 1,800 ticks/600 snapshots, approximately 59.97 Hz, zero errors/dropped time | One Argentina network; production CPU clock readings are not billing measurements |
+| Deployed Expanded | Eight-client Royale plus three concurrent duels held approximately 60 Hz; zero errors/catchup/dropped time; deployed 2+2 party match produced two authoritative winners | Two bounded 15-second load windows, not a sustained production soak |
+| Account storage/passkeys | Disposable local D1/Worker plus full browser application; virtual WebAuthn enrollment, logout, fresh passkey login and deletion; idempotent guest upgrade, separate couch progress, protected verified statistics and validation failures | Identity/provider bootstrap is a fixture. This does not prove real Google/GitHub consent or physical passkeys |
+
+Detailed evidence and provenance:
+
+- [Gameplay and authored asset provenance](v2-gameplay-verification.md), with reports under `evidence/v2-gameplay/`.
+- [Online authority, deployed load, interruption and capacity evidence](v2-online-verification.md), with sanitized reports under `evidence/v2-online/`.
+- [Account and virtual-passkey exercise](v2-account-verification.md), with `evidence/v2-accounts/local-passkey-roundtrip.json`.
+- [Historical v1 controller verification](controller-verification.md) and [v1 performance measurements](performance.md), retained with their original scope.
+
+## Material performance observations
+
+Deployed four-match snapshot interval p95 was about 78–86 ms. Connection-lifetime ping RTT p50 was 170–196 ms and p95 238–388 ms. This is enough latency to require a real player judgment of prediction/reconciliation; no South American server locality is promised.
+
+Royale JSON application traffic measured approximately 230 KB per player per second (about 1.84 Mbps before transport compression/overhead); duels used approximately 68 KB/s. The public cap remains four simultaneous matches, 64 lobby connections and 1,200 human-player-minutes/day. Reservations/refunds and admission rejection were exercised; natural daily exhaustion/rollover and production billed CPU/storage were not measured. No paid service was enabled.
+
+## Remaining acceptance coverage
+
+- Owner-deferred physical v2 DualSense play in Arc and a real separate-network Argentina match.
+- Real production Google/GitHub sign-in, explicit linking, physical passkey and cross-device progress, recorded separately when exercised.
+- Sustained reference-desktop rendering/input-response measurements and human balance/playability across the complete roster/modes.
+- Native Safari, additional physical gamepads, true OS sleep/wake, production eviction and natural free-tier daily rollover.
+
+Automated results must never be relabeled as physical playtests, independent household networks, production billing or real provider authentication. Failed/interrupted rounds have no fabricated winner; public servers remain authoritative.
