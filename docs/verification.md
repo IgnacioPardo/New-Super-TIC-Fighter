@@ -1,25 +1,25 @@
 # Verification record
 
-No unit tests are part of this project. Verification uses the complete application, actual browser workers, running Cloudflare room service, browser transports, visual review, builds, and type checks.
+Verified on 2026-10-11. No unit tests were written or run. Verification uses the complete application, actual browser workers, the running Cloudflare room service, real browser transports, visual review, production builds, and type checks.
 
-## Completed during implementation
+## Completed
 
-- Imported fighter layers, original effects, original and remake music collections, and eighteen sound effects with file hashes and source corrections.
-- Simulation implementation passes TypeScript checking. Source review checked combat timing, attack values, guard direction, hit protection, platform geometry, effect dimensions, and stock outcomes.
-- Room service exercised through real WebSockets in local Wrangler: 2+2 seat ownership, relay authority, reconnect/resume, result and rematch.
-- Chromium with real RTCDataChannels exercised direct inputs/snapshots and forced relay fallback.
-- Two complete browser applications entered a real online match; guest movement reached host authority, and repeated shared pause/resume worked.
-- Chromium, Firefox, and WebKit displayed a live Phaser canvas and ran the real simulation worker. Injected gamepad movement, pause, frozen match time, same-device reclaim, and refusal to reclaim a different controller ID passed. This is API-level coverage, not a physical-controller certification.
-- A real same-tab guest navigation away from a 2+2 match paused the round. Rejoining with the original session credentials restored the paused match screen, retained the same peer identity, and allowed the host to resume both clients.
-- Complete match playtests exercised all four disciplines, the eleven attacks and guard, the original combo sequence and dedicated combo, action buffering, one-minute timeout draw, fresh-match rematch reset, and a four-bot team result. Bot traversal is still being tuned across the arenas.
-- All three arena scenes rendered from the imported classic artwork and the two code-authored SVG environments. Image API generation was canceled by the owner; no image API requests were made.
+- Client and server TypeScript checks, frozen dependency installation, production build, and Cloudflare deployment dry-run pass. GitHub Actions also passed the combined application/browser workflow on the integrated release branch; the final commit is checked again before merge.
+- Imported fighter layers, original effects, original and remake music collections, and eighteen sound effects have source provenance and file hashes. Audio loading, playback state, volume persistence, and lazy music requests are exercised; this does not claim a human listening review of every track.
+- Complete matches exercised all four disciplines, eleven attacks and guard, the original combo sequence and dedicated combo, action buffering, one-minute timeout draw, fresh-match rematch reset, and a four-bot team result. Detailed combat evidence is in `src/simulation/PLAYTEST.md`.
+- Easy and Normal bots traversed all three arenas. Six map/difficulty runs had no observed unforced falls; Normal bots reached the upper PC platforms. This is bounded playtesting, not a guarantee of flawless bot decisions.
+- All three arena scenes render. The classic stage uses imported artwork; Lab and PC use code-authored SVG environments and matching platforms. The owner canceled image generation; no image API requests were made.
+- The integrated arcade title, fighter selection bays, match HUD, pause, guide, and results were visually reviewed at 1366×768 and 1920×1080. Native Arc hands-on review entered a Lab practice match, exercised keyboard movement/attacks, and paused it.
+- Settings and menu flows exercised ES/EN, key-remap conflict rejection and restoration, camera/reduced-motion preferences, persistent volume settings, gamepad menu navigation and escape from text fields. Practice worked with the online API returning an error.
+- Chromium, Firefox, and WebKit displayed a live Phaser canvas and ran the real simulation worker. Injected gamepad movement, pause, frozen match time, same-device reclaim, and refusal to reclaim a different controller ID passed. Controller claims are cleared between rounds. These are API-level checks, not physical-controller certification.
+- Real RTCDataChannels carried direct inputs/snapshots; forced WebSocket relay also passed. The transport exercise covered room signaling loss while direct channels remained available.
+- Five full-application multiplayer scenarios passed together with no uncaught page errors: mixed 2+2 teams with forced relay and same-tab guest reconnect; 2+1+1 with host loss and fresh lobby recovery; two humans plus two bots; host refresh interruption and lobby recovery; and a natural one-stock result followed by guest refresh, exact final scoreboard recovery, rematch, and local keyboard play after leaving online.
+- Reconnect verification checked real guest movement and host input acknowledgements after restoring the same peer identity. Result verification checked exact authoritative stocks, damage, winner, and visible scoreboards on both clients.
+- Foreground simulation cadence, ten practice resets, and six game-view recreations were measured. A Phaser visibility-listener leak was fixed with a reproducible dependency patch; independent repeated-mount checks stayed at one canvas, three workers, and stable listener counts. Hardware, measurement limits, and initial transfer estimates are in `docs/performance.md`.
 
-## Still to verify before release
+## Production and acceptance gates
 
-- Recheck integrated setup, controls, language, and all key flows after the game-menu/HUD redesign.
-- All three environments and bot traversal in complete matches.
-- Multiple complete browser clients: direct and relay, 2+2 and 2+1+1, bot seats, ready/config invalidation, pause/resume, guest/host interruption, fresh-round recovery.
-- Cross-browser and actual Arc hands-on review; actual controller hardware claims only after testing named devices.
-- Public HTTPS deployment and a real session involving the owner and friends, including Argentina-network latency observations.
-
-Each completion below should name what ran and its limits; headless or injected gamepad checks do not establish physical-controller compatibility.
+- Public HTTPS deployment, production media range/header checks, and full multiplayer verification on the deployed service are recorded separately in `docs/hosting.md` when completed.
+- Physical Xbox/PlayStation controllers and native Safari hardware have not been certified. WebKit automation and injected gamepad events do not establish hardware compatibility.
+- A real session involving the owner and friends on separate networks remains the acceptance gate, including Argentina/South America latency observations. Same-machine browser clients do not establish those network conditions.
+- Long host background/sleep/wake sessions and free-quota exhaustion have not been verified in production. Browser-hosted combat intentionally interrupts when its authority disappears; seamless host migration is outside the accepted scope.
