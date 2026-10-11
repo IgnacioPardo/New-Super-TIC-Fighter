@@ -1,7 +1,7 @@
 // Full application settings, input focus, audio loading, and backend-failure flow.
 import assert from 'node:assert/strict';
 import {mkdir} from 'node:fs/promises';
-import {chromium} from '@playwright/test';
+import {chromium,expect} from '@playwright/test';
 const base=process.env.STF_APP_URL??'http://127.0.0.1:5173';
 await mkdir('tmp/qa',{recursive:true});
 const browser=await chromium.launch({headless:true});
@@ -43,7 +43,7 @@ try{
  await page.locator('.back-button').click();
  await page.getByTestId('mode-online').click();
  const nickname=page.getByPlaceholder('Jugador',{exact:true});await nickname.fill('Menu QA');await nickname.focus();
- await page.evaluate(()=>window.__pad.buttons[13].pressed=true);await page.waitForTimeout(100);await page.evaluate(()=>window.__pad.buttons[13].pressed=false);
+ await page.evaluate(()=>window.__pad.buttons[13].pressed=true);await expect(nickname).not.toBeFocused({timeout:2000});await page.evaluate(()=>window.__pad.buttons[13].pressed=false);
  assert.equal(await nickname.evaluate(element=>document.activeElement===element),false,'Gamepad navigation escapes a focused text field');
  await page.route('**/api/**',route=>route.fulfill({status:503,contentType:'application/json',body:JSON.stringify({error:'room_service_unavailable'})}));
  await page.getByRole('button',{name:/CREAR SALA/}).click();
