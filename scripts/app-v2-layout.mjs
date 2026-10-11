@@ -75,7 +75,7 @@ try{
   await chooseMode(page,'local');await inspect(page,`${prefix}-setup`);
   const cards=page.locator('.fighter-summary:visible');for(let i=0;i<await cards.count();i++)await cards.nth(i).locator('.fighter-edit').click();
   for(const name of await cards.first().getByRole('tab').allTextContents()){for(let i=0;i<await cards.count();i++)await cards.nth(i).getByRole('tab',{name,exact:true}).click();await inspect(page,`${prefix}-setup-${name}`);
-   let editorPage=1;const editorNext=page.locator('.inline-fighter-editor .content-pager.compact button:last-child:not(:disabled)');while(await editorNext.count()){for(const button of await editorNext.all())await button.click();await inspect(page,`${prefix}-setup-${name}-page${++editorPage}`);}
+   let editorPage=1;const editorNext=page.locator('.inline-fighter-editor .content-pager.compact button:last-child:not(:disabled)');while(await editorNext.count()){await editorNext.first().click();await inspect(page,`${prefix}-setup-${name}-page${++editorPage}`);}
   }
   await page.locator('.match-summary').click();const dialog=page.getByRole('dialog');await pages(page,dialog,`${prefix}-rules`);await dialog.locator('.config-dialog-heading button').click();
   assert.deepEqual(errors,[]);await context.close();console.log(`${prefix}: current pages, actual bounds/hit targets, wheel and keyboard passed.`);
