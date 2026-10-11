@@ -14,6 +14,7 @@ export class TournamentDO {
   private tournament?:StoredTournament;
   private scheduling=false;
   constructor(private state:DurableObjectState,private env:Env){
+    state.setWebSocketAutoResponse(new WebSocketRequestResponsePair('ping','pong'));
     state.storage.sql.exec('CREATE TABLE IF NOT EXISTS competition(id INTEGER PRIMARY KEY CHECK(id=1),data TEXT NOT NULL)');
     const row=state.storage.sql.exec('SELECT data FROM competition WHERE id=1').toArray()[0] as {data:string}|undefined;if(row)this.tournament=JSON.parse(row.data);
   }
@@ -27,7 +28,7 @@ export class TournamentDO {
       this.tournament={id:value.id,name:value.name.trim(),kind:value.kind,visibility:value.visibility,team:value.team,ownerId:owner.peerId,capacityLimit:value.capacity,ruleset:value.ruleset,phase:'registration',entrants:[],games:[],standings:[],championIds:[],createdAt:Date.now(),capacity:null,processed:[],tickets:{},spectatorTokens:{}};this.save();return json(this.publicState(),201);
     }
     const t=this.tournament;if(!t)return json({error:'tournament_not_found'},404);
-    if(url.pathname==='/internal/state')return json(this.publicState());
+    if(url.pathname==='/internal/state'){if(t.phase==='running')this.state.waitUntil(this.schedule());return json(this.publicState());}
     if(url.pathname==='/internal/ws'&&request.headers.get('Upgrade')?.toLowerCase()==='websocket'){
       if(this.state.getWebSockets().filter(s=>s.readyState===WebSocket.OPEN).length>=16)return json({error:'spectator_limit'},429);
       const pair=new WebSocketPair();this.state.acceptWebSocket(pair[1]);pair[1].serializeAttachment({joined:true});pair[1].send(JSON.stringify({type:'tournament',state:this.publicState()}));return new Response(null,{status:101,webSocket:pair[0]});
@@ -57,6 +58,7 @@ export class TournamentDO {
     if(url.pathname==='/internal/tickets'&&request.method==='POST'){
       const {peerId,token}=await request.json() as {peerId:string;token:string};
       const peer=await this.peer(peerId,token);if(!peer)return json({error:'lobby_identity_required'},403);
+      if(t.phase==='running')await this.schedule();
       return json((t.tickets[peer.peerId]??[]).filter(ticket=>t.games.some(g=>g.phase==='running'&&g.matchId===ticket.matchId)));
     }
     if(url.pathname==='/internal/spectate'&&request.method==='POST'){
@@ -106,7 +108,7 @@ export class TournamentDO {
         // explicit authoritative ticket used by quickplay, including couch seats.
         await this.lobby('/internal/tournament_tickets',{tickets:members.map(m=>t.tickets[m.peerId].at(-1))});this.save();
       }
-      this.broadcast();await this.state.storage.setAlarm(Date.now()+15_000);
+      this.broadcast();if(t.games.some(g=>g.phase==='running'))await this.state.storage.setAlarm(Date.now()+15_000);else await this.state.storage.deleteAlarm();
     }finally{this.scheduling=false;}
   }
   private async result(value:unknown):Promise<Response>{

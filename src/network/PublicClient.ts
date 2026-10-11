@@ -34,6 +34,7 @@ export class PublicClient {
   private pendingInputs:InputFrame[]=[];
   private snapshot?:MatchSnapshot;
   private resultIds=new Set<string>();
+  private lastPassivePing=0;
   private seatDraft?:PlayerSeat[];
   private seatsInFlight?:PlayerSeat[];
   private queuedSeatReady=new Map<string,{ready:boolean;assetsReady:boolean}>();
@@ -54,6 +55,7 @@ export class PublicClient {
       let welcomed=false;const timer=setTimeout(()=>{reject(new Error('Public lobby connection timed out.'));socket.close();},8000);
       socket.onopen=()=>this.sendLobby({type:'hello',protocolVersion:PROTOCOL_VERSION,contentVersion:CONTENT_VERSION,...this.credentials});
       socket.onmessage=({data})=>{
+        if(data==='pong'){this.options.onStatus?.('connected',Math.max(0,performance.now()-this.lastPassivePing));return;}
         let message:LobbyServerMessage;try{message=JSON.parse(data);}catch{return;}
         if(message.type==='welcome'){welcomed=true;clearTimeout(timer);this.credentials={peerId:message.peerId,token:message.token};remember('stf-public-lobby',this.credentials);this.acceptLobby(message.state);resolve(message.state);this.options.onStatus?.('connected');}
         else if(message.type==='lobby')this.acceptLobby(message.state);
@@ -96,6 +98,7 @@ export class PublicClient {
       let welcomed=false;const timer=setTimeout(()=>{reject(new Error('Match connection timed out.'));socket.close();},8000);
       socket.onopen=()=>this.sendMatch({type:'hello',protocolVersion:PROTOCOL_VERSION,contentVersion:CONTENT_VERSION,peerId:ticket.peerId,token:ticket.token,spectator});
       socket.onmessage=({data})=>{
+        if(data==='pong'){this.options.onStatus?.('connected',Math.max(0,performance.now()-this.lastPassivePing));return;}
         let message:MatchServerMessage;try{message=JSON.parse(data);}catch{return;}
         if(message.type==='welcome'){welcomed=true;clearTimeout(timer);this.sequence=Math.max(this.sequence,message.inputSequence??0);this.pendingInputs=[];this.localTick=Math.max(message.state.snapshot?.tick??0,...(message.state.snapshot?.acknowledgedInputs??[]).filter(input=>ticket.seatIds.includes(input.seatId)).map(input=>input.tick));this.acceptMatch(message.state);resolve(message.state);this.options.onStatus?.('connected');for(const [seatId,value] of this.queuedSeatReady)this.sendMatch({type:'ready',seatId,...value});}
         else if(message.type==='match')this.acceptMatch(message.state);
@@ -124,7 +127,7 @@ export class PublicClient {
   forfeit():void{this.sendMatch({type:'forfeit'});}
   leaveMatch():void{const socket=this.matchSocket;this.matchSocket=undefined;if(socket){socket.onclose=null;socket.close();}this.prediction?.terminate();this.prediction=undefined;this.ticket=undefined;this.match=undefined;this.snapshot=undefined;this.pendingInputs=[];this.queuedSeatReady.clear();}
   close():void{this.closed=true;this.leaveMatch();if(this.inputTimer)clearInterval(this.inputTimer);if(this.pingTimer)clearInterval(this.pingTimer);this.inputTimer=undefined;this.pingTimer=undefined;for(const timer of this.retryTimers)clearTimeout(timer);this.retryTimers.clear();const socket=this.lobbySocket;this.lobbySocket=undefined;if(socket){socket.onclose=null;socket.close();}this.lobby=undefined;this.seatDraft=undefined;this.seatsInFlight=undefined;}
-  private startTimers():void{if(!this.inputTimer)this.inputTimer=setInterval(()=>{if(this.pendingInputs.length&&this.matchSocket?.readyState===WebSocket.OPEN){this.sendMatch({type:'input',sequence:++this.sequence,frames:this.pendingInputs});this.pendingInputs=[];}},50);if(!this.pingTimer)this.pingTimer=setInterval(()=>{if(this.matchSocket?.readyState===WebSocket.OPEN)this.sendMatch({type:'ping',nonce:performance.now()});else this.sendLobby({type:'ping',nonce:performance.now()});},2000);}
+  private startTimers():void{if(!this.inputTimer)this.inputTimer=setInterval(()=>{if(this.pendingInputs.length&&this.matchSocket?.readyState===WebSocket.OPEN){this.sendMatch({type:'input',sequence:++this.sequence,frames:this.pendingInputs});this.pendingInputs=[];}},50);if(!this.pingTimer)this.pingTimer=setInterval(()=>{if(this.matchSocket?.readyState===WebSocket.OPEN&&this.match?.phase==='running')this.sendMatch({type:'ping',nonce:performance.now()});else if(performance.now()-this.lastPassivePing>60_000){this.lastPassivePing=performance.now();const socket=this.matchSocket?.readyState===WebSocket.OPEN?this.matchSocket:this.lobbySocket;if(socket?.readyState===WebSocket.OPEN)socket.send('ping');}},2000);}
   private retry(run:()=>Promise<unknown>,started:number):void{if(Date.now()-started>=15_000){this.options.onStatus?.('disconnected');this.options.onError?.('reconnect_expired','The fifteen-second reconnect window expired.');return;}const timer=setTimeout(()=>{this.retryTimers.delete(timer);if(!this.closed)void run().catch(()=>{});},700);this.retryTimers.add(timer);}
   private sendLobby(message:LobbyClientMessage):void{if(this.lobbySocket?.readyState===WebSocket.OPEN)this.lobbySocket.send(JSON.stringify(message));}
   private sendMatch(message:MatchClientMessage):void{if(this.matchSocket?.readyState===WebSocket.OPEN&&this.matchSocket.bufferedAmount<64*1024)this.matchSocket.send(JSON.stringify(message));}

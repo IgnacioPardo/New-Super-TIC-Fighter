@@ -150,6 +150,7 @@ export class RoomClient {
   }
   rematch(): void { this.send({ type: 'rematch' }); }
   reportResult(result: MatchResult, snapshot?: MatchSnapshot): void {
+    if(snapshot)snapshot=wireSnapshot(snapshot);
     if (snapshot && snapshot.matchId === this.room?.matchId && snapshot.phase === 'finished') this.finalSnapshot = snapshot;
     if (this.send({ type: 'result', result, snapshot }) || !this.isHost || !this.room?.matchId) return;
     this.acceptControl({ type: 'result', matchId: this.room.matchId, result, snapshot, controlId: crypto.randomUUID() });

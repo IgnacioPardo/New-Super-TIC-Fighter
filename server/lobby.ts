@@ -6,11 +6,12 @@ import { json, record, secret, validSeat } from './validation';
 import { recordVerifiedResult } from './accounts';
 interface Peer { id:string; token:string; partyId:string; players:PlayerSeat[]; joinedAt:number; disconnectedAt?:number; userId?:string; ticket?:MatchTicket }
 interface Party { id:string; inviteCode:string; leaderId:string; preference:PoolPreference; queuedAt?:number }
-interface Reservation { id:string; matchId:string; day:string; playerMinutes:number; playerCount:number; createdAt:number; expiresAt:number; released:boolean; activity?:PublicActivity; spectatorToken?:string }
+interface Reservation { id:string; matchId:string; day:string; dayReservations?:Record<string,number>; playerMinutes:number; playerCount:number; createdAt:number; expiresAt:number; released:boolean; activity?:PublicActivity; spectatorToken?:string }
 interface Store { peers:Peer[]; parties:Party[]; reservations:Reservation[]; days:Record<string,number> }
 interface Attachment { peerId?:string; userId?:string }
 const CONNECTIONS=64,MATCHES=4,MINUTES=1200,RECONNECT=15_000;
 const day=()=>new Date().toISOString().slice(0,10);
+const allocations=(start:number,end:number,count:number):Record<string,number>=>{const result:Record<string,number>={};for(let at=start;at<end;){const date=new Date(at),next=Date.UTC(date.getUTCFullYear(),date.getUTCMonth(),date.getUTCDate()+1),until=Math.min(end,next);result[date.toISOString().slice(0,10)]=(until-at)*count/60_000;at=until;}return result;};
 const resetAt=()=>{const now=new Date();return Date.UTC(now.getUTCFullYear(),now.getUTCMonth(),now.getUTCDate()+1);};
 const validPreference=(value:unknown):value is PoolPreference=>record(value)&&['duel','ffa','teams','royale'].includes(String(value.pool))&&['classic','expanded'].includes(String(value.ruleset));
 /** Hibernating presence, one compatible pool, party-preserving matchmaking and
@@ -20,8 +21,9 @@ export class LobbyDO {
   private rates=new WeakMap<WebSocket,{at:number;count:number}>();
   private matching=false;
   constructor(private state:DurableObjectState,private env:Env){
+    state.setWebSocketAutoResponse(new WebSocketRequestResponsePair('ping','pong'));
     state.storage.sql.exec('CREATE TABLE IF NOT EXISTS lobby(id INTEGER PRIMARY KEY CHECK(id=1),data TEXT NOT NULL)');
-    const row=state.storage.sql.exec('SELECT data FROM lobby WHERE id=1').toArray()[0] as {data:string}|undefined;if(row)this.store=JSON.parse(row.data);
+    const row=state.storage.sql.exec('SELECT data FROM lobby WHERE id=1').toArray()[0] as {data:string}|undefined;if(row)this.store=JSON.parse(row.data);for(const r of this.store.reservations)r.dayReservations??={[r.day]:r.playerMinutes};
   }
   async fetch(request:Request):Promise<Response>{
     const url=new URL(request.url);
@@ -46,9 +48,13 @@ export class LobbyDO {
       return json({reservationId:reservation.id},201);
     }
     if(url.pathname==='/internal/release'&&request.method==='POST'){
-      const value=await request.json() as {reservationId:string;matchId:string;elapsedMs:number;cancelled?:boolean;result?:Parameters<typeof recordVerifiedResult>[2];config?:MatchConfig;seatUserIds?:Record<string,string>};
+      const value=await request.json() as {reservationId:string;matchId:string;elapsedMs:number;startedAt?:number;cancelled?:boolean;result?:Parameters<typeof recordVerifiedResult>[2];config?:MatchConfig;seatUserIds?:Record<string,string>};
       const reservation=this.store.reservations.find(r=>r.id===value.reservationId&&r.matchId===value.matchId);if(!reservation)return json({error:'reservation_missing'},404);
-      if(!reservation.released){reservation.released=true;const minutes=value.cancelled?0:Math.min(reservation.playerMinutes,Math.max(0,value.elapsedMs)*reservation.playerCount/60_000);this.store.days[reservation.day]=(this.store.days[reservation.day]??0)+minutes;this.save();}
+      if(!reservation.released){
+        reservation.released=true;
+        if(!value.cancelled){const elapsed=Math.min(reservation.playerMinutes*60_000/reservation.playerCount,Math.max(0,value.elapsedMs)),start=Number.isFinite(value.startedAt)?Math.max(reservation.createdAt,value.startedAt!):reservation.createdAt;for(const [date,minutes] of Object.entries(allocations(start,start+elapsed,reservation.playerCount)))this.store.days[date]=(this.store.days[date]??0)+minutes;}
+        this.save();
+      }
       if(value.result&&value.config)await recordVerifiedResult(this.env,value.matchId,value.result,value.config,value.seatUserIds??{});
       this.broadcast();this.state.waitUntil(this.matchmake());return json({ok:true});
     }
@@ -100,7 +106,7 @@ export class LobbyDO {
     const now=Date.now();for(const peer of [...this.store.peers])if(peer.disconnectedAt&&now-peer.disconnectedAt>=RECONNECT){this.removeFromParty(peer);this.store.peers=this.store.peers.filter(p=>p.id!==peer.id);}
     // A lost Match object is charged its conservative reservation, never silently
     // made free. Explicit completion refunds unused reserved time idempotently.
-    for(const r of this.store.reservations)if(!r.released&&r.expiresAt<=now){r.released=true;this.store.days[r.day]=(this.store.days[r.day]??0)+r.playerMinutes;}
+    for(const r of this.store.reservations)if(!r.released&&r.expiresAt<=now){r.released=true;for(const [date,minutes] of Object.entries(r.dayReservations??{[r.day]:r.playerMinutes}))this.store.days[date]=(this.store.days[date]??0)+minutes;}
     this.store.reservations=this.store.reservations.filter(r=>!r.released||now-r.createdAt<86_400_000);
     this.store.days=Object.fromEntries(Object.entries(this.store.days).filter(([key])=>key>=new Date(now-7*86_400_000).toISOString().slice(0,10)));
     this.save();this.broadcast();await this.matchmake();await this.scheduleAlarm();
@@ -114,10 +120,10 @@ export class LobbyDO {
     const old=this.socketFor(peer.id);if(old&&old!==ws)old.close(4001,'reconnected elsewhere');peer.disconnectedAt=undefined;ws.serializeAttachment({peerId:peer.id,userId:peer.userId});this.save();this.send(ws,{type:'welcome',peerId:peer.id,token:peer.token,state:this.publicState(peer)});if(peer.ticket&&this.store.reservations.some(r=>r.matchId===peer!.ticket!.matchId&&!r.released))this.send(ws,{type:'match',ticket:peer.ticket});this.broadcast();
   }
   private reserve(matchId:string,count:number,seconds:number):Reservation|undefined{
-    const capacity=this.capacity(),minutes=count*(seconds+75)/60;
-    if(!capacity.enabled||capacity.activeMatches>=MATCHES||capacity.usedPlayerMinutes+capacity.reservedPlayerMinutes+minutes>MINUTES)return;
-    const existing=this.store.reservations.find(r=>r.matchId===matchId);if(existing)return existing;
-    const r:Reservation={id:crypto.randomUUID(),matchId,day:day(),playerMinutes:minutes,playerCount:count,createdAt:Date.now(),expiresAt:Date.now()+(seconds+90)*1000,released:false};this.store.reservations.push(r);this.save();void this.scheduleAlarm();return r;
+    const existing=this.store.reservations.find(r=>r.matchId===matchId);if(existing)return existing.released?undefined:existing;
+    const capacity=this.capacity(),minutes=count*(seconds+75)/60,started=Date.now(),days=allocations(started,started+(seconds+75)*1000,count);
+    if(!capacity.enabled||capacity.activeMatches>=MATCHES||Object.entries(days).some(([date,amount])=>(this.store.days[date]??0)+this.store.reservations.filter(r=>!r.released).reduce((sum,r)=>sum+(r.dayReservations?.[date]??(r.day===date?r.playerMinutes:0)),0)+amount>MINUTES))return;
+    const r:Reservation={id:crypto.randomUUID(),matchId,day:day(),dayReservations:days,playerMinutes:minutes,playerCount:count,createdAt:Date.now(),expiresAt:Date.now()+(seconds+90)*1000,released:false};this.store.reservations.push(r);this.save();void this.scheduleAlarm();return r;
   }
   private async matchmake():Promise<void>{
     if(this.matching||this.env.PUBLIC_ENABLED!=='true')return;this.matching=true;
@@ -151,7 +157,7 @@ export class LobbyDO {
   private publicParties():LobbyState['parties']{return this.store.parties.map(p=>({id:p.id,players:this.partyPeers(p.id).flatMap(peer=>peer.players).length,queued:!!p.queuedAt,preference:p.preference}));}
   private activities():PublicActivity[]{return this.store.reservations.filter(r=>!r.released&&r.activity).map(r=>r.activity!);}
   private onlinePlayers():number{return this.store.peers.filter(p=>this.socketFor(p.id)).reduce((total,p)=>total+p.players.length,0);}
-  private capacity():PublicCapacity{const active=this.store.reservations.filter(r=>!r.released),used=this.store.days[day()]??0,reserved=active.filter(r=>r.day===day()).reduce((n,r)=>n+r.playerMinutes,0),enabled=this.env.PUBLIC_ENABLED==='true';return{enabled,activeMatches:active.length,maxMatches:MATCHES,connections:this.state.getWebSockets().filter(s=>s.readyState===WebSocket.OPEN).length,maxConnections:CONNECTIONS,usedPlayerMinutes:used,reservedPlayerMinutes:reserved,dailyPlayerMinutes:MINUTES,resetAt:resetAt(),queuedParties:this.store.parties.filter(p=>p.queuedAt).length,reason:!enabled?'disabled':active.length>=MATCHES?'matches':used+reserved>=MINUTES?'daily':undefined};}
+  private capacity():PublicCapacity{const active=this.store.reservations.filter(r=>!r.released),used=this.store.days[day()]??0,reserved=active.reduce((n,r)=>n+(r.dayReservations?.[day()]??(r.day===day()?r.playerMinutes:0)),0),enabled=this.env.PUBLIC_ENABLED==='true';return{enabled,activeMatches:active.length,maxMatches:MATCHES,connections:this.state.getWebSockets().filter(s=>s.readyState===WebSocket.OPEN).length,maxConnections:CONNECTIONS,usedPlayerMinutes:used,reservedPlayerMinutes:reserved,dailyPlayerMinutes:MINUTES,resetAt:resetAt(),queuedParties:this.store.parties.filter(p=>p.queuedAt).length,reason:!enabled?'disabled':active.length>=MATCHES?'matches':used+reserved+12.5>MINUTES?'daily':undefined};}
   private publicState(peer:Peer):LobbyState{return{peerId:peer.id,party:this.publicParty(this.store.parties.find(p=>p.id===peer.partyId)!),parties:this.publicParties(),activities:this.activities(),capacity:this.capacity(),onlinePlayers:this.onlinePlayers()};}
   private async disconnect(ws:WebSocket):Promise<void>{const id=(ws.deserializeAttachment() as Attachment)?.peerId,peer=this.store.peers.find(p=>p.id===id);if(!peer||this.socketFor(peer.id))return;peer.disconnectedAt=Date.now();const party=this.store.parties.find(p=>p.id===peer.partyId);if(party)party.queuedAt=undefined;this.save();this.broadcast();await this.scheduleAlarm();}
   private socketFor(id:string):WebSocket|undefined{return this.state.getWebSockets().find(ws=>ws.readyState===WebSocket.OPEN&&(ws.deserializeAttachment() as Attachment)?.peerId===id);}

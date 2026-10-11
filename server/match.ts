@@ -30,6 +30,7 @@ export class MatchDO {
   private rates=new WeakMap<WebSocket,{at:number;count:number}>();
 
   constructor(private state:DurableObjectState,private env:Env) {
+    state.setWebSocketAutoResponse(new WebSocketRequestResponsePair('ping','pong'));
     state.storage.sql.exec('CREATE TABLE IF NOT EXISTS public_match (id INTEGER PRIMARY KEY CHECK(id=1), data TEXT NOT NULL)');
     const row=state.storage.sql.exec('SELECT data FROM public_match WHERE id=1').toArray()[0] as {data:string}|undefined;
     if(row){
@@ -103,7 +104,7 @@ export class MatchDO {
     const match=this.match;if(!match)return;
     if(match.phase==='waiting'&&Date.now()-match.createdAt>=WAIT_MS)this.interrupt('players did not become ready');
     if(match.phase==='running'){
-      for(const member of match.members)if(!member.connected&&!member.forfeited&&this.clock()-(member.disconnectedAt??this.clock())>=RECONNECT_MS)this.forfeit(member);
+      this.forfeitMembers(match.members.filter(member=>!member.connected&&!member.forfeited&&this.clock()-(member.disconnectedAt??this.clock())>=RECONNECT_MS));
       if(!this.timer)this.startTimer();
     }
     if(match.phase==='finished'&&!match.published)await this.publishResult();
@@ -142,10 +143,9 @@ export class MatchDO {
     match.metrics.maxLatenessMs=Math.max(match.metrics.maxLatenessMs,now-this.nextTickAt);
     try{
       while((count===0||wallAdvanced&&now>=this.nextTickAt)&&count<6&&match.phase==='running'){
-        const before=performance.now();const frames:InputFrame[]=[];
+        const before=performance.now();const frames:InputFrame[]=[];this.forfeitMembers(match.members.filter(member=>!member.connected&&!member.forfeited&&this.clock()-(member.disconnectedAt??this.clock())>=RECONNECT_MS));
         for(const member of match.members){
           if(member.forfeited)continue;
-          if(!member.connected&&this.clock()-(member.disconnectedAt??this.clock())>=RECONNECT_MS){this.forfeit(member);continue;}
           for(const id of member.seatIds){
             const queue=this.inputQueues.get(id);
             if(member.connected&&queue?.length)frames.push(queue.shift()!);
@@ -165,17 +165,18 @@ export class MatchDO {
       if(match.phase==='running')this.scheduleTick();
     }catch{this.interrupt('simulation runtime interrupted');}
   }
-  private forfeit(member:MatchMember):void{
-    if(member.forfeited||this.match?.phase==='finished')return;member.forfeited=true;member.connected=false;
-    for(const id of member.seatIds)this.inputQueues.delete(id);
-    if(this.match?.phase==='running'){this.match.checkpoint=this.simulation.forfeit(member.seatIds);if(this.match.checkpoint.result)this.finish(this.match.checkpoint);}
+  private forfeit(member:MatchMember):void{this.forfeitMembers([member]);}
+  private forfeitMembers(members:MatchMember[]):void{
+    const match=this.match;const active=members.filter(m=>!m.forfeited);if(!match||match.phase==='finished'||!active.length)return;
+    for(const member of active){member.forfeited=true;member.connected=false;for(const id of member.seatIds)this.inputQueues.delete(id);}
+    if(match.phase==='running'){match.checkpoint=this.simulation.forfeit(active.flatMap(m=>m.seatIds));if(match.checkpoint.result)this.finish(match.checkpoint);}
     else this.interrupt('waiting player forfeited');
     this.save();this.broadcastState();
   }
   private interrupt(_reason:string):void{
     const match=this.match;if(!match||match.phase==='finished')return;
     let snapshot=match.checkpoint;
-    if(!snapshot){try{snapshot=this.simulation.createMatch(match.config,match.matchId);}catch{return;}}
+    if(!snapshot){try{snapshot=this.simulation.createMatch(match.config,match.matchId);}catch{snapshot={matchId:match.matchId,tick:0,elapsed:0,phase:'finished',countdown:0,config:match.config,fighters:[],effects:[],events:[]};}}
     match.interrupted=true;this.finish({...snapshot,phase:'finished',result:{winners:[],reason:'interrupted'}});
   }
   private finish(snapshot:MatchSnapshot):void{
@@ -187,7 +188,7 @@ export class MatchDO {
   private async publishResult():Promise<void>{
     const match=this.match;if(!match||match.published||!match.checkpoint?.result)return;
     try{
-      if(match.reservationId){const response=await this.env.LOBBY.get(this.env.LOBBY.idFromName('global')).fetch('https://internal/internal/release',{method:'POST',body:JSON.stringify({reservationId:match.reservationId,matchId:match.matchId,elapsedMs:Math.max(0,(match.finishedAt??Date.now())-(match.startedAt??match.createdAt)),result:match.checkpoint.result,resultId:match.resultId,config:match.config,seatUserIds:Object.assign({},...match.members.map(m=>m.seatUserIds??{}))})});if(!response.ok)throw new Error('reservation release failed');}
+      if(match.reservationId){const response=await this.env.LOBBY.get(this.env.LOBBY.idFromName('global')).fetch('https://internal/internal/release',{method:'POST',body:JSON.stringify({reservationId:match.reservationId,matchId:match.matchId,startedAt:match.startedAt??match.createdAt,elapsedMs:Math.max(0,(match.finishedAt??Date.now())-(match.startedAt??match.createdAt)),result:match.checkpoint.result,resultId:match.resultId,config:match.config,seatUserIds:Object.assign({},...match.members.map(m=>m.seatUserIds??{}))})});if(!response.ok)throw new Error('reservation release failed');}
       if(match.tournamentId){const response=await this.env.TOURNAMENTS.get(this.env.TOURNAMENTS.idFromName(match.tournamentId)).fetch('https://internal/internal/result',{method:'POST',body:JSON.stringify({gameId:match.tournamentGameId,matchId:match.matchId,resultId:match.resultId,result:match.checkpoint.result,snapshot:match.checkpoint})});if(!response.ok)throw new Error('tournament advancement failed');}
       match.published=true;this.save();await this.state.storage.deleteAlarm();
     }catch{await this.state.storage.setAlarm(Date.now()+10_000);}
