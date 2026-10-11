@@ -9,7 +9,8 @@ export interface PublicCapacity {
 }
 export interface PublicParty { id: string; leaderId: string; inviteCode: string; peerIds: string[]; players: PlayerSeat[]; queued: boolean; preference: PoolPreference }
 export interface PublicActivity { id: string; pool: PublicPool; ruleset: 'classic' | 'expanded'; players: number; startedAt: number; spectatable: boolean }
-export interface LobbyState { peerId: string; party: PublicParty; parties: { id: string; players: number; queued: boolean; preference: PoolPreference }[]; activities: PublicActivity[]; capacity: PublicCapacity; onlinePlayers: number }
+export interface AvailablePlayer { id:string; name:string; partySize:number; queued:boolean }
+export interface LobbyState { peerId: string; party: PublicParty; parties: { id: string; players: number; queued: boolean; preference: PoolPreference }[]; activities: PublicActivity[]; availablePlayers:AvailablePlayer[]; capacity: PublicCapacity; onlinePlayers: number }
 export interface MatchTicket { matchId: string; peerId: string; token: string; seatIds: string[]; config: MatchConfig; tournamentId?: string; spectatorToken?: string }
 export interface MatchMetrics {
   ticks: number; snapshots: number; wallMs: number; tickCpuMs: number; maxTickCpuMs: number; maxLatenessMs: number;
@@ -28,11 +29,13 @@ export type LobbyClientMessage =
   | { type: 'party_leave' }
   | { type: 'preference'; preference: PoolPreference }
   | { type: 'queue'; queued: boolean }
+  | { type: 'latency_reply'; nonce:string }
   | { type: 'ping'; nonce: number };
 export type LobbyServerMessage =
   | { type: 'welcome'; peerId: string; token: string; state: LobbyState }
   | { type: 'lobby'; state: LobbyState }
   | { type: 'match'; ticket: MatchTicket }
+  | { type: 'latency_probe'; nonce:string }
   | { type: 'error'; code: string; message: string; refresh?: boolean }
   | { type: 'pong'; nonce: number; now: number };
 export type MatchClientMessage =

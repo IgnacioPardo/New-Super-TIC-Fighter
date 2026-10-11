@@ -4,7 +4,7 @@ import type { Env } from './env';
 import type { MatchAdmission } from './match';
 import { json, record, secret, validSeat } from './validation';
 import { recordVerifiedResult } from './accounts';
-interface Peer { id:string; token:string; partyId:string; players:PlayerSeat[]; joinedAt:number; disconnectedAt?:number; userId?:string; ticket?:MatchTicket }
+interface Peer { id:string; token:string; partyId:string; players:PlayerSeat[]; joinedAt:number; disconnectedAt?:number; userId?:string; ticket?:MatchTicket; latencyMs?:number; latencyAt?:number }
 interface Party { id:string; inviteCode:string; leaderId:string; preference:PoolPreference; queuedAt?:number }
 interface Reservation { id:string; matchId:string; day:string; dayReservations?:Record<string,number>; playerMinutes:number; playerCount:number; createdAt:number; expiresAt:number; released:boolean; activity?:PublicActivity; spectatorToken?:string }
 interface Store { peers:Peer[]; parties:Party[]; reservations:Reservation[]; days:Record<string,number> }
@@ -19,6 +19,7 @@ const validPreference=(value:unknown):value is PoolPreference=>record(value)&&['
 export class LobbyDO {
   private store:Store={peers:[],parties:[],reservations:[],days:{}};
   private rates=new WeakMap<WebSocket,{at:number;count:number}>();
+  private latencyProbes=new WeakMap<WebSocket,{nonce:string;at:number}>();
   private matching=false;
   constructor(private state:DurableObjectState,private env:Env){
     state.setWebSocketAutoResponse(new WebSocketRequestResponsePair('ping','pong'));
@@ -29,7 +30,7 @@ export class LobbyDO {
   }
   async fetch(request:Request):Promise<Response>{
     const url=new URL(request.url);
-    if(url.pathname==='/internal/state')return json({capacity:this.capacity(),parties:this.publicParties(),activities:this.activities(),onlinePlayers:this.onlinePlayers()});
+    if(url.pathname==='/internal/state')return json({capacity:this.capacity(),parties:this.publicParties(),activities:this.activities(),availablePlayers:this.availablePlayers(),onlinePlayers:this.onlinePlayers()});
     if(url.pathname==='/internal/peer'&&request.method==='POST'){
       const {peerId,token}=await request.json() as {peerId:string;token:string};const peer=this.store.peers.find(p=>p.id===peerId&&p.token===token&&this.socketFor(p.id));
       return peer?json({peerId:peer.id,players:peer.players,userId:peer.userId,browserId:peer.id,available:!peer.ticket||!this.store.reservations.some(r=>r.matchId===peer.ticket!.matchId&&!r.released)}):json({error:'invalid_peer'},403);
@@ -78,6 +79,10 @@ export class LobbyDO {
     const peer=this.store.peers.find(p=>p.id===(ws.deserializeAttachment() as Attachment)?.peerId);if(!peer)return this.error(ws,'join_required','Join the public lobby first.');
     const party=this.store.parties.find(p=>p.id===peer.partyId)!;
     switch(message.type){
+      case 'latency_reply':{
+        const probe=this.latencyProbes.get(ws);if(!probe||message.nonce!==probe.nonce)return;this.latencyProbes.delete(ws);const elapsed=Date.now()-probe.at;if(elapsed<0||elapsed>3000)return;
+        peer.latencyMs=peer.latencyMs===undefined?elapsed:peer.latencyMs*.7+elapsed*.3;peer.latencyAt=Date.now();this.save();return;
+      }
       case 'seats':{
         if(!Array.isArray(message.players)||message.players.length<1||message.players.length>4||!message.players.every(p=>validSeat(p))||new Set(message.players.map(p=>p.id)).size!==message.players.length)return this.error(ws,'invalid_seats','Choose one to four unique local humans.');
         const otherSeats=this.partyPeers(party.id).filter(p=>p.id!==peer.id).flatMap(p=>p.players);if(otherSeats.length+message.players.length>8)return this.error(ws,'party_full','The party supports at most eight fighters.');
@@ -102,7 +107,7 @@ export class LobbyDO {
       case 'ping':if(Number.isFinite(message.nonce))this.send(ws,{type:'pong',nonce:message.nonce,now:Date.now()});return;
       default:return this.error(ws,'unknown_message','Unknown lobby message.');
     }
-    this.save();this.broadcast();await this.matchmake();await this.scheduleAlarm();
+    if(Date.now()-(peer.latencyAt??0)>30_000)this.probeLatency(ws);this.save();this.broadcast();await this.matchmake();await this.scheduleAlarm();
   }
   async webSocketClose(ws:WebSocket):Promise<void>{await this.disconnect(ws);}
   async webSocketError(ws:WebSocket):Promise<void>{await this.disconnect(ws);}
@@ -121,7 +126,7 @@ export class LobbyDO {
     let peer=this.store.peers.find(p=>p.id===message.peerId&&p.token===message.token);
     if(message.token&&(!peer||peer.disconnectedAt&&Date.now()-peer.disconnectedAt>RECONNECT)){this.error(ws,'reconnect_expired','The fifteen-second lobby reconnect window expired.');ws.close(1008);return;}
     if(!peer){peer={id:crypto.randomUUID(),token:secret(),partyId:'',players:[],joinedAt:Date.now(),userId:attachment.userId};this.store.peers.push(peer);this.newParty(peer);}
-    const old=this.socketFor(peer.id);if(old&&old!==ws)old.close(4001,'reconnected elsewhere');peer.disconnectedAt=undefined;peer.userId=attachment.userId;ws.serializeAttachment({peerId:peer.id,userId:peer.userId});this.save();this.send(ws,{type:'welcome',peerId:peer.id,token:peer.token,state:this.publicState(peer)});if(peer.ticket&&this.store.reservations.some(r=>r.matchId===peer!.ticket!.matchId&&!r.released))this.send(ws,{type:'match',ticket:peer.ticket});this.broadcast();
+    const old=this.socketFor(peer.id);if(old&&old!==ws)old.close(4001,'reconnected elsewhere');peer.disconnectedAt=undefined;peer.userId=attachment.userId;ws.serializeAttachment({peerId:peer.id,userId:peer.userId});this.save();this.send(ws,{type:'welcome',peerId:peer.id,token:peer.token,state:this.publicState(peer)});if(peer.ticket&&this.store.reservations.some(r=>r.matchId===peer!.ticket!.matchId&&!r.released))this.send(ws,{type:'match',ticket:peer.ticket});this.probeLatency(ws);this.broadcast();
   }
   private reserve(matchId:string,count:number,seconds:number):Reservation|undefined{
     const existing=this.store.reservations.find(r=>r.matchId===matchId);if(existing)return existing.released?undefined:existing;
@@ -135,7 +140,14 @@ export class LobbyDO {
       for(let attempt=0;attempt<MATCHES;attempt++){
         if(this.capacity().activeMatches>=MATCHES)break;
         const queued=this.store.parties.filter(p=>p.queuedAt&&this.partyPeers(p.id).every(peer=>this.socketFor(peer.id))).sort((a,b)=>a.queuedAt!-b.queuedAt!);let chosen:Party[]|undefined,teams:Set<string>|undefined;
-        for(const first of queued){const candidates=queued.filter(p=>p.preference.pool===first.preference.pool&&p.preference.ruleset===first.preference.ruleset);const target=first.preference.pool==='duel'?2:first.preference.pool==='royale'?8:4;chosen=this.subset(candidates,target);if(chosen){if(first.preference.pool==='teams'){const side=this.subset(chosen,2);if(!side){chosen=undefined;continue;}teams=new Set(side.map(p=>p.id));}break;}}
+        for(const first of queued){
+          const latency=this.partyLatency(first),candidates=queued.filter(p=>p.preference.pool===first.preference.pool&&p.preference.ruleset===first.preference.ruleset).sort((a,b)=>{
+            const al=this.partyLatency(a),bl=this.partyLatency(b),distance=(value:number|undefined)=>latency===undefined||value===undefined?Infinity:Math.abs(value-latency);
+            return distance(al)-distance(bl)||a.queuedAt!-b.queuedAt!;
+          });
+          const target=first.preference.pool==='duel'?2:first.preference.pool==='royale'?8:4;chosen=this.subset(candidates,target,first);
+          if(chosen){if(first.preference.pool==='teams'){const side=this.subset(chosen,2);if(!side){chosen=undefined;continue;}teams=new Set(side.map(p=>p.id));}break;}
+        }
         if(!chosen)break;
         const peers=chosen.flatMap(p=>this.partyPeers(p.id)),pref=chosen[0].preference,matchId=crypto.randomUUID();
         const config:MatchConfig={ruleset:pref.ruleset,gameMode:pref.pool==='royale'?'royale':'stock',mode:pref.pool==='teams'?'teams':'ffa',arena:pref.pool==='royale'?'arcade':'classic',lives:pref.pool==='royale'?1:3,timeLimit:pref.pool==='royale'?240:300,friendlyFire:false,practice:false,seed:crypto.getRandomValues(new Uint32Array(1))[0],items:false,hazards:false,bestOf:1,players:peers.flatMap(peer=>peer.players.map(p=>({...p,team:pref.pool==='teams'?(teams!.has(peer.partyId)?0:1):p.team})))};
@@ -151,9 +163,12 @@ export class LobbyDO {
       }
     }finally{this.matching=false;}
   }
-  private subset(parties:Party[],target:number):Party[]|undefined{
-    const chosen=new Map<number,Party[]>([[0,[]]]);for(const party of parties){const size=this.partyPeers(party.id).flatMap(p=>p.players).length;if(!size)continue;for(const [total,list] of [...chosen.entries()].sort((a,b)=>b[0]-a[0]))if(total+size<=target&&!chosen.has(total+size))chosen.set(total+size,[...list,party]);if(chosen.has(target))return chosen.get(target);}return;
+  private subset(parties:Party[],target:number,anchor?:Party):Party[]|undefined{
+    const start=anchor?this.partyPeers(anchor.id).flatMap(p=>p.players).length:0;if(start>target)return;const chosen=new Map<number,Party[]>([[start,anchor?[anchor]:[]]]);if(start===target)return chosen.get(target);
+    for(const party of parties){if(party.id===anchor?.id)continue;const size=this.partyPeers(party.id).flatMap(p=>p.players).length;if(!size)continue;for(const [total,list] of [...chosen.entries()].sort((a,b)=>b[0]-a[0]))if(total+size<=target&&!chosen.has(total+size))chosen.set(total+size,[...list,party]);if(chosen.has(target))return chosen.get(target);}return;
   }
+  private probeLatency(ws:WebSocket):void{const previous=this.latencyProbes.get(ws);if(previous&&Date.now()-previous.at<=3000)return;const nonce=secret();this.latencyProbes.set(ws,{nonce,at:Date.now()});this.send(ws,{type:'latency_probe',nonce});}
+  private partyLatency(party:Party):number|undefined{const samples=this.partyPeers(party.id).filter(p=>p.latencyMs!==undefined&&Date.now()-(p.latencyAt??0)<=60_000).map(p=>p.latencyMs!);return samples.length?Math.max(...samples):undefined;}
   private newParty(peer:Peer):void{const id=crypto.randomUUID();peer.partyId=id;this.store.parties.push({id,inviteCode:secret().slice(0,8).toUpperCase(),leaderId:peer.id,preference:{pool:'duel',ruleset:'expanded'}});}
   private removeFromParty(peer:Peer):void{const party=this.store.parties.find(p=>p.id===peer.partyId);if(!party)return;const others=this.partyPeers(party.id).filter(p=>p.id!==peer.id);party.queuedAt=undefined;if(!others.length)this.store.parties=this.store.parties.filter(p=>p.id!==party.id);else if(party.leaderId===peer.id)party.leaderId=others[0].id;}
   private partyPeers(id:string):Peer[]{return this.store.peers.filter(p=>p.partyId===id);}
@@ -161,8 +176,9 @@ export class LobbyDO {
   private publicParties():LobbyState['parties']{return this.store.parties.map(p=>({id:p.id,players:this.partyPeers(p.id).flatMap(peer=>peer.players).length,queued:!!p.queuedAt,preference:p.preference}));}
   private activities():PublicActivity[]{return this.store.reservations.filter(r=>!r.released&&r.activity).map(r=>r.activity!);}
   private onlinePlayers():number{return this.store.peers.filter(p=>this.socketFor(p.id)).reduce((total,p)=>total+p.players.length,0);}
+  private availablePlayers():LobbyState['availablePlayers']{return this.store.peers.filter(p=>this.socketFor(p.id)&&(!p.ticket||!this.store.reservations.some(r=>r.matchId===p.ticket!.matchId&&!r.released))).flatMap(peer=>{const party=this.store.parties.find(p=>p.id===peer.partyId)!;return peer.players.map(player=>({id:player.id,name:player.name,partySize:this.partyPeers(party.id).reduce((n,p)=>n+p.players.length,0),queued:!!party.queuedAt}));}).slice(0,64);}
   private capacity():PublicCapacity{const active=this.store.reservations.filter(r=>!r.released),used=this.store.days[day()]??0,reserved=active.reduce((n,r)=>n+(r.dayReservations?.[day()]??(r.day===day()?r.playerMinutes:0)),0),enabled=this.env.PUBLIC_ENABLED==='true';return{enabled,activeMatches:active.length,maxMatches:MATCHES,connections:this.state.getWebSockets().filter(s=>s.readyState===WebSocket.OPEN).length,maxConnections:CONNECTIONS,usedPlayerMinutes:used,reservedPlayerMinutes:reserved,dailyPlayerMinutes:MINUTES,resetAt:resetAt(),queuedParties:this.store.parties.filter(p=>p.queuedAt).length,reason:!enabled?'disabled':active.length>=MATCHES?'matches':used+reserved+12.5>MINUTES?'daily':undefined};}
-  private publicState(peer:Peer):LobbyState{return{peerId:peer.id,party:this.publicParty(this.store.parties.find(p=>p.id===peer.partyId)!),parties:this.publicParties(),activities:this.activities(),capacity:this.capacity(),onlinePlayers:this.onlinePlayers()};}
+  private publicState(peer:Peer):LobbyState{return{peerId:peer.id,party:this.publicParty(this.store.parties.find(p=>p.id===peer.partyId)!),parties:this.publicParties(),activities:this.activities(),availablePlayers:this.availablePlayers(),capacity:this.capacity(),onlinePlayers:this.onlinePlayers()};}
   private async disconnect(ws:WebSocket):Promise<void>{const id=(ws.deserializeAttachment() as Attachment)?.peerId,peer=this.store.peers.find(p=>p.id===id);if(!peer||this.socketFor(peer.id))return;peer.disconnectedAt=Date.now();const party=this.store.parties.find(p=>p.id===peer.partyId);if(party)party.queuedAt=undefined;this.save();this.broadcast();await this.scheduleAlarm();}
   private socketFor(id:string):WebSocket|undefined{return this.state.getWebSockets().find(ws=>ws.readyState===WebSocket.OPEN&&(ws.deserializeAttachment() as Attachment)?.peerId===id);}
   private broadcast():void{for(const peer of this.store.peers){const ws=this.socketFor(peer.id);if(ws)this.send(ws,{type:'lobby',state:this.publicState(peer)});}}

@@ -59,6 +59,7 @@ export class PublicClient {
         let message:LobbyServerMessage;try{message=JSON.parse(data);}catch{return;}
         if(message.type==='welcome'){welcomed=true;clearTimeout(timer);this.credentials={peerId:message.peerId,token:message.token};remember('stf-public-lobby',this.credentials);this.acceptLobby(message.state);resolve(message.state);this.options.onStatus?.('connected');}
         else if(message.type==='lobby')this.acceptLobby(message.state);
+        else if(message.type==='latency_probe')this.sendLobby({type:'latency_reply',nonce:message.nonce});
         else if(message.type==='match')this.options.onMatch?.(message.ticket);
         else if(message.type==='pong')this.options.onStatus?.('connected',Math.max(0,performance.now()-message.nonce));
         else if(message.type==='error'){
