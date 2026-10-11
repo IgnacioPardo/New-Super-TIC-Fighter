@@ -1,0 +1,336 @@
+{
+  "matches": [
+    {
+      "kit": "networks",
+      "arena": "classic",
+      "effects": [
+        "cable",
+        "cables",
+        "disc",
+        "ram"
+      ],
+      "tick": 1140
+    },
+    {
+      "kit": "design",
+      "arena": "lab",
+      "effects": [
+        "mouse",
+        "selection",
+        "ram",
+        "disc"
+      ],
+      "tick": 1140
+    },
+    {
+      "kit": "code",
+      "arena": "pc",
+      "effects": [
+        "ball",
+        "column"
+      ],
+      "tick": 1140
+    },
+    {
+      "kit": "hardware",
+      "arena": "embedded",
+      "effects": [
+        "ram",
+        "disc"
+      ],
+      "tick": 1140
+    },
+    {
+      "kit": "ai",
+      "arena": "virtual",
+      "effects": [
+        "ball",
+        "ram",
+        "echo",
+        "disc"
+      ],
+      "tick": 1140
+    },
+    {
+      "kit": "robotics",
+      "arena": "arcade",
+      "effects": [
+        "mechanical",
+        "drone",
+        "displacement",
+        "disc",
+        "ram"
+      ],
+      "tick": 1140
+    },
+    {
+      "kit": "iot",
+      "arena": "classic",
+      "effects": [
+        "board",
+        "wireless",
+        "hub",
+        "disc"
+      ],
+      "tick": 1140
+    },
+    {
+      "kit": "vr",
+      "arena": "lab",
+      "effects": [
+        "displacement",
+        "decoy",
+        "disc"
+      ],
+      "tick": 1140
+    },
+    {
+      "kit": "games",
+      "arena": "pc",
+      "effects": [
+        "ricochet",
+        "pad",
+        "displacement"
+      ],
+      "tick": 1140
+    },
+    {
+      "kit": "printing",
+      "arena": "embedded",
+      "effects": [
+        "piston",
+        "block",
+        "displacement",
+        "ram"
+      ],
+      "tick": 1140
+    },
+    {
+      "mode": "stock",
+      "tick": 660,
+      "phase": "finished",
+      "result": {
+        "winners": [],
+        "reason": "draw"
+      },
+      "wallMs": 255
+    },
+    {
+      "mode": "timed",
+      "tick": 1860,
+      "phase": "finished",
+      "result": {
+        "winners": [],
+        "reason": "draw",
+        "scores": {
+          "p1": 0,
+          "p2": 0,
+          "p3": 0,
+          "p4": 0
+        }
+      },
+      "wallMs": 864
+    },
+    {
+      "mode": "hill",
+      "tick": 660,
+      "phase": "finished",
+      "result": {
+        "winners": [
+          "p3"
+        ],
+        "reason": "timeout",
+        "scores": {
+          "p1": 0.49999999999999994,
+          "p2": 0,
+          "p3": 1.9999999999999978,
+          "p4": 0.9500000000000013
+        }
+      },
+      "wallMs": 280
+    },
+    {
+      "mode": "royale",
+      "tick": 5897,
+      "phase": "finished",
+      "result": {
+        "winners": [
+          "p5"
+        ],
+        "reason": "last-standing",
+        "placements": {
+          "p1": 8,
+          "p2": 6,
+          "p3": 7,
+          "p4": 2,
+          "p5": 1,
+          "p6": 4,
+          "p7": 5,
+          "p8": 3
+        }
+      },
+      "wallMs": 12363
+    },
+    {
+      "mode": "survival",
+      "tick": 784,
+      "phase": "finished",
+      "result": {
+        "winners": [],
+        "reason": "last-standing",
+        "scores": {
+          "p1": 1
+        }
+      },
+      "wallMs": 1974
+    }
+  ],
+  "movement": [
+    "ground jump",
+    "double jump",
+    "air dash",
+    "Signature upward recovery",
+    "down aerial",
+    "forward aerial",
+    "directional dodge",
+    "Classic single jump preserved",
+    "fast fall"
+  ],
+  "aerialKits": [
+    {
+      "kit": "networks",
+      "groundSpecial": [
+        "cable"
+      ],
+      "airSpecial": [
+        "cable"
+      ],
+      "recovery": "Signature once until landing/respawn",
+      "groundSignature": "combo",
+      "botRecovery": true
+    },
+    {
+      "kit": "design",
+      "groundSpecial": [
+        "mouse"
+      ],
+      "airSpecial": [
+        "mouse"
+      ],
+      "recovery": "Signature once until landing/respawn",
+      "groundSignature": "combo",
+      "botRecovery": true
+    },
+    {
+      "kit": "code",
+      "groundSpecial": [
+        "ball"
+      ],
+      "airSpecial": [
+        "ball"
+      ],
+      "recovery": "Signature once until landing/respawn",
+      "groundSignature": "combo",
+      "botRecovery": true
+    },
+    {
+      "kit": "hardware",
+      "groundSpecial": [
+        "ram"
+      ],
+      "airSpecial": [
+        "ram"
+      ],
+      "recovery": "Signature once until landing/respawn",
+      "groundSignature": "combo",
+      "botRecovery": true
+    },
+    {
+      "kit": "ai",
+      "groundSpecial": [
+        "ball"
+      ],
+      "airSpecial": [
+        "ball"
+      ],
+      "recovery": "Signature once until landing/respawn",
+      "groundSignature": "combo",
+      "botRecovery": true
+    },
+    {
+      "kit": "robotics",
+      "groundSpecial": [
+        "mechanical"
+      ],
+      "airSpecial": [
+        "mechanical"
+      ],
+      "recovery": "Signature once until landing/respawn",
+      "groundSignature": "combo",
+      "botRecovery": true
+    },
+    {
+      "kit": "iot",
+      "groundSpecial": [
+        "wireless",
+        "board"
+      ],
+      "airSpecial": [
+        "wireless",
+        "board"
+      ],
+      "recovery": "Signature once until landing/respawn",
+      "groundSignature": "combo",
+      "botRecovery": true
+    },
+    {
+      "kit": "vr",
+      "groundSpecial": [
+        "displacement"
+      ],
+      "airSpecial": [
+        "displacement"
+      ],
+      "recovery": "Signature once until landing/respawn",
+      "groundSignature": "combo",
+      "botRecovery": true
+    },
+    {
+      "kit": "games",
+      "groundSpecial": [
+        "ricochet"
+      ],
+      "airSpecial": [
+        "ricochet"
+      ],
+      "recovery": "Signature once until landing/respawn",
+      "groundSignature": "combo",
+      "botRecovery": true
+    },
+    {
+      "kit": "printing",
+      "groundSpecial": [
+        "piston"
+      ],
+      "airSpecial": [
+        "piston"
+      ],
+      "recovery": "Signature once until landing/respawn",
+      "groundSignature": "combo",
+      "botRecovery": true
+    }
+  ],
+  "checkpointTicks": 600,
+  "edgeCases": [
+    "five item effects",
+    "ballistic USB",
+    "one team Hill point per tick",
+    "shared Royale fall placement",
+    "shared Royale forfeit placement",
+    "two-human Survival wave respawn",
+    "Classic hazards/items disabled",
+    "selected human recording with synchronized multiple dummies",
+    "held-input frame advance",
+    "exact authority aerial collision boxes"
+  ]
+}

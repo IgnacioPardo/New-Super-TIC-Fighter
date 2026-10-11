@@ -1183,7 +1183,7 @@ export class Simulation {
       this.event({ type: 'item', seatId: f.id });
     } else if (f.action !== 'guard') {
       let requested: AttackAction | 'jump' | undefined;
-      if (pressed('special') && !f.grounded && f.recoveryAvailable) requested = 'recover';
+      if (pressed('combo') && !f.grounded && f.recoveryAvailable) requested = 'recover';
       else if (pressed('punch') || (input.punch && !locked && f.recovery < EPSILON))
         requested = f.grounded
           ? input.down
@@ -1194,12 +1194,16 @@ export class Simulation {
             : 'air-forward';
       else if (f.grounded && (pressed('combo') || (input.combo && !locked && f.recovery < EPSILON)))
         requested = 'combo';
-      else if (f.grounded && (pressed('special') || (input.special && !locked && f.recovery < EPSILON)))
-        requested = input.down ? 'sweep' : 'special';
+      else if (pressed('special') || (input.special && !locked && f.recovery < EPSILON))
+        requested = f.grounded && input.down ? 'sweep' : 'special';
       if (requested) this.queue(f, requested);
       if (rt.buffer && state.tick > rt.buffer.expires) rt.buffer = undefined;
       if (rt.buffer && !locked && f.recovery < EPSILON && rt.buffer.action !== 'jump') {
-        const action = rt.buffer.action;
+        // Signature remains contextual when a buffered input crosses a ledge
+        // or lands: ground kit signature, airborne upward recovery.
+        let action = rt.buffer.action;
+        if (action === 'combo' || action === 'recover') action = f.grounded ? 'combo' : 'recover';
+        if (action === 'sweep' && !f.grounded) action = 'special';
         const ability = action === 'special' || action === 'combo';
         if (
           (!ability || (f.abilityCooldown ?? 0) < EPSILON) &&
@@ -1923,6 +1927,14 @@ export class Simulation {
           f.damage = 0;
           f.stun = 0;
           f.recovery = 0;
+        }
+        if (command.action === 'reset-all') {
+          f.abilityCooldown = 0;
+          f.dodgeCooldown = 0;
+          f.jumpCooldown = 0;
+          f.invulnerable = 0;
+          f.guardMeter = 100;
+          f.buffs = {};
         }
         if (command.action === 'reset-position' || command.action === 'reset-all') {
           const p = ARENAS[state.config.arena].spawns[index % ARENAS[state.config.arena].spawns.length];
