@@ -270,3 +270,10 @@ main:has([data-menu-dialog]) { z-index: 5; }
 .match-hud.royale-hud { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); }
 @media (max-width: 760px) { .setup-overview .fighter-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }.match-hud.royale-hud { grid-template-columns: repeat(2,minmax(0,1fr)); } }
 @media (max-width: 470px) { .setup-overview .fighter-grid { grid-template-columns: 1fr; }.fighter-summary .fighter-preview { height: 120px; }.fighter-summary .fighter-preview .avatar { height: 117px; } }
+
+.set-score { margin: 20px auto; max-width: 1000px; padding: 16px; border: 1px solid var(--panel-line); border-left: 4px solid var(--accent); background: var(--panel); box-shadow: var(--hard-shadow); }
+.set-score > p { color: #bdd6e6; margin-bottom: 12px; font-size: 14px; }
+.set-score > div { display: flex; flex-wrap: wrap; gap: 12px; }
+.set-score span { display: flex; gap: 12px; align-items: center; padding: 10px; background: #172b40; flex: 1; min-width: 140px; }
+.set-score b { font: 24px Arcade, sans-serif; margin-left: auto; color: #f3dd71; }
+.set-score i { font-style: normal; color: #a0e769; }

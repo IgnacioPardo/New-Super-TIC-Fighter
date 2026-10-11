@@ -60,6 +60,8 @@ export default function App({ online }: AppProps) {
    previousPhase.current = snapshot?.phase;
  }, [snapshot?.phase, runtime.uiSound]);
  const activeConfig = source === 'online' ? online?.state.config ?? config : config;
+ const configRevision = useRef(JSON.stringify(activeConfig));
+ useEffect(() => {const signature=JSON.stringify(activeConfig);if(signature!==configRevision.current) {configRevision.current=signature;setReady({});}},[activeConfig]);
  if (snapshot) lastSnapshot.current = snapshot;
  useEffect(() => {
    let active = true;
@@ -222,7 +224,7 @@ export default function App({ online }: AppProps) {
     {['setup','room','settings','guide','online'].includes(screen) && <div className="page-heading"><button className="back-button" data-ui-sound="back" onClick={back}>← {t.back}</button><div><span className="screen-context">{screen === 'setup' ? source === 'practice' ? t.practice : t.local : screen === 'room' ? `${t.online} / ${t.room} ${online?.state.code ?? ''}` : ''}</span><h1>{screen === 'setup' || screen === 'room' ? t.setup : screen === 'settings' ? t.settings : screen === 'guide' ? t.guide : t.onlineTitle}</h1></div></div>}
     {(screen === 'setup' || screen === 'room' || ['settings','guide'].includes(screen) && (navigation.contains('setup') || navigation.contains('room'))) && <div hidden={screen !== 'setup' && screen !== 'room'}>
       {screen === 'room' && online && <div className="room-bar"><div className="room-code"><span>{t.room}</span><strong>{online.state.code}</strong><button className="small-button" onClick={() => void copyInvite()}>{copied ? t.copied : t.copy}</button></div><div className="room-quality"><span className={`status-dot ${online.state.status === 'reconnecting' ? 'warning' : ''}`} /><span>{online.state.status === 'reconnecting' ? t.reconnecting : online.state.route === 'direct' ? t.direct : online.state.route === 'relay' ? t.relay : t.connecting}{online.state.ping !== undefined ? ` · ${Math.round(online.state.ping)} ms${online.state.ping > 180 ? ` · ${t.slowConnection}` : ''}` : ''}</span>{online.forceRelay && <label><input type="checkbox" onChange={e => online.forceRelay?.(e.target.checked)} />{t.forceRelay}</label>}</div><div className="room-members">{online.state.members.map(member => <span key={member.id} className={member.ready ? 'member-ready' : ''}>{member.ready ? '✓' : '•'} {member.name}{member.id === online.state.peerId ? ` (${online.state.isHost ? t.host : t.guest})` : ''}</span>)}</div></div>}
-      <Setup config={activeConfig} setConfig={changeConfig} settings={settings} manifest={manifest} devices={runtime.devices} ready={ready} toggleReady={id => setReady(previous => ({ ...previous, [id]: !previous[id] }))} start={start} online={source === 'online' ? online : undefined} practice={source === 'practice'} feedback={runtime.uiSound} />
+      <Setup config={activeConfig} setConfig={changeConfig} settings={settings} manifest={manifest} devices={runtime.devices} ready={ready} toggleReady={id => setReady(previous => ({ ...previous, [id]: !previous[id] }))} start={start} online={source === 'online' ? online : undefined} practice={source === 'practice'} invalidateReady={() => setReady({})} feedback={runtime.uiSound} />
     </div>}
     {screen === 'settings' && <Settings settings={settings} manifest={manifest} change={setSettings} feedback={runtime.uiSound} controllers={runtime.controllers} />}
     {screen === 'guide' && <Guide settings={settings} manifest={manifest} />}

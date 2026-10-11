@@ -12,10 +12,10 @@ import { Choice, MenuDialog, MenuTabs, menuTargets } from './MenuControls';
 const palettes = {hair:['#164d43','#657822','#5c2f82','#53351f'],shirt:['#24b26d','#75c321','#5734c7','#a72547'],pants:['#7de4dc','#65c052','#b574d4','#d3a479']};
 type SeatEditor = {open:boolean; tab:'fighter'|'player'};
 type ReadyBridge = OnlineBridge & {setSeatReady?:(id:string,ready:boolean,assetsReady:boolean)=>void;state:OnlineBridge['state'] & {pendingEdits?:boolean;seatReadiness?:Record<string,boolean|{ready:boolean;assetsReady:boolean}>}};
-export function Setup({config,setConfig,settings,manifest,devices,ready,toggleReady,start,online,practice,feedback}: {
+export function Setup({config,setConfig,settings,manifest,devices,ready,toggleReady,start,online,practice,feedback,invalidateReady}: {
  config:MatchConfig;setConfig:(config:MatchConfig)=>void;settings:AppSettings;manifest:AssetsManifest|null;
  devices:{id:string;label:string;connected:boolean;controllerId?:string}[];ready:Record<string,boolean>;toggleReady:(id:string)=>void;start:()=>void;
- online?:OnlineBridge;practice:boolean;feedback?:(cue:'navigate'|'change'|'back'|'confirm'|'error')=>void;
+ online?:OnlineBridge;practice:boolean;invalidateReady?:()=>void;feedback?:(cue:'navigate'|'change'|'back'|'confirm'|'error')=>void;
 }) {
  const t=ui[settings.language],lang=settings.language,es=lang==='es';
  const bridge=online as ReadyBridge|undefined;
@@ -45,12 +45,14 @@ export function Setup({config,setConfig,settings,manifest,devices,ready,toggleRe
  },[devices,config.players]);
  const acknowledgedReady=(seat:PlayerSeat)=>{
   if(seat.kind==='bot') return true;
+  if(owned(seat)&&!ready[seat.id]) return false;
   const state=bridge?.state.seatReadiness?.[seat.id];
   return state!==undefined?typeof state==='boolean'?state:state.ready&&state.assetsReady:online&&!owned(seat)?!!online.state.members.find(member=>member.id===seat.peerId)?.ready:!!ready[seat.id];
  };
  const connected=(seat:PlayerSeat)=>!seat.device.startsWith('gamepad:')||!owned(seat)||!!devices.find(device=>device.id===seat.device&&device.connected)&&!reclaims[seat.id];
  const changeSeat=(id:string,updates:Partial<PlayerSeat>)=>{
   const current=config.players.find(player=>player.id===id);if(!current||!owned(current)) return;
+  invalidateReady?.();
   const next={...seatValue(current),...updates};
   if(updates.device) {const device=devices.find(device=>device.id===updates.device);if(device?.controllerId) fingerprints.current.set(id,device.controllerId);setReclaims(previous=>({...previous,[id]:false}));}
   if(online) {setDrafts(previous=>({...previous,[id]:{...previous[id],...updates}}));online.updateSeat(next);}
@@ -67,10 +69,10 @@ export function Setup({config,setConfig,settings,manifest,devices,ready,toggleRe
  },[config.players,online]);
  useEffect(()=>{
   if(!bridge) return;
-  if(bridge.setSeatReady) for(const seat of localHumans) {const value=!!ready[seat.id]&&connected(seat)&&!drafts[seat.id],key=`${value}:${!!manifest}`;if(sentReadiness.current.get(seat.id)!==key) {sentReadiness.current.set(seat.id,key);bridge.setSeatReady(seat.id,value,!!manifest);}}
+  if(bridge.setSeatReady) for(const seat of localHumans) {const value=!!ready[seat.id]&&connected(seat)&&!drafts[seat.id]&&!bridge.state.pendingEdits,key=`${value}:${!!manifest}`;if(sentReadiness.current.get(seat.id)!==key) {sentReadiness.current.set(seat.id,key);bridge.setSeatReady(seat.id,value,!!manifest);}}
   else {const value=localHumans.length>0&&localHumans.every(seat=>ready[seat.id]&&connected(seat))&&!bridge.state.pendingEdits&&Object.keys(drafts).length===0&&!!manifest;if(sentReadiness.current.get('peer')!==String(value)) {sentReadiness.current.set('peer',String(value));bridge.ready(value);}}
  },[ready,manifest,drafts,bridge?.state.pendingEdits,reclaims]);
- const update=(patch:Partial<MatchConfig>)=>{if(!host) return;if(online) online.updateConfig({...config,...patch});else setConfig({...config,...patch});};
+ const update=(patch:Partial<MatchConfig>)=>{if(!host) return;invalidateReady?.();if(online) online.updateConfig({...config,...patch});else setConfig({...config,...patch});};
  const maxFighters=config.gameMode==='royale'?8:4;
  const teamValid=config.mode!=='teams'||config.players.length===4&&config.players.filter(player=>player.team===0).length===2&&config.players.filter(player=>player.team===1).length===2;
  const humanDevices=localHumans.map(player=>player.device);
