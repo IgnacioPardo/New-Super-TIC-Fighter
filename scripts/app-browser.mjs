@@ -24,8 +24,8 @@ try{
   await host.locator('.room-code strong').waitFor();const code=await host.locator('.room-code strong').innerText();console.log('Room created',code);
   await guest.goto(`${base}/?room=${code}`);await enterTitle(guest);await guest.getByTestId('mode-online').or(guest.getByRole('button',{name:/02.*ONLINE/})).click();await guest.getByPlaceholder('Jugador',{exact:true}).fill('Guest');await guest.getByRole('button',{name:/ENTRAR/}).click();
   await guest.locator('.room-code strong').waitFor();await host.locator('.fighter-card').nth(1).waitFor();
-  await host.locator('.fighter-card').filter({has:host.locator('input[value="Host"]')}).getByRole('button',{name:'Listo',exact:true}).click();
-  await guest.locator('.fighter-card').filter({has:guest.locator('input[value="Guest"]')}).getByRole('button',{name:'Listo',exact:true}).click();
+  await host.locator('.fighter-card').filter({hasText:'Host'}).getByRole('button',{name:'Listo',exact:true}).click();
+  await guest.locator('.fighter-card').filter({hasText:'Guest'}).getByRole('button',{name:'Listo',exact:true}).click();
   await host.locator('.fight-button:not(:disabled)').waitFor({timeout:12000});await host.locator('.fight-button').click();
   await Promise.all(pages.map(page=>page.waitForFunction(()=>window.__stfSnapshot?.phase==='playing',null,{timeout:15000})));
   console.log('Both complete applications entered playing');

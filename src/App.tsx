@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { flushSync } from 'react-dom';
 import type { AppSettings, AssetsManifest, MatchConfig, MatchSnapshot } from './shared/types';
 import { GameView } from './game/GameView';
 import { Avatar } from './ui/Avatar';
@@ -13,9 +14,9 @@ import { defaultSeat, loadConfig, loadSettings } from './ui/preferences';
 import { disciplineInfo, formatLives, names, pauseMessage, ui } from './ui/i18n';
 import { ARENAS } from './shared/content';
 import { Icon } from './ui/Icon';
+import { menuTargets } from './ui/MenuControls';
 import { Intro } from './ui/Intro';
 import { useUiFeedback } from './ui/useUiFeedback';
-import { ControllerStatusPanel } from './ui/ControllerStatusPanel';
 
 type Screen = 'intro' | 'title' | 'setup' | 'online' | 'room' | 'match' | 'results' | 'settings' | 'guide';
 export interface AppProps { online?: OnlineBridge }
@@ -71,10 +72,9 @@ export default function App({ online }: AppProps) {
    if (source === 'online' && online?.state.snapshot && screen === 'room') { setRenderReady(false); setScreen(online.state.snapshot.phase === 'finished' ? 'results' : 'match'); }
  }, [online?.state.status, online?.state.code, online?.state.snapshot, source, screen]);
  useEffect(() => { if (snapshot?.phase === 'finished' && (screen === 'match' || (['settings', 'guide'].includes(screen) && returnScreen === 'match'))) setScreen('results'); }, [snapshot?.phase, screen, returnScreen]);
- useEffect(() => {
+ useLayoutEffect(() => {
    if (screen !== 'match' || snapshot?.phase === 'paused') {
-     const timer = setTimeout(() => (root.current?.querySelector<HTMLElement>('[data-autofocus]:not(:disabled)') ?? root.current?.querySelector<HTMLElement>('main button:not(:disabled), main input:not(:disabled), .pause-panel button:not(:disabled)'))?.focus({ preventScroll: true }), 30);
-     return () => clearTimeout(timer);
+     (root.current?.querySelector<HTMLElement>('[data-autofocus]:not(:disabled)') ?? root.current?.querySelector<HTMLElement>('main button:not(:disabled), main input:not(:disabled), .pause-panel button:not(:disabled)'))?.focus({ preventScroll: true });
    }
  }, [screen, snapshot?.phase]);
  const changeConfig = (next: MatchConfig) => { setConfig(next); setReady({}); };
@@ -103,14 +103,25 @@ export default function App({ online }: AppProps) {
    setMenuInput(inputSource);
    if (inputSource === 'gamepad') root.current?.setAttribute('data-input', 'gamepad');
    if (screen === 'intro') { if (command === 'confirm' || command === 'pause') enterTitle(inputSource === 'gamepad'); return; }
-   if (command === 'back' || command === 'pause') { if (screen !== 'match') runtime.uiSound('back'); back(); return; }
    const focused = document.activeElement as HTMLElement;
-   const container = root.current?.querySelector('.pause-panel') ?? root.current?.querySelector('main');
+   const dialog = root.current?.querySelector<HTMLElement>('[data-menu-dialog]');
+   const commandTarget = dialog && !dialog.contains(focused) ? dialog : focused;
+   // Native keyboard/gamepad events can arrive before React's next render.
+   // Commit each adjustment before calculating the following one.
+   let handled = false;
+   flushSync(() => { handled = !!commandTarget && !commandTarget.dispatchEvent(new CustomEvent('menu-command', { detail: command, bubbles: true, cancelable: true })); });
+   if (handled) {
+     if (command === 'back' || command === 'pause') runtime.uiSound('back');
+     else if ((command === 'left' || command === 'right') && focused.closest('.choice-row, [role=tablist]')) runtime.uiSound(focused.closest('[role=tablist]') ? 'navigate' : 'change');
+     return;
+   }
+   if (command === 'back' || command === 'pause') { if (screen !== 'match') runtime.uiSound('back'); back(); return; }
+   const container = root.current?.querySelector('[data-menu-dialog]') ?? root.current?.querySelector('.pause-panel') ?? root.current?.querySelector('main');
    if (!container) return;
-   const options = Array.from(container.querySelectorAll<HTMLElement>('button:not(:disabled), input:not(:disabled), select:not(:disabled), summary, a[href]')).filter(item => item.getClientRects().length && !item.closest('[hidden], [inert]'));
+   const options = menuTargets(container);
    const focusItem = (item: HTMLElement) => { if (item === document.activeElement) return; item.focus({ preventScroll: true }); item.scrollIntoView({ block: 'nearest', inline: 'nearest', behavior: 'instant' }); runtime.uiSound('navigate'); };
    if (!options.length) return;
-   if (command === 'confirm') { if (focused?.tagName === 'BUTTON' || focused?.tagName === 'A' || focused?.tagName === 'SUMMARY' || focused?.matches('input[type="checkbox"]')) focused.click(); else if (!options.includes(focused)) focusItem(options[0]); return; }
+   if (command === 'confirm') { if (focused?.tagName === 'BUTTON' || focused?.tagName === 'A' || focused?.tagName === 'SUMMARY' || focused?.matches('input[type="checkbox"]')) focused.click(); else if (focused?.matches('input:not([type=range]), textarea')) focusItem(options[Math.min(options.length - 1, options.indexOf(focused) + 1)]); else if (!options.includes(focused)) focusItem(options[0]); return; }
    if ((command === 'left' || command === 'right') && focused?.tagName === 'SELECT') {
      const select = focused as HTMLSelectElement, direction = command === 'left' ? -1 : 1;
      const index = Math.max(0, Math.min(select.options.length - 1, select.selectedIndex + direction));
@@ -123,6 +134,10 @@ export default function App({ online }: AppProps) {
    }
    const index = options.indexOf(focused), direction = ['up', 'left'].includes(command) ? -1 : 1;
    if (index < 0) { focusItem(options[0]); return; }
+   if (container.hasAttribute('data-menu-linear') || focused.closest('[data-menu-linear]')) {
+     if (command === 'up' || command === 'down') focusItem(options[Math.max(0, Math.min(options.length - 1, index + direction))]);
+     return;
+   }
    const horizontal = command === 'left' || command === 'right', origin = focused.getBoundingClientRect();
    const ox = origin.x + origin.width / 2, oy = origin.y + origin.height / 2;
    const candidates = options.filter(item => item !== focused).map(item => {
@@ -130,7 +145,7 @@ export default function App({ online }: AppProps) {
      const along = horizontal ? dx : dy, across = horizontal ? dy : dx;
      return { item, along, score: Math.abs(along) + Math.abs(across) * 3 };
    }).filter(item => item.along * direction > 5).sort((a, b) => a.score - b.score);
-   focusItem(candidates[0]?.item ?? options[(index + direction + options.length) % options.length]);
+   if (candidates[0]) focusItem(candidates[0].item);
  };
  useEffect(() => { const connected = () => setMenuInput('gamepad'); const key = () => setMenuInput('keyboard'); window.addEventListener('gamepadconnected', connected); window.addEventListener('keydown', key); return () => { window.removeEventListener('gamepadconnected', connected); window.removeEventListener('keydown', key); }; }, []);
  const start = () => { runtime.uiSound('start'); setRenderReady(false); if (source === 'online') online?.start(); else { void runtime.start({ ...config, seed: Date.now() }); setScreen('match'); } };
@@ -159,7 +174,10 @@ export default function App({ online }: AppProps) {
    ? online?.state.members.some(member => !member.connected) ? t.reconnecting
      : pauseMessage(online?.state.pauseReason, settings.language) || (!online?.state.isHost ? t.waitingHost : '')
    : '';
- return <div className={`app ${isMatch ? 'app-match' : ''} screen-${screen}`} ref={root} data-input={menuInput} onPointerDown={() => { if (!runtime.soundUnlocked) void runtime.unlock(); }}>
+ return <div className={`app ${isMatch ? 'app-match' : ''} screen-${screen}`} ref={root} data-menu-input={menuInput} data-input={menuInput} onClickCapture={event => {
+   // WebKit does not focus pointer-clicked buttons; preserve the menu's focus origin.
+   (event.target as HTMLElement).closest<HTMLButtonElement>('button:not(:disabled)')?.focus({ preventScroll: true });
+ }} onPointerDown={() => { if (!runtime.soundUnlocked) void runtime.unlock(); }}>
    <div className="site-atmosphere" aria-hidden="true" style={{ backgroundImage: manifest ? `url("${manifest.backgrounds.classic}")` : undefined }} />
    {screen !== 'intro' && <header className="app-header">
      <button className="brand-button" aria-label="New Super TIC Fighter" onClick={() => { if (isMatch) pause(); else setScreen('title'); }}><picture><source media="(max-width: 760px)" srcSet="/assets/branding/overdrive-icon.svg" /><img src="/assets/branding/overdrive-horizontal.svg" alt="" width="918" height="138" /></picture></button>
@@ -178,7 +196,7 @@ export default function App({ online }: AppProps) {
        <div className="title-cast" aria-hidden="true">{(['networks','design','code','hardware'] as const).map((d,i) => <div key={d} style={{ '--fighter-color': disciplineInfo[d].color } as React.CSSProperties}><Avatar manifest={manifest} discipline={d} appearance={{hair:i,shirt:i,pants:i}} animated={!settings.reducedMotion} /></div>)}</div>
       </section>
       <section className="title-menu-area">
-       <nav className="arcade-menu" aria-label={t.titlePrompt}>{(['local','online','practice','settings','guide'] as const).map(mode => <button key={mode} data-testid={`mode-${mode}`} data-autofocus={mode === 'local' ? true : undefined} aria-label={t[mode]} onFocus={() => setSelectedMode(mode)} onMouseEnter={() => setSelectedMode(mode)} onClick={() => mode === 'local' ? enterLocal() : mode === 'practice' ? enterLocal(true) : mode === 'online' ? (setSource('online'),setScreen('online')) : open(mode)}><span className="menu-pointer" aria-hidden="true" /><strong>{t[mode]}</strong></button>)}</nav>
+       <nav className="arcade-menu" aria-label={t.titlePrompt}>{(['local','online','practice','settings','guide'] as const).map(mode => <button key={mode} data-testid={`mode-${mode}`} data-autofocus={mode === selectedMode ? true : undefined} aria-label={t[mode]} onFocus={() => setSelectedMode(mode)} onMouseEnter={() => setSelectedMode(mode)} onClick={() => mode === 'local' ? enterLocal() : mode === 'practice' ? enterLocal(true) : mode === 'online' ? (setSource('online'),setScreen('online')) : open(mode)}><span className="menu-pointer" aria-hidden="true" /><strong>{t[mode]}</strong></button>)}</nav>
        <p className="mode-hint">{selectedMode === 'local' ? t.localHint : selectedMode === 'online' ? t.onlineHint : selectedMode === 'practice' ? t.practiceHint : selectedMode === 'settings' ? t.settingsHint : t.guideHint}</p>
        <div className="title-utility"><button aria-label={t.language} onClick={() => setSettings({ ...settings, language: settings.language === 'es' ? 'en' : 'es' })}>{settings.language.toUpperCase()}</button><button onClick={() => document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen()}><Icon name="fullscreen" />{t.fullscreen}</button>{!runtime.soundUnlocked && <button onClick={() => void runtime.unlock()}><Icon name="sound" />{t.soundLocked}</button>}</div>
       </section>
@@ -188,7 +206,7 @@ export default function App({ online }: AppProps) {
       {screen === 'room' && online && <div className="room-bar"><div className="room-code"><span>{t.room}</span><strong>{online.state.code}</strong><button className="small-button" onClick={() => void copyInvite()}>{copied ? t.copied : t.copy}</button></div><div className="room-quality"><span className={`status-dot ${online.state.status === 'reconnecting' ? 'warning' : ''}`} /><span>{online.state.status === 'reconnecting' ? t.reconnecting : online.state.route === 'direct' ? t.direct : online.state.route === 'relay' ? t.relay : t.connecting}{online.state.ping !== undefined ? ` · ${Math.round(online.state.ping)} ms${online.state.ping > 180 ? ` · ${t.slowConnection}` : ''}` : ''}</span>{online.forceRelay && <label><input type="checkbox" onChange={e => online.forceRelay?.(e.target.checked)} />{t.forceRelay}</label>}</div><div className="room-members">{online.state.members.map(member => <span key={member.id} className={member.ready ? 'member-ready' : ''}>{member.ready ? '✓' : '•'} {member.name}{member.id === online.state.peerId ? ` (${online.state.isHost ? t.host : t.guest})` : ''}</span>)}</div></div>}
       <Setup config={activeConfig} setConfig={changeConfig} settings={settings} manifest={manifest} devices={runtime.devices} ready={ready} toggleReady={id => source === 'online' ? online?.ready(!online.state.members.find(m => m.id === online.state.peerId)?.ready) : setReady(previous => ({ ...previous, [id]: !previous[id] }))} start={start} online={screen === 'room' ? online : undefined} practice={source === 'practice'} />
     </>}
-    {screen === 'settings' && <><ControllerStatusPanel status={runtime.controllers} language={settings.language} /><Settings settings={settings} manifest={manifest} change={setSettings} feedback={runtime.uiSound} /></>}
+    {screen === 'settings' && <Settings settings={settings} manifest={manifest} change={setSettings} feedback={runtime.uiSound} controllers={runtime.controllers} />}
     {screen === 'guide' && <Guide settings={settings} manifest={manifest} />}
     {screen === 'online' && <div className="online-entry"><div className="online-art"><div className="online-orbit" /><div className="online-fighters"><Avatar manifest={manifest} discipline="networks" appearance={{hair:0,shirt:0,pants:0}} animated={!settings.reducedMotion} /><Avatar manifest={manifest} discipline="code" appearance={{hair:2,shirt:2,pants:2}} animated={!settings.reducedMotion} /></div><h2>{t.online}</h2><p>{t.onlineDescription}</p></div><div className="online-form"><label className="field-label"><span>{t.yourName}</span><input value={name} onChange={e => setName(e.target.value)} maxLength={18} placeholder={t.player} autoComplete="nickname" /></label><button className="primary-button" disabled={pending || !name.trim() || !manifest} onClick={() => void connect(true)}>{pending ? t.connecting : t.create}<span>↗</span></button><div className="or-divider"><span />{t.or}<span /></div><label className="field-label"><span>{t.code}</span><input className="code-input" value={code} onChange={e => setCode(e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, ''))} maxLength={12} placeholder="ABCD234567" autoComplete="off" /></label><button className="secondary-button" disabled={pending || !name.trim() || !code.trim() || !manifest} onClick={() => void connect(false)}>{t.join}<span>→</span></button>{(onlineError || online?.state.error) && <p className="inline-error" role="alert">{onlineError || online?.state.error}</p>}<div className="online-explain"><span>⌁</span><p>{t.onlineNote}</p></div></div></div>}
     {screen === 'match' && <div className="match-screen">
@@ -199,7 +217,7 @@ export default function App({ online }: AppProps) {
     </div>}
     {screen === 'results' && displaySnapshot && <Results snapshot={displaySnapshot} settings={settings} manifest={manifest} rematch={() => source === 'online' ? leaveMatch() : start()} primaryLabel={source === 'online' ? !online?.state.isHost && online?.state.status !== 'lobby' ? t.waitingHost : t.lobby : t.rematch} waitingForHost={source === 'online' && !online?.state.isHost && online?.state.status !== 'lobby'} leave={source === 'online' ? leaveRoom : leaveMatch} leaveLabel={source === 'online' ? t.leaveRoom : t.lobby} />}
    </main>
-   {!isMatch && screen !== 'intro' && <footer className="app-footer"><span className="footer-mark">STF</span><span>{menuInput === 'gamepad' ? t.gamepadHelp : t.menuHelp}</span>{runtime.controllers.controllers.length > 0 && <span className="controller-connected">✚ {runtime.controllers.controllers[0].label}</span>}<button onClick={() => open('guide')}>{t.guide} <span>?</span></button></footer>}
+   {!isMatch && screen !== 'intro' && <footer className="app-footer"><span className="footer-mark">STF</span><span>{menuInput === 'gamepad' ? t.gamepadHelp : (['setup', 'room', 'settings'].includes(screen) ? t.configHelp : t.menuHelp)}</span>{runtime.controllers.controllers.length > 0 && <span className="controller-connected">✚ {runtime.controllers.controllers[0].label}</span>}<button onClick={() => open('guide')}>{t.guide} <span>?</span></button></footer>}
    {(assetError || online?.state.error && source === 'online' && screen !== 'online') && <div className="global-error" role="alert">{assetError || online?.state.error}</div>}
  </div>;
 }

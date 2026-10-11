@@ -1,60 +1,81 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { AppSettings, AssetsManifest } from '../shared/types';
 import { DEFAULT_SETTINGS, keyName } from './preferences';
 import { ui } from './i18n';
 import type { UiSound } from '../audio';
-export function Settings({ settings, manifest, change, feedback }: { settings: AppSettings; manifest: AssetsManifest | null; change: (settings: AppSettings) => void; feedback?: (cue: UiSound) => void }) {
- const t = ui[settings.language];
- const [tab, setTab] = useState<'sound' | 'display' | 'controls'>('sound');
+import type { ControllerStatus } from '../input';
+import { ControllerStatusPanel } from './ControllerStatusPanel';
+import { Icon } from './Icon';
+import type { CSSProperties } from 'react';
+import { Choice, MenuDialog, Volume, useMenuCommand } from './MenuControls';
+
+export function Settings({ settings, manifest, change, feedback, controllers }: { settings: AppSettings; manifest: AssetsManifest | null; change: (settings: AppSettings) => void; feedback?: (cue: UiSound) => void; controllers: ControllerStatus }) {
+ const t = ui[settings.language], es = settings.language === 'es';
+ const [section, setSection] = useState<'sound' | 'display' | 'keyboard' | 'gamepad' | null>(null);
  const [seat, setSeat] = useState(0);
  const [capture, setCapture] = useState<string | null>(null);
  const [error, setError] = useState('');
+ const bindingsRef = useRef<HTMLDivElement>(null);
  const patch = (value: Partial<AppSettings>) => change({ ...settings, ...value });
+ const cancelCapture = () => { setCapture(null); setError(''); };
+ useMenuCommand(bindingsRef, command => { if (!capture) return false; if (command === 'back' || command === 'pause') cancelCapture(); return true; });
  useEffect(() => {
   if (!capture) return;
   const handler = (event: KeyboardEvent) => {
-    event.preventDefault(); event.stopImmediatePropagation();
-    if (event.code === 'Escape') { setCapture(null); feedback?.('back'); return; }
-    const conflict = settings.keyboardBindings.some((bindings, i) => Object.entries(bindings).some(([action, key]) => key === event.code && (i !== seat || action !== capture)));
-    if (conflict) { setError(t.bindingConflict); feedback?.('error'); return; }
-    const bindings = settings.keyboardBindings.map((b, i) => i === seat ? { ...b, [capture]: event.code } : b);
-    patch({ keyboardBindings: bindings }); setCapture(null); setError(''); feedback?.('confirm');
+   event.preventDefault(); event.stopImmediatePropagation();
+   if (event.repeat) return;
+   if (event.code === 'Escape') { cancelCapture(); feedback?.('back'); return; }
+   const conflict = settings.keyboardBindings.some((bindings, i) => Object.entries(bindings).some(([action, key]) => key === event.code && (i !== seat || action !== capture)));
+   if (conflict) { setError(t.bindingConflict); feedback?.('error'); return; }
+   patch({ keyboardBindings: settings.keyboardBindings.map((bindings, i) => i === seat ? { ...bindings, [capture]: event.code } : bindings) });
+   cancelCapture(); feedback?.('confirm');
   };
   window.addEventListener('keydown', handler, true);
   return () => window.removeEventListener('keydown', handler, true);
  }, [capture, settings, seat, t]);
+ const sections = [
+  { id: 'sound' as const, icon: 'sound' as const, accent: '#f073c9', label: t.sound, detail: `${t.music} ${Math.round(settings.musicVolume * 100)}% · ${t.effects} ${Math.round(settings.effectsVolume * 100)}% · ${t[settings.playlist]}` },
+  { id: 'display' as const, icon: 'display' as const, accent: '#57d4f1', label: t.display, detail: `${settings.language === 'es' ? 'Español' : 'English'} · ${settings.camera === 'adaptive' ? t.adaptive : t.fixed}` },
+  { id: 'keyboard' as const, icon: 'keyboard' as const, accent: '#a0e769', label: t.keyboard, detail: es ? 'Cuatro teclados · Asignación de teclas' : 'Four keyboards · Key bindings' },
+  { id: 'gamepad' as const, icon: 'gamepad' as const, accent: '#f4bd67', label: t.gamepad, detail: controllers.controllers[0]?.label ?? `${t.gamepadBindings} · ${t.deadZone}` },
+ ];
  const actions = ['left','right','down','jump','punch','special','guard','combo'] as const;
- return <div className="settings-layout">
-  <nav className="settings-tabs" aria-label={t.settings}><button className={tab === 'sound' ? 'selected' : ''} onClick={() => setTab('sound')}>♪ {t.sound}</button><button className={tab === 'display' ? 'selected' : ''} onClick={() => setTab('display')}>◈ {t.display}</button><button className={tab === 'controls' ? 'selected' : ''} onClick={() => setTab('controls')}>✚ {t.controls}</button></nav>
-  <section className="settings-panel">
-   {tab === 'sound' && <>
-    <div className="setting-title"><span>♪</span><h2>{t.sound}</h2></div>
-    <label className="volume-field"><span>{t.music}<b>{Math.round(settings.musicVolume * 100)}%</b></span><input type="range" min="0" max="1" step=".01" value={settings.musicVolume} onChange={e => patch({ musicVolume: Number(e.target.value) })} /></label>
-    <label className="volume-field"><span>{t.effects}<b>{Math.round(settings.effectsVolume * 100)}%</b></span><input type="range" min="0" max="1" step=".01" value={settings.effectsVolume} onChange={e => patch({ effectsVolume: Number(e.target.value) })} /></label>
-    <label className="field-label"><span>{t.playlist}</span><select value={settings.playlist} onChange={e => patch({ playlist: e.target.value as AppSettings['playlist'] })}>{(['remake', 'original'] as const).map(playlist => <option key={playlist} value={playlist}>{t[playlist]}{manifest ? ` · ${manifest.audio[playlist].length} ${t.tracks}` : ''}</option>)}</select></label>
-    <p className="setting-note">{t.soundtrackHint}</p>
-   </>}
-   {tab === 'display' && <>
-    <div className="setting-title"><span>◈</span><h2>{t.display}</h2></div>
-    <label className="field-label"><span>{t.language}</span><select value={settings.language} onChange={e => patch({ language: e.target.value as AppSettings['language'] })}><option value="es">Español</option><option value="en">English</option></select></label>
-    <label className="field-label"><span>{t.camera}</span><select value={settings.camera} onChange={e => patch({ camera: e.target.value as AppSettings['camera'] })}><option value="adaptive">{t.adaptive}</option><option value="fixed">{t.fixed}</option></select></label>
-    <label className="toggle-field"><span>{t.motion}</span><input type="checkbox" checked={settings.reducedMotion} onChange={e => patch({ reducedMotion: e.target.checked })} /><span className="toggle-track" /></label>
-    <p className="setting-note">{t.cameraHint}</p>
-   </>}
-   {tab === 'controls' && <>
-    <div className="setting-title"><span>✚</span><h2>{t.controls}</h2></div><p className="help-text">{t.controlsHint}</p>
-    <div className="keyboard-seat-tabs">{[0,1,2,3].map(i => <button className={seat === i ? 'selected' : ''} key={i} onClick={() => { setSeat(i); setCapture(null); }}>P{i + 1}</button>)}</div>
-    <div className="bindings-grid">{actions.map(action => <button className={`binding-button ${capture === action ? 'capturing' : ''}`} key={action} onClick={() => { setCapture(action); setError(''); }}><span>{t[action]}</span><kbd>{capture === action ? '…' : keyName(settings.keyboardBindings[seat]?.[action] ?? '')}</kbd></button>)}</div>
-    {(error || capture) && <p className="validation-hint" role="status">{error || t.pressKey}</p>}
-    <button className="text-button" onClick={() => { patch({ keyboardBindings: structuredClone(DEFAULT_SETTINGS.keyboardBindings) }); setError(''); setCapture(null); }}>{t.restoreKeyboard}</button>
-    <h3 className="controller-setting-heading">{t.gamepadBindings}</h3><div className="gamepad-bindings">{(['jump','punch','special','combo','guard'] as const).map(action => <label className="field-label" key={action}><span>{t[action]}</span><select value={settings.gamepadBindings[action]} onChange={e => {
-      const button = Number(e.target.value); const bindings = { ...settings.gamepadBindings };
+ const buttonNames = ['A / ✕','B / ○','X / □','Y / △','LB / L1','RB / R1','LT / L2','RT / R2','View / Share','Start / Options','LS / L3','RS / R3','↑','↓','←','→','Home / PS'];
+ return <div className="settings-home" data-menu-linear>
+  <p className="config-intro">{t.savedAuto}</p>
+  <nav className="settings-categories" aria-label={t.settings}>{sections.map((item, index) => <button className="settings-category" style={{ '--config-accent': item.accent } as CSSProperties} key={item.id} data-autofocus={index === 0 || undefined} onClick={() => setSection(item.id)}><span className="category-icon" aria-hidden="true"><Icon name={item.icon} /></span><span><strong>{item.label}</strong><small>{item.detail}</small></span><span className="category-end" aria-hidden="true"><small>0{index + 1}</small><b>↗</b></span></button>)}</nav>
+  {section && <MenuDialog accent={sections.find(item => item.id === section)!.accent} mark={<Icon name={sections.find(item => item.id === section)!.icon} />} language={settings.language} title={sections.find(item => item.id === section)!.label} subtitle={t.savedAuto} done={t.done} close={() => { cancelCapture(); setSection(null); }}>
+   <div className="settings-editor" ref={bindingsRef}>
+    {section === 'sound' && <>
+     <Volume label={t.music} value={settings.musicVolume} change={musicVolume => patch({ musicVolume })} />
+     <Volume label={t.effects} value={settings.effectsVolume} change={effectsVolume => patch({ effectsVolume })} />
+     <Choice label={t.playlist} value={settings.playlist} options={(['remake','original'] as const).map(value => ({ value, label: `${t[value]}${manifest ? ` · ${manifest.audio[value].length} ${t.tracks}` : ''}` }))} change={playlist => patch({ playlist })} />
+     <p className="config-note">{t.soundtrackHint}</p>
+    </>}
+    {section === 'display' && <>
+     <Choice label={t.language} value={settings.language} options={[{ value: 'es', label: 'Español' }, { value: 'en', label: 'English' }]} change={language => patch({ language })} />
+     <Choice label={t.camera} value={settings.camera} options={[{ value: 'adaptive', label: t.adaptive }, { value: 'fixed', label: t.fixed }]} change={camera => patch({ camera })} />
+     <Choice label={t.motion} value={Number(settings.reducedMotion)} options={[{ value: 0, label: t.off }, { value: 1, label: t.on }]} change={value => patch({ reducedMotion: !!value })} />
+     <p className="config-note">{t.cameraHint}</p>
+    </>}
+    {section === 'keyboard' && <>
+     <Choice label={t.keyboard} value={seat} options={[0,1,2,3].map(value => ({ value, label: `P${value + 1}` }))} change={value => { setSeat(value); cancelCapture(); }} />
+     <div className="binding-list">{actions.map(action => <button className={`config-row binding-button ${capture === action ? 'capturing' : ''}`} key={action} onClick={() => { setCapture(action); setError(''); }}><span>{t[action]}</span><kbd>{capture === action ? '…' : keyName(settings.keyboardBindings[seat]?.[action] ?? '')}</kbd></button>)}</div>
+     <p className={`config-note ${error ? 'validation-hint' : ''}`} role="status">{error || (capture ? t.pressKey : t.controlsHint)}</p>
+     <button className="text-button restore-bindings" onClick={() => { patch({ keyboardBindings: structuredClone(DEFAULT_SETTINGS.keyboardBindings) }); cancelCapture(); }}>{t.restoreKeyboard}</button>
+    </>}
+    {section === 'gamepad' && <>
+     <ControllerStatusPanel status={controllers} language={settings.language} />
+     {(['jump','punch','special','combo','guard','pause'] as const).map(action => <Choice key={action} label={t[action]} value={settings.gamepadBindings[action]} options={buttonNames.map((label, value) => ({ value, label }))} change={button => {
+      const bindings = { ...settings.gamepadBindings };
       const occupied = Object.keys(bindings).find(key => key !== action && bindings[key] === button);
       if (occupied) bindings[occupied] = bindings[action];
       bindings[action] = button; patch({ gamepadBindings: bindings });
-    }}>{Array.from({length: 17}, (_, i) => <option value={i} key={i}>{i === 0 ? '0 · A / ✕' : i === 1 ? '1 · B / ○' : i === 2 ? '2 · X / □' : i === 3 ? '3 · Y / △' : `${i}`}</option>)}</select></label>)}</div>
-    <label className="volume-field"><span>{t.deadZone}<b>{Math.round(((settings as AppSettings & { gamepadDeadZone?: number }).gamepadDeadZone ?? .22) * 100)}%</b></span><input type="range" min=".1" max=".5" step=".01" value={(settings as AppSettings & { gamepadDeadZone?: number }).gamepadDeadZone ?? .22} onChange={e => change({ ...settings, gamepadDeadZone: Number(e.target.value) } as AppSettings)} /></label>
-   </>}
-  </section>
+     }} />)}
+     <Volume label={t.deadZone} value={settings.gamepadDeadZone ?? .22} min={.1} max={.5} step={.01} change={gamepadDeadZone => patch({ gamepadDeadZone })} />
+     <p className="config-note">{es ? 'Menús: A / ✕ confirma · B / ○ vuelve. Cambiar un botón intercambia las acciones asignadas.' : 'Menus: A / ✕ confirms · B / ○ goes back. Changing a button swaps assigned actions.'}</p>
+    </>}
+   </div>
+  </MenuDialog>}
  </div>;
 }

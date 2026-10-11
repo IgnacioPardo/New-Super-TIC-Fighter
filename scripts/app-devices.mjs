@@ -2,8 +2,7 @@
 import assert from 'node:assert/strict';
 import {mkdir} from 'node:fs/promises';
 await mkdir('tmp/qa',{recursive:true});
-import {chromium,firefox,webkit} from '@playwright/test';
-import {enterTitle} from './enter-title.mjs';
+import {chromium,firefox,webkit,expect} from '@playwright/test';
 const base=process.env.STF_APP_URL??'http://127.0.0.1:5173';
 const engines=process.env.STF_BROWSERS?.split(',')??['chromium','firefox','webkit'];
 for(const name of engines){
@@ -14,12 +13,18 @@ for(const name of engines){
   window.__pads=[{id:'QA Xbox-compatible virtual pad',index:0,connected:true,mapping:'standard',timestamp:0,axes:[0,0,0,0],buttons:Array.from({length:17},()=>({pressed:false,touched:false,value:0}))}];
   Object.defineProperty(navigator,'getGamepads',{value:()=>window.__pads});
  });
+ const tap=async button=>{await page.evaluate(index=>window.__pads[0].buttons[index].pressed=true,button);await page.waitForTimeout(70);await page.evaluate(index=>window.__pads[0].buttons[index].pressed=false,button);await page.waitForTimeout(60);};
  try{
-  await page.goto(base);await enterTitle(page);await page.getByTestId('mode-practice').or(page.getByRole('button',{name:/03.*PRÁCTICA/})).click();
-  const card=page.locator('.fighter-card').first();
-  const details=card.locator('details.fighter-options');if(await details.count())await details.locator('summary').click();
-  await card.locator('select').filter({has:page.locator('option[value="gamepad:0"]')}).selectOption('gamepad:0');
-  await page.locator('.fight-button').click();await page.waitForFunction(()=>window.__snapshot?.phase==='playing');
+  await page.goto(base);await page.getByTestId('intro-continue').waitFor();await tap(0);await expect(page.getByTestId('mode-local')).toBeFocused();
+  await tap(13);await tap(13);await expect(page.getByTestId('mode-practice')).toBeFocused();await tap(0);
+  await expect(page.locator('.fighter-edit').first()).toBeFocused();await tap(0);await tap(15);
+  await expect(page.getByRole('tab',{name:'Jugador / Control'})).toBeFocused();await tap(13);await tap(13);
+  await expect(page.getByRole('button',{name:'Control: QA Xbox-compatible virtual pad',exact:true})).toBeFocused();await tap(15);await tap(14);await tap(1);
+  await expect(page.locator('.fighter-edit').first()).toBeFocused();await tap(13);await expect(page.locator('.match-summary')).toBeFocused();await tap(0);
+  await tap(15);await tap(15);await expect(page.getByRole('button',{name:'Escenario: Dentro de la PC',exact:true})).toBeFocused();await tap(1);
+  await tap(13);await expect(page.locator('.fight-button')).toBeFocused();await tap(0);await page.waitForFunction(()=>window.__snapshot?.phase==='playing');
+  assert.equal(await page.evaluate(()=>window.__snapshot.config.arena),'pc','Controller-only setup chooses the arena');
+  assert.equal(await page.evaluate(()=>window.__snapshot.config.players[0].device),'gamepad:0','Controller-only setup assigns the device');
   assert.equal(await page.locator('canvas').count(),1,'One live game canvas');
   await page.screenshot({path:`tmp/qa/${name}-classic.png`,fullPage:true});
   const before=await page.evaluate(()=>window.__snapshot.fighters[0].x);
@@ -31,6 +36,6 @@ for(const name of engines){
   await page.evaluate(()=>{window.__pads[0]={...window.__savedPad,id:'A different controller'};});await page.waitForTimeout(800);await page.getByRole('button',{name:/CONTINUAR/}).click();
   assert.equal(await page.evaluate(()=>window.__snapshot.phase),'paused','A different pad cannot silently steal an assigned seat');
   await page.evaluate(()=>window.__pads[0]=window.__savedPad);await page.waitForTimeout(800);await page.getByRole('button',{name:/CONTINUAR/}).click();await page.waitForFunction(()=>window.__snapshot.phase==='playing');
-  assert.deepEqual(errors,[]);console.log(`${name}: live canvas, virtual gamepad movement, pause and same-device reclaim passed.`);
+  assert.deepEqual(errors,[]);console.log(`${name}: controller-only setup, live canvas, virtual gamepad movement, pause and same-device reclaim passed.`);
  }catch(error){console.log(name,(await page.locator('body').innerText()).slice(-2000));await page.screenshot({path:`tmp/qa/${name}-device-failure.png`,fullPage:true});throw error;}finally{await browser.close();}
 }

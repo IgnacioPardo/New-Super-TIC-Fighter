@@ -16,6 +16,7 @@ export function formatLives(count: number, language: Language): string {
 }
 export const ui = {
  es: {
+  done: 'Listo', editFighter: 'Editar luchador', savedAuto: 'Los cambios se guardan automáticamente.', configHelp: '↑ ↓ Mover · ← → Ajustar · Enter Elegir · Esc Volver',
   introPrompt: 'PULSA UNA TECLA PARA COMENZAR', introInputHint: 'O haz clic · A / ✕ en el mando',
   // Arcade headings use ASCII: the original pixel font lacks accented letters and inverted punctuation.
   local: 'LOCAL', online: 'ONLINE', practice: 'PRACTICA', settings: 'AJUSTES', guide: 'COMO JUGAR', back: 'Volver',
@@ -45,7 +46,7 @@ export const ui = {
   stanceGuide: 'Agacharse + Golpe = uppercut. Agacharse + Especial = barrido.',
   movementGuide: 'Un salto, sin doble salto. Puedes moverte en el aire y atravesar plataformas al subir.',
   teamsGuide: 'Equipos A y B: vidas individuales. El color de la ropa no indica el equipo.',
-  loading: 'CARGANDO', menuHelp: '↑ ↓ Elegir · Enter Confirmar · Esc Volver', gamepadHelp: '✚ Elegir · A / ✕ Confirmar · B / ○ Volver',
+  loading: 'CARGANDO', menuHelp: '↑ ↓ Elegir · Enter Confirmar · Esc Volver', gamepadHelp: '↑ ↓ Mover · ← → Ajustar · A / ✕ Confirmar · B / ○ Volver',
   readyButton: 'Listo', change: 'Cambiar', disconnected: 'Mando desconectado', reclaim: 'Reconecta el mismo mando y pulsa Continuar.',
   controlsHint: 'Elige un jugador y una acción para cambiar su tecla.', bindingConflict: 'Tecla en uso. Elige otra.', pressKey: 'Pulsa una tecla… · Esc: cancelar',
   gamepadBindings: 'Botones del mando', deadZone: 'Zona muerta', sound: 'Sonido', display: 'Pantalla', tracks: 'pistas',
@@ -54,6 +55,7 @@ export const ui = {
   or: 'O', countdownReady: 'LISTOS', countdownFight: 'YA', reload: 'RECARGAR', slowConnection: 'Conexión lenta', waitingHost: 'ESPERANDO AL ANFITRIÓN', leaveRoom: 'SALIR DE LA SALA',
  },
  en: {
+  done: 'Done', editFighter: 'Edit fighter', savedAuto: 'Changes are saved automatically.', configHelp: '↑ ↓ Move · ← → Adjust · Enter Choose · Esc Back',
   introPrompt: 'PRESS ANY KEY TO START', introInputHint: 'Or click · A / ✕ on your controller',
   local: 'LOCAL', online: 'ONLINE', practice: 'PRACTICE', settings: 'SETTINGS', guide: 'HOW TO PLAY', back: 'Back',
   localHint: '2–4 players · One screen', onlineHint: 'Create or join a room', practiceHint: 'Free training', settingsHint: 'Sound, display and controls', guideHint: 'Rules and moves',
@@ -82,7 +84,7 @@ export const ui = {
   stanceGuide: 'Crouch + Punch = uppercut. Crouch + Special = sweep.',
   movementGuide: 'One jump, no double jump. Move in the air and pass through platforms from below.',
   teamsGuide: 'Teams A and B: individual lives. Clothing color does not indicate your team.',
-  loading: 'LOADING', menuHelp: '↑ ↓ Choose · Enter Confirm · Esc Back', gamepadHelp: '✚ Choose · A / ✕ Confirm · B / ○ Back',
+  loading: 'LOADING', menuHelp: '↑ ↓ Choose · Enter Confirm · Esc Back', gamepadHelp: '↑ ↓ Move · ← → Adjust · A / ✕ Confirm · B / ○ Back',
   readyButton: 'Ready', change: 'Change', disconnected: 'Controller disconnected', reclaim: 'Reconnect the same controller and press Continue.',
   controlsHint: 'Choose a player and an action to change its key.', bindingConflict: 'Key already used. Choose another.', pressKey: 'Press a key… · Esc: cancel',
   gamepadBindings: 'Controller buttons', deadZone: 'Dead zone', sound: 'Sound', display: 'Display', tracks: 'tracks',

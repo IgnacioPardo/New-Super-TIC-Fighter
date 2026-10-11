@@ -29,8 +29,10 @@ try{
  await press(13);
  await expect(page.getByTestId('mode-practice')).toBeFocused();
  await press(0);
- await page.locator('.fighter-device select').waitFor();
- assert.equal(await page.locator('.fighter-device select').first().inputValue(),'gamepad:0','Connected controller automatically owns the first practice fighter');
+ await page.locator('.fighter-edit').first().click();
+ await page.getByRole('tab',{name:'Jugador / Control'}).click();
+ await expect(page.getByRole('button',{name:/^Control:/})).toContainText('DualSense');
+ await press(1);
  await page.locator('.fight-button').focus();await press(0);
  await page.waitForFunction(()=>window.__snapshot?.phase==='playing');
  const before=await page.evaluate(()=>window.__snapshot.fighters[0].x);
@@ -39,17 +41,19 @@ try{
  assert(after>before+30,'The assigned DualSense must move the real fighter');
  await press(9);await page.locator('.pause-panel').waitFor();
  await page.locator('.pause-panel .secondary-button').filter({hasText:'AJUSTES'}).focus();await press(0);
+ await page.locator('.settings-category').last().click();
  await expect(page.locator('.controller-status')).toContainText('DualSense');
+ await press(1);await page.locator('.settings-category').first().click();
  await page.locator('.volume-field input').nth(1).focus();
  const volume=Number(await page.locator('.volume-field input').nth(1).inputValue());
  await press(14);
  assert(Number(await page.locator('.volume-field input').nth(1).inputValue())<volume,'Controller changes native range controls');
- await page.locator('.settings-panel select').focus();await press(15);
- assert.equal(await page.locator('.settings-panel select').inputValue(),'original','Controller changes native select controls');
- await press(1);await page.locator('.pause-panel').waitFor();
+ await page.getByRole('button',{name:/^Banda sonora:/}).focus();await press(15);
+ await expect(page.getByRole('button',{name:/^Banda sonora:/})).toContainText('Original');
+ await press(1);await expect(page.locator('.settings-category').first()).toBeFocused();await press(1);await page.locator('.pause-panel').waitFor();
  await expect(page.locator('.pause-panel .primary-button')).toBeFocused();
  await press(0);await page.waitForFunction(()=>window.__snapshot?.phase==='playing');
  assert((await page.evaluate(()=>window.__audioStarts))>5,'Actual interface/combat sources played through Web Audio');
  assert.deepEqual(errors,[]);
- console.log('DualSense menu focus, confirm/back, automatic fighter assignment, real movement/pause/resume, native settings and audible UI sources passed. Injected input does not certify physical hardware.');
+ console.log('DualSense menu focus, confirm/back, automatic fighter assignment, real movement/pause/resume, configuration editors and audible UI sources passed. Injected input does not certify physical hardware.');
 }finally{await browser.close();}

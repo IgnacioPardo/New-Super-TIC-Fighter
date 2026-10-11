@@ -18,9 +18,10 @@ for(const name of engines){
   await page.goto(base);
   await enterTitle(page);
   await page.getByTestId('mode-practice').or(page.getByRole('button',{name:/03.*PRÁCTICA/})).click();
-  const card=page.locator('.fighter-card').first();
-  const details=card.locator('details.fighter-options');if(await details.count())await details.locator('summary').click();
-  await card.locator('select').filter({has:page.locator('option[value="gamepad:0"]')}).selectOption('gamepad:0');
+  await page.locator('.fighter-edit').first().click();
+  await page.getByRole('tab',{name:'Jugador / Control'}).click();
+  assert.match(await page.getByRole('button',{name:/^Control:/}).innerText(),/DualSense/,'Connected controller is assigned automatically');
+  await page.keyboard.press('Escape');
   await page.locator('.fight-button').click();await page.waitForFunction(()=>window.__snapshot?.phase==='playing');
   assert.equal(await page.locator('canvas').count(),1,'One live game canvas');
   await page.screenshot({path:`tmp/qa/${name}-classic.png`,fullPage:true});

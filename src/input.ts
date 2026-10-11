@@ -2,7 +2,7 @@ import { DEFAULT_SETTINGS } from './shared/defaults';
 import { controllerLabel, normalizeController } from './controller';
 import { emptyInput, type AppSettings, type InputFrame, type PlayerSeat } from './shared/types';
 
-type MenuCommand = 'up' | 'down' | 'left' | 'right' | 'confirm' | 'back' | 'pause';
+export type MenuCommand = 'up' | 'down' | 'left' | 'right' | 'confirm' | 'back' | 'pause';
 export interface ControllerStatus {
   available: boolean;
   blocked: boolean;
@@ -122,7 +122,10 @@ export class InputManager {
   private visibility = () => { if (document.hidden) this.blur(); else this.focused = document.hasFocus(); };
   private keyUp = (event: KeyboardEvent) => { this.keys.delete(event.code); };
   private keyDown = (event: KeyboardEvent) => {
-    if (editing() || event.metaKey || event.ctrlKey || event.altKey) return;
+    if (event.defaultPrevented || event.metaKey || event.ctrlKey || event.altKey) return;
+    const textInput = document.activeElement instanceof HTMLElement && (document.activeElement.isContentEditable || document.activeElement.matches('input:not([type=range]):not([type=checkbox]), textarea'));
+    if (this.mode === 'game' && editing()) return;
+    if (this.mode === 'menu' && textInput && !['Escape', 'Enter', 'ArrowUp', 'ArrowDown'].includes(event.code)) return;
     this.keys.add(event.code);
     if (event.code === 'Escape') {
       event.preventDefault();
@@ -131,7 +134,7 @@ export class InputManager {
     }
     if (this.mode === 'menu') {
       const command = ({ArrowUp:'up', ArrowDown:'down', ArrowLeft:'left', ArrowRight:'right', Enter:'confirm', Space:'confirm'} as Record<string, MenuCommand>)[event.code];
-      if (command && this.listeners.size) { event.preventDefault(); if (!event.repeat) this.emit(command); }
+      if (command && this.listeners.size) { event.preventDefault(); if (!event.repeat || ['up', 'down', 'left', 'right'].includes(command)) this.emit(command); }
     } else if (this.settings.keyboardBindings?.some(bindings => Object.values(bindings).includes(event.code))) event.preventDefault();
   };
   private scan = () => {
@@ -166,7 +169,7 @@ export class InputManager {
             if (previousAxis * previousSign > threshold) stick = previousDirection;
           }
           if (stick) this.stickDirections.set(pad.index, stick); else this.stickDirections.delete(pad.index);
-          const dpad = buttons[12] ? 'up' : buttons[13] ? 'down' : buttons[14] ? 'left' : buttons[15] ? 'right' : undefined;
+          const dpad = buttons[14] ? 'left' : buttons[15] ? 'right' : buttons[12] ? 'up' : buttons[13] ? 'down' : undefined;
           const direction = dpad ?? stick;
           const directions: [MenuCommand, boolean][] = (['left','right','up','down'] as const).map(command => [command, direction === command]);
           for (const [command, held] of directions) {

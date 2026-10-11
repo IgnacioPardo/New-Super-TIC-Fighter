@@ -2,9 +2,11 @@ import { useState } from 'react';
 import type { AppSettings, AssetsManifest, MatchConfig, PlayerSeat } from '../shared/types';
 import type { OnlineBridge } from './contracts';
 import { Avatar } from './Avatar';
+import { Icon } from './Icon';
 import { disciplineInfo, disciplines, names, ui } from './i18n';
 import { ARENAS } from '../shared/content';
 import { defaultSeat, keyName } from './preferences';
+import { Choice, MenuDialog, MenuTabs } from './MenuControls';
 
 const palettes = {
  hair: ['#164d43', '#657822', '#5c2f82', '#53351f'],
@@ -17,83 +19,120 @@ export function Setup({ config, setConfig, settings, manifest, devices, ready, t
  online?: OnlineBridge; practice: boolean;
 }) {
  const t = ui[settings.language], lang = settings.language;
- const [appearancePart, setAppearancePart] = useState<Record<string, 'hair' | 'shirt' | 'pants'>>({});
+ const [editing, setEditing] = useState<string | null>(null);
+ const [editorTab, setEditorTab] = useState<'fighter' | 'player'>('fighter');
+ const [rulesOpen, setRulesOpen] = useState(false);
+ // Online editors keep a local draft so repeated input never waits on a room echo.
+ const [seatDraft, setSeatDraft] = useState<Partial<PlayerSeat>>({});
+ const [rulesDraft, setRulesDraft] = useState<Partial<MatchConfig>>({});
  const host = !online || online.state.isHost;
+ const owned = (seat: PlayerSeat) => !online || seat.peerId === online.state.peerId || (host && seat.kind === 'bot');
+ const confirmed = (seat: PlayerSeat) => seat.kind === 'bot' || (online ? online.state.members.find(member => member.id === seat.peerId)?.ready : ready[seat.id]);
  const changeSeat = (id: string, updates: Partial<PlayerSeat>) => {
-   const players = config.players.map(p => p.id === id ? { ...p, ...updates } : p);
-   if (online) online.updateSeat(players.find(p => p.id === id)!); else setConfig({ ...config, players });
+  if (online && id === editing) {
+   if (!Object.keys(seatDraft).length) online.ready(false);
+   setSeatDraft(previous => ({ ...previous, ...updates })); return;
+  }
+  const players = config.players.map(player => player.id === id ? { ...player, ...updates } : player);
+  if (online) online.updateSeat(players.find(player => player.id === id)!); else setConfig({ ...config, players });
  };
- const humanDevices = config.players.filter(p => p.kind === 'human' && (!online || p.peerId === online.state.peerId)).map(p => p.device);
- const teamValid = config.mode !== 'teams' || (config.players.filter(p => p.team === 0).length === 2 && config.players.filter(p => p.team === 1).length === 2);
+ const humanDevices = config.players.filter(player => player.kind === 'human' && (!online || player.peerId === online.state.peerId)).map(player => player.device);
+ const teamValid = config.mode !== 'teams' || (config.players.filter(player => player.team === 0).length === 2 && config.players.filter(player => player.team === 1).length === 2);
  const devicesValid = new Set(humanDevices).size === humanDevices.length;
  const rosterValid = config.players.length >= 2 && config.players.length <= 4;
- const allReady = practice || config.players.every(p => p.kind === 'bot' || (online ? online.state.members.find(m => m.id === p.peerId)?.ready : ready[p.id]));
+ const allReady = practice || config.players.every(confirmed);
  const routePending = !!online && online.state.members.length > 1 && online.state.route === 'connecting';
  const validation = routePending ? t.connecting : !rosterValid ? t.seatsInvalid : !teamValid ? t.teamInvalid : !devicesValid ? t.devicesInvalid : !allReady ? t.readyInvalid : '';
- const update = (patch: Partial<MatchConfig>) => host && (online ? online.updateConfig({ ...config, ...patch }) : setConfig({ ...config, ...patch }));
- const addSeat = () => {
-   const available = [0,1,2,3].find(i => !config.players.some(p => p.id === `p${i + 1}`)) ?? config.players.length;
-   const seat = defaultSeat(available, online ? true : false, lang);
-   if (online) online.claimSeat({ ...seat, peerId: online.state.peerId }); else update({ players: [...config.players, seat] });
+ const update = (patch: Partial<MatchConfig>) => {
+  if (!host) return;
+  if (online && rulesOpen) {
+   if (!Object.keys(rulesDraft).length) online.ready(false);
+   setRulesDraft(previous => ({ ...previous, ...patch }));
+  } else if (online) online.updateConfig({ ...config, ...patch });
+  else setConfig({ ...config, ...patch });
  };
- return <div className="setup-layout">
-   <section className="roster-section">
-     <div className="section-heading"><h2>{t.roster}</h2><span className="count-label">{config.players.length} / 4</span></div>
-     <div className="fighter-grid">
-       {config.players.map((seat, index) => {
-         const owned = !online || seat.peerId === online.state.peerId || (host && seat.kind === 'bot');
-         const color = disciplineInfo[seat.discipline].color;
-         const part = appearancePart[seat.id] ?? 'hair';
-         const confirmed = seat.kind === 'bot' || (online ? online.state.members.find(m => m.id === seat.peerId)?.ready : ready[seat.id]);
-         return <article className={`fighter-card ${confirmed ? 'is-ready' : ''}`} key={seat.id} style={{ '--fighter-color': color } as React.CSSProperties}>
-           <div className="fighter-card-top"><span className="seat-number">P{index + 1}</span><span className="fighter-class-name">{names[seat.discipline][lang]}</span><span className={`ready-light ${confirmed ? 'on' : ''}`}>{confirmed ? t.ready : t.notReady}</span></div>
-           <h3 className="fighter-identity">{seat.name}</h3><div className="fighter-preview"><Avatar appearance={seat.appearance} discipline={seat.discipline} manifest={manifest} animated={!settings.reducedMotion} /><span className="fighter-stage-line" /></div>
-           {seat.kind === 'human' && <label className="field-label fighter-device"><span>{t.device}</span><select aria-label={`${t.device} P${index + 1}`} disabled={!owned} value={seat.device} onChange={e => changeSeat(seat.id, { device: e.target.value })}>
-             {[0,1,2,3].map(i => <option key={i} value={`keyboard:${i}`}>{t.keyboard} {i + 1}</option>)}
-             {devices.filter(d => d.id.startsWith('gamepad:') && d.connected).map(d => <option key={d.id} value={d.id}>{d.label}</option>)}
-             {seat.device === 'remote' && <option value="remote">{t.seatRemote}</option>}
-             {seat.device.startsWith('gamepad:') && !devices.some(d => d.id === seat.device && d.connected) && <option value={seat.device}>{t.disconnected}</option>}
-           </select></label>}
-           <label className="field-label"><span>{t.discipline}</span><select disabled={!owned} value={seat.discipline} onChange={e => changeSeat(seat.id, { discipline: e.target.value as PlayerSeat['discipline'] })}>{disciplines.map(d => <option value={d} key={d}>{names[d][lang]}</option>)}</select></label>
-           <div className="appearance-controls" aria-label={t.appearance}>
-             <select aria-label={`${t.appearance} P${index + 1}`} value={part} onChange={e => setAppearancePart(previous => ({ ...previous, [seat.id]: e.target.value as 'hair' | 'shirt' | 'pants' }))}>{(['hair','shirt','pants'] as const).map(option => <option value={option} key={option}>{t[option]}</option>)}</select>
-             <div className="appearance-swatches">{palettes[part].map((swatch, i) => <button disabled={!owned} className={`swatch ${seat.appearance[part] === i ? 'selected' : ''}`} key={i} style={{ backgroundColor: swatch }} aria-label={`${t[part]} ${i + 1} P${index + 1}`} aria-pressed={seat.appearance[part] === i} onClick={() => changeSeat(seat.id, { appearance: { ...seat.appearance, [part]: i } })}>{seat.appearance[part] === i ? '✓' : ''}</button>)}</div>
-           </div>
-           <details className="fighter-options"><summary>{t.player} / {t.device}</summary><div>           <label className="field-label"><span>{t.name}</span><input disabled={!owned} value={seat.name} maxLength={18} aria-label={`${t.name} P${index + 1}`} onChange={e => changeSeat(seat.id, { name: e.target.value })} /></label>
-           <div className="seat-kind-row">
-             <select aria-label={`${t.player} P${index + 1}`} disabled={!owned || !!online && !host || practice} value={seat.kind} onChange={e => changeSeat(seat.id, { kind: e.target.value as 'human' | 'bot', device: e.target.value === 'bot' ? 'bot' : `keyboard:${index}`, difficulty: 'normal' })}>
-               <option value="human">{t.human}</option><option value="bot">{t.bot}</option>
-             </select>
-             {config.mode === 'teams' && <select aria-label={`${t.team} P${index + 1}`} disabled={!owned} value={seat.team} onChange={e => changeSeat(seat.id, { team: Number(e.target.value) as 0 | 1 })}><option value={0}>◆ A</option><option value={1}>● B</option></select>}
-           </div>
-           {seat.kind === 'bot' ? <label className="field-label"><span>{t.difficulty}</span><select value={seat.difficulty ?? 'normal'} disabled={!owned} onChange={e => changeSeat(seat.id, { difficulty: e.target.value as PlayerSeat['difficulty'] })}><option value="easy">{t.easy}</option><option value="normal">{t.normal}</option>{practice && <option value="dummy">{t.dummy}</option>}</select></label> : null}
-           {seat.kind === 'human' && seat.device.startsWith('keyboard:') && <div className="seat-keys">{['left','down','right','jump','punch','special','guard','combo'].map(action => <kbd key={action} title={t[action as keyof typeof t]}>{keyName(settings.keyboardBindings[Number(seat.device.split(':')[1])]?.[action] ?? '')}</kbd>)}</div>}
-</div></details>
-           <div className="seat-bottom">
-             {!practice && <button disabled={!owned || seat.kind === 'bot'} className={`ready-button ${confirmed ? 'confirmed' : ''}`} onClick={() => toggleReady(seat.id)}>{confirmed ? `✓ ${t.ready}` : t.readyButton}</button>}
-             {!practice && owned && config.players.length > 2 && <button className="icon-button remove-seat" aria-label={`${t.remove} ${seat.name}`} onClick={() => online ? online.updateConfig({ ...config, players: config.players.filter(p => p.id !== seat.id) }) : update({ players: config.players.filter(p => p.id !== seat.id) })}>×</button>}
-           </div>
-         </article>;
-       })}
-       {!practice && host && config.players.length < 4 && <button className="add-fighter" onClick={addSeat}><span>+</span>{t.add}</button>}
-       {online && !host && config.players.length < 4 && <button className="add-fighter" onClick={() => online.claimSeat({ ...defaultSeat(config.players.length, false, lang), id: crypto.randomUUID().replaceAll('-', ''), peerId: online.state.peerId })}><span>+</span>{t.add}</button>}
+ const closeFighter = () => {
+  const current = config.players.find(player => player.id === editing);
+  if (online && current && owned(current) && Object.keys(seatDraft).length) online.updateSeat({ ...current, ...seatDraft });
+  setEditing(null); setSeatDraft({});
+ };
+ const closeRules = () => {
+  if (online && host && Object.keys(rulesDraft).length) online.updateConfig({ ...config, ...rulesDraft });
+  setRulesOpen(false); setRulesDraft({});
+ };
+ const addSeat = () => {
+  const available = [0,1,2,3].find(index => !config.players.some(player => player.id === `p${index + 1}`)) ?? config.players.length;
+  const seat = defaultSeat(available, !!online && host, lang);
+  if (online) online.claimSeat({ ...seat, id: host ? seat.id : crypto.randomUUID().replaceAll('-', ''), peerId: online.state.peerId });
+  else update({ players: [...config.players, seat] });
+ };
+ const deviceLabel = (seat: PlayerSeat) => seat.kind === 'bot' ? `${t.bot} · ${t[seat.difficulty ?? 'normal']}` : seat.device.startsWith('keyboard:') ? `${t.keyboard} ${Number(seat.device.split(':')[1]) + 1}` : seat.device === 'remote' || !owned(seat) ? t.seatRemote : `${t.gamepad} ${Number(seat.device.split(':')[1]) + 1}`;
+ const index = config.players.findIndex(player => player.id === editing);
+ const seat = index < 0 ? undefined : online ? { ...config.players[index], ...seatDraft } : config.players[index];
+ const rules = online && rulesOpen ? { ...config, ...rulesDraft } : config;
+ const arena = ARENAS[rules.arena];
+ return <div className="setup-layout setup-overview">
+  <section className="roster-section">
+   <div className="section-heading"><h2>{t.roster}</h2><span className="count-label">{config.players.length} / 4</span></div>
+   <div className="fighter-grid">
+    {config.players.map((player, playerIndex) => <article className={`fighter-card fighter-summary ${confirmed(player) ? 'is-ready' : ''}`} key={player.id} data-seat-id={player.id} style={{ '--fighter-color': disciplineInfo[player.discipline].color } as React.CSSProperties}>
+     <button className="fighter-edit" data-autofocus={playerIndex === 0 || undefined} aria-label={`${t.editFighter}: ${player.name}`} onClick={() => { setSeatDraft({}); setEditing(player.id); setEditorTab('fighter'); }}>
+      <span className="fighter-card-top"><span className="seat-number">P{playerIndex + 1}</span><span className={`ready-light ${confirmed(player) ? 'on' : ''}`}>{confirmed(player) ? `✓ ${t.ready}` : t.notReady}</span></span>
+      <span className="fighter-preview" data-number={String(playerIndex + 1).padStart(2, '0')}><Avatar appearance={player.appearance} discipline={player.discipline} manifest={manifest} animated={!settings.reducedMotion} /><span className="fighter-stage-line" /></span>
+      <strong className="fighter-identity">{player.name}</strong><span className="fighter-discipline">{names[player.discipline][lang]}{config.mode === 'teams' && ` · ${player.team === 0 ? '◆ A' : '● B'}`}</span>
+      <span className="fighter-device">{deviceLabel(player)}</span><span className="fighter-edit-label">{owned(player) ? t.change : t.seatRemote} <span aria-hidden="true">›</span></span>
+     </button>
+     {!practice && <button disabled={!owned(player) || player.kind === 'bot'} className={`ready-button ${confirmed(player) ? 'confirmed' : ''}`} onClick={() => toggleReady(player.id)}>{confirmed(player) ? `✓ ${t.ready}` : t.readyButton}</button>}
+    </article>)}
+    {!practice && config.players.length < 4 && <button className="add-fighter" onClick={addSeat}><span aria-hidden="true">+</span>{t.add}</button>}
+   </div>
+  </section>
+  <button className="match-summary" onClick={() => { setRulesDraft({}); setRulesOpen(true); }} aria-label={`${t.rules} · ${t.arena}`}>
+   <span className="arena-thumbnail" style={{ backgroundImage: manifest ? `url("${manifest.backgrounds[arena.id]}")` : undefined }}><svg viewBox="0 0 1366 768" aria-hidden="true">{arena.platforms.map((platform, i) => <rect key={i} {...platform} />)}</svg></span>
+   <span><small>{t.arena} / {t.rules}</small><strong>{arena.name[lang]}</strong><span>{practice ? t.practice : `${config.mode === 'teams' ? t.teams : t.ffa} · ${config.lives} ${t.lives.toLowerCase()} · ${config.timeLimit ? `${config.timeLimit / 60} min` : t.unlimited}`}</span></span><span className="summary-change">{host ? t.change : t.waitHost} <b aria-hidden="true">›</b></span>
+  </button>
+  <div className="start-panel"><p className={validation ? 'validation-hint' : 'help-text'} role="status">{validation || (practice ? t.practiceTip : t.readyHelp)}</p><button className="primary-button fight-button" data-ui-sound="silent" disabled={!!validation || !manifest || !host} onClick={start}>{t.start}<span>↗</span></button></div>
+  {seat && <MenuDialog accent={disciplineInfo[seat.discipline].color} mark={`P${index + 1}`} language={settings.language} title={seat.name} subtitle={owned(seat) ? t.editFighter : t.seatRemote} done={t.done} close={closeFighter}>
+   <div className="fighter-editor" style={{ '--fighter-color': disciplineInfo[seat.discipline].color } as React.CSSProperties}>
+    <div className="editor-preview" data-number={String(index + 1).padStart(2, '0')}><Avatar appearance={seat.appearance} discipline={seat.discipline} manifest={manifest} animated={!settings.reducedMotion} /><strong>{names[seat.discipline][lang]}</strong><p>{disciplineInfo[seat.discipline].special[lang]}</p></div>
+    <div className="editor-fields">
+     <MenuTabs label={t.editFighter} value={editorTab} options={[{ value: 'fighter', label: t.appearance }, { value: 'player', label: `${t.player} / ${t.device}` }]} change={setEditorTab} />
+     <div role="tabpanel" aria-label={editorTab === 'fighter' ? t.appearance : `${t.player} / ${t.device}`}>
+      {editorTab === 'fighter' ? <>
+       <Choice label={t.discipline} value={seat.discipline} disabled={!owned(seat)} options={disciplines.map(value => ({ value, label: names[value][lang] }))} change={discipline => changeSeat(seat.id, { discipline })} />
+       {(['hair','shirt','pants'] as const).map(part => <Choice key={part} label={t[part]} value={seat.appearance[part]} disabled={!owned(seat)} swatches={palettes[part]} options={palettes[part].map((_, value) => ({ value, label: `${value + 1} / 4` }))} change={value => changeSeat(seat.id, { appearance: { ...seat.appearance, [part]: value } })} />)}
+      </> : <>
+       <label className="config-row name-row"><span>{t.name}</span><input disabled={!owned(seat)} value={seat.name} maxLength={18} aria-label={`${t.name} P${index + 1}`} onChange={event => changeSeat(seat.id, { name: event.target.value })} /></label>
+       <Choice label={t.player} value={seat.kind} disabled={!owned(seat) || !!online && !host || practice} options={[{ value: 'human', label: t.human }, { value: 'bot', label: t.bot }]} change={kind => changeSeat(seat.id, { kind, device: kind === 'bot' ? 'bot' : `keyboard:${index}`, difficulty: 'normal' })} />
+       {seat.kind === 'bot' ? <Choice label={t.difficulty} value={seat.difficulty ?? 'normal'} disabled={!owned(seat)} options={[{ value: 'easy' as const, label: t.easy }, { value: 'normal' as const, label: t.normal }, ...(practice ? [{ value: 'dummy' as const, label: t.dummy }] : [])]} change={difficulty => changeSeat(seat.id, { difficulty })} /> : <Choice label={t.device} value={seat.device} disabled={!owned(seat)} options={[
+        ...[0,1,2,3].map(value => ({ value: `keyboard:${value}`, label: `${t.keyboard} ${value + 1}` })),
+        ...devices.filter(device => device.id.startsWith('gamepad:') && device.connected).map(device => ({ value: device.id, label: device.label })),
+        ...(seat.device === 'remote' ? [{ value: 'remote', label: t.seatRemote }] : []),
+        ...(seat.device.startsWith('gamepad:') && !devices.some(device => device.id === seat.device && device.connected) ? [{ value: seat.device, label: t.disconnected }] : []),
+       ]} change={device => changeSeat(seat.id, { device })} />}
+       {config.mode === 'teams' && <Choice label={t.team} value={seat.team} disabled={!owned(seat)} options={[{ value: 0, label: '◆ A' }, { value: 1, label: '● B' }]} change={team => changeSeat(seat.id, { team })} />}
+       {seat.kind === 'human' && seat.device.startsWith('keyboard:') && <div className="seat-keys">{['left','down','right','jump','punch','special','guard','combo'].map(action => <kbd key={action} title={t[action as keyof typeof t]}>{keyName(settings.keyboardBindings[Number(seat.device.split(':')[1])]?.[action] ?? '')}</kbd>)}</div>}
+       {!practice && owned(seat) && config.players.length > 2 && <button className="text-button remove-fighter" onClick={() => {
+        if (online) online.updateConfig({ ...config, players: config.players.filter(player => player.id !== seat.id) }); else update({ players: config.players.filter(player => player.id !== seat.id) });
+        setEditing(null);
+       }}>{t.remove} {seat.name}</button>}
+      </>}
      </div>
-   </section>
-   <section className="rules-section">
-     <div className="section-heading"><h2>{t.rules}</h2></div>
-     {!host && <p className="help-text">{t.waitHost}</p>}
-     <div className="rules-controls">
-       {!practice && <label className="field-label"><span>{lang === 'es' ? 'Modo' : 'Mode'}</span><select disabled={!host} value={config.mode} onChange={e => update({ mode: e.target.value as MatchConfig['mode'] })}><option value="ffa">{t.ffa}</option><option value="teams">{t.teams}</option></select></label>}
-       {!practice && <div className="rule-pair"><label className="field-label"><span>{t.lives}</span><select disabled={!host} value={config.lives} onChange={e => update({ lives: Number(e.target.value) })}>{[1,2,3,4,5,6,7,8,9].map(v => <option value={v} key={v}>{v}</option>)}</select></label><label className="field-label"><span>{t.time}</span><select disabled={!host} value={config.timeLimit} onChange={e => update({ timeLimit: Number(e.target.value) })}>{[60,120,180,300,600,900,0].map(v => <option value={v} key={v}>{v ? `${v / 60} min` : t.unlimited}</option>)}</select></label></div>}
-       {!practice && config.mode === 'teams' && <label className="toggle-field"><span>{t.friendly}</span><input disabled={!host} type="checkbox" checked={config.friendlyFire} onChange={e => update({ friendlyFire: e.target.checked })} /><span className="toggle-track" /></label>}
-     </div>
-     <div className="section-heading arena-heading"><h2>{t.arena}</h2></div>
-     <div className="arena-options">{Object.values(ARENAS).map(arena => <button disabled={!host} aria-pressed={config.arena === arena.id} className={`arena-card ${config.arena === arena.id ? 'selected' : ''}`} key={arena.id} onClick={() => update({ arena: arena.id })} style={{ '--arena-color': arena.color } as React.CSSProperties}>
-       <div className="arena-thumbnail" style={{ backgroundImage: manifest ? `url("${manifest.backgrounds[arena.id]}")` : undefined }}><svg viewBox="0 0 1366 768" aria-hidden="true">{arena.platforms.map((p, i) => <rect key={i} x={p.x} y={p.y} width={p.width} height={p.height} />)}</svg></div>
-       <div><strong>{arena.name[lang]}</strong><span>{arena.subtitle[lang]}</span></div><span className="arena-check">{config.arena === arena.id ? '✓' : ''}</span>
-     </button>)}</div>
-
-   </section>
-     <div className="start-panel"><p className={validation ? 'validation-hint' : 'help-text'}>{validation || (practice ? t.practiceTip : t.readyHelp)}</p><button className="primary-button fight-button" data-ui-sound="silent" disabled={!!validation || !manifest || !host} onClick={start}>{t.start}<span>↗</span></button></div>
+    </div>
+   </div>
+  </MenuDialog>}
+  {rulesOpen && <MenuDialog mark={<Icon name="arena" />} language={settings.language} title={`${t.arena} / ${t.rules}`} subtitle={!host ? t.waitHost : undefined} done={t.done} close={closeRules}>
+   <div className="rules-editor"><div className="arena-preview" style={{ backgroundImage: manifest ? `url("${manifest.backgrounds[arena.id]}")` : undefined }}><svg viewBox="0 0 1366 768" aria-hidden="true">{arena.platforms.map((platform, i) => <rect key={i} {...platform} />)}</svg><span>{arena.subtitle[lang]}</span></div>
+    <div className="editor-fields">
+     <Choice label={t.arena} value={rules.arena} disabled={!host} options={Object.values(ARENAS).map(value => ({ value: value.id, label: value.name[lang] }))} change={arena => update({ arena })} />
+     {!practice && <>
+      <Choice label={lang === 'es' ? 'Modo' : 'Mode'} value={rules.mode} disabled={!host} options={[{ value: 'ffa', label: t.ffa }, { value: 'teams', label: t.teams }]} change={mode => update({ mode })} />
+      <Choice label={t.lives} value={rules.lives} disabled={!host} options={[1,2,3,4,5,6,7,8,9].map(value => ({ value, label: `${value}` }))} change={lives => update({ lives })} />
+      <Choice label={t.time} value={rules.timeLimit} disabled={!host} options={[60,120,180,300,600,900,0].map(value => ({ value, label: value ? `${value / 60} min` : t.unlimited }))} change={timeLimit => update({ timeLimit })} />
+      {rules.mode === 'teams' && <Choice label={t.friendly} value={Number(rules.friendlyFire)} disabled={!host} options={[{ value: 0, label: t.off }, { value: 1, label: t.on }]} change={value => update({ friendlyFire: !!value })} />}
+     </>}
+    </div>
+   </div>
+  </MenuDialog>}
  </div>;
 }

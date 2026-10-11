@@ -4,7 +4,8 @@ import { AudioManager, type UiSound } from '../audio';
 import { preloadMatchAssets } from '../assets';
 import type { AppSettings, AssetsManifest, MatchConfig, MatchSnapshot, SimulationCommand, SimulationMessage } from '../shared/types';
 import type { OnlineBridge } from './contracts';
-export type MenuCommand = 'up' | 'down' | 'left' | 'right' | 'confirm' | 'back' | 'pause';
+import type { MenuCommand } from '../input';
+export type { MenuCommand } from '../input';
 export function useGameRuntime(settings: AppSettings, manifest: AssetsManifest | null, onMenu: (command: MenuCommand, source: 'keyboard' | 'gamepad') => void, online?: OnlineBridge, onlineActive = false, showMatch = false) {
   const [snapshot, setSnapshot] = useState<MatchSnapshot | null>(null);
   const snapshotRef = useRef<MatchSnapshot | null>(null);

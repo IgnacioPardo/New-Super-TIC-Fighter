@@ -17,7 +17,8 @@ try {
  await page.goto(process.env.STF_APP_URL??'http://127.0.0.1:4173');
  await enterTitle(page);
  await page.getByTestId('mode-local').click();
- await page.locator('.rule-pair select').first().selectOption('1');
+ await page.locator('.match-summary').click();
+ const lives=page.getByRole('button',{name:/^Vidas:/});await lives.focus();await page.keyboard.press('ArrowLeft');await page.keyboard.press('ArrowLeft');await page.keyboard.press('Escape');
  for(const button of await page.locator('.ready-button:not(:disabled)').all())await button.click();
  await page.locator('.fight-button').click();
  await page.waitForFunction(()=>window.__resultSnapshot?.phase==='playing',null,{timeout:15000});
@@ -28,9 +29,9 @@ try {
  assert.equal(await page.evaluate(()=>window.__resultSnapshot.result.reason),'last-standing');
  await page.locator('.brand-button').click();
  await page.getByTestId('mode-settings').click();
- await page.locator('.settings-panel').waitFor();
+ await page.locator('.settings-home').waitFor();
  await page.waitForTimeout(600);
- assert.equal(await page.locator('.settings-panel').count(),1);
+ assert.equal(await page.locator('.settings-home').count(),1);
  assert.equal(await page.locator('.results-screen').count(),0);
  await page.locator('.back-button').click();
  await page.getByTestId('mode-guide').click();
