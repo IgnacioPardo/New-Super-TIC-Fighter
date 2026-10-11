@@ -1,0 +1,75 @@
+/* Settings and the guide fit the current viewport; longer content has explicit pages. */
+.screen-settings,.screen-guide { height:100svh; min-height:0; }
+.screen-settings > main,.screen-guide > main { display:flex; flex-direction:column; min-height:0; flex:1 1 0; padding-bottom:12px; }
+.screen-settings .page-heading,.screen-guide .page-heading { flex:none; }
+.reader-settings { width:min(100%,860px); margin:12px auto 0; min-height:0; }
+.reader-settings .settings-categories { gap:12px; }
+.reader-settings .config-intro { margin-bottom:12px; font-size:14px; }
+.reader-settings .settings-category { min-height:90px; padding:14px 20px; }
+.reader-settings .settings-category strong { margin-bottom:7px; }
+.reader-settings .settings-category small { font-size:14px; line-height:1.4; }
+.config-dialog:has(.reader-settings-editor) { overflow:visible; max-height:calc(100svh - 32px); display:flex; flex-direction:column; --editor-padding:20px; }
+.config-dialog:has(.reader-settings-editor) .config-dialog-heading { margin-bottom:14px; padding-block:14px; }
+.reader-settings-editor { min-height:0; display:flex; flex-direction:column; gap:8px; }
+.reader-settings-editor .config-row { min-height:50px; margin-bottom:0; }
+.reader-settings-editor .choice-main { padding:11px 14px; }
+.reader-settings-editor .binding-list { display:grid; gap:4px; }
+.reader-settings-editor .binding-button { width:100%; padding:10px 14px; }
+.reader-settings-editor .config-note { font-size:14px; line-height:1.45; margin:4px 0; }
+.reader-settings-editor .restore-bindings { align-self:flex-start; font-size:14px; padding:8px 0; }
+.reader-settings-editor .volume-field { padding:12px 14px; }
+.reader-page-title { font-size:15px; color:var(--config-accent,#9adfff); line-height:1.4; }
+.reader-settings-editor .controller-status { margin:0; padding:14px; }
+.reader-settings-editor .controller-status p { font-size:14px; line-height:1.5; }
+.reader-settings-editor .controller-status div { overflow-wrap:anywhere; }
+.config-dialog:has(.reader-settings-editor) .config-editor-help { margin:12px 0 0; font-size:13px; }
+.reader-guide { min-height:0; flex:1; width:min(100%,1100px); margin:8px auto 0; display:flex; }
+.reader-guide .content-pages,.reader-guide .content-page,.reader-guide .paged-content { display:flex; flex-direction:column; flex:1; min-height:0; }
+.reader-guide .content-page[hidden] { display:none; }
+.reader-guide .config-tabs { margin-bottom:12px; flex:none; }
+.reader-guide .reader-page-body { flex:1; min-height:0; display:flex; }
+.reader-text-card { width:100%; background:#101d2de8; border:1px solid #466277; padding:24px; }
+.reader-text-card h2 { font:22px Arcade,Impact,sans-serif; color:#e8f3f8; margin-bottom:18px; }
+.reader-text-card p,.reader-text-card .guide-rule p { font-size:16px; line-height:1.65; color:#c0cedb; }
+.reader-text-card .lead-text { margin-bottom:20px; color:#e2edf4; }
+.reader-text-card .guide-rule { padding:14px 0; }
+.reader-text-card .reader-note { font-size:14px; margin-top:20px; color:#a9c2d3; }
+.reader-disciplines { min-height:0; flex:1; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; }
+.reader-disciplines .discipline-guide { align-items:center; flex-direction:row; text-align:left; padding:24px 16px; }
+.reader-disciplines .discipline-guide > .avatar { width:88px; height:126px; flex:none; transform:none; }
+.reader-disciplines .discipline-guide h2 { font-size:22px; }
+.reader-disciplines .discipline-guide dd { font-size:16px; line-height:1.55; }
+.reader-bindings { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px 22px; }
+.reader-bindings > div { display:flex; align-items:center; justify-content:space-between; gap:12px; min-height:38px; border-bottom:1px solid #58758c55; font-size:15px; }
+.reader-bindings kbd { height:auto; min-height:28px; padding:4px 7px; font-size:14px; }
+.reader-guide .content-pager,.reader-settings .content-pager { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-top:12px; flex:none; }
+.reader-guide .content-pager button,.reader-settings .content-pager button { min-height:38px; font-size:14px; padding:8px 14px; }
+.reader-guide .content-pager span,.reader-settings .content-pager span { font-size:14px; color:#b5cedd; white-space:nowrap; }
+@media (min-width:761px) and (max-height:760px) {
+ .reader-settings .settings-categories { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); }
+ .reader-settings .settings-category { min-height:130px; gap:14px; }
+ .reader-settings .settings-category .category-end { display:none; }
+ .reader-text-card { padding:18px 22px; }
+}
+@media (max-width:760px) {
+ .reader-settings { margin-top:4px; }
+ .reader-settings .settings-category { padding:12px 14px; gap:14px; min-height:86px; }
+ .reader-settings .settings-category .category-icon { width:46px; height:46px; }
+ .reader-settings .settings-category strong { font-size:18px; }
+ .reader-settings .settings-category small { font-size:13px; }
+ .reader-guide .config-tabs { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); }
+ .reader-guide .config-tabs button { min-height:40px; font-size:15px; padding:10px 8px; }
+ .reader-text-card { padding:18px; }
+ .reader-text-card p,.reader-text-card .guide-rule p { font-size:15px; line-height:1.6; }
+ .reader-text-card h2 { font-size:20px; margin-bottom:14px; }
+ .reader-text-card .lead-text { margin-bottom:14px; }
+ .reader-disciplines { grid-template-columns:1fr; }
+ .reader-disciplines .discipline-guide { padding:18px 14px; gap:14px; }
+ .reader-disciplines .discipline-guide > .avatar { width:72px; }
+ .reader-disciplines .discipline-guide dd { font-size:15px; }
+ .reader-bindings { grid-template-columns:1fr; gap:4px; }
+ .reader-bindings > div { min-height:33px; }
+ .reader-text-card .reader-note { margin-top:14px; }
+ .config-dialog:has(.reader-settings-editor) { --editor-padding:16px; }
+ .config-dialog:has(.reader-settings-editor) .config-dialog-heading p { font-size:13px; }
+}
