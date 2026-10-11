@@ -25,7 +25,17 @@ try{
    const hold=async(key,ms=90)=>{await page.keyboard.down(key);await page.waitForTimeout(ms);await page.keyboard.up(key);};
    await hold('x');await page.waitForTimeout(420);await page.screenshot({path:`${out}/${kit}-${arena}-signature.png`});
    await page.waitForTimeout(1100);await hold('v');await page.waitForTimeout(420);await page.screenshot({path:`${out}/${kit}-${arena}-combo.png`});
-   await page.waitForTimeout(1300);await hold('w');await page.waitForTimeout(150);await hold('z',60);await page.screenshot({path:`${out}/${kit}-aerial.png`});
+   await page.waitForTimeout(1300);
+   if(process.env.STF_AERIAL==='1'){
+    const settled=()=>page.waitForFunction(()=>{const f=window.__stfSnapshot?.fighters[0];return f?.grounded&&f.recovery<.01&&(f.abilityCooldown??0)<.01;},null,{timeout:15000});
+    await settled();await hold('w',60);await hold('x',60);
+    await page.waitForFunction(()=>{const f=window.__stfSnapshot?.fighters[0];return f?.action==='special'&&!f.grounded&&f.recoveryAvailable;});
+    await page.waitForTimeout(180);await page.screenshot({path:`${out}/${kit}-air-special.png`});
+    await settled();await hold('w',60);await hold('v',60);
+    await page.waitForFunction(()=>{const f=window.__stfSnapshot?.fighters[0];return f?.action==='recover'&&!f.grounded&&!f.recoveryAvailable;});
+    await page.screenshot({path:`${out}/${kit}-signature-recovery.png`});await settled();
+   }
+   await hold('w');await page.waitForTimeout(150);await hold('z',60);await page.screenshot({path:`${out}/${kit}-aerial.png`});
    const state=await page.evaluate(()=>window.__stfSnapshot);assert.ok(state.fighters.every(f=>Number.isFinite(f.x)&&Number.isFinite(f.y)));assert.equal(errors.length,0,errors.join('\n'));
    report.push({kit,arena,tick:state.tick,errors,deployables:state.deployables.map(d=>d.kind),actions:await page.evaluate(()=>[...new Set(Object.values(window.__stfSeenEvents).filter(e=>e.seatId==='p1').map(e=>e.action).filter(Boolean))])});
   }catch(error){await page.screenshot({path:`${out}/${kit}-failure.png`});console.log((await page.locator('body').innerText()).slice(-3000));throw error;}finally{await context.close();}

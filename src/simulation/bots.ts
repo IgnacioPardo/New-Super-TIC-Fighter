@@ -413,10 +413,10 @@ export class Bots {
           .sort((a, b) => Math.abs(a.x + a.width / 2 - me.x) - Math.abs(b.x + b.width / 2 - me.x))[0];
         if (rescue && me.y > rescue.y - 30 && me.vy > 0) {
           input.jump = (me.airJumps ?? 0) > 0;
-          if (!input.jump && me.recoveryAvailable && me.y > rescue.y + 60) input.special = true;
+          if (!input.jump && me.recoveryAvailable && me.y > rescue.y + 60) input.combo = true;
           if (
             !input.jump &&
-            !input.special &&
+            !input.combo &&
             me.airDash &&
             Math.abs(me.x - clamp(me.x, rescue.x + 35, rescue.x + rescue.width - 35)) > 90
           )

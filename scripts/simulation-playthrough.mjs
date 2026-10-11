@@ -17,7 +17,7 @@ const {Simulation}=await import(pathToFileURL(join(build,'src/simulation/Simulat
 const {createSeat,DEFAULT_CONFIG}=await import(pathToFileURL(join(build,'src/shared/defaults.mjs')));
 const {emptyInput}=await import(pathToFileURL(join(build,'src/shared/types.mjs')));
 const {ARENAS,DISCIPLINES}=await import(pathToFileURL(join(build,'src/shared/content.mjs')));
-const report={matches:[],movement:[],checkpointTicks:0};
+const report={matches:[],movement:[],aerialKits:[],checkpointTicks:0};
 function start(config){const s=new Simulation();s.createMatch(config);for(let i=0;i<180;i++)s.step();assert.equal(s.snapshot().phase,'playing');return s;}
 function input(s,id,changes){return s.step([{...emptyInput(id,s.snapshot().tick+1),...changes}]);}
 function place(s,id,x,y,grounded=true){const snap=s.snapshot();Object.assign(snap.fighters.find(f=>f.id===id),{x,y,grounded,vx:0,vy:0,recovery:0,stun:0,invulnerable:0,action:grounded?'idle':'jump',actionTime:0});s.restore(snap);}
@@ -25,12 +25,33 @@ try {
  const movement=start({...DEFAULT_CONFIG,arena:'lab',practice:true});
  place(movement,'p1',600,600);let snap=input(movement,'p1',{jump:true});assert.equal(snap.fighters[0].grounded,false);input(movement,'p1',{});snap=input(movement,'p1',{jump:true});assert.equal(snap.fighters[0].airJumps,0);report.movement.push('ground jump','double jump');
  input(movement,'p1',{});snap=input(movement,'p1',{dodge:true,right:true});assert.equal(snap.fighters[0].airDash,false);report.movement.push('air dash');
- for(let i=0;i<24;i++)input(movement,'p1',{});place(movement,'p1',60,550,false);snap=input(movement,'p1',{special:true});assert.equal(snap.fighters[0].recoveryAvailable,false);report.movement.push('upward recovery');
+ for(let i=0;i<24;i++)input(movement,'p1',{});place(movement,'p1',60,550,false);snap=input(movement,'p1',{combo:true});assert.equal(snap.fighters[0].recoveryAvailable,false);report.movement.push('Signature upward recovery');
  for(let i=0;i<100;i++)input(movement,'p1',{});movement.training({action:'reset-all'});place(movement,'p1',600,450,false);snap=input(movement,'p1',{punch:true,down:true});assert.equal(snap.fighters[0].action,'air-down');report.movement.push('down aerial');
  movement.training({action:'reset-all'});place(movement,'p1',600,450,false);snap=input(movement,'p1',{punch:true});assert.equal(snap.fighters[0].action,'air-forward');report.movement.push('forward aerial');
  movement.training({action:'reset-all'});place(movement,'p1',600,600);snap=input(movement,'p1',{dodge:true,left:true});assert.equal(snap.fighters[0].action,'dodge');report.movement.push('directional dodge');
  movement.pause();const tick=movement.snapshot().tick;movement.training({action:'frame'});assert.equal(movement.snapshot().tick,tick+1);assert.equal(movement.snapshot().phase,'paused');movement.training({action:'hitboxes',enabled:true});assert.equal(movement.snapshot().training.hitboxes,true);
  movement.resume();for(let i=0;i<180;i++)movement.step();movement.training({action:'record',enabled:true});for(let i=0;i<30;i++)input(movement,'p1',{right:true,punch:i===5});movement.training({action:'record',enabled:false});movement.training({action:'playback',enabled:true});assert.equal(movement.snapshot().training.dummyRecording.length,30);
+ const specialKinds={networks:'cable',design:'mouse',code:'ball',hardware:'ram',ai:'ball',robotics:'mechanical',iot:'board',vr:'displacement',games:'ricochet',printing:'piston'};
+ for(const kit of Object.keys(DISCIPLINES)){
+  const s=start({...DEFAULT_CONFIG,arena:'lab',practice:true,hazards:false,items:false,players:[createSeat(0,{discipline:kit}),createSeat(1,{device:'keyboard:1'})]});
+  const activated={ground:new Set(),air:new Set()};
+  for(const airborne of [false,true]){
+   s.training({action:'reset-all'});place(s,'p1',300,airborne?100:600,!airborne);place(s,'p2',1150,600);
+   const first=input(s,'p1',{special:true,down:airborne});assert.equal(first.fighters[0].action,'special');assert.equal(first.fighters[0].recoveryAvailable,true);
+   for(let i=0;i<32;i++){const state=input(s,'p1',{});for(const e of state.effects.filter(e=>e.ownerId==='p1'))activated[airborne?'air':'ground'].add(e.kind);for(const d of state.deployables.filter(d=>d.ownerId==='p1'))activated[airborne?'air':'ground'].add(d.kind);}
+   assert.ok(activated[airborne?'air':'ground'].has(specialKinds[kit]),`${kit} ${airborne?'air':'ground'} special missing ${specialKinds[kit]}`);
+  }
+  s.training({action:'reset-all'});place(s,'p1',-100,550,false);let state=input(s,'p1',{combo:true});assert.equal(state.fighters[0].action,'recover');assert.equal(state.fighters[0].recoveryAvailable,false);assert.ok(state.fighters[0].vy<-900);
+  for(let i=0;i<38;i++)input(s,'p1',{});place(s,'p1',-100,550,false);state=input(s,'p1',{combo:true});assert.notEqual(state.fighters[0].action,'recover');assert.equal(state.fighters[0].recoveryAvailable,false);
+  // Air Special remains available after the independent recovery charge is spent.
+  state=input(s,'p1',{special:true});assert.equal(state.fighters[0].action,'special');assert.equal(state.fighters[0].recoveryAvailable,false);
+  place(s,'p1',600,590,false);for(let i=0;i<10&&!s.snapshot().fighters[0].grounded;i++)input(s,'p1',{});assert.equal(s.snapshot().fighters[0].grounded,true);assert.equal(s.snapshot().fighters[0].recoveryAvailable,true);
+  s.training({action:'reset-all'});place(s,'p1',300,600);state=input(s,'p1',{combo:true});assert.equal(state.fighters[0].action,'combo');assert.equal(state.fighters[0].recoveryAvailable,true);
+  const bot=start({...DEFAULT_CONFIG,arena:'lab',practice:true,hazards:false,items:false,players:[createSeat(0,{discipline:kit,kind:'bot',device:'bot',difficulty:'hard'}),createSeat(1,{device:'keyboard:1'})]});
+  let seeded=bot.snapshot();Object.assign(seeded.fighters[0],{x:-100,y:680,vy:200,vx:0,grounded:false,airJumps:0,airDash:false,recoveryAvailable:true,action:'jump',recovery:0,stun:0});bot.restore(seeded);let botRecovered=false;
+  for(let i=0;i<90;i++){const b=bot.step();botRecovered ||= b.events.some(e=>e.seatId==='p1'&&e.action==='recover');}assert.equal(botRecovered,true,`${kit} hard bot did not use Signature recovery`);
+  report.aerialKits.push({kit,groundSpecial:[...activated.ground],airSpecial:[...activated.air],recovery:'Signature once until landing/respawn',groundSignature:'combo',botRecovery:true});
+ }
  for(const [index,kit] of Object.keys(DISCIPLINES).entries()){
   const arena=Object.keys(ARENAS)[index%6];const s=start({...DEFAULT_CONFIG,arena,practice:true,hazards:true,items:true,players:[createSeat(0,{discipline:kit}),createSeat(1,{discipline:'hardware',kind:'bot',difficulty:'hard',device:'bot'})]});
   const p=ARENAS[arena].platforms[0];place(s,'p1',p.x+p.width/2,p.y);const seen=new Set();
