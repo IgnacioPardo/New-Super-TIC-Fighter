@@ -18,10 +18,10 @@ Verified on 2026-10-11. These checks exercise complete application flows; no uni
 - The same flow checked 1366×768, 1024×640 and 390×844 without horizontal overflow. Names such as `Zoë / 日本語` retained readable text and keyboard focus.
 - `app-feedback.mjs` used injected DualSense input with actual Web Audio and worker gameplay. It verified the new title order, visible controller focus, confirmation/back, assignment, movement, pause/settings/resume and audible feedback.
 
-## Final responsive visual pass
+## Initial responsive visual pass
 
 - `app-v2-layout.mjs` passed 40 complete screen combinations: Solo, local Profile, connected Public, Tournaments entry and actual eight-fighter Royale, in ES/EN at 1366×768, 1024×640, 1440×1000 and 390×844. It used a production build with isolated local workerd/D1 state; it did not perturb the multiplayer load exercise.
-- Every enabled menu control was reached by native Tab and automatically scrolled into view. No page horizontal overflow or clipped feature controls/text remained. Representative screenshots were inspected for each screen, both languages and all viewport classes; narrow Solo titles retain whole words and tournament input rows match the Settings controls.
+- This initial pass allowed vertical page scrolling. Every enabled menu control was reached by native Tab and automatically scrolled into view. No page horizontal overflow or clipped feature controls/text remained. Representative screenshots were inspected for each screen, both languages and all viewport classes; narrow Solo titles retain whole words and tournament input rows match the Settings controls.
 - Royale remaining-fighter and shrinking-safe-zone information now appears below the match header within the renderer’s top reservation, rather than falling below the full-height stage. It describes the playable zone without exposing world coordinates. Screenshot/report output is under `tmp/qa/v2-layout/`; the ES/EN four-local 1024 px HUD images are `tmp/qa/v2-royale-{es,en}-4-local-1024.png`.
 
 ## Visible Training tools follow-up
@@ -30,6 +30,14 @@ Verified on 2026-10-11. These checks exercise complete application flows; no uni
 - Injected controller Start opened the real pause dialog; D-pad selected the human target and 100% preset, A applied damage, and subsequent navigation reached frame advance and stepped the paused worker. The dummy remained at 0%, confirming seat targeting. The live tools are absent behind the pause modal.
 - `app-v2-solo.mjs` passed the actual Challenge 1, Training recording/playback/frame/reset and two-win set flow after opening the collapsible toolbar. Jump input now waits for the worker’s airborne/cooldown/air-jump state rather than fixed timing.
 - Type/build checks passed. Representative desktop, narrow and paused screenshots were inspected and copied to `tmp/qa/v2-training-final/` in the primary checkout before cleanup.
+
+## Fixed-window content and roster follow-up
+
+- Solo, Profile, Public and Tournaments use tabs and pages. The desktop Setup shows all four owned human editors together, followed by paged opponents; each seat retains its own editor and small-window appearance/player page. A controller reveals its owned seat before applying input on a narrow screen.
+- The replacement `app-v2-layout.mjs` checks whole-page height and scroll position, every current control’s complete bounds, ancestor clipping and actual pointer hit targets before and after mouse wheel and Tab. It traversed ES/EN content tabs, all twelve challenge pages and rules/editor pages at 1366×768, 1024×640, 1440×1000 and 390×844. This caught and repaired options covered by Ready and a Create action beneath the footer. A later combined pass includes paged Settings/Guide and private entry.
+- `app-v2-roster-pages.mjs` passed ES/EN with four injected standard controllers and an actual eight-fighter worker. Four local editors fit 1024×640; native name-entry focus remained on P1 while the other three controllers changed their disciplines. All current editor buttons passed bounds and hit checks. Narrow controller input revealed P7 and retained P1’s hidden name draft. The actual four-local Royale HUD measured within 180 px. Representative editor and match screenshots were inspected.
+- Updated Public and Tournament application flows passed against isolated workerd/D1 state on port 8791: two independent browsers queued, readied and played the server duel; four browsers registered through the paged competition UI and six deliberate-forfeit BO3 bouts produced a persisted champion. These were actual server results, not manufactured snapshots.
+- TypeScript and production Vite builds passed. Screenshots and JSON page-state reports were copied to `tmp/qa/v2-viewport-final/` in the primary checkout before cleanup. Physical hardware and production account-provider verification remain separate evidence.
 
 ## Practical limits
 
