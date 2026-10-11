@@ -265,8 +265,14 @@ async function scenarioHostRefresh() {
   await guest.page.waitForFunction(() => window.__stfObserved.controls.some(message => message.type === 'result' && message.result?.reason === 'interrupted'), null, { timeout: 10_000 });
   await host.page.waitForFunction(() => window.__stfRoom?.phase === 'lobby', null, { timeout: 8_000 });
   assert.equal(await host.page.locator('.room-code strong').innerText(), code);
-  await guest.page.getByRole('button', { name: /VOLVER A LA SALA/ }).click();
-  assert.equal(await guest.page.locator('.room-code strong').innerText(), code);
+  // The interrupted result and fresh lobby can arrive in one render batch.
+  // Both visible routes must recover the same room, without requiring a transient result screen.
+  const returnToLobby = guest.page.getByRole('button', { name: /VOLVER A LA SALA/ });
+  const guestRoomCode = guest.page.locator('.room-code strong');
+  await returnToLobby.or(guestRoomCode).first().waitFor({ state: 'visible', timeout: 8_000 });
+  if (await returnToLobby.isVisible()) await returnToLobby.click();
+  await guestRoomCode.waitFor({ state: 'visible', timeout: 8_000 });
+  assert.equal(await guestRoomCode.innerText(), code);
   console.log(`Host refresh ${code}: interrupted no-winner round returned to a playable lobby.`);
 }
 
