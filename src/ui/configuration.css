@@ -436,3 +436,8 @@ html:has(.app:is(.screen-setup,.screen-room,.screen-settings,.screen-solo,.scree
  .setup-overview .inline-fighter-editor .choice-main { padding:6px; }
  .setup-overview .fighter-summary .seat-shared-button { min-height:24px; padding:4px; }
 }
+.setup-overview .section-heading .seat-join-help { flex:1; font-size:12px; color:#b7cedc; }
+.appearance-pager { display:flex; justify-content:space-between; align-items:center; gap:8px; margin-top:6px; }
+.appearance-pager button { min-height:30px; width:38px; background:#1c344b; border:1px solid #526e85; color:#c5e1f0; }
+.appearance-pager span { font-size:12px; color:#aec8da; }
+@media(max-width:760px) { .setup-overview .section-heading { flex-wrap:wrap; }.setup-overview .section-heading .seat-join-help { flex-basis:100%; order:4; }.setup-overview .section-heading .add-fighter { order:3; } }

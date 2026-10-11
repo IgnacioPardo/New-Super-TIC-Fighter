@@ -58,3 +58,6 @@
  .solo-home .feature-card>span:first-child { font-size:23px; }
  .competition-fixtures { grid-template-columns:1fr; }
 }
+.competition-create .content-page { gap:0; }
+.competition-create .feature-body>.content-pages { gap:8px; }
+.competition-create .content-pages>.config-tabs button { min-height:38px; }

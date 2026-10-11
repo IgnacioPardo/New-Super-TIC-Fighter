@@ -74,15 +74,20 @@ export function Profile({ language }: { language: Language }) {
    <header className="feature-heading"><div><h2>{es?'Cuenta y sincronización':'Account and sync'}</h2><p>{es?'Todos los luchadores están disponibles sin cuenta.':'Every fighter is available without an account.'}</p></div></header>
    <div className="feature-body">
     {!config.enabled&&<p className="config-note">{es?'La cuenta online aún no está disponible. Puedes jugar como invitado.':'Online accounts are not available yet. You can play as a guest.'}</p>}
-    <div className="feature-actions">{(['google','github'] as const).map(provider=><button key={provider} disabled={busy||!config[provider]||providers.includes(provider)} onClick={()=>void oauth(provider,!!profile)}>{providers.includes(provider)?(es?'Vinculado':'Linked'):profile?(es?'Vincular':'Link'):(es?'Entrar con':'Continue with')} {provider==='google'?'Google':'GitHub'}</button>)}
+    {profile?<ContentTabs label={es?'Cuenta y sincronización':'Account and sync'} pages={[
+     {id:'links',label:es?'Acceso':'Access',content:(<>    <div className="feature-actions">{(['google','github'] as const).map(provider=><button key={provider} disabled={busy||!config[provider]||providers.includes(provider)} onClick={()=>void oauth(provider,!!profile)}>{providers.includes(provider)?(es?'Vinculado':'Linked'):profile?(es?'Vincular':'Link'):(es?'Entrar con':'Continue with')} {provider==='google'?'Google':'GitHub'}</button>)}
     {!profile&&<button disabled={busy||!config.passkey} onClick={()=>void act(async()=>{const r=await authClient.signIn.passkey();if(r.error)throw Error(r.error.message);})}>{es?'Entrar con passkey':'Sign in with passkey'}</button>}</div>
-    {profile&&<><div className="feature-stats"><span><strong>{profile.verified.matches}</strong>{es?'Partidas verificadas':'Verified matches'}</span><span><strong>{profile.verified.wins}</strong>{es?'Victorias online':'Online wins'}</span><span><strong>{profile.verified.xp}</strong>XP online</span></div>
-     <p className="config-note">{es?'Las partidas locales y de práctica no cuentan como victorias online.':'Local and practice matches do not count as online wins.'}</p>
-     <div className="feature-actions"><button disabled={busy} onClick={()=>void act(async()=>{const progress=mergeProgress(local,loadProgress());await persist(progress);})}>{es?'Incorporar progreso de invitado':'Import guest progress'}</button>
+<div className="feature-actions">
      <button disabled={busy||!providers.length} onClick={()=>void act(async()=>{const r=await authClient.passkey.addPasskey({name:'Super TIC Fighter'});if(r.error)throw Error(r.error.message);})}>{es?'Añadir passkey':'Add passkey'}</button>
      <button disabled={busy} onClick={()=>void act(async()=>{const result=await authClient.signOut();if(result.error)throw Error(result.error.message);})}>{es?'Cerrar sesión':'Sign out'}</button></div>
-    </>}
-    <p className="config-note">{es?'Las passkeys requieren una cuenta vinculada. Conserva Google o GitHub para recuperar el acceso.':'Enroll a passkey after linking an account. Keep Google or GitHub linked for recovery.'}</p>
+    <p className="config-note">{es?'Las passkeys requieren una cuenta vinculada. Conserva Google o GitHub para recuperar el acceso.':'Enroll a passkey after linking an account. Keep Google or GitHub linked for recovery.'}</p></>)},
+     {id:'progress',label:es?'Progreso online':'Online progress',content:(<><div className="feature-stats"><span><strong>{profile.verified.matches}</strong>{es?'Partidas verificadas':'Verified matches'}</span><span><strong>{profile.verified.wins}</strong>{es?'Victorias online':'Online wins'}</span><span><strong>{profile.verified.xp}</strong>XP online</span></div>
+     <p className="config-note">{es?'Las partidas locales y de práctica no cuentan como victorias online.':'Local and practice matches do not count as online wins.'}</p>
+     <div className="feature-actions"><button disabled={busy} onClick={()=>void act(async()=>{const progress=mergeProgress(local,loadProgress());await persist(progress);})}>{es?'Incorporar progreso de invitado':'Import guest progress'}</button></div></>)}
+    ]}/>:<>    <div className="feature-actions">{(['google','github'] as const).map(provider=><button key={provider} disabled={busy||!config[provider]||providers.includes(provider)} onClick={()=>void oauth(provider,!!profile)}>{providers.includes(provider)?(es?'Vinculado':'Linked'):profile?(es?'Vincular':'Link'):(es?'Entrar con':'Continue with')} {provider==='google'?'Google':'GitHub'}</button>)}
+    {!profile&&<button disabled={busy||!config.passkey} onClick={()=>void act(async()=>{const r=await authClient.signIn.passkey();if(r.error)throw Error(r.error.message);})}>{es?'Entrar con passkey':'Sign in with passkey'}</button>}</div>
+    <p className="config-note">{es?'Las passkeys requieren una cuenta vinculada. Conserva Google o GitHub para recuperar el acceso.':'Enroll a passkey after linking an account. Keep Google or GitHub linked for recovery.'}</p></>}
+
    </div>
   </section>
 </>)}
