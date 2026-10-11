@@ -2,8 +2,9 @@ import { useEffect, useRef, useState } from 'react';
 import Phaser from 'phaser';
 import type { AppSettings, ArenaId, AssetsManifest, FighterState, MatchSnapshot, PlayerSeat } from '../shared/types';
 import { CombatFeedback } from './combatFeedback';
-import { ARENAS } from '../shared/content';
-import { disciplineInfo } from '../ui/i18n';
+import { authoredPose } from './poses';
+import { ARENAS, ATTACKS, DISCIPLINES } from '../shared/content';
+
 
 type SnapshotRef = { current: MatchSnapshot | null };
 export interface GameViewProps {
@@ -42,6 +43,9 @@ export function GameView({ snapshot, snapshotRef, settings, manifest, arena = 'c
     const remoteFrames = new Map<string, { previous: FighterState; current: FighterState; received: number; duration: number; tick: number }>();
     const feedback = new CombatFeedback();
     let sparks: Phaser.GameObjects.Graphics;
+    let expansion: Phaser.GameObjects.Graphics;
+    const labels = new Map<string, Phaser.GameObjects.Text>();
+    const platformVisuals: { image: Phaser.GameObjects.Image; edge: Phaser.GameObjects.Rectangle; light?: Phaser.GameObjects.Rectangle }[] = [];
     let background: Phaser.GameObjects.Image;
     let platformGroup: Phaser.GameObjects.Group;
     let hudCamera: Phaser.Cameras.Scene2D.Camera;
@@ -59,15 +63,16 @@ export function GameView({ snapshot, snapshotRef, settings, manifest, arena = 'c
         for (const layer of ['hair', 'shirt', 'pants'] as const) art.sheets[layer].forEach((url, i) => loadSheet(`${layer}-${i}`, url));
         this.load.image(`background-${arena}`, art.backgrounds[arena]);
         (art.arenaPlatforms?.[arena] ?? art.platforms).forEach((url, i) => this.load.image(`platform-${i}`, url));
-        for (const [kind, urls] of Object.entries(art.effects)) urls.forEach((url, i) => this.load.image(`effect-${kind}-${i}`, url));
+        for (const [kind, urls] of Object.entries(art.effects)) (urls ?? []).forEach((url, i) => this.load.image(`effect-${kind}-${i}`, url));
         this.load.on('loaderror', () => { if (active) setError(preferences.current.language === 'es' ? 'No se pudo cargar una imagen. Recarga la página.' : 'An image could not load. Reload this page.'); });
       }
       create() {
-        background = this.add.image(683, 384, `background-${arena}`).setDisplaySize(1366, 768).setScrollFactor(0).setDepth(-20);
+        background = this.add.image(683, 384, `background-${arena}`).setDisplaySize(1366, 768).setDepth(-20);
         platformGroup = this.add.group();
         hudCamera = this.cameras.add(0, 0, 1366, 768, false, 'markers');
         hudCamera.setBackgroundColor('rgba(0,0,0,0)');
         hudCamera.ignore(background);
+        expansion = this.add.graphics().setDepth(11); this.addWorld(expansion);
         sparks = this.add.graphics().setDepth(13); this.addWorld(sparks);
         if (active) { setLoading(false); readyCallback.current?.(); }
       }
@@ -83,7 +88,7 @@ export function GameView({ snapshot, snapshotRef, settings, manifest, arena = 'c
           bottom: Math.max(...arena.platforms.map(p => p.y + p.height)),
         };
         background.setTexture(`background-${id}`);
-        platformGroup.clear(true, true);
+        platformGroup.clear(true, true); platformVisuals.length = 0;
         for (const [i, p] of arena.platforms.entries()) {
           const key = `platform-${Math.min(art.platforms.length - 1, p.width <= 270 ? 2 : p.width <= 510 ? 1 : 0)}`;
           const platform = this.add.image(p.x, p.y, key).setOrigin(0).setDisplaySize(p.width, p.height).setDepth(0);
@@ -91,9 +96,10 @@ export function GameView({ snapshot, snapshotRef, settings, manifest, arena = 'c
           // Distinct bright landing edge keeps imported girders readable in every environment.
           const edge = this.add.rectangle(p.x + p.width / 2, p.y + 2, p.width - 4, 3, Phaser.Display.Color.HexStringToColor(arena.color).color, .7).setDepth(1);
           platformGroup.add(edge); this.addWorld(edge);
+          const visual: typeof platformVisuals[number] = {image:platform,edge}; platformVisuals.push(visual);
           if (id !== 'classic') {
             const light = this.add.rectangle(p.x + 14 + (i % 2) * 10, p.y + 15, 5, 6, id === 'lab' ? 0x70edee : 0xa8fb66, .9).setDepth(1);
-            platformGroup.add(light); this.addWorld(light);
+            platformGroup.add(light); this.addWorld(light); visual.light=light;
           }
         }
       }
@@ -107,7 +113,7 @@ export function GameView({ snapshot, snapshotRef, settings, manifest, arena = 'c
           if (index < art.sheets[name].length) layers.push(this.add.sprite(0, 0, `${name}-${index}`).setOrigin(.5, 1).setDepth(6 + layers.length));
         }
         layers.forEach(l => this.addWorld(l));
-        const color = disciplineInfo[seat.discipline].color;
+        const color = DISCIPLINES[seat.discipline].color;
         const tag = this.add.text(0, 0, `${seat.name}${read()?.config.mode === 'teams' ? `  ${seat.team === 0 ? '◆ A' : '● B'}` : ''}`, { fontFamily: 'Arial, sans-serif', fontSize: '17px', fontStyle: 'bold', color, stroke: '#11131d', strokeThickness: 4, align: 'center' }).setOrigin(.5, 1).setDepth(15);
         this.addWorld(tag);
         const indicator = this.add.text(0, 0, `▼ ${seat.name}`, { fontFamily: 'Arial, sans-serif', fontSize: '18px', fontStyle: 'bold', color, backgroundColor: '#10131ce8', padding: {x: 8, y: 5} }).setOrigin(.5).setDepth(100).setVisible(false);
@@ -129,6 +135,72 @@ export function GameView({ snapshot, snapshotRef, settings, manifest, arena = 'c
         }
         return frames[at] ?? frames[0] ?? 0;
       }
+      drawExpanded(state:MatchSnapshot) {
+        expansion.clear(); const seenLabels=new Set<string>();
+        const label=(id:string,text:string,x:number,y:number,color='#e9f4ff')=>{
+          seenLabels.add(id);let object=labels.get(id);
+          if(!object){object=this.add.text(x,y,text,{fontFamily:'Arial, sans-serif',fontSize:'12px',fontStyle:'bold',color,stroke:'#101725',strokeThickness:3,align:'center'}).setOrigin(.5).setDepth(14);labels.set(id,object);this.addWorld(object);}
+          object.setText(text).setPosition(x,y).setColor(color);
+        };
+        for(const [i,visual] of platformVisuals.entries()){
+          const p=state.platforms?.[i] ?? ARENAS[state.config.arena].platforms[i];if(!p)continue;
+          const visible=p.active!==false;
+          visual.image.setPosition(p.x,p.y).setVisible(visible).setAlpha(p.warning?.4:1);
+          visual.edge.setPosition(p.x+p.width/2,p.y+2).setVisible(visible).setFillStyle(p.warning?0xffbd69:Phaser.Display.Color.HexStringToColor(ARENAS[state.config.arena].color).color,p.warning?1:.7);
+          visual.light?.setPosition(p.x+14+(i%2)*10,p.y+15).setVisible(visible);
+          if(p.warning){expansion.lineStyle(2,0xffbd69,.8).strokeRect(p.x,p.y-4,p.width,p.height+8);label(`platform-${i}`,'!',p.x+p.width/2,p.y-18,'#ffbd69');}
+          if(p.conveyor&&state.config.hazards)for(let x=p.x+((state.tick*1.5)%38);x<p.x+p.width;x+=38){expansion.lineStyle(2,0xf5c77c,.8).lineBetween(x,p.y+12,x+10,p.y+18).lineBetween(x+10,p.y+18,x,p.y+24);}
+        }
+        if(state.config.ruleset==='expanded') {
+          const objective=state.objective;
+          if(state.config.gameMode==='hill'&&objective){
+            const color=objective.contested?0xffc773:objective.ownerId?Phaser.Display.Color.HexStringToColor(DISCIPLINES[state.config.players.find(p=>p.id===objective.ownerId)!.discipline].color).color:0x8adce8;
+            expansion.fillStyle(color,.10).fillRect(objective.x,objective.y,objective.width,objective.height).lineStyle(3,color,.8).strokeRect(objective.x,objective.y,objective.width,objective.height);
+            label('hill',objective.contested?'CONTESTED':objective.ownerId?state.config.players.find(p=>p.id===objective.ownerId)?.name ?? 'HILL':'HILL',objective.x+objective.width/2,objective.y-18);
+          }
+          if(objective?.safeLeft!==undefined){
+            expansion.fillStyle(0xee668e,.18).fillRect(-450,-200,objective.safeLeft+450,1400).fillRect(objective.safeRight ?? 1586,-200,1816-(objective.safeRight ?? 1586),1400);
+            expansion.lineStyle(4,0xff83a7,.8).lineBetween(objective.safeLeft,-200,objective.safeLeft,1200).lineBetween(objective.safeRight ?? 1586,-200,objective.safeRight ?? 1586,1200);
+          }
+          if(state.config.hazards&&state.config.arena==='embedded'){
+            const phase=state.elapsed%7,warning=phase>4.5&&phase<5.9,active=phase>=5.9&&phase<6.4;
+            expansion.fillStyle(active?0xff6375:0xd6a868,warning?.7:.4).fillRect(593,active?450:90,180,active?175:45);
+            expansion.lineStyle(2,warning?0xffbd69:0xb98856,.7).strokeRect(593,440,180,200);
+            if(warning||active)label('press',active?'PRESS':'!',683,420,'#ffc773');
+          }
+          for(const d of state.deployables ?? []){
+            const color=Phaser.Display.Color.HexStringToColor(DISCIPLINES[state.config.players.find(p=>p.id===d.ownerId)!.discipline].color).color;
+            expansion.fillStyle(0x101b2a,.95).fillRect(d.x,d.y,d.width,d.height).lineStyle(2,color,.9).strokeRect(d.x,d.y,d.width,d.height);
+            if(d.kind==='drone'){expansion.lineStyle(3,color,.9).lineBetween(d.x-14,d.y+4,d.x+12,d.y+4).lineBetween(d.x+d.width-12,d.y+4,d.x+d.width+14,d.y+4).lineBetween(d.x+14,d.y+12,d.x+14,d.y+27).lineBetween(d.x+34,d.y+12,d.x+34,d.y+27);}
+            if(d.kind==='board'||d.kind==='hub'){for(let pin=6;pin<d.width;pin+=9)expansion.fillStyle(0xf3eac8,.8).fillRect(d.x+pin,d.y-3,3,5).fillRect(d.x+pin,d.y+d.height-2,3,5);expansion.lineStyle(2,color,.6).strokeCircle(d.x+d.width/2,d.y+d.height/2,9).strokeCircle(d.x+d.width/2,d.y+d.height/2,15);}
+            if(d.kind==='pad')expansion.lineStyle(3,0xe4db65,.9).lineBetween(d.x+8,d.y+10,d.x+24,d.y+3).lineBetween(d.x+24,d.y+3,d.x+40,d.y+10).lineBetween(d.x+40,d.y+10,d.x+56,d.y+3);
+            if(d.kind==='block'){for(let y=d.y+8;y<d.y+d.height;y+=8)expansion.lineStyle(1,color,.3).lineBetween(d.x+3,y,d.x+d.width-3,y);}
+            if(d.kind==='decoy'){expansion.lineStyle(2,color,.55).strokeCircle(d.x+d.width/2,d.y+8,9).lineBetween(d.x+d.width/2,d.y+17,d.x+d.width/2,d.y+d.height).lineBetween(d.x+8,d.y+30,d.x+d.width-8,d.y+30);}
+            const names={drone:'DRONE',board:(state.deployables!.filter(b=>b.ownerId===d.ownerId&&b.kind==='board').indexOf(d)%2?'ARDUINO':'ESP32'),hub:'RASPBERRY Pi',decoy:'DECOY',pad:'BOUNCE',block:'3D'};
+            label(d.id,`${names[d.kind]} ${Math.ceil(d.ttl)}s`,d.x+d.width/2,d.y-14);
+            expansion.fillStyle(color,.8).fillRect(d.x,d.y+d.height+4,d.width*Math.min(1,d.hp/(d.kind==='block'?18:d.kind==='board'?12:16)),3);
+          }
+          const itemNames={usb:'USB',fan:'FAN',firewall:'FIREWALL',battery:'BATTERY',overclock:'OVERCLOCK'};
+          for(const item of state.items ?? []){expansion.fillStyle(0xf5ce75,.95).fillRoundedRect(item.x-16,item.y-16,32,32,5).lineStyle(2,0xffffff,.8).strokeRoundedRect(item.x-16,item.y-16,32,32,5);label(item.id,`${itemNames[item.kind]} ${Math.ceil(item.ttl)}s`,item.x,item.y-28,'#ffe1a0');}
+          for(const e of state.effects){if(e.width<=0||art.effects[e.kind]?.length)continue;
+            const owner=state.config.players.find(p=>p.id===e.ownerId),color=Phaser.Display.Color.HexStringToColor(DISCIPLINES[owner?.discipline ?? 'code'].color).color;
+            expansion.fillStyle(color,e.kind==='echo'?.2:.7).fillRoundedRect(e.x,e.y,e.width,e.height,5).lineStyle(2,color,.9).strokeRoundedRect(e.x,e.y,e.width,e.height,5);
+            if(e.kind==='mechanical'){expansion.lineStyle(5,0xdce2ee,.9).lineBetween(e.x+8,e.y+e.height/2,e.x+e.width-8,e.y+e.height/2).strokeCircle(e.x+e.width/2,e.y+e.height/2,7);}
+            if(e.kind==='piston')expansion.fillStyle(0xe8ebe9,.9).fillRect(e.x+e.width*.3,e.y+8,e.width*.4,e.height-16);
+            if(e.kind==='wireless'||e.kind==='hub')expansion.lineStyle(2,0xffffff,.7).strokeCircle(e.x+e.width/2,e.y+e.height/2,e.width*.3);
+            if(e.kind==='echo')label(e.id,'ECHO',e.x+e.width/2,e.y-12);
+            if(e.kind==='ricochet')expansion.lineStyle(2,0xffffff,.9).strokeCircle(e.x+e.width/2,e.y+e.height/2,e.width/3);
+          }
+          for(const f of state.fighters){if(f.eliminated)continue;
+            if(f.action==='recover'||f.action==='air-dash'||f.action==='dodge'){
+              const color=f.action==='recover'?0x8ee6dd:0xcedffc;
+              expansion.lineStyle(3,color,.7).lineBetween(f.x-f.vx/35,f.y-f.vy/35-45,f.x,f.y-45);
+            }
+            if(state.training?.hitboxes){expansion.lineStyle(1,0x61ff92,.9).strokeRect(f.x-30,f.y-f.height,60,f.height);if(f.action in ATTACKS){const active=f.actionTime>=ATTACKS[f.action as keyof typeof ATTACKS].windup;expansion.lineStyle(2,active?0xff6e76:0xf4df7c,.9).strokeRect(f.x+(f.facing===1?0:-100),f.y-90,100,80);}}
+          }
+        }
+        labels.forEach((object,id)=>{if(!seenLabels.has(id)){object.destroy();labels.delete(id);}});
+      }
       update(_time: number, delta: number) {
         const state = read(); if (!state || !background) return;
         if (state !== current) { previous = current; current = state; received = performance.now(); }
@@ -140,14 +212,18 @@ export function GameView({ snapshot, snapshotRef, settings, manifest, arena = 'c
         if (arenaId !== state.config.arena) this.buildArena(state.config.arena);
         const fraction = Math.min(1, (performance.now() - received) / (1000 / 60));
         const living = state.fighters.filter(f => !f.eliminated);
+        const locals = living.filter(f => state.config.players.some(p=>p.id===f.id&&p.kind==='human'&&p.device!=='remote'));
+        const framed = state.config.gameMode==='royale' && locals.length ? locals : living;
         if (preferences.current.camera === 'adaptive' && living.length) {
           // The complete platform layout anchors the shot. Falling or launched fighters
           // may add bounded headroom, but cannot drag the arena into a screen corner.
-          const minX = Math.min(stageBounds.left - 72, ...living.map(f => Phaser.Math.Clamp(f.x - 160, stageBounds.left - 180, stageBounds.right)));
-          const maxX = Math.max(stageBounds.right + 72, ...living.map(f => Phaser.Math.Clamp(f.x + 160, stageBounds.left, stageBounds.right + 180)));
-          const minY = Math.min(stageBounds.top - 160, ...living.map(f => Phaser.Math.Clamp(f.y - 160, stageBounds.top - 300, stageBounds.bottom)));
+          const anchorLeft=state.config.gameMode==='royale'?Math.min(...framed.map(f=>f.x))-160:stageBounds.left-72;
+          const anchorRight=state.config.gameMode==='royale'?Math.max(...framed.map(f=>f.x))+160:stageBounds.right+72;
+          const minX = Math.min(anchorLeft, ...framed.map(f => Phaser.Math.Clamp(f.x - 160, stageBounds.left - 180, stageBounds.right)));
+          const maxX = Math.max(anchorRight, ...framed.map(f => Phaser.Math.Clamp(f.x + 160, stageBounds.left, stageBounds.right + 180)));
+          const minY = Math.min(stageBounds.top - 160, ...framed.map(f => Phaser.Math.Clamp(f.y - 160, stageBounds.top - 300, stageBounds.bottom)));
           const maxY = stageBounds.bottom + 150;
-          const desiredZoom = Math.min(1.15, Math.max(.8, Math.min(1366 / (maxX - minX), 768 / (maxY - minY))));
+          const desiredZoom = Math.min(1.15, Math.max(state.config.gameMode==='royale'?.55:.8, Math.min(1366 / (maxX - minX), 768 / (maxY - minY))));
           const desiredX = (minX + maxX) / 2;
           // Reserve space below the landing surfaces for the fixed HUD.
           const desiredY = Math.max((minY + maxY) / 2, stageBounds.bottom - 239 / desiredZoom);
@@ -156,7 +232,8 @@ export function GameView({ snapshot, snapshotRef, settings, manifest, arena = 'c
         } else { zoom = 1; centerX = 683; centerY = 384; }
         this.cameras.main.setZoom(zoom).centerOn(centerX, centerY);
         // Keep the arena's scenery filling the viewport when living fighters force the camera out.
-        background.setDisplaySize(1366 / zoom, 768 / zoom);
+        background.setPosition(centerX,centerY).setDisplaySize(1366 / zoom, 768 / zoom);
+        this.drawExpanded(state);
         const placedTags: { x: number; y: number; width: number }[] = [];
         for (const f of state.fighters) {
           const seat = state.config.players.find(p => p.id === f.id); if (!seat) continue;
@@ -181,12 +258,13 @@ export function GameView({ snapshot, snapshotRef, settings, manifest, arena = 'c
           const canInterpolate = old && !f.eliminated && Math.abs(f.x - old.x) < 200 && Math.abs(f.y - old.y) < 250;
           const x = canInterpolate && old ? Phaser.Math.Linear(old.x, f.x, progress) : f.x;
           const y = canInterpolate && old ? Phaser.Math.Linear(old.y, f.y, progress) : f.y;
-          const frame = this.frameFor(f, seat, performance.now());
+          const pose = state.config.ruleset==='expanded' ? authoredPose(f,seat.discipline,art) : undefined;
+          const frame = pose?.frame ?? this.frameFor(f, seat, performance.now());
           const protectedAlpha = f.invulnerable > 0 ? (preferences.current.reducedMotion ? .8 : Math.floor(performance.now() / 90) % 2 ? .55 : .92) : 1;
-          for (const layer of object.layers) layer.setPosition(x, y).setFrame(frame).setFlipX(f.facing === -1).setAlpha(protectedAlpha).setVisible(!f.eliminated);
+          for (const layer of object.layers) layer.setPosition(x+(pose?.offsetX ?? 0), y+(pose?.offsetY ?? 0)).setScale(pose?.scaleX ?? 1,pose?.scaleY ?? 1).setFrame(frame).setFlipX(f.facing === -1).setAlpha(protectedAlpha).setVisible(!f.eliminated);
           let tagY = y - 106;
           // Stack nearby names instead of letting four-player scrums overwrite them.
-          for (let lane = 0; lane < 4; lane++) {
+          for (let lane = 0; lane < 8; lane++) {
             if (!placedTags.some(tag => Math.abs(tag.x - x) < (tag.width + object.tag.width) / 2 + 4 && Math.abs(tag.y - tagY) < 22)) break;
             tagY -= 22;
           }
@@ -194,7 +272,7 @@ export function GameView({ snapshot, snapshotRef, settings, manifest, arena = 'c
           if (!f.eliminated) placedTags.push({ x, y: tagY, width: object.tag.width });
           object.halo.clear();
           if (!f.eliminated) {
-            const platforms = ARENAS[state.config.arena].platforms;
+            const platforms = state.platforms?.filter(p=>p.active!==false) ?? ARENAS[state.config.arena].platforms;
             const support = platforms.filter(p => x >= p.x - 18 && x <= p.x + p.width + 18 && p.y >= y - 3).sort((a, b) => a.y - b.y)[0];
             if (support && support.y - y < 190) {
               const proximity = 1 - Math.max(0, support.y - y) / 190;
@@ -204,6 +282,16 @@ export function GameView({ snapshot, snapshotRef, settings, manifest, arena = 'c
           if (!f.eliminated && (state.config.mode === 'teams' || f.invulnerable > 0)) {
             const color = f.invulnerable > 0 ? 0xffffff : seat.team === 0 ? 0x49beff : 0xff72b7;
             object.halo.lineStyle(f.invulnerable > 0 ? 2 : 3, color, .8).strokeEllipse(x, y - 45, 78, 112);
+          }
+          if (!f.eliminated && f.action==='guard') {
+            const meter=(f.guardMeter ?? 100)/100;
+            object.halo.lineStyle(3,meter<.25?0xff6677:0x80dcff,.9).strokeEllipse(x,y-45,85,112);
+            object.halo.fillStyle(0x101725,.9).fillRect(x-30,y-120,60,5).fillStyle(0x80dcff,1).fillRect(x-30,y-120,60*meter,5);
+          }
+          const cosmetic=seat.appearance.cosmetic;
+          if (!f.eliminated && cosmetic && cosmetic!=='original') {
+            const color=cosmetic==='copper'?0xe9a16d:cosmetic==='neon'?0x61f3c7:Phaser.Display.Color.HSVToRGB((state.tick%360)/360,.65,1).color;
+            object.halo.lineStyle(2,color,.8).strokeEllipse(x,y-4,56,12);
           }
           const marker = indicators.get(f.id)!;
           const screenX = (x - centerX) * zoom + 683, screenY = (y - centerY) * zoom + 384;
@@ -230,6 +318,7 @@ export function GameView({ snapshot, snapshotRef, settings, manifest, arena = 'c
         }
         const seen = new Set<string>();
         for (const e of state.effects) {
+          if(e.width<=0 || e.height<=0)continue;
           seen.add(e.id); const available = art.effects[e.kind]; if (!available?.length) continue;
           const key = `effect-${e.kind}-${Math.min(available.length - 1, Math.max(0, e.frame))}`;
           let object = effects.get(e.id);
