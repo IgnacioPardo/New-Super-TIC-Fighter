@@ -1,0 +1,219 @@
+{
+  "matches": [
+    {
+      "kit": "networks",
+      "arena": "classic",
+      "effects": [
+        "cable",
+        "cables",
+        "ram",
+        "disc"
+      ],
+      "tick": 1140
+    },
+    {
+      "kit": "design",
+      "arena": "lab",
+      "effects": [
+        "mouse",
+        "selection",
+        "ram",
+        "disc"
+      ],
+      "tick": 1140
+    },
+    {
+      "kit": "code",
+      "arena": "pc",
+      "effects": [
+        "ball",
+        "disc",
+        "column",
+        "ram"
+      ],
+      "tick": 1140
+    },
+    {
+      "kit": "hardware",
+      "arena": "embedded",
+      "effects": [
+        "ram",
+        "disc"
+      ],
+      "tick": 1140
+    },
+    {
+      "kit": "ai",
+      "arena": "virtual",
+      "effects": [
+        "ball",
+        "ram",
+        "echo",
+        "disc"
+      ],
+      "tick": 1140
+    },
+    {
+      "kit": "robotics",
+      "arena": "arcade",
+      "effects": [
+        "mechanical",
+        "drone",
+        "displacement",
+        "disc",
+        "ram"
+      ],
+      "tick": 1140
+    },
+    {
+      "kit": "iot",
+      "arena": "classic",
+      "effects": [
+        "board",
+        "wireless",
+        "hub",
+        "ram"
+      ],
+      "tick": 1140
+    },
+    {
+      "kit": "vr",
+      "arena": "lab",
+      "effects": [
+        "displacement",
+        "decoy",
+        "disc",
+        "ram"
+      ],
+      "tick": 1140
+    },
+    {
+      "kit": "games",
+      "arena": "pc",
+      "effects": [
+        "ricochet",
+        "disc",
+        "pad",
+        "displacement"
+      ],
+      "tick": 1140
+    },
+    {
+      "kit": "printing",
+      "arena": "embedded",
+      "effects": [
+        "piston",
+        "block",
+        "displacement",
+        "ram",
+        "disc"
+      ],
+      "tick": 1140
+    },
+    {
+      "mode": "stock",
+      "tick": 660,
+      "phase": "finished",
+      "result": {
+        "winners": [],
+        "reason": "draw"
+      },
+      "wallMs": 201
+    },
+    {
+      "mode": "timed",
+      "tick": 660,
+      "phase": "finished",
+      "result": {
+        "winners": [
+          "p2"
+        ],
+        "reason": "timeout",
+        "scores": {
+          "p1": 0,
+          "p2": 1,
+          "p3": 0,
+          "p4": 0
+        }
+      },
+      "wallMs": 196
+    },
+    {
+      "mode": "hill",
+      "tick": 660,
+      "phase": "finished",
+      "result": {
+        "winners": [
+          "p3"
+        ],
+        "reason": "timeout",
+        "scores": {
+          "p1": 0.6666666666666671,
+          "p2": 1.016666666666668,
+          "p3": 1.2833333333333337,
+          "p4": 0.08333333333333333
+        }
+      },
+      "wallMs": 194
+    },
+    {
+      "mode": "royale",
+      "tick": 4611,
+      "phase": "finished",
+      "result": {
+        "winners": [
+          "p5"
+        ],
+        "reason": "last-standing",
+        "placements": {
+          "p1": 4,
+          "p2": 8,
+          "p3": 6,
+          "p4": 2,
+          "p5": 1,
+          "p6": 5,
+          "p7": 7,
+          "p8": 3
+        }
+      },
+      "wallMs": 3463
+    },
+    {
+      "mode": "survival",
+      "tick": 704,
+      "phase": "finished",
+      "result": {
+        "winners": [],
+        "reason": "last-standing",
+        "scores": {
+          "p1": 1
+        }
+      },
+      "wallMs": 361
+    }
+  ],
+  "movement": [
+    "ground jump",
+    "double jump",
+    "air dash",
+    "upward recovery",
+    "down aerial",
+    "forward aerial",
+    "directional dodge",
+    "Classic single jump preserved",
+    "fast fall"
+  ],
+  "checkpointTicks": 600,
+  "edgeCases": [
+    "five item effects",
+    "ballistic USB",
+    "one team Hill point per tick",
+    "shared Royale fall placement",
+    "shared Royale forfeit placement",
+    "two-human Survival wave respawn",
+    "Classic hazards/items disabled",
+    "selected human recording with synchronized multiple dummies",
+    "held-input frame advance",
+    "exact authority aerial collision boxes"
+  ]
+}
