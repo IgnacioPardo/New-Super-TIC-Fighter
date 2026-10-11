@@ -361,7 +361,7 @@ export class RoomClient {
     // Unreliable direct snapshots can arrive after a reliable pause/result
     // control. Never let an older phase reopen a finished or paused round.
     if (this.room.phase === 'lobby' || this.room.phase === 'finished' && snapshot.phase !== 'finished' ||
-        this.room.phase === 'paused' && snapshot.phase === 'playing' ||
+        this.room.phase === 'paused' && (snapshot.phase === 'playing' || snapshot.phase === 'countdown') ||
         this.room.phase === 'playing' && this.room.resumeAt && snapshot.phase === 'paused') return;
     if (sequence <= (this.lastSnapshots.get(snapshot.matchId) ?? -1)) return;
     this.lastSnapshots.set(snapshot.matchId, sequence);
