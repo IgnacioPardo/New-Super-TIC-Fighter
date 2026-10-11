@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import Phaser from 'phaser';
 import type { AppSettings, ArenaId, AssetsManifest, FighterState, MatchSnapshot, PlayerSeat } from '../shared/types';
+import { CombatFeedback } from './combatFeedback';
 import { ARENAS } from '../shared/content';
 import { disciplineInfo } from '../ui/i18n';
 
@@ -39,6 +40,8 @@ export function GameView({ snapshot, snapshotRef, settings, manifest, arena = 'c
     const effects = new Map<string, Phaser.GameObjects.Image>();
     const indicators = new Map<string, Phaser.GameObjects.Text>();
     const remoteFrames = new Map<string, { previous: FighterState; current: FighterState; received: number; duration: number; tick: number }>();
+    const feedback = new CombatFeedback();
+    let sparks: Phaser.GameObjects.Graphics;
     let background: Phaser.GameObjects.Image;
     let platformGroup: Phaser.GameObjects.Group;
     let hudCamera: Phaser.Cameras.Scene2D.Camera;
@@ -65,6 +68,7 @@ export function GameView({ snapshot, snapshotRef, settings, manifest, arena = 'c
         hudCamera = this.cameras.add(0, 0, 1366, 768, false, 'markers');
         hudCamera.setBackgroundColor('rgba(0,0,0,0)');
         hudCamera.ignore(background);
+        sparks = this.add.graphics().setDepth(13); this.addWorld(sparks);
         if (active) { setLoading(false); readyCallback.current?.(); }
       }
       addWorld(object: Phaser.GameObjects.GameObject) { hudCamera.ignore(object); }
@@ -117,8 +121,12 @@ export function GameView({ snapshot, snapshotRef, settings, manifest, arena = 'c
         let at = 0;
         if (f.action === 'idle') at = Math.floor(now / 250) % frames.length;
         else if (f.action === 'walk') { const cycle = f.actionTime % .475; at = Math.min(frames.length - 1, Math.floor(cycle / .075)); }
+        else if (f.action === 'hurt' || f.action === 'out') at = f.actionTime < .12 ? 0 : Math.min(1, frames.length - 1);
         else if (f.action === 'punch') at = Math.min(frames.length - 1, Math.floor(f.actionTime / .1));
-        else if (f.action === 'special' || f.action === 'combo') at = Math.min(frames.length - 1, Math.floor(f.actionTime / (seat.discipline === 'hardware' ? .075 : .1)));
+        else if (f.action === 'special' || f.action === 'combo') {
+          // Preserve the preparation pose until the authoritative .20s activation.
+          at = f.actionTime < .2 ? 0 : Math.min(frames.length - 1, 1 + Math.floor((f.actionTime - .2) / .2));
+        }
         return frames[at] ?? frames[0] ?? 0;
       }
       update(_time: number, delta: number) {
@@ -149,6 +157,7 @@ export function GameView({ snapshot, snapshotRef, settings, manifest, arena = 'c
         this.cameras.main.setZoom(zoom).centerOn(centerX, centerY);
         // Keep the arena's scenery filling the viewport when living fighters force the camera out.
         background.setDisplaySize(1366 / zoom, 768 / zoom);
+        const placedTags: { x: number; y: number; width: number }[] = [];
         for (const f of state.fighters) {
           const seat = state.config.players.find(p => p.id === f.id); if (!seat) continue;
           let object = fighters.get(f.id); if (!object) object = this.makeFighter(seat);
@@ -173,10 +182,25 @@ export function GameView({ snapshot, snapshotRef, settings, manifest, arena = 'c
           const x = canInterpolate && old ? Phaser.Math.Linear(old.x, f.x, progress) : f.x;
           const y = canInterpolate && old ? Phaser.Math.Linear(old.y, f.y, progress) : f.y;
           const frame = this.frameFor(f, seat, performance.now());
-          const protectedAlpha = f.invulnerable > 0 ? (Math.floor(performance.now() / 90) % 2 ? .42 : .92) : 1;
+          const protectedAlpha = f.invulnerable > 0 ? (preferences.current.reducedMotion ? .8 : Math.floor(performance.now() / 90) % 2 ? .55 : .92) : 1;
           for (const layer of object.layers) layer.setPosition(x, y).setFrame(frame).setFlipX(f.facing === -1).setAlpha(protectedAlpha).setVisible(!f.eliminated);
-          object.tag.setPosition(x, y - 106).setVisible(!f.eliminated);
+          let tagY = y - 106;
+          // Stack nearby names instead of letting four-player scrums overwrite them.
+          for (let lane = 0; lane < 4; lane++) {
+            if (!placedTags.some(tag => Math.abs(tag.x - x) < (tag.width + object.tag.width) / 2 + 4 && Math.abs(tag.y - tagY) < 22)) break;
+            tagY -= 22;
+          }
+          object.tag.setPosition(x, tagY).setVisible(!f.eliminated);
+          if (!f.eliminated) placedTags.push({ x, y: tagY, width: object.tag.width });
           object.halo.clear();
+          if (!f.eliminated) {
+            const platforms = ARENAS[state.config.arena].platforms;
+            const support = platforms.filter(p => x >= p.x - 18 && x <= p.x + p.width + 18 && p.y >= y - 3).sort((a, b) => a.y - b.y)[0];
+            if (support && support.y - y < 190) {
+              const proximity = 1 - Math.max(0, support.y - y) / 190;
+              object.halo.fillStyle(0x090c15, .16 + .2 * proximity).fillEllipse(Math.round(x), support.y + 3, 20 + 24 * proximity, 7);
+            }
+          }
           if (!f.eliminated && (state.config.mode === 'teams' || f.invulnerable > 0)) {
             const color = f.invulnerable > 0 ? 0xffffff : seat.team === 0 ? 0x49beff : 0xff72b7;
             object.halo.lineStyle(f.invulnerable > 0 ? 2 : 3, color, .8).strokeEllipse(x, y - 45, 78, 112);
@@ -185,6 +209,24 @@ export function GameView({ snapshot, snapshotRef, settings, manifest, arena = 'c
           const screenX = (x - centerX) * zoom + 683, screenY = (y - centerY) * zoom + 384;
           const outside = !f.eliminated && (screenX < 35 || screenX > 1331 || screenY < 32 || screenY > 740);
           marker.setPosition(Phaser.Math.Clamp(screenX, 90, 1276), Phaser.Math.Clamp(screenY, 30, 738)).setVisible(outside);
+        }
+        feedback.consume(state);
+        feedback.advance(delta);
+        sparks.clear();
+        for (const burst of feedback.bursts) {
+          const age = burst.age / burst.life;
+          const reduced = preferences.current.reducedMotion;
+          const travel = reduced ? 0 : age * (burst.kind === 'dust' ? 16 : 24);
+          const color = burst.kind === 'block' ? 0x7fd7ff : burst.kind === 'dust' ? 0xc3c8d1 : burst.kind === 'respawn' ? 0x92ecc5 : 0xffd984;
+          sparks.lineStyle(2, color, (1 - age) * .8);
+          if (burst.kind === 'respawn' || burst.kind === 'fall') {
+            sparks.strokeEllipse(Math.round(burst.x), Math.round(burst.y), 38 + travel, 52 + travel);
+          } else for (let i = 0; i < (burst.kind === 'dust' ? 4 : 6); i++) {
+            const angle = burst.kind === 'dust' ? Math.PI + i * Math.PI / 3 : i * Math.PI / 3;
+            const radius = 7 + travel;
+            const px = Math.round(burst.x + Math.cos(angle) * radius), py = Math.round(burst.y + Math.sin(angle) * radius);
+            sparks.lineBetween(px, py, Math.round(px + Math.cos(angle) * 5), Math.round(py + Math.sin(angle) * 5));
+          }
         }
         const seen = new Set<string>();
         for (const e of state.effects) {
