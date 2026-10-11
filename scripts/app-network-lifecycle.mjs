@@ -16,7 +16,7 @@ async function openSession(label) {
   const page = await context.newPage();
   page.on('pageerror', error => errors.push(`${label}: ${error.message}`));
   await page.addInitScript(() => {
-    window.__stfObserved = { rooms: [], controls: [], snapshots: 0, sockets: 0, inputSequences: [] };
+    window.__stfObserved = { rooms: [], controls: [], snapshots: 0, sockets: 0, lastInputSequence: 0 };
     const NativeWorker = window.Worker;
     window.Worker = class extends NativeWorker {
       constructor(...args) {
@@ -35,7 +35,7 @@ async function openSession(label) {
     window.WebSocket = class extends NativeSocket {
       send(data) {
         if (typeof data === 'string') {
-          try { const packet = JSON.parse(data); if (packet.type === 'input') window.__stfObserved.inputSequences.push(packet.sequence); } catch { /* only room JSON is observed */ }
+          try { const packet = JSON.parse(data); if (packet.type === 'input') window.__stfObserved.lastInputSequence = packet.sequence; } catch { /* only room JSON is observed */ }
         }
         return super.send(data);
       }
@@ -157,7 +157,7 @@ async function scenarioTwoPlusTwo() {
   const after = await host.page.evaluate(id => window.__stfSnapshot.fighters.find(fighter => fighter.id === id).x, guestSeat);
   assert(after > before + 30, `Forced-relay guest input did not move its fighter: ${before} -> ${after}`);
   await guest.page.waitForTimeout(3000); // build a real pre-reconnect input sequence
-  const outboundBeforeRefresh = await guest.page.evaluate(() => window.__stfObserved.inputSequences.at(-1));
+  const outboundBeforeRefresh = await guest.page.evaluate(() => window.__stfObserved.lastInputSequence);
 
   assert(await guest.page.evaluate(() => window.__stfObserved.sockets > 0), 'The page must open a real room WebSocket');
   const guestPeerId = await guest.page.evaluate(() => window.__stfRoom.peerId);
@@ -278,9 +278,15 @@ async function scenarioGuestFinishedLobby() {
   await guest.page.waitForFunction(() => window.__stfRoom?.phase === 'finished', null, { timeout: 15_000 });
   await guest.page.keyboard.up('d');
   await guest.page.locator('.results-screen').waitFor({ timeout: 10_000 });
-  await guest.page.getByRole('button', { name: /VOLVER A LA SALA/ }).click();
+  const guestPeerId = await guest.page.evaluate(() => window.__stfRoom.peerId);
+  assert.equal(await guest.page.getByRole('button', { name: /VOLVER A LA SALA/ }).isDisabled(), true, 'Guest should wait for host rematch before returning to setup');
+  await host.page.locator('.results-screen').waitFor({ timeout: 10_000 });
+  await host.page.getByRole('button', { name: /VOLVER A LA SALA/ }).click();
+  await guest.page.waitForFunction(() => window.__stfRoom?.phase === 'lobby', null, { timeout: 10_000 });
+  if (await guest.page.locator('.results-screen').isVisible()) await guest.page.getByRole('button', { name: /VOLVER A LA SALA/ }).click();
   await guest.page.locator('.room-code strong').waitFor({ timeout: 8_000 });
   assert.equal(await guest.page.locator('.room-code strong').innerText(), code, 'Guest returning from results should remain in the same room');
+  assert.equal(await guest.page.evaluate(() => window.__stfRoom.peerId), guestPeerId, 'Guest must retain its own seats through rematch');
   console.log(`Guest finish ${code}: returning from a natural result preserved room membership.`);
 }
 
