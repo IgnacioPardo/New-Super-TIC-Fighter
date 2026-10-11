@@ -5,7 +5,7 @@
 <h1 align="center">New Super TIC Fighter</h1>
 
 <p align="center">
-  <strong>Cuatro disciplinas. Una última vida.</strong><br>
+  <strong>Diez disciplinas. Una última vida.</strong><br>
   Settle it with a UTP cable, a mouse pointer, or a spinning disc.
 </p>
 
@@ -24,30 +24,30 @@ A desktop browser remake of **Super TIC Fighter**, the school-computing platform
 
 **Build damage. Launch friends. Stay on the platforms.** Damage increases knockback, up to 200%. Falling below the arena costs a life. Three lives means three attempts. The last fighter—or team—standing wins.
 
-> **Playable release candidate.** Local, practice, and online matches are implemented. A real session with friends on separate networks remains the release acceptance gate. See [what has been verified](#release-status).
+> **v2 release candidate.** Expanded gameplay, public server matches, solo modes and competitions are implemented. Physical v2 controller and separate-network Argentina sessions remain owner playtests; automated and deployed evidence are reported separately in [v2 verification](docs/verification-v2.md).
 
-[Playing guide](docs/playing.md) · [GitHub CI](https://github.com/IgnacioPardo/New-Super-TIC-Fighter/actions/workflows/verify.yml) · [Deployment status](https://github.com/IgnacioPardo/New-Super-TIC-Fighter/deployments) · [Accepted plan](docs/implementation-plan.md)
+[Playing guide](docs/playing.md) · [GitHub CI](https://github.com/IgnacioPardo/New-Super-TIC-Fighter/actions/workflows/verify.yml) · [Deployment status](https://github.com/IgnacioPardo/New-Super-TIC-Fighter/deployments) · [Accepted v2 plan](docs/implementation-plan-v2.md)
 
 ## Jump in
 
 1. **[Open the game](https://new-super-tic-fighter.new-super-tic-fighter.workers.dev)** on a desktop browser. Press a key, click, or use the controller's confirm/Start button to enter the title menu.
-2. **Choose your match.** Local shares one computer; Online creates or joins a room by invitation link/code; Practice offers a bot or stationary opponent. Online also supports multiple players sharing one computer.
-3. **Pick a discipline, look, and device.** Set the arena and rules, ready up, and fight. Online starts when everyone is ready and the host launches the round.
+2. **Choose your match.** Local shares one computer. Private Online uses invitation rooms. Public Online finds opponents on the server. Solo offers Arcade, Survival, Challenges and Training; Tournaments offers elimination brackets and leagues.
+3. **Pick a discipline, look, and device.** Each controller edits its own fighter card. Confirm every local seat. Private hosts set rules and start; public servers begin when all seats and assets are ready.
 
-No accounts or public matchmaking. If a controller-only session starts silently, click or press a key to let the browser enable sound. Keep the host's tab visible during online play; hiding it pauses the round. The host resumes with a three-second countdown.
+Guests play immediately. Optional Google/GitHub accounts and passkeys synchronize cosmetics and verified results. If a controller-only session starts silently, click or press a key to enable browser audio. Public pause opens a local menu while the match continues. Private P2P hosts must keep their tab active.
 
 <details>
 <summary><strong>See the current title screen</strong></summary>
 
 ![Overdrive logo, original fighters, and the arcade title menu](docs/evidence/branding/title-1440.png)
 
-Captured from the local production build during [branding verification](docs/verification.md#refined-logo-integration-local-verification--11-october-2026). The [deployment record](https://github.com/IgnacioPardo/New-Super-TIC-Fighter/deployments) identifies what is live.
+Historical v1 capture from the local production build during [branding verification](docs/verification.md#refined-logo-integration-local-verification--11-october-2026). The [deployment record](https://github.com/IgnacioPardo/New-Super-TIC-Fighter/deployments) identifies what is live.
 
 </details>
 
 ## Choose your discipline
 
-One shared set of fists. Four very different ways to escalate.
+Ten disciplines are immediately playable in Expanded. Classic preserves the four original kits.
 
 | Discipline | Special | Combo | Attitude |
 | :--- | :--- | :--- | :--- |
@@ -55,8 +55,14 @@ One shared set of fists. Four very different ways to escalate.
 | **Diseño** · Design | Fast mouse-pointer projectile | Delayed selection-box attack | Select. Copy. Smash. |
 | **Programación** · Programming | Green code projectile | Rising column of code | This punch compiles. |
 | **Hardware** | Growing RAM obstacle | Spinning disc projectile | A forceful upgrade. |
+| **IA** | Delayed attack echo | Predictive sequence | Readable delayed pressure. |
+| **Robótica** | Mechanical arm | Controllable combat drone | Physical reach and movement. |
+| **IoT** | ESP32/Arduino boards | Raspberry Pi hub | Connected, destructible devices. |
+| **Realidad Virtual** | Displacement | Decoy | Visible misdirection. |
+| **Videojuegos** | Ricocheting arcade shot | Bounce pad | Aerial setups. |
+| **Impresión 3D** | Piston | Destructible blocks | Temporary construction. |
 
-Every discipline shares punch, uppercut, sweep, and directional guard. Hair, shirt, and trousers are independent: **64 looks per discipline** from the original layered artwork.
+Every discipline shares punch, uppercut, sweep, and directional guard. Expanded adds double jump, forward/down aerials, directional dodge, one air dash, airborne Special and one aerial Signature recovery. Hair, shirt, and trousers are independent: **64 looks per discipline** from the original layered artwork.
 
 <details>
 <summary><strong>Open the original sprite drawer</strong></summary>
@@ -71,17 +77,19 @@ Historical asset reference, not a screenshot of the browser remake. The banner a
 
 The current build brings the full match loop to the browser:
 
-- **Two to four fighters.** Couch, online, or a mix of local and remote players; free-for-all and 2v2.
-- **Three arenas.** The original skyline and steel girders of **Clásico**, an after-school brawl in **Laboratorio TIC**, and oversized circuitry in **Dentro de la PC**.
-- **Your setup.** Keyboards, gamepads, remapping, names, appearance, lives, timers, and friendly fire.
-- **Sparring partners.** Optional Easy/Normal bots in local and online matches, plus practice with unlimited respawns.
-- **One more match.** Setup, readiness, pause, results, and rematch; Spanish by default with an English switch.
-- **Arcade presentation.** The Overdrive identity, a separate opening screen, animated fighter portraits, contact shadows, hit effects, and reduced-motion settings.
+- **Couch and online.** Up to four local humans, mixed private groups, public duels/FFA/2v2, and eight-fighter Royale.
+- **Six arenas.** Classic, TIC Lab, Inside the PC, Embedded Workshop, Virtual Lab and the larger Arcade Circuit.
+- **Expanded rules.** Stock, Timed KO, King of the Hill, best-of sets, five optional items and independently optional hazards. Classic retains original movement and static arenas.
+- **Solo and co-op.** Eight-bout Arcade, escalating Survival for one or two humans, twelve challenges and Training with damage, resets, hitboxes, input history, recording/playback and frame advance.
+- **Competition.** Duel/team single elimination and round robin, persistent brackets, shared-device scheduling, spectating and server-verified advancement.
+- **Your setup.** Independent gamepad fighter cards, shared keyboard cursor, remapping, reconnect/reclaim, Spanish/English and reduced motion.
+- **Cosmetic progress.** Every fighter is available immediately; achievements unlock appearance only. Local stats remain distinct from verified online results.
 - **The soundtrack returns.** Eight Original tracks and seventeen Remake tracks, including Facundo Pereyra's 8-bit arrangement of Rata Blanca's “La leyenda del Hada y el Mago.” Danger Zone loops on the title screen and menus; match playlists shuffle without immediate repeats and load music on demand.
 - **Every hit has a voice.** Eighteen original gameplay effects plus sixteen CC0 samples for menus and combat feedback, with separate music/effects volume controls.
 
-Online play uses direct WebRTC connections with a WebSocket relay fallback. The host browser runs the match; guests predict their own movement while hits and results come from the host. Disconnected guests have a 15-second recovery window; losing the host ends the round without a winner. See the [playing guide](docs/playing.md#rounds-and-reconnecting) for reconnects and rematches.
+Public gameplay travels over WebSockets to an authoritative Cloudflare Match Durable Object: 60 Hz simulation, 20 Hz input batches and snapshots, local prediction and remote interpolation. Parties and queueing share a Lobby Durable Object; competitions have durable scheduling. Public games never switch to browser-host authority. Admission is capped at four matches, 64 lobby connections and 1,200 human-player-minutes/day.
 
+Private rooms retain direct WebRTC with relay fallback and browser-host simulation. Guests have a 15-second reconnect window. Server matches restore checkpoints or explicitly abort; lost private hosts end the round without inventing a winner. See the [playing guide](docs/playing.md).
 Hosting runs on **Cloudflare Free**. Local and practice play do not need the room service.
 
 ## Controls
@@ -96,7 +104,8 @@ These are the keyboard defaults; bindings can be changed in Settings. The [playi
 | Punch | Z | I | B | 1 |
 | Special | X | O | N | 2 |
 | Guard | C | P | M | 3 |
-| Combo | V | L | K | 0 |
+| Signature / combo | V | L | K | 0 |
+| Dodge / air dash | Q | U | T | Num Decimal |
 
 **Crouch + punch** triggers an uppercut. **Crouch + special** triggers a sweep. Combos also support the original direction → crouch → standing special sequence, with a 500 ms window. Guard blocks ordinary frontal punches; specials, combos, uppercuts, and sweeps bypass it.
 
