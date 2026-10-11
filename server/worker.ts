@@ -22,6 +22,11 @@ function sameAllowedOrigin(request: Request, env: Env): boolean {
   if (!origin) return true; // command-line clients do not send Origin
   const url = new URL(request.url);
   if (origin === url.origin) return true;
+  try {
+    const source = new URL(origin);
+    const loopback = new Set(['localhost', '127.0.0.1', '[::1]']);
+    if (loopback.has(url.hostname) && loopback.has(source.hostname)) return true;
+  } catch { return false; }
   return (env.ALLOWED_ORIGINS ?? '').split(',').map(item => item.trim()).includes(origin);
 }
 

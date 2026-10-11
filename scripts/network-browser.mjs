@@ -1,8 +1,17 @@
-// Cross-browser transport exercise against the full local Worker. Bundle RoomClient to dist/network-client.js first.
+// Cross-browser transport exercise against the full local Worker.
 import assert from 'node:assert/strict';
+import { readdir, mkdir, writeFile } from 'node:fs/promises';
+import { resolve } from 'node:path';
+import { pathToFileURL } from 'node:url';
 import { chromium } from '@playwright/test';
 
 const base = process.env.STF_SERVER_URL ?? 'http://127.0.0.1:8787';
+const esbuildDir = (await readdir('node_modules/.pnpm')).find(name => name.startsWith('esbuild@'));
+if (!esbuildDir) throw new Error('The Vite toolchain does not contain esbuild.');
+const { build } = await import(pathToFileURL(resolve('node_modules/.pnpm', esbuildDir, 'node_modules/esbuild/lib/main.js')).href);
+await mkdir('dist', { recursive: true });
+await build({ entryPoints: ['src/network/RoomClient.ts'], bundle: true, format: 'esm', platform: 'browser', outfile: 'dist/network-client.js' });
+await writeFile('dist/network-test.html', '<!doctype html><title>Network browser flow</title>');
 const browser = await chromium.launch({ headless: true });
 const hostContext = await browser.newContext();
 const guestContext = await browser.newContext();
@@ -30,8 +39,8 @@ try {
   await hostPage.evaluate(seats => window.client.setSeats(seats), hostSeats);
   await guestPage.evaluate(seats => window.client.setSeats(seats), guestSeats);
   await hostPage.waitForFunction(() => window.client.state.players.length === 2);
-  await hostPage.evaluate(players => window.client.setConfig({ ...window.client.state.config, players, mode: 'teams' }), [...hostSeats, ...guestSeats]);
-  await hostPage.waitForFunction(() => window.client.state.config.mode === 'teams');
+  await hostPage.evaluate(players => window.client.setConfig({ ...window.client.state.config, players, timeLimit: 240 }), [...hostSeats, ...guestSeats]);
+  await hostPage.waitForFunction(() => window.client.state.config.timeLimit === 240);
   await Promise.all([hostPage.evaluate(() => window.client.setReady(true)), guestPage.evaluate(() => window.client.setReady(true))]);
   await hostPage.waitForFunction(() => window.client.state.readiness[window.client.state.peers.find(peer => !peer.isHost).peerId]?.ready);
   await hostPage.evaluate(() => window.client.start());

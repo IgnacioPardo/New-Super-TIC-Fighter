@@ -152,8 +152,12 @@ export class Room {
       this.room = undefined;
       return;
     }
+    // If every browser loses signaling but their direct channels may still be alive,
+    // preserve the round until one returns or the empty-room deadline expires.
+    const allDirectAndOffline = !!room.emptySince && (room.phase === 'playing' || room.phase === 'paused') && room.members.length > 0 && room.members.every(member => member.route === 'direct');
     let changed = false;
     for (const member of [...room.members]) {
+      if (allDirectAndOffline) break;
       if (!member.disconnectedAt || now - Math.max(member.disconnectedAt, member.lastDirectSeen ?? 0) < RECONNECT_MS) continue;
       if (member.peerId === room.hostPeerId && (room.phase === 'playing' || room.phase === 'paused')) {
         const result: MatchResult = { winners: [], reason: 'interrupted' };
@@ -193,7 +197,8 @@ export class Room {
     if ((ws.deserializeAttachment() as SocketAttachment | null)?.peerId) { this.error(ws, 'already_joined', 'Already joined.'); return; }
     let member = room.members.find(item => item.peerId === message.peerId && item.reconnectToken === message.reconnectToken);
     if (message.reconnectToken && !member) { this.error(ws, 'reconnect_expired', 'Your reconnect window has expired. Join the lobby again.'); ws.close(1008); return; }
-    if (member && member.disconnectedAt && Date.now() - Math.max(member.disconnectedAt, member.lastDirectSeen ?? 0) > RECONNECT_MS) {
+    const directOutage = !!room.emptySince && (room.phase === 'playing' || room.phase === 'paused') && room.members.every(item => item.route === 'direct');
+    if (member && member.disconnectedAt && !directOutage && Date.now() - Math.max(member.disconnectedAt, member.lastDirectSeen ?? 0) > RECONNECT_MS) {
       this.error(ws, 'reconnect_expired', 'Your reconnect window has expired.'); ws.close(1008); return;
     }
     if (!member) {
@@ -206,6 +211,7 @@ export class Room {
     }
     const old = this.connectionFor(member.peerId);
     if (old && old !== ws) old.close(4001, 'reconnected elsewhere');
+    if (directOutage) for (const other of room.members) if (other.peerId !== member.peerId && other.disconnectedAt) other.disconnectedAt = Date.now();
     member.disconnectedAt = undefined;
     member.lastDirectSeen = undefined;
     room.emptySince = undefined;
@@ -448,7 +454,8 @@ export class Room {
   private async scheduleAlarm(): Promise<void> {
     const room = this.room;
     if (!room) return;
-    const deadlines = room.members.filter(member => member.disconnectedAt).map(member => Math.max(member.disconnectedAt!, member.lastDirectSeen ?? 0) + RECONNECT_MS);
+    const allDirectAndOffline = !!room.emptySince && (room.phase === 'playing' || room.phase === 'paused') && room.members.length > 0 && room.members.every(member => member.route === 'direct');
+    const deadlines = allDirectAndOffline ? [] : room.members.filter(member => member.disconnectedAt).map(member => Math.max(member.disconnectedAt!, member.lastDirectSeen ?? 0) + RECONNECT_MS);
     if (room.emptySince) deadlines.push(room.emptySince + EMPTY_ROOM_MS);
     if (deadlines.length) await this.state.storage.setAlarm(Math.max(Date.now() + 100, Math.min(...deadlines)));
     else await this.state.storage.deleteAlarm();
