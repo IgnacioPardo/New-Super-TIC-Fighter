@@ -1,5 +1,5 @@
 import { CONTENT_VERSION, PROTOCOL_VERSION } from '../src/shared/types';
-import type { InputFrame, MatchConfig, MatchResult, PlayerSeat } from '../src/shared/types';
+import type { InputFrame, MatchConfig, MatchResult, MatchSnapshot, PlayerSeat } from '../src/shared/types';
 import type { ClientMessage, RoomPhase, RoomState, Route, ServerMessage, SignalData } from '../src/network/types';
 
 interface Member {
@@ -84,6 +84,20 @@ function validResult(value: unknown, ids: Set<string>): value is MatchResult {
     value.winners.every(id => typeof id === 'string' && ids.has(id)) &&
     ['last-standing', 'timeout', 'draw', 'interrupted'].includes(String(value.reason)) &&
     (value.winningTeam === undefined || value.winningTeam === 0 || value.winningTeam === 1);
+}
+
+function validFinalSnapshot(value: unknown, matchId: string, result: MatchResult, ids: Set<string>): value is MatchSnapshot {
+  return record(value) && value.matchId === matchId && value.phase === 'finished' &&
+    Number.isSafeInteger(value.tick) && Number(value.tick) >= 0 && Number.isFinite(value.elapsed) &&
+    validConfig(value.config) && value.config.players.length === ids.size && value.config.players.every(player => ids.has(player.id)) &&
+    record(value.result) && value.result.reason === result.reason && value.result.winningTeam === result.winningTeam &&
+    Array.isArray(value.result.winners) && value.result.winners.length === result.winners.length &&
+    value.result.winners.every((id: unknown) => typeof id === 'string' && result.winners.includes(id)) &&
+    Array.isArray(value.fighters) && value.fighters.length === ids.size &&
+    new Set(value.fighters.map((fighter: unknown) => record(fighter) ? fighter.id : '')).size === ids.size &&
+    value.fighters.every((fighter: unknown) => record(fighter) && ids.has(String(fighter.id)) &&
+      Number.isFinite(fighter.x) && Number.isFinite(fighter.y) && Number.isInteger(fighter.lives) && Number.isFinite(fighter.damage)) &&
+    Array.isArray(value.effects) && Array.isArray(value.events);
 }
 
 function defaultConfig(): MatchConfig {
@@ -317,9 +331,10 @@ export class Room {
       }
       case 'result': {
         if (!host || (room.phase !== 'playing' && room.phase !== 'paused') || !validResult(message.result, new Set(room.config.players.map(player => player.id)))) return this.error(ws, 'invalid_result', 'Only the host can report a valid round result.');
+        if (message.snapshot !== undefined && !validFinalSnapshot(message.snapshot, room.matchId!, message.result, new Set(room.config.players.map(player => player.id)))) return this.error(ws, 'invalid_result', 'Final snapshot does not match the round result.');
         room.phase = 'finished';
         room.result = message.result;
-        this.broadcast({ type: 'result', matchId: room.matchId!, result: message.result, controlId: crypto.randomUUID() });
+        this.broadcast({ type: 'result', matchId: room.matchId!, result: message.result, snapshot: message.snapshot, controlId: crypto.randomUUID() });
         break;
       }
       case 'rematch': {

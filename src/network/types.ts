@@ -42,7 +42,7 @@ export interface RoomCallbacks {
   onStart?: (matchId: string, config: MatchConfig) => void;
   onPause?: (reason: string) => void;
   onResume?: (resumeAt: number) => void;
-  onResult?: (result: MatchResult) => void;
+  onResult?: (result: MatchResult, snapshot?: MatchSnapshot) => void;
   onForfeit?: (seatIds: string[]) => void;
   onError?: (code: string, message: string) => void;
   onStatus?: (status: TransportStatus) => void;
@@ -74,7 +74,7 @@ export type ClientMessage =
   | { type: 'start' }
   | { type: 'pause'; reason?: string }
   | { type: 'resume' }
-  | { type: 'result'; result: MatchResult }
+  | { type: 'result'; result: MatchResult; snapshot?: MatchSnapshot }
   | { type: 'rematch' }
   | { type: 'ping'; nonce: number }
   | { type: 'peer_alive'; peerId: string };
@@ -88,7 +88,7 @@ export type ServerMessage =
   | { type: 'start'; matchId: string; config: MatchConfig; controlId: string }
   | { type: 'pause'; matchId: string; reason: string; controlId: string }
   | { type: 'resume'; matchId: string; resumeAt: number; controlId: string }
-  | { type: 'result'; matchId: string; result: MatchResult; controlId: string }
+  | { type: 'result'; matchId: string; result: MatchResult; snapshot?: MatchSnapshot; controlId: string }
   | { type: 'forfeit'; matchId: string; peerId: string; seatIds: string[]; controlId: string }
   | { type: 'pong'; nonce: number; now: number }
   | { type: 'error'; code: string; message: string };
