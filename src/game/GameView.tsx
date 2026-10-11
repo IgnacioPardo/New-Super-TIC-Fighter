@@ -61,7 +61,13 @@ export function GameView({
     const indicators = new Map<string, Phaser.GameObjects.Text>();
     const remoteFrames = new Map<
       string,
-      { previous: FighterState; current: FighterState; received: number; duration: number; tick: number }
+      {
+        previous: FighterState;
+        current: FighterState;
+        received: number;
+        duration: number;
+        tick: number;
+      }
     >();
     const feedback = new CombatFeedback();
     let sparks: Phaser.GameObjects.Graphics;
@@ -163,7 +169,10 @@ export function GameView({
             .setDepth(1);
           platformGroup.add(edge);
           this.addWorld(edge);
-          const visual: (typeof platformVisuals)[number] = { image: platform, edge };
+          const visual: (typeof platformVisuals)[number] = {
+            image: platform,
+            edge,
+          };
           platformVisuals.push(visual);
           if (id !== 'classic') {
             const light = this.add
@@ -519,7 +528,12 @@ export function GameView({
                   echoLayers.set(e.id, layers);
                 }
                 const source = state.fighters.find((f) => f.id === owner.id)!;
-                const fighter = { ...source, action: e.sourceAction, actionTime: 0.2, recovery: 0 };
+                const fighter = {
+                  ...source,
+                  action: e.sourceAction,
+                  actionTime: 0.2,
+                  recovery: 0,
+                };
                 const pose = authoredPose(fighter, owner.discipline, art),
                   frame = pose?.frame ?? this.frameFor(fighter, owner, performance.now());
                 for (const layer of layers)
@@ -638,7 +652,8 @@ export function GameView({
           );
           const desiredX = (minX + maxX) / 2;
           // Reserve space below the landing surfaces for the fixed HUD.
-          const desiredY = Math.max((minY + maxY) / 2, stageBounds.bottom - 239 / desiredZoom);
+          const floorInset = state.config.gameMode === 'royale' ? 164 : 239;
+          const desiredY = Math.max((minY + maxY) / 2, stageBounds.bottom - floorInset / desiredZoom);
           const smoothing = preferences.current.reducedMotion ? 1 : 1 - Math.exp(-Math.min(delta, 50) / 220);
           zoom = Phaser.Math.Linear(zoom, desiredZoom, smoothing);
           centerX = Phaser.Math.Linear(centerX, desiredX, smoothing);
@@ -653,6 +668,12 @@ export function GameView({
         background.setPosition(centerX, centerY).setDisplaySize(1366 / zoom, 768 / zoom);
         this.drawExpanded(state);
         const placedTags: { x: number; y: number; width: number }[] = [];
+        const placedMarkers: {
+          x: number;
+          y: number;
+          width: number;
+          height: number;
+        }[] = [];
         for (const f of state.fighters) {
           const seat = state.config.players.find((p) => p.id === f.id);
           if (!seat) continue;
@@ -664,7 +685,13 @@ export function GameView({
             const now = performance.now();
             let frames = remoteFrames.get(f.id);
             if (!frames) {
-              frames = { previous: f, current: f, received: now, duration: 1000 / 60, tick: state.tick };
+              frames = {
+                previous: f,
+                current: f,
+                received: now,
+                duration: 1000 / 60,
+                tick: state.tick,
+              };
               remoteFrames.set(f.id, frames);
             } else if (frames.tick !== state.tick) {
               // Guest prediction publishes at 60 Hz while remote positions arrive with host authority.
@@ -764,10 +791,55 @@ export function GameView({
           const marker = indicators.get(f.id)!;
           const screenX = (x - centerX) * zoom + 683,
             screenY = (y - centerY) * zoom + 384;
-          const outside = !f.eliminated && (screenX < 35 || screenX > 1331 || screenY < 32 || screenY > 740);
-          marker
-            .setPosition(Phaser.Math.Clamp(screenX, 90, 1276), Phaser.Math.Clamp(screenY, 30, 738))
-            .setVisible(outside);
+          // The fixed React HUD covers the top and bottom of the world view.
+          const markerBottom = state.config.gameMode === 'royale' ? 565 : 605;
+          const outside =
+            !f.eliminated && (screenX < 35 || screenX > 1331 || screenY < 105 || screenY > markerBottom + 15);
+          marker.setVisible(outside);
+          if (outside) {
+            const side = screenX < 35 ? 'left' : screenX > 1331 ? 'right' : screenY < 105 ? 'top' : 'bottom';
+            const arrow = { left: '◀', right: '▶', top: '▲', bottom: '▼' }[side];
+            const label = `${arrow} ${seat.name}`;
+            if (marker.text !== label) marker.setText(label);
+            const half = marker.width / 2;
+            const edgeX = Phaser.Math.Clamp(screenX, half + 10, 1356 - half);
+            const edgeY = Phaser.Math.Clamp(screenY, 110, markerBottom);
+            const vertical = side === 'left' || side === 'right';
+            let markerX = side === 'left' ? half + 10 : side === 'right' ? 1356 - half : edgeX;
+            let markerY = side === 'top' ? 110 : side === 'bottom' ? markerBottom : edgeY;
+            // Prefer the nearest edge position, then separate adjacent names
+            // along that edge and, for a crowded top/bottom, into inward rows.
+            for (let lane = 0; lane < 64; lane++) {
+              const slot = lane % 16;
+              const offset = Math.ceil(slot / 2) * (slot % 2 ? 1 : -1);
+              const row = Math.floor(lane / 16);
+              markerX = vertical
+                ? side === 'left'
+                  ? half + 10 + row * (marker.width + 8)
+                  : 1356 - half - row * (marker.width + 8)
+                : Phaser.Math.Clamp(edgeX + offset * (marker.width + 8), half + 10, 1356 - half);
+              markerY = vertical
+                ? Phaser.Math.Clamp(edgeY + offset * 36, 110, markerBottom)
+                : side === 'top'
+                  ? 110 + row * 36
+                  : markerBottom - row * 36;
+              if (
+                !placedMarkers.some(
+                  (other) =>
+                    Math.abs(other.x - markerX) < (other.width + marker.width) / 2 + 6 &&
+                    Math.abs(other.y - markerY) < (other.height + marker.height) / 2 + 4,
+                )
+              )
+                break;
+            }
+            marker.setPosition(markerX, markerY);
+            placedMarkers.push({
+              x: markerX,
+              y: markerY,
+              width: marker.width,
+              height: marker.height,
+            });
+          }
         }
         feedback.consume(state);
         feedback.advance(delta);
