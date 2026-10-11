@@ -27,7 +27,7 @@ export function HUD({snapshot,settings,manifest}:{snapshot:MatchSnapshot;setting
    {!!objective.suddenDeath&&<strong>{es?'MUERTE SUBITA':'SUDDEN DEATH'} · {formatClock(objective.suddenDeath)}</strong>}
    {mode==='hill'&&<span>{objective.contested?(es?'Zona disputada':'Zone contested'):objective.ownerId?`${es?'Control':'Control'}: ${snapshot.config.players.find(seat=>seat.id===objective.ownerId)?.name??'—'}`:(es?'Zona libre':'Zone unclaimed')}</span>}
    {mode==='survival'&&<strong>{es?'Oleada':'Wave'} {objective.wave??1}{objective.nextWave?` · ${formatClock(objective.nextWave)}`:''}</strong>}
-   {mode==='royale'&&<span>{snapshot.fighters.filter(fighter=>!fighter.eliminated).length} {es?'en pie':'remaining'} · {es?'Zona segura':'Safe zone'} {Math.round((objective.safeRight??1366)-(objective.safeLeft??0))}</span>}
+   {mode==='royale'&&<span>{snapshot.fighters.filter(fighter=>!fighter.eliminated).length} {es?'en pie':'remaining'} · {es?'Zona segura reduciéndose':'Safe zone shrinking'}</span>}
   </div>}
   <div className={`match-hud ${mode==='royale'?'royale-hud':''}`} style={{'--seat-count':snapshot.config.players.length} as React.CSSProperties}>
    {mode==='royale'?<>
