@@ -1,0 +1,50 @@
+{
+  "reference": "https://www.youtube.com/watch?v=lRs9Z7B1tk0",
+  "title": "Danger Zone (Top Gun Theme) (8 Bit Cover) [Tribute to Kenny Loggins & Top Gun] - 8 Bit Universe",
+  "referenceSha256": "5e3ac25953e939a2ab347ccf77cdb86020b99c81241334329d297383eac6b33d",
+  "method": "Local normalized waveform cross-correlation of three eight-second mono passages decoded at 11025 Hz. No recordings uploaded.",
+  "matches": [
+    {
+      "asset": "public/assets/audio/remake/03.mp3",
+      "assetSha256": "6ee752b45f192891d55a703e2cea44d69c655fff79d795c17657e95b9478490a",
+      "samples": [
+        {
+          "referenceStartSeconds": 30,
+          "assetStartSeconds": 30.0,
+          "absolutePcmCorrelation": 0.99629
+        },
+        {
+          "referenceStartSeconds": 90,
+          "assetStartSeconds": 90.0,
+          "absolutePcmCorrelation": 0.99546
+        },
+        {
+          "referenceStartSeconds": 150,
+          "assetStartSeconds": 150.0,
+          "absolutePcmCorrelation": 0.99518
+        }
+      ]
+    },
+    {
+      "asset": "public/assets/audio/original/04.mp3",
+      "assetSha256": "6ba5e0ee27168ad8648de6a3d9cdffa92da08540e7e4fc24fa1411889a436b46",
+      "samples": [
+        {
+          "referenceStartSeconds": 30,
+          "assetStartSeconds": 30.06132,
+          "absolutePcmCorrelation": 0.98115
+        },
+        {
+          "referenceStartSeconds": 90,
+          "assetStartSeconds": 90.06132,
+          "absolutePcmCorrelation": 0.98162
+        },
+        {
+          "referenceStartSeconds": 150,
+          "assetStartSeconds": 150.06132,
+          "absolutePcmCorrelation": 0.97556
+        }
+      ]
+    }
+  ]
+}

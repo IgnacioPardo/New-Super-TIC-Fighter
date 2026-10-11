@@ -258,7 +258,8 @@
       "/assets/audio/remake/12.mp3",
       "/assets/audio/remake/13.mp3",
       "/assets/audio/remake/14.mp3",
-      "/assets/audio/remake/15.mp3"
+      "/assets/audio/remake/15.mp3",
+      "/assets/audio/remake/la-leyenda-del-hada-y-el-mago.mp3"
     ],
     "effects": {
       "Barrida": "/assets/audio/effects/Barrida.wav",
@@ -279,7 +280,8 @@
       "Seleccion": "/assets/audio/effects/Seleccion.wav",
       "UTP": "/assets/audio/effects/UTP.wav",
       "golpeMouse": "/assets/audio/effects/golpeMouse.wav"
-    }
+    },
+    "menu": "/assets/audio/original/04.mp3"
   },
   "arenaPlatforms": {
     "lab": [

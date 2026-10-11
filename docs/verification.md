@@ -22,6 +22,8 @@ Verified on 2026-10-11. No unit tests were written or run. Verification uses the
 
 ## Production and acceptance gates
 
+Soundtrack update, locally verified on 2026-10-11: added the requested Facundo Pereyra 8-bit Rata Blanca track to Remake and assigned owner-confirmed Original 04 (Danger Zone) to title/menu playback. Production build, client/server types, MP3 header validation, all 26 files' Worker HTTP/range checks, and the existing complete settings/menu flow passed. `pnpm e2e:audio-playback` passed in Chromium, Firefox, and WebKit against the local Worker: native audio decoding, title/menu looping, playlist independence, pause/settings/resume, all 17 Remake tracks once per shuffle cycle, natural ended transitions after seeking, no immediate repeat across cycles, and return/reload. A full asset import into a temporary output tree reproduced the runtime manifest and provenance. These are automated playback checks, not a human listening review or a deployment of this update.
+
 - Public HTTPS deployment, production media range/header checks, and full multiplayer verification on the deployed service are recorded separately in `docs/hosting.md` when completed.
 - Physical Xbox/PlayStation controllers and native Safari hardware have not been certified. WebKit automation and injected gamepad events do not establish hardware compatibility.
 - A real session involving the owner and friends on separate networks remains the acceptance gate, including Argentina/South America latency observations. Same-machine browser clients do not establish those network conditions.

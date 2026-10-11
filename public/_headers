@@ -12,6 +12,8 @@
 # ASSETS.fetch omits inferred Content-Length; ranges need explicit sizes.
 /assets/audio/intro.mp3
   Content-Length: 3905328
+/assets/audio/original/04.mp3
+  Content-Length: 3425331
 /assets/audio/original/00.mp3
   Content-Length: 3284479
 /assets/audio/original/01.mp3
@@ -20,8 +22,6 @@
   Content-Length: 4308897
 /assets/audio/original/03.mp3
   Content-Length: 3872547
-/assets/audio/original/04.mp3
-  Content-Length: 3425331
 /assets/audio/original/05.mp3
   Content-Length: 6313586
 /assets/audio/original/06.mp3
@@ -60,4 +60,6 @@
   Content-Length: 7033581
 /assets/audio/remake/15.mp3
   Content-Length: 6461613
+/assets/audio/remake/la-leyenda-del-hada-y-el-mago.mp3
+  Content-Length: 3584252
 # END GENERATED MP3 LENGTHS
