@@ -1,0 +1,761 @@
+[
+  {
+    "path": "/Users/nacho/Downloads/Super TIC Fighter Remake/OST/Cancion 0.wma",
+    "probe": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "codec_name": "wmav2",
+          "sample_rate": "44100",
+          "channels": 2
+        }
+      ],
+      "format": {
+        "duration": "205.263000",
+        "bit_rate": "193397",
+        "tags": {
+          "creation_time": "2016-11-14T11:15:55.756000Z",
+          "WMFSDKNeeded": "0.0.0.0000",
+          "DeviceConformanceTemplate": "L3",
+          "WMFSDKVersion": "12.0.10011.16384",
+          "IsVBR": "0"
+        }
+      }
+    }
+  },
+  {
+    "path": "/Users/nacho/Downloads/Super TIC Fighter Remake/OST/Cancion 1.wma",
+    "probe": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "codec_name": "wmav2",
+          "sample_rate": "44100",
+          "channels": 2
+        }
+      ],
+      "format": {
+        "duration": "283.422000",
+        "bit_rate": "193862",
+        "tags": {
+          "creation_time": "2016-11-14T11:16:03.211000Z",
+          "WMFSDKNeeded": "0.0.0.0000",
+          "DeviceConformanceTemplate": "L3",
+          "WMFSDKVersion": "12.0.10011.16384",
+          "IsVBR": "0"
+        }
+      }
+    }
+  },
+  {
+    "path": "/Users/nacho/Downloads/Super TIC Fighter Remake/OST/Cancion 2.wma",
+    "probe": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "codec_name": "wmav2",
+          "sample_rate": "44100",
+          "channels": 2
+        }
+      ],
+      "format": {
+        "duration": "269.305000",
+        "bit_rate": "193126",
+        "tags": {
+          "creation_time": "2016-11-14T11:16:13.589000Z",
+          "WMFSDKNeeded": "0.0.0.0000",
+          "DeviceConformanceTemplate": "L3",
+          "WMFSDKVersion": "12.0.10011.16384",
+          "IsVBR": "0"
+        }
+      }
+    }
+  },
+  {
+    "path": "/Users/nacho/Downloads/Super TIC Fighter Remake/OST/Cancion 3.wma",
+    "probe": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "codec_name": "wmav2",
+          "sample_rate": "44100",
+          "channels": 2
+        }
+      ],
+      "format": {
+        "duration": "242.044000",
+        "bit_rate": "192992",
+        "tags": {
+          "creation_time": "2016-11-14T11:16:22.738000Z",
+          "WMFSDKNeeded": "0.0.0.0000",
+          "DeviceConformanceTemplate": "L3",
+          "WMFSDKVersion": "12.0.10011.16384",
+          "IsVBR": "0"
+        }
+      }
+    }
+  },
+  {
+    "path": "/Users/nacho/Downloads/Super TIC Fighter Remake/OST/Cancion 4.wma",
+    "probe": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "codec_name": "wmav2",
+          "sample_rate": "44100",
+          "channels": 2
+        }
+      ],
+      "format": {
+        "duration": "214.087000",
+        "bit_rate": "193116",
+        "tags": {
+          "creation_time": "2016-11-14T11:16:31.537000Z",
+          "WMFSDKNeeded": "0.0.0.0000",
+          "DeviceConformanceTemplate": "L3",
+          "WMFSDKVersion": "12.0.10011.16384",
+          "IsVBR": "0"
+        }
+      }
+    }
+  },
+  {
+    "path": "/Users/nacho/Downloads/Super TIC Fighter Remake/OST/Cancion 5.wma",
+    "probe": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "codec_name": "wmav2",
+          "sample_rate": "44100",
+          "channels": 2
+        }
+      ],
+      "format": {
+        "duration": "394.599000",
+        "bit_rate": "193120",
+        "tags": {
+          "creation_time": "2016-11-14T11:16:55.374000Z",
+          "WMFSDKNeeded": "0.0.0.0000",
+          "DeviceConformanceTemplate": "L3",
+          "WMFSDKVersion": "12.0.10011.16384",
+          "IsVBR": "0"
+        }
+      }
+    }
+  },
+  {
+    "path": "/Users/nacho/Downloads/Super TIC Fighter Remake/OST/Cancion 6.wma",
+    "probe": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "codec_name": "wmav2",
+          "sample_rate": "44100",
+          "channels": 2
+        }
+      ],
+      "format": {
+        "duration": "223.282000",
+        "bit_rate": "193820",
+        "tags": {
+          "creation_time": "2016-11-14T11:16:39.296000Z",
+          "WMFSDKNeeded": "0.0.0.0000",
+          "DeviceConformanceTemplate": "L3",
+          "WMFSDKVersion": "12.0.10011.16384",
+          "IsVBR": "0"
+        }
+      }
+    }
+  },
+  {
+    "path": "/Users/nacho/Downloads/Super TIC Fighter Remake/OST/Cancion 7.wma",
+    "probe": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "codec_name": "wmav2",
+          "sample_rate": "44100",
+          "channels": 2
+        }
+      ],
+      "format": {
+        "duration": "235.310000",
+        "bit_rate": "193039",
+        "tags": {
+          "creation_time": "2016-11-14T11:16:47.215000Z",
+          "WMFSDKNeeded": "0.0.0.0000",
+          "DeviceConformanceTemplate": "L3",
+          "WMFSDKVersion": "12.0.10011.16384",
+          "IsVBR": "0"
+        }
+      }
+    }
+  },
+  {
+    "path": "/Users/nacho/Downloads/STF_2017/Programacion/Super Tic Fighter/Super Tic Fighter/Super Tic FighterContent/Sonidos/Cancion 0.mp3",
+    "probe": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "codec_name": "mp3",
+          "sample_rate": "44100",
+          "channels": 2
+        }
+      ],
+      "format": {
+        "duration": "205.244082",
+        "bit_rate": "128022",
+        "tags": {
+          "major_brand": "dash",
+          "minor_version": "0",
+          "compatible_brands": "iso6mp41",
+          "creation_time": "2016-07-22 14:27:51",
+          "encoder": "Lavf54.20.4"
+        }
+      }
+    }
+  },
+  {
+    "path": "/Users/nacho/Downloads/STF_2017/Programacion/Super Tic Fighter/Super Tic Fighter/Super Tic FighterContent/Sonidos/Cancion 1.mp3",
+    "probe": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "codec_name": "mp3",
+          "sample_rate": "44100",
+          "channels": 2
+        }
+      ],
+      "format": {
+        "duration": "283.376327",
+        "bit_rate": "128016",
+        "tags": {
+          "major_brand": "dash",
+          "minor_version": "0",
+          "compatible_brands": "iso6mp41",
+          "creation_time": "2014-02-28 13:46:17",
+          "encoder": "Lavf54.20.4"
+        }
+      }
+    }
+  },
+  {
+    "path": "/Users/nacho/Downloads/STF_2017/Programacion/Super Tic Fighter/Super Tic Fighter/Super Tic FighterContent/Sonidos/Cancion 2.mp3",
+    "probe": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "codec_name": "mp3",
+          "sample_rate": "44100",
+          "channels": 2
+        }
+      ],
+      "format": {
+        "duration": "269.270204",
+        "bit_rate": "128017",
+        "tags": {
+          "major_brand": "dash",
+          "minor_version": "0",
+          "compatible_brands": "iso6mp41",
+          "creation_time": "2015-04-18 12:26:14",
+          "encoder": "Lavf54.20.4"
+        }
+      }
+    }
+  },
+  {
+    "path": "/Users/nacho/Downloads/STF_2017/Programacion/Super Tic Fighter/Super Tic Fighter/Super Tic FighterContent/Sonidos/Cancion 3.mp3",
+    "probe": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "codec_name": "mp3",
+          "sample_rate": "44100",
+          "channels": 2
+        }
+      ],
+      "format": {
+        "duration": "241.998367",
+        "bit_rate": "128018",
+        "tags": {
+          "major_brand": "dash",
+          "minor_version": "0",
+          "compatible_brands": "iso6mp41",
+          "creation_time": "2016-02-03 20:05:49",
+          "encoder": "Lavf54.20.4"
+        }
+      }
+    }
+  },
+  {
+    "path": "/Users/nacho/Downloads/STF_2017/Programacion/Super Tic Fighter/Super Tic Fighter/Super Tic FighterContent/Sonidos/Cancion 4.mp3",
+    "probe": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "codec_name": "mp3",
+          "sample_rate": "44100",
+          "channels": 2
+        }
+      ],
+      "format": {
+        "duration": "214.047347",
+        "bit_rate": "128021",
+        "tags": {
+          "major_brand": "dash",
+          "minor_version": "0",
+          "compatible_brands": "iso6mp41",
+          "creation_time": "2016-02-05 18:50:48",
+          "encoder": "Lavf54.20.4"
+        }
+      }
+    }
+  },
+  {
+    "path": "/Users/nacho/Downloads/STF_2017/Programacion/Super Tic Fighter/Super Tic Fighter/Super Tic FighterContent/Sonidos/Cancion 5.mp3",
+    "probe": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "codec_name": "mp3",
+          "sample_rate": "44100",
+          "channels": 2
+        }
+      ],
+      "format": {
+        "duration": "394.579592",
+        "bit_rate": "128006",
+        "tags": {
+          "major_brand": "dash",
+          "minor_version": "0",
+          "compatible_brands": "iso6mp41",
+          "creation_time": "2014-01-16 16:17:00",
+          "encoder": "Lavf54.20.4"
+        }
+      }
+    }
+  },
+  {
+    "path": "/Users/nacho/Downloads/STF_2017/Programacion/Super Tic Fighter/Super Tic Fighter/Super Tic FighterContent/Sonidos/Cancion 6.mp3",
+    "probe": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "codec_name": "mp3",
+          "sample_rate": "44100",
+          "channels": 2
+        }
+      ],
+      "format": {
+        "duration": "223.242449",
+        "bit_rate": "128020",
+        "tags": {
+          "major_brand": "dash",
+          "minor_version": "0",
+          "compatible_brands": "iso6mp41",
+          "creation_time": "2016-08-23 22:37:27",
+          "encoder": "Lavf54.20.4"
+        }
+      }
+    }
+  },
+  {
+    "path": "/Users/nacho/Downloads/STF_2017/Programacion/Super Tic Fighter/Super Tic Fighter/Super Tic FighterContent/Sonidos/Cancion 7.mp3",
+    "probe": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "codec_name": "mp3",
+          "sample_rate": "44100",
+          "channels": 2
+        }
+      ],
+      "format": {
+        "duration": "235.258776",
+        "bit_rate": "128019",
+        "tags": {
+          "major_brand": "dash",
+          "minor_version": "0",
+          "compatible_brands": "iso6mp41",
+          "creation_time": "2016-07-07 22:35:22",
+          "encoder": "Lavf54.20.4"
+        }
+      }
+    }
+  },
+  {
+    "path": "/tmp/stf-remake-audit-ThKloi/Assets/Music/Cancion0.mp3",
+    "probe": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "codec_name": "mp3",
+          "sample_rate": "48000",
+          "channels": 2
+        }
+      ],
+      "format": {
+        "duration": "199.447813",
+        "bit_rate": "192063",
+        "tags": {
+          "encoder": "Lavf58.45.100"
+        }
+      }
+    }
+  },
+  {
+    "path": "/tmp/stf-remake-audit-ThKloi/Assets/Music/Cancion1.mp3",
+    "probe": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "codec_name": "mp3",
+          "sample_rate": "48000",
+          "channels": 2
+        }
+      ],
+      "format": {
+        "duration": "206.843375",
+        "bit_rate": "192058",
+        "tags": {
+          "encoder": "Lavf58.45.100"
+        }
+      }
+    }
+  },
+  {
+    "path": "/tmp/stf-remake-audit-ThKloi/Assets/Music/Cancion10.mp3",
+    "probe": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "codec_name": "mp3",
+          "sample_rate": "48000",
+          "channels": 2
+        }
+      ],
+      "format": {
+        "duration": "397.676563",
+        "bit_rate": "192025",
+        "tags": {
+          "encoder": "Lavf58.45.100"
+        }
+      }
+    }
+  },
+  {
+    "path": "/tmp/stf-remake-audit-ThKloi/Assets/Music/Cancion11.mp3",
+    "probe": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "codec_name": "mp3",
+          "sample_rate": "48000",
+          "channels": 2
+        }
+      ],
+      "format": {
+        "duration": "413.419688",
+        "bit_rate": "192025",
+        "tags": {
+          "encoder": "Lavf58.45.100"
+        }
+      }
+    }
+  },
+  {
+    "path": "/tmp/stf-remake-audit-ThKloi/Assets/Music/Cancion12.mp3",
+    "probe": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "codec_name": "mp3",
+          "sample_rate": "48000",
+          "channels": 2
+        }
+      ],
+      "format": {
+        "duration": "161.483188",
+        "bit_rate": "192074",
+        "tags": {
+          "encoder": "Lavf58.45.100"
+        }
+      }
+    }
+  },
+  {
+    "path": "/tmp/stf-remake-audit-ThKloi/Assets/Music/Cancion13.mp3",
+    "probe": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "codec_name": "mp3",
+          "sample_rate": "48000",
+          "channels": 2
+        }
+      ],
+      "format": {
+        "duration": "186.549125",
+        "bit_rate": "192054",
+        "tags": {
+          "encoder": "Lavf58.45.100"
+        }
+      }
+    }
+  },
+  {
+    "path": "/tmp/stf-remake-audit-ThKloi/Assets/Music/Cancion14.mp3",
+    "probe": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "codec_name": "mp3",
+          "sample_rate": "48000",
+          "channels": 2
+        }
+      ],
+      "format": {
+        "duration": "293.001000",
+        "bit_rate": "192042",
+        "tags": {
+          "encoder": "Lavf58.45.100"
+        }
+      }
+    }
+  },
+  {
+    "path": "/tmp/stf-remake-audit-ThKloi/Assets/Music/Cancion15.mp3",
+    "probe": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "codec_name": "mp3",
+          "sample_rate": "48000",
+          "channels": 2
+        }
+      ],
+      "format": {
+        "duration": "269.177333",
+        "bit_rate": "192040",
+        "tags": {
+          "encoder": "Lavf58.45.100"
+        }
+      }
+    }
+  },
+  {
+    "path": "/tmp/stf-remake-audit-ThKloi/Assets/Music/Cancion2.mp3",
+    "probe": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "codec_name": "mp3",
+          "sample_rate": "48000",
+          "channels": 2
+        }
+      ],
+      "format": {
+        "duration": "276.549667",
+        "bit_rate": "192036",
+        "tags": {
+          "encoder": "Lavf58.45.100"
+        }
+      }
+    }
+  },
+  {
+    "path": "/tmp/stf-remake-audit-ThKloi/Assets/Music/Cancion3.mp3",
+    "probe": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "codec_name": "mp3",
+          "sample_rate": "48000",
+          "channels": 2
+        }
+      ],
+      "format": {
+        "duration": "213.971896",
+        "bit_rate": "192055",
+        "tags": {
+          "encoder": "Lavf58.45.100"
+        }
+      }
+    }
+  },
+  {
+    "path": "/tmp/stf-remake-audit-ThKloi/Assets/Music/Cancion4.mp3",
+    "probe": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "codec_name": "mp3",
+          "sample_rate": "48000",
+          "channels": 2
+        }
+      ],
+      "format": {
+        "duration": "368.071125",
+        "bit_rate": "192034",
+        "tags": {
+          "encoder": "Lavf58.45.100"
+        }
+      }
+    }
+  },
+  {
+    "path": "/tmp/stf-remake-audit-ThKloi/Assets/Music/Cancion5.mp3",
+    "probe": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "codec_name": "mp3",
+          "sample_rate": "48000",
+          "channels": 2
+        }
+      ],
+      "format": {
+        "duration": "236.205000",
+        "bit_rate": "192042",
+        "tags": {
+          "encoder": "Lavf58.45.100"
+        }
+      }
+    }
+  },
+  {
+    "path": "/tmp/stf-remake-audit-ThKloi/Assets/Music/Cancion6.mp3",
+    "probe": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "codec_name": "mp3",
+          "sample_rate": "48000",
+          "channels": 2
+        }
+      ],
+      "format": {
+        "duration": "280.055875",
+        "bit_rate": "192034",
+        "tags": {
+          "encoder": "Lavf58.45.100"
+        }
+      }
+    }
+  },
+  {
+    "path": "/tmp/stf-remake-audit-ThKloi/Assets/Music/Cancion7.mp3",
+    "probe": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "codec_name": "mp3",
+          "sample_rate": "48000",
+          "channels": 2
+        }
+      ],
+      "format": {
+        "duration": "507.251521",
+        "bit_rate": "192023",
+        "tags": {
+          "encoder": "Lavf58.45.100"
+        }
+      }
+    }
+  },
+  {
+    "path": "/tmp/stf-remake-audit-ThKloi/Assets/Music/Cancion8.mp3",
+    "probe": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "codec_name": "mp3",
+          "sample_rate": "48000",
+          "channels": 2
+        }
+      ],
+      "format": {
+        "duration": "221.332625",
+        "bit_rate": "192060",
+        "tags": {
+          "encoder": "Lavf58.45.100"
+        }
+      }
+    }
+  },
+  {
+    "path": "/tmp/stf-remake-audit-ThKloi/Assets/Music/Cancion9.mp3",
+    "probe": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "codec_name": "mp3",
+          "sample_rate": "48000",
+          "channels": 2
+        }
+      ],
+      "format": {
+        "duration": "394.495438",
+        "bit_rate": "192032",
+        "tags": {
+          "encoder": "Lavf58.45.100"
+        }
+      }
+    }
+  },
+  {
+    "path": "/tmp/stf-remake-audit-ThKloi/Assets/OST/intro.mp3",
+    "probe": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "codec_name": "mp3",
+          "sample_rate": "44100",
+          "channels": 2
+        }
+      ],
+      "format": {
+        "duration": "121.913500",
+        "bit_rate": "256268",
+        "tags": {
+          "TSS": "GarageBand 10.4.1",
+          "iTunNORM": " 0000016A 000001AC 00000B6B 00000B80 000001BC 000001BC 0000564C 0000550E 0001BB29 0001BB29",
+          "iTunSMPB": " 00000000 00000210 000007F5 000000000051FF7B 00000000 003B6D10 00000000 00000000 00000000 00000000 00000000 00000000"
+        }
+      }
+    }
+  }
+]

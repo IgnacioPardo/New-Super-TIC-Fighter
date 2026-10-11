@@ -1,0 +1,1960 @@
+{
+  "source": "/tmp/stf-remake-audit-ThKloi",
+  "head": "fe16da3d64f386e531b9133750e67b60aa13403c",
+  "files": [
+    {
+      "path": ".collabignore",
+      "bytes": 453,
+      "type": "",
+      "category": "first-party/reference"
+    },
+    {
+      "path": ".gitignore",
+      "bytes": 1036,
+      "type": "",
+      "category": "first-party/reference"
+    },
+    {
+      "path": ".vscode/settings.json",
+      "bytes": 1350,
+      "type": ".json",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/ARCADE_N.TTF",
+      "bytes": 26500,
+      "type": ".ttf",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/ARCADE_N.TTF.meta",
+      "bytes": 504,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Animations.meta",
+      "bytes": 172,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Animations/Spam.meta",
+      "bytes": 172,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Animations/Spam/SpamDiseno.anim",
+      "bytes": 3459,
+      "type": ".anim",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Animations/Spam/SpamDiseno.anim.meta",
+      "bytes": 182,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Animations/Spam/SpamDiseno.controller",
+      "bytes": 2027,
+      "type": ".controller",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Animations/Spam/SpamDiseno.controller.meta",
+      "bytes": 182,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Animations/Spam/SpamHardware.anim",
+      "bytes": 1300,
+      "type": ".anim",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Animations/Spam/SpamHardware.anim.meta",
+      "bytes": 182,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Animations/Spam/SpamHardware.controller",
+      "bytes": 303,
+      "type": ".controller",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Animations/Spam/SpamHardware.controller.meta",
+      "bytes": 182,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Animations/Spam/SpamProgramacion.anim",
+      "bytes": 1304,
+      "type": ".anim",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Animations/Spam/SpamProgramacion.anim.meta",
+      "bytes": 182,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Animations/Spam/SpamProgramacion.controller",
+      "bytes": 307,
+      "type": ".controller",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Animations/Spam/SpamProgramacion.controller.meta",
+      "bytes": 182,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Animations/Spam/SpamRedes.anim",
+      "bytes": 1297,
+      "type": ".anim",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Animations/Spam/SpamRedes.anim.meta",
+      "bytes": 182,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Animations/Spam/SpamRedes.controller",
+      "bytes": 300,
+      "type": ".controller",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Animations/Spam/SpamRedes.controller.meta",
+      "bytes": 182,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Backgrounds.meta",
+      "bytes": 172,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Backgrounds/Map1.png",
+      "bytes": 114915,
+      "type": ".png",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Backgrounds/Map1.png.meta",
+      "bytes": 2082,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/ButtonImages.meta",
+      "bytes": 326,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/ButtonImages/btn__Local.png",
+      "bytes": 2327,
+      "type": ".png",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/ButtonImages/btn__Local.png.meta",
+      "bytes": 2082,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/ButtonImages/btn__Multiplayer.png",
+      "bytes": 2439,
+      "type": ".png",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/ButtonImages/btn__Multiplayer.png.meta",
+      "bytes": 2082,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Editor.meta",
+      "bytes": 172,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Editor/MLAPI.meta",
+      "bytes": 172,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Editor/MLAPI/MLAPIEditor.cs",
+      "bytes": 92294,
+      "type": ".cs",
+      "category": "vendor"
+    },
+    {
+      "path": "Assets/Editor/MLAPI/MLAPIEditor.cs.meta",
+      "bytes": 60,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Editor/MLAPI/MLAPIProfiler.cs",
+      "bytes": 14018,
+      "type": ".cs",
+      "category": "vendor"
+    },
+    {
+      "path": "Assets/Editor/MLAPI/MLAPIProfiler.cs.meta",
+      "bytes": 60,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Editor/MLAPI/NetworkedAnimatorEditor.cs",
+      "bytes": 3444,
+      "type": ".cs",
+      "category": "vendor"
+    },
+    {
+      "path": "Assets/Editor/MLAPI/NetworkedAnimatorEditor.cs.meta",
+      "bytes": 60,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Editor/MLAPI/NetworkedBehaviourEditor.cs",
+      "bytes": 7687,
+      "type": ".cs",
+      "category": "vendor"
+    },
+    {
+      "path": "Assets/Editor/MLAPI/NetworkedBehaviourEditor.cs.meta",
+      "bytes": 60,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Editor/MLAPI/NetworkedObjectEditor.cs",
+      "bytes": 4126,
+      "type": ".cs",
+      "category": "vendor"
+    },
+    {
+      "path": "Assets/Editor/MLAPI/NetworkedObjectEditor.cs.meta",
+      "bytes": 60,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Editor/MLAPI/NetworkingManagerEditor.cs",
+      "bytes": 21159,
+      "type": ".cs",
+      "category": "vendor"
+    },
+    {
+      "path": "Assets/Editor/MLAPI/NetworkingManagerEditor.cs.meta",
+      "bytes": 60,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Editor/MLAPI/PostProcessScene.cs",
+      "bytes": 1812,
+      "type": ".cs",
+      "category": "vendor"
+    },
+    {
+      "path": "Assets/Editor/MLAPI/PostProcessScene.cs.meta",
+      "bytes": 60,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Editor/MLAPI/TrackedObjectEditor.cs",
+      "bytes": 1146,
+      "type": ".cs",
+      "category": "vendor"
+    },
+    {
+      "path": "Assets/Editor/MLAPI/TrackedObjectEditor.cs.meta",
+      "bytes": 60,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/MLAPI.meta",
+      "bytes": 172,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/MLAPI/Lib.meta",
+      "bytes": 172,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/MLAPI/Lib/MLAPI.dll",
+      "bytes": 573952,
+      "type": ".dll",
+      "category": "vendor"
+    },
+    {
+      "path": "Assets/MLAPI/Lib/MLAPI.dll.meta",
+      "bytes": 645,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/MLAPI/Lib/MLAPI.xml",
+      "bytes": 271586,
+      "type": ".xml",
+      "category": "vendor"
+    },
+    {
+      "path": "Assets/MLAPI/Lib/MLAPI.xml.meta",
+      "bytes": 60,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Music.meta",
+      "bytes": 172,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Music/Cancion0.mp3",
+      "bytes": 4788333,
+      "type": ".mp3",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Music/Cancion0.mp3.meta",
+      "bytes": 458,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Music/Cancion1.mp3",
+      "bytes": 4965741,
+      "type": ".mp3",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Music/Cancion1.mp3.meta",
+      "bytes": 458,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Music/Cancion10.mp3",
+      "bytes": 9545517,
+      "type": ".mp3",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Music/Cancion10.mp3.meta",
+      "bytes": 458,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Music/Cancion11.mp3",
+      "bytes": 9923373,
+      "type": ".mp3",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Music/Cancion11.mp3.meta",
+      "bytes": 458,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Music/Cancion12.mp3",
+      "bytes": 3877101,
+      "type": ".mp3",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Music/Cancion12.mp3.meta",
+      "bytes": 458,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Music/Cancion13.mp3",
+      "bytes": 4478445,
+      "type": ".mp3",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Music/Cancion13.mp3.meta",
+      "bytes": 458,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Music/Cancion14.mp3",
+      "bytes": 7033581,
+      "type": ".mp3",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Music/Cancion14.mp3.meta",
+      "bytes": 458,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Music/Cancion15.mp3",
+      "bytes": 6461613,
+      "type": ".mp3",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Music/Cancion15.mp3.meta",
+      "bytes": 458,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Music/Cancion2.mp3",
+      "bytes": 6638445,
+      "type": ".mp3",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Music/Cancion2.mp3.meta",
+      "bytes": 458,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Music/Cancion3.mp3",
+      "bytes": 5136813,
+      "type": ".mp3",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Music/Cancion3.mp3.meta",
+      "bytes": 458,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Music/Cancion4.mp3",
+      "bytes": 8835309,
+      "type": ".mp3",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Music/Cancion4.mp3.meta",
+      "bytes": 458,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Music/Cancion5.mp3",
+      "bytes": 5670189,
+      "type": ".mp3",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Music/Cancion5.mp3.meta",
+      "bytes": 458,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Music/Cancion6.mp3",
+      "bytes": 6722541,
+      "type": ".mp3",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Music/Cancion6.mp3.meta",
+      "bytes": 458,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Music/Cancion7.mp3",
+      "bytes": 12175533,
+      "type": ".mp3",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Music/Cancion7.mp3.meta",
+      "bytes": 458,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Music/Cancion8.mp3",
+      "bytes": 5313645,
+      "type": ".mp3",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Music/Cancion8.mp3.meta",
+      "bytes": 458,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Music/Cancion9.mp3",
+      "bytes": 9469485,
+      "type": ".mp3",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Music/Cancion9.mp3.meta",
+      "bytes": 458,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/OST.meta",
+      "bytes": 322,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/OST/intro.mp3",
+      "bytes": 3905328,
+      "type": ".mp3",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/OST/intro.mp3.meta",
+      "bytes": 458,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Prefabs.meta",
+      "bytes": 326,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Prefabs/Attack.prefab",
+      "bytes": 3936,
+      "type": ".prefab",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Prefabs/Attack.prefab.meta",
+      "bytes": 154,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Prefabs/Plataforma.prefab",
+      "bytes": 3777,
+      "type": ".prefab",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Prefabs/Plataforma.prefab.meta",
+      "bytes": 154,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Prefabs/Player.prefab",
+      "bytes": 15322,
+      "type": ".prefab",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Prefabs/Player.prefab.meta",
+      "bytes": 154,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Prefabs/Spam.meta",
+      "bytes": 322,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Prefabs/Spam/SpamDiseno.prefab",
+      "bytes": 5345,
+      "type": ".prefab",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Prefabs/Spam/SpamDiseno.prefab.meta",
+      "bytes": 154,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Prefabs/Spam/SpamHardware.prefab",
+      "bytes": 3351,
+      "type": ".prefab",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Prefabs/Spam/SpamHardware.prefab.meta",
+      "bytes": 154,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Prefabs/Spam/SpamProgramacion.prefab",
+      "bytes": 4643,
+      "type": ".prefab",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Prefabs/Spam/SpamProgramacion.prefab.meta",
+      "bytes": 154,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Prefabs/Spam/SpamRedes.prefab",
+      "bytes": 4052,
+      "type": ".prefab",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Prefabs/Spam/SpamRedes.prefab.meta",
+      "bytes": 154,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Resources.meta",
+      "bytes": 172,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Resources/BasicAttack.meta",
+      "bytes": 172,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Resources/BasicAttack/Golpe0.png",
+      "bytes": 20962,
+      "type": ".png",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Resources/BasicAttack/Golpe0.png.meta",
+      "bytes": 3488,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Resources/BasicAttack/Golpe1.png",
+      "bytes": 20519,
+      "type": ".png",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Resources/BasicAttack/Golpe1.png.meta",
+      "bytes": 2082,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Resources/BasicAttack/Golpe2.png",
+      "bytes": 21056,
+      "type": ".png",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Resources/BasicAttack/Golpe2.png.meta",
+      "bytes": 2082,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Resources/BasicAttack/Golpe3.png",
+      "bytes": 20610,
+      "type": ".png",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Resources/BasicAttack/Golpe3.png.meta",
+      "bytes": 2082,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Resources/Idle.meta",
+      "bytes": 172,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Resources/Idle/Idle0.png",
+      "bytes": 20859,
+      "type": ".png",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Resources/Idle/Idle0.png.meta",
+      "bytes": 2413,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Resources/Idle/Idle1.png",
+      "bytes": 20825,
+      "type": ".png",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Resources/Idle/Idle1.png.meta",
+      "bytes": 2082,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/STFX.png",
+      "bytes": 172805,
+      "type": ".png",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/STFX.png.meta",
+      "bytes": 2082,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Scripts.meta",
+      "bytes": 172,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Scripts/Attack.cs",
+      "bytes": 3199,
+      "type": ".cs",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Scripts/Attack.cs.meta",
+      "bytes": 243,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Scripts/Connection.cs",
+      "bytes": 3020,
+      "type": ".cs",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Scripts/Connection.cs.meta",
+      "bytes": 243,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Scripts/FollowPlayers.cs",
+      "bytes": 1863,
+      "type": ".cs",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Scripts/FollowPlayers.cs.meta",
+      "bytes": 243,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Scripts/HitBox.cs",
+      "bytes": 1314,
+      "type": ".cs",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Scripts/HitBox.cs.meta",
+      "bytes": 243,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Scripts/HitDetection.cs",
+      "bytes": 3034,
+      "type": ".cs",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Scripts/HitDetection.cs.meta",
+      "bytes": 243,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Scripts/Intro.cs",
+      "bytes": 3064,
+      "type": ".cs",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Scripts/Intro.cs.meta",
+      "bytes": 350,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Scripts/LoadGame.cs",
+      "bytes": 507,
+      "type": ".cs",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Scripts/LoadGame.cs.meta",
+      "bytes": 243,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Scripts/Movement.cs",
+      "bytes": 5171,
+      "type": ".cs",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Scripts/Movement.cs.meta",
+      "bytes": 243,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Scripts/MusicManager.cs",
+      "bytes": 1638,
+      "type": ".cs",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Scripts/MusicManager.cs.meta",
+      "bytes": 243,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Scripts/Player.cs",
+      "bytes": 2911,
+      "type": ".cs",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Scripts/Player.cs.meta",
+      "bytes": 243,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Scripts/Respawn.cs",
+      "bytes": 1091,
+      "type": ".cs",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Scripts/Respawn.cs.meta",
+      "bytes": 243,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Scripts/STFAnimator.cs",
+      "bytes": 2690,
+      "type": ".cs",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Scripts/STFAnimator.cs.meta",
+      "bytes": 243,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Scripts/Spam.meta",
+      "bytes": 172,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Scripts/Spam/Spam.cs",
+      "bytes": 146,
+      "type": ".cs",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Scripts/Spam/Spam.cs.meta",
+      "bytes": 243,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Scripts/Spam/SpamDiseno.cs",
+      "bytes": 570,
+      "type": ".cs",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Scripts/Spam/SpamDiseno.cs.meta",
+      "bytes": 243,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Scripts/Spam/SpamHardware.cs",
+      "bytes": 601,
+      "type": ".cs",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Scripts/Spam/SpamHardware.cs.meta",
+      "bytes": 243,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Scripts/Spam/SpamProgramacion.cs",
+      "bytes": 585,
+      "type": ".cs",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Scripts/Spam/SpamProgramacion.cs.meta",
+      "bytes": 243,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Scripts/Spam/SpamRedes.cs",
+      "bytes": 506,
+      "type": ".cs",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Scripts/Spam/SpamRedes.cs.meta",
+      "bytes": 243,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/SpritePlataforma.png",
+      "bytes": 78,
+      "type": ".png",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/SpritePlataforma.png.meta",
+      "bytes": 2244,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Sprites.meta",
+      "bytes": 172,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Sprites/Player.meta",
+      "bytes": 172,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Sprites/Player/Block.meta",
+      "bytes": 172,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Sprites/Player/Block/Defensa0.png",
+      "bytes": 5280,
+      "type": ".png",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Sprites/Player/Block/Defensa0.png.meta",
+      "bytes": 2082,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Sprites/Player/Block/Defensa1.png",
+      "bytes": 20126,
+      "type": ".png",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Sprites/Player/Block/Defensa1.png.meta",
+      "bytes": 2082,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Sprites/Player/Crouched.meta",
+      "bytes": 172,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Sprites/Player/Crouched/Agachado.png",
+      "bytes": 5270,
+      "type": ".png",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Sprites/Player/Crouched/Agachado.png.meta",
+      "bytes": 2413,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Sprites/Player/Cuerpos.png",
+      "bytes": 119820,
+      "type": ".png",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Sprites/Player/Cuerpos.png.meta",
+      "bytes": 23288,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Sprites/Player/Hit.meta",
+      "bytes": 172,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Sprites/Player/Hit/Malo3.png",
+      "bytes": 19900,
+      "type": ".png",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Sprites/Player/Hit/Malo3.png.meta",
+      "bytes": 2082,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Sprites/Player/Pantalon0.png",
+      "bytes": 53698,
+      "type": ".png",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Sprites/Player/Pantalon0.png.meta",
+      "bytes": 23496,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Sprites/Player/Pantalon1.png",
+      "bytes": 54047,
+      "type": ".png",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Sprites/Player/Pantalon1.png.meta",
+      "bytes": 23360,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Sprites/Player/Pantalon2.png",
+      "bytes": 53853,
+      "type": ".png",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Sprites/Player/Pantalon2.png.meta",
+      "bytes": 23354,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Sprites/Player/Pelo0.png",
+      "bytes": 21163,
+      "type": ".png",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Sprites/Player/Pelo0.png.meta",
+      "bytes": 23054,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Sprites/Player/Pelo1.png",
+      "bytes": 21016,
+      "type": ".png",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Sprites/Player/Pelo1.png.meta",
+      "bytes": 23050,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Sprites/Player/Pelo2.png",
+      "bytes": 21093,
+      "type": ".png",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Sprites/Player/Pelo2.png.meta",
+      "bytes": 23052,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Sprites/Player/Remera0.png",
+      "bytes": 39371,
+      "type": ".png",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Sprites/Player/Remera0.png.meta",
+      "bytes": 23206,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Sprites/Player/Remera1.png",
+      "bytes": 39556,
+      "type": ".png",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Sprites/Player/Remera1.png.meta",
+      "bytes": 23190,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Sprites/Player/Remera2.png",
+      "bytes": 39321,
+      "type": ".png",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Sprites/Player/Remera2.png.meta",
+      "bytes": 23196,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Sprites/Spam.meta",
+      "bytes": 172,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Sprites/Spam/SpamDiseno.meta",
+      "bytes": 172,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Sprites/Spam/SpamDiseno/MOUSE0.png",
+      "bytes": 758,
+      "type": ".png",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Sprites/Spam/SpamDiseno/MOUSE0.png.meta",
+      "bytes": 2082,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Sprites/Spam/SpamDiseno/MOUSE1.png",
+      "bytes": 1079,
+      "type": ".png",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Sprites/Spam/SpamDiseno/MOUSE1.png.meta",
+      "bytes": 2082,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Sprites/Spam/SpamDiseno/MOUSE2.png",
+      "bytes": 1377,
+      "type": ".png",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Sprites/Spam/SpamDiseno/MOUSE2.png.meta",
+      "bytes": 2082,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Sprites/Spam/SpamDiseno/MOUSE3.png",
+      "bytes": 1555,
+      "type": ".png",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Sprites/Spam/SpamDiseno/MOUSE3.png.meta",
+      "bytes": 2082,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Sprites/Spam/SpamDiseno/MOUSE4.png",
+      "bytes": 1615,
+      "type": ".png",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Sprites/Spam/SpamDiseno/MOUSE4.png.meta",
+      "bytes": 2082,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Sprites/Spam/SpamDiseno/MOUSE5.png",
+      "bytes": 1644,
+      "type": ".png",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Sprites/Spam/SpamDiseno/MOUSE5.png.meta",
+      "bytes": 2082,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Sprites/Spam/SpamDiseno/MOUSE6.png",
+      "bytes": 16973,
+      "type": ".png",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Sprites/Spam/SpamDiseno/MOUSE6.png.meta",
+      "bytes": 2082,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Sprites/Spam/SpamDiseno/MOUSE7.png",
+      "bytes": 1706,
+      "type": ".png",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Sprites/Spam/SpamDiseno/MOUSE7.png.meta",
+      "bytes": 2082,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Sprites/Spam/SpamDiseno/MOUSE8.png",
+      "bytes": 17050,
+      "type": ".png",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Sprites/Spam/SpamDiseno/MOUSE8.png.meta",
+      "bytes": 2082,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Sprites/Spam/SpamDiseno/MOUSE9.png",
+      "bytes": 1696,
+      "type": ".png",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Sprites/Spam/SpamDiseno/MOUSE9.png.meta",
+      "bytes": 2082,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Sprites/Spam/SpamHardware.meta",
+      "bytes": 172,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Sprites/Spam/SpamHardware/RAM0.png",
+      "bytes": 558,
+      "type": ".png",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Sprites/Spam/SpamHardware/RAM0.png.meta",
+      "bytes": 2413,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Sprites/Spam/SpamHardware/RAM1.png",
+      "bytes": 1116,
+      "type": ".png",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Sprites/Spam/SpamHardware/RAM1.png.meta",
+      "bytes": 2413,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Sprites/Spam/SpamHardware/RAM10.png",
+      "bytes": 5242,
+      "type": ".png",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Sprites/Spam/SpamHardware/RAM10.png.meta",
+      "bytes": 2413,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Sprites/Spam/SpamHardware/RAM11.png",
+      "bytes": 3390,
+      "type": ".png",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Sprites/Spam/SpamHardware/RAM11.png.meta",
+      "bytes": 2413,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Sprites/Spam/SpamHardware/RAM12.png",
+      "bytes": 3584,
+      "type": ".png",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Sprites/Spam/SpamHardware/RAM12.png.meta",
+      "bytes": 2413,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Sprites/Spam/SpamHardware/RAM13.png",
+      "bytes": 3878,
+      "type": ".png",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Sprites/Spam/SpamHardware/RAM13.png.meta",
+      "bytes": 2413,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Sprites/Spam/SpamHardware/RAM14.png",
+      "bytes": 4286,
+      "type": ".png",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Sprites/Spam/SpamHardware/RAM14.png.meta",
+      "bytes": 2413,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Sprites/Spam/SpamHardware/RAM2.png",
+      "bytes": 1668,
+      "type": ".png",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Sprites/Spam/SpamHardware/RAM2.png.meta",
+      "bytes": 2413,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Sprites/Spam/SpamHardware/RAM3.png",
+      "bytes": 2280,
+      "type": ".png",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Sprites/Spam/SpamHardware/RAM3.png.meta",
+      "bytes": 2413,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Sprites/Spam/SpamHardware/RAM4.png",
+      "bytes": 2517,
+      "type": ".png",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Sprites/Spam/SpamHardware/RAM4.png.meta",
+      "bytes": 2413,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Sprites/Spam/SpamHardware/RAM5.png",
+      "bytes": 1844,
+      "type": ".png",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Sprites/Spam/SpamHardware/RAM5.png.meta",
+      "bytes": 2413,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Sprites/Spam/SpamHardware/RAM6.png",
+      "bytes": 2248,
+      "type": ".png",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Sprites/Spam/SpamHardware/RAM6.png.meta",
+      "bytes": 2413,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Sprites/Spam/SpamHardware/RAM7.png",
+      "bytes": 2595,
+      "type": ".png",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Sprites/Spam/SpamHardware/RAM7.png.meta",
+      "bytes": 2413,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Sprites/Spam/SpamHardware/RAM8.png",
+      "bytes": 2874,
+      "type": ".png",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Sprites/Spam/SpamHardware/RAM8.png.meta",
+      "bytes": 2413,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Sprites/Spam/SpamHardware/RAM9.png",
+      "bytes": 3212,
+      "type": ".png",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Sprites/Spam/SpamHardware/RAM9.png.meta",
+      "bytes": 2413,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Sprites/Spam/SpamProgramacion.meta",
+      "bytes": 172,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Sprites/Spam/SpamProgramacion/BOLA0.png",
+      "bytes": 1306,
+      "type": ".png",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Sprites/Spam/SpamProgramacion/BOLA0.png.meta",
+      "bytes": 2082,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Sprites/Spam/SpamProgramacion/BOLA1.png",
+      "bytes": 1245,
+      "type": ".png",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Sprites/Spam/SpamProgramacion/BOLA1.png.meta",
+      "bytes": 2082,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Sprites/Spam/SpamProgramacion/BOLA2.png",
+      "bytes": 1263,
+      "type": ".png",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Sprites/Spam/SpamProgramacion/BOLA2.png.meta",
+      "bytes": 2082,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Sprites/Spam/SpamProgramacion/BOLA3.png",
+      "bytes": 1268,
+      "type": ".png",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Sprites/Spam/SpamProgramacion/BOLA3.png.meta",
+      "bytes": 2082,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Sprites/Spam/SpamProgramacion/BOLA4.png",
+      "bytes": 1316,
+      "type": ".png",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Sprites/Spam/SpamProgramacion/BOLA4.png.meta",
+      "bytes": 2082,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Sprites/Spam/SpamProgramacion/BOLA5.png",
+      "bytes": 1235,
+      "type": ".png",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Sprites/Spam/SpamProgramacion/BOLA5.png.meta",
+      "bytes": 2082,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Sprites/Spam/SpamRedes.meta",
+      "bytes": 172,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Sprites/Spam/SpamRedes/UTP0.png",
+      "bytes": 3356,
+      "type": ".png",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Sprites/Spam/SpamRedes/UTP0.png.meta",
+      "bytes": 2080,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Sprites/Spam/SpamRedes/UTP1.png",
+      "bytes": 3419,
+      "type": ".png",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Sprites/Spam/SpamRedes/UTP1.png.meta",
+      "bytes": 2080,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Sprites/Spam/SpamRedes/UTP10.png",
+      "bytes": 3296,
+      "type": ".png",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Sprites/Spam/SpamRedes/UTP10.png.meta",
+      "bytes": 2413,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Sprites/Spam/SpamRedes/UTP11.png",
+      "bytes": 3253,
+      "type": ".png",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Sprites/Spam/SpamRedes/UTP11.png.meta",
+      "bytes": 2413,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Sprites/Spam/SpamRedes/UTP12.png",
+      "bytes": 3206,
+      "type": ".png",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Sprites/Spam/SpamRedes/UTP12.png.meta",
+      "bytes": 2413,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Sprites/Spam/SpamRedes/UTP13.png",
+      "bytes": 3179,
+      "type": ".png",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Sprites/Spam/SpamRedes/UTP13.png.meta",
+      "bytes": 2413,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Sprites/Spam/SpamRedes/UTP14.png",
+      "bytes": 3142,
+      "type": ".png",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Sprites/Spam/SpamRedes/UTP14.png.meta",
+      "bytes": 2413,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Sprites/Spam/SpamRedes/UTP2.png",
+      "bytes": 3483,
+      "type": ".png",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Sprites/Spam/SpamRedes/UTP2.png.meta",
+      "bytes": 2413,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Sprites/Spam/SpamRedes/UTP3.png",
+      "bytes": 3533,
+      "type": ".png",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Sprites/Spam/SpamRedes/UTP3.png.meta",
+      "bytes": 2413,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Sprites/Spam/SpamRedes/UTP4.png",
+      "bytes": 3600,
+      "type": ".png",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Sprites/Spam/SpamRedes/UTP4.png.meta",
+      "bytes": 2413,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Sprites/Spam/SpamRedes/UTP5.png",
+      "bytes": 3632,
+      "type": ".png",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Sprites/Spam/SpamRedes/UTP5.png.meta",
+      "bytes": 2413,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Sprites/Spam/SpamRedes/UTP6.png",
+      "bytes": 3741,
+      "type": ".png",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Sprites/Spam/SpamRedes/UTP6.png.meta",
+      "bytes": 2413,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Sprites/Spam/SpamRedes/UTP7.png",
+      "bytes": 3787,
+      "type": ".png",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Sprites/Spam/SpamRedes/UTP7.png.meta",
+      "bytes": 2413,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Sprites/Spam/SpamRedes/UTP8.png",
+      "bytes": 3419,
+      "type": ".png",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Sprites/Spam/SpamRedes/UTP8.png.meta",
+      "bytes": 2413,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/Sprites/Spam/SpamRedes/UTP9.png",
+      "bytes": 3399,
+      "type": ".png",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/Sprites/Spam/SpamRedes/UTP9.png.meta",
+      "bytes": 2413,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/game.unity",
+      "bytes": 39605,
+      "type": ".unity",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/game.unity.meta",
+      "bytes": 155,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "Assets/menu.unity",
+      "bytes": 60182,
+      "type": ".unity",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Assets/menu.unity.meta",
+      "bytes": 155,
+      "type": ".meta",
+      "category": "metadata"
+    },
+    {
+      "path": "LICENSE",
+      "bytes": 1070,
+      "type": "",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Packages/manifest.json",
+      "bytes": 1917,
+      "type": ".json",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "Packages/packages-lock.json",
+      "bytes": 9969,
+      "type": ".json",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "ProjectSettings/AudioManager.asset",
+      "bytes": 416,
+      "type": ".asset",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "ProjectSettings/ClusterInputManager.asset",
+      "bytes": 114,
+      "type": ".asset",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "ProjectSettings/DynamicsManager.asset",
+      "bytes": 1190,
+      "type": ".asset",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "ProjectSettings/EditorBuildSettings.asset",
+      "bytes": 329,
+      "type": ".asset",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "ProjectSettings/EditorSettings.asset",
+      "bytes": 1107,
+      "type": ".asset",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "ProjectSettings/GraphicsSettings.asset",
+      "bytes": 2234,
+      "type": ".asset",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "ProjectSettings/InputManager.asset",
+      "bytes": 4179,
+      "type": ".asset",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "ProjectSettings/NavMeshAreas.asset",
+      "bytes": 1308,
+      "type": ".asset",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "ProjectSettings/NetworkManager.asset",
+      "bytes": 151,
+      "type": ".asset",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "ProjectSettings/PackageManagerSettings.asset",
+      "bytes": 863,
+      "type": ".asset",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "ProjectSettings/Physics2DSettings.asset",
+      "bytes": 2031,
+      "type": ".asset",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "ProjectSettings/PresetManager.asset",
+      "bytes": 146,
+      "type": ".asset",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "ProjectSettings/ProjectSettings.asset",
+      "bytes": 18668,
+      "type": ".asset",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "ProjectSettings/ProjectVersion.txt",
+      "bytes": 85,
+      "type": ".txt",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "ProjectSettings/QualitySettings.asset",
+      "bytes": 4866,
+      "type": ".asset",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "ProjectSettings/TagManager.asset",
+      "bytes": 449,
+      "type": ".asset",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "ProjectSettings/TimeManager.asset",
+      "bytes": 202,
+      "type": ".asset",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "ProjectSettings/UnityConnectSettings.asset",
+      "bytes": 853,
+      "type": ".asset",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "ProjectSettings/VFXManager.asset",
+      "bytes": 308,
+      "type": ".asset",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "ProjectSettings/XRSettings.asset",
+      "bytes": 158,
+      "type": ".asset",
+      "category": "first-party/reference"
+    },
+    {
+      "path": "README.md",
+      "bytes": 84,
+      "type": ".md",
+      "category": "first-party/reference"
+    }
+  ],
+  "directories": {
+    ".": 4,
+    ".vscode": 1,
+    "Assets": 21,
+    "Assets/Animations": 1,
+    "Assets/Animations/Spam": 16,
+    "Assets/Backgrounds": 2,
+    "Assets/ButtonImages": 4,
+    "Assets/Editor": 1,
+    "Assets/Editor/MLAPI": 16,
+    "Assets/MLAPI": 1,
+    "Assets/MLAPI/Lib": 4,
+    "Assets/Music": 32,
+    "Assets/OST": 2,
+    "Assets/Prefabs": 7,
+    "Assets/Prefabs/Spam": 8,
+    "Assets/Resources": 2,
+    "Assets/Resources/BasicAttack": 8,
+    "Assets/Resources/Idle": 4,
+    "Assets/Scripts": 25,
+    "Assets/Scripts/Spam": 10,
+    "Assets/Sprites": 2,
+    "Assets/Sprites/Player": 23,
+    "Assets/Sprites/Player/Block": 4,
+    "Assets/Sprites/Player/Crouched": 2,
+    "Assets/Sprites/Player/Hit": 2,
+    "Assets/Sprites/Spam": 4,
+    "Assets/Sprites/Spam/SpamDiseno": 20,
+    "Assets/Sprites/Spam/SpamHardware": 30,
+    "Assets/Sprites/Spam/SpamProgramacion": 12,
+    "Assets/Sprites/Spam/SpamRedes": 30,
+    "Packages": 2,
+    "ProjectSettings": 20
+  }
+}

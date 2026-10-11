@@ -1,0 +1,1029 @@
+{
+  "method": "Normalized log-frequency spectral cross-correlation of a 30-second original segment against each entire remake recording. High scores support shared audio; this does not identify song titles. No audio uploaded externally.",
+  "pairs": [
+    {
+      "original_track": 0,
+      "remake_track": 0,
+      "spectral_similarity": 0.0808,
+      "remake_segment_start_s": 41.98,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 0,
+      "remake_track": 1,
+      "spectral_similarity": 0.736,
+      "remake_segment_start_s": 30.09,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 0,
+      "remake_track": 2,
+      "spectral_similarity": 0.0726,
+      "remake_segment_start_s": 244.09,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 0,
+      "remake_track": 3,
+      "spectral_similarity": 0.0672,
+      "remake_segment_start_s": 33.72,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 0,
+      "remake_track": 4,
+      "spectral_similarity": 0.1008,
+      "remake_segment_start_s": 71.98,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 0,
+      "remake_track": 5,
+      "spectral_similarity": 0.1806,
+      "remake_segment_start_s": 32.79,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 0,
+      "remake_track": 6,
+      "spectral_similarity": 0.1971,
+      "remake_segment_start_s": 2.69,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 0,
+      "remake_track": 7,
+      "spectral_similarity": 0.1081,
+      "remake_segment_start_s": 306.78,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 0,
+      "remake_track": 8,
+      "spectral_similarity": 0.0891,
+      "remake_segment_start_s": 2.88,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 0,
+      "remake_track": 9,
+      "spectral_similarity": 0.0839,
+      "remake_segment_start_s": 53.31,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 0,
+      "remake_track": 10,
+      "spectral_similarity": 0.0985,
+      "remake_segment_start_s": 271.21,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 0,
+      "remake_track": 11,
+      "spectral_similarity": 0.1172,
+      "remake_segment_start_s": 377.09,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 0,
+      "remake_track": 12,
+      "spectral_similarity": 0.0932,
+      "remake_segment_start_s": 102.91,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 0,
+      "remake_track": 13,
+      "spectral_similarity": 0.0775,
+      "remake_segment_start_s": 0.0,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 0,
+      "remake_track": 14,
+      "spectral_similarity": 0.0968,
+      "remake_segment_start_s": 37.62,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 0,
+      "remake_track": 15,
+      "spectral_similarity": 0.1035,
+      "remake_segment_start_s": 223.65,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 1,
+      "remake_track": 0,
+      "spectral_similarity": 0.0739,
+      "remake_segment_start_s": 161.43,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 1,
+      "remake_track": 1,
+      "spectral_similarity": 0.1281,
+      "remake_segment_start_s": 11.7,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 1,
+      "remake_track": 2,
+      "spectral_similarity": 0.1058,
+      "remake_segment_start_s": 245.76,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 1,
+      "remake_track": 3,
+      "spectral_similarity": 0.1056,
+      "remake_segment_start_s": 15.79,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 1,
+      "remake_track": 4,
+      "spectral_similarity": 0.0937,
+      "remake_segment_start_s": 126.97,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 1,
+      "remake_track": 5,
+      "spectral_similarity": 0.1831,
+      "remake_segment_start_s": 8.08,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 1,
+      "remake_track": 6,
+      "spectral_similarity": 0.2037,
+      "remake_segment_start_s": 223.19,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 1,
+      "remake_track": 7,
+      "spectral_similarity": 0.1191,
+      "remake_segment_start_s": 17.55,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 1,
+      "remake_track": 8,
+      "spectral_similarity": 0.094,
+      "remake_segment_start_s": 191.33,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 1,
+      "remake_track": 9,
+      "spectral_similarity": 0.1373,
+      "remake_segment_start_s": 0.09,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 1,
+      "remake_track": 10,
+      "spectral_similarity": 0.1403,
+      "remake_segment_start_s": 337.15,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 1,
+      "remake_track": 11,
+      "spectral_similarity": 0.1425,
+      "remake_segment_start_s": 30.0,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 1,
+      "remake_track": 12,
+      "spectral_similarity": 0.1226,
+      "remake_segment_start_s": 0.09,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 1,
+      "remake_track": 13,
+      "spectral_similarity": 0.0582,
+      "remake_segment_start_s": 47.65,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 1,
+      "remake_track": 14,
+      "spectral_similarity": 0.236,
+      "remake_segment_start_s": 29.35,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 1,
+      "remake_track": 15,
+      "spectral_similarity": 0.1033,
+      "remake_segment_start_s": 186.32,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 2,
+      "remake_track": 0,
+      "spectral_similarity": 0.0679,
+      "remake_segment_start_s": 104.21,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 2,
+      "remake_track": 1,
+      "spectral_similarity": 0.0692,
+      "remake_segment_start_s": 28.14,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 2,
+      "remake_track": 2,
+      "spectral_similarity": 0.0779,
+      "remake_segment_start_s": 126.6,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 2,
+      "remake_track": 3,
+      "spectral_similarity": 0.0694,
+      "remake_segment_start_s": 160.68,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 2,
+      "remake_track": 4,
+      "spectral_similarity": 0.0993,
+      "remake_segment_start_s": 130.68,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 2,
+      "remake_track": 5,
+      "spectral_similarity": 0.1015,
+      "remake_segment_start_s": 34.18,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 2,
+      "remake_track": 6,
+      "spectral_similarity": 0.123,
+      "remake_segment_start_s": 6.41,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 2,
+      "remake_track": 7,
+      "spectral_similarity": 0.0848,
+      "remake_segment_start_s": 56.47,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 2,
+      "remake_track": 8,
+      "spectral_similarity": 0.0624,
+      "remake_segment_start_s": 0.56,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 2,
+      "remake_track": 9,
+      "spectral_similarity": 0.1027,
+      "remake_segment_start_s": 74.77,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 2,
+      "remake_track": 10,
+      "spectral_similarity": 0.1136,
+      "remake_segment_start_s": 186.87,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 2,
+      "remake_track": 11,
+      "spectral_similarity": 0.0738,
+      "remake_segment_start_s": 208.89,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 2,
+      "remake_track": 12,
+      "spectral_similarity": 0.0666,
+      "remake_segment_start_s": 124.37,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 2,
+      "remake_track": 13,
+      "spectral_similarity": 0.0629,
+      "remake_segment_start_s": 54.8,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 2,
+      "remake_track": 14,
+      "spectral_similarity": 0.0847,
+      "remake_segment_start_s": 179.17,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 2,
+      "remake_track": 15,
+      "spectral_similarity": 0.6959,
+      "remake_segment_start_s": 29.81,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 3,
+      "remake_track": 0,
+      "spectral_similarity": 0.0603,
+      "remake_segment_start_s": 145.17,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 3,
+      "remake_track": 1,
+      "spectral_similarity": 0.0781,
+      "remake_segment_start_s": 134.4,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 3,
+      "remake_track": 2,
+      "spectral_similarity": 0.0611,
+      "remake_segment_start_s": 131.98,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 3,
+      "remake_track": 3,
+      "spectral_similarity": 0.0557,
+      "remake_segment_start_s": 64.92,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 3,
+      "remake_track": 4,
+      "spectral_similarity": 0.0739,
+      "remake_segment_start_s": 313.47,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 3,
+      "remake_track": 5,
+      "spectral_similarity": 0.088,
+      "remake_segment_start_s": 31.39,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 3,
+      "remake_track": 6,
+      "spectral_similarity": 0.0878,
+      "remake_segment_start_s": 15.6,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 3,
+      "remake_track": 7,
+      "spectral_similarity": 0.0703,
+      "remake_segment_start_s": 301.3,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 3,
+      "remake_track": 8,
+      "spectral_similarity": 0.0569,
+      "remake_segment_start_s": 9.85,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 3,
+      "remake_track": 9,
+      "spectral_similarity": 0.0604,
+      "remake_segment_start_s": 21.64,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 3,
+      "remake_track": 10,
+      "spectral_similarity": 0.0582,
+      "remake_segment_start_s": 75.51,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 3,
+      "remake_track": 11,
+      "spectral_similarity": 0.0637,
+      "remake_segment_start_s": 117.68,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 3,
+      "remake_track": 12,
+      "spectral_similarity": 0.0709,
+      "remake_segment_start_s": 130.03,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 3,
+      "remake_track": 13,
+      "spectral_similarity": 0.0891,
+      "remake_segment_start_s": 99.47,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 3,
+      "remake_track": 14,
+      "spectral_similarity": 0.0801,
+      "remake_segment_start_s": 35.94,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 3,
+      "remake_track": 15,
+      "spectral_similarity": 0.0684,
+      "remake_segment_start_s": 201.92,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 4,
+      "remake_track": 0,
+      "spectral_similarity": 0.056,
+      "remake_segment_start_s": 126.13,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 4,
+      "remake_track": 1,
+      "spectral_similarity": 0.0704,
+      "remake_segment_start_s": 126.32,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 4,
+      "remake_track": 2,
+      "spectral_similarity": 0.0601,
+      "remake_segment_start_s": 176.19,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 4,
+      "remake_track": 3,
+      "spectral_similarity": 0.7325,
+      "remake_segment_start_s": 29.81,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 4,
+      "remake_track": 4,
+      "spectral_similarity": 0.0743,
+      "remake_segment_start_s": 331.49,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 4,
+      "remake_track": 5,
+      "spectral_similarity": 0.0664,
+      "remake_segment_start_s": 75.05,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 4,
+      "remake_track": 6,
+      "spectral_similarity": 0.0893,
+      "remake_segment_start_s": 205.36,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 4,
+      "remake_track": 7,
+      "spectral_similarity": 0.0749,
+      "remake_segment_start_s": 281.8,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 4,
+      "remake_track": 8,
+      "spectral_similarity": 0.0607,
+      "remake_segment_start_s": 148.24,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 4,
+      "remake_track": 9,
+      "spectral_similarity": 0.0797,
+      "remake_segment_start_s": 76.81,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 4,
+      "remake_track": 10,
+      "spectral_similarity": 0.0635,
+      "remake_segment_start_s": 344.21,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 4,
+      "remake_track": 11,
+      "spectral_similarity": 0.0733,
+      "remake_segment_start_s": 145.45,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 4,
+      "remake_track": 12,
+      "spectral_similarity": 0.0585,
+      "remake_segment_start_s": 127.15,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 4,
+      "remake_track": 13,
+      "spectral_similarity": 0.0513,
+      "remake_segment_start_s": 12.07,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 4,
+      "remake_track": 14,
+      "spectral_similarity": 0.0704,
+      "remake_segment_start_s": 133.1,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 4,
+      "remake_track": 15,
+      "spectral_similarity": 0.0773,
+      "remake_segment_start_s": 163.47,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 5,
+      "remake_track": 0,
+      "spectral_similarity": 0.0895,
+      "remake_segment_start_s": 27.12,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 5,
+      "remake_track": 1,
+      "spectral_similarity": 0.1176,
+      "remake_segment_start_s": 19.23,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 5,
+      "remake_track": 2,
+      "spectral_similarity": 0.083,
+      "remake_segment_start_s": 75.23,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 5,
+      "remake_track": 3,
+      "spectral_similarity": 0.0783,
+      "remake_segment_start_s": 53.5,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 5,
+      "remake_track": 4,
+      "spectral_similarity": 0.0952,
+      "remake_segment_start_s": 306.97,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 5,
+      "remake_track": 5,
+      "spectral_similarity": 0.1853,
+      "remake_segment_start_s": 39.75,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 5,
+      "remake_track": 6,
+      "spectral_similarity": 0.1734,
+      "remake_segment_start_s": 0.74,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 5,
+      "remake_track": 7,
+      "spectral_similarity": 0.1277,
+      "remake_segment_start_s": 41.89,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 5,
+      "remake_track": 8,
+      "spectral_similarity": 0.1158,
+      "remake_segment_start_s": 0.09,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 5,
+      "remake_track": 9,
+      "spectral_similarity": 0.6507,
+      "remake_segment_start_s": 35.76,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 5,
+      "remake_track": 10,
+      "spectral_similarity": 0.1189,
+      "remake_segment_start_s": 176.84,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 5,
+      "remake_track": 11,
+      "spectral_similarity": 0.1575,
+      "remake_segment_start_s": 374.21,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 5,
+      "remake_track": 12,
+      "spectral_similarity": 0.0851,
+      "remake_segment_start_s": 130.22,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 5,
+      "remake_track": 13,
+      "spectral_similarity": 0.0938,
+      "remake_segment_start_s": 1.76,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 5,
+      "remake_track": 14,
+      "spectral_similarity": 0.1566,
+      "remake_segment_start_s": 255.79,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 5,
+      "remake_track": 15,
+      "spectral_similarity": 0.1417,
+      "remake_segment_start_s": 201.27,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 6,
+      "remake_track": 0,
+      "spectral_similarity": 0.0803,
+      "remake_segment_start_s": 14.21,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 6,
+      "remake_track": 1,
+      "spectral_similarity": 0.0998,
+      "remake_segment_start_s": 11.05,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 6,
+      "remake_track": 2,
+      "spectral_similarity": 0.0598,
+      "remake_segment_start_s": 133.75,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 6,
+      "remake_track": 3,
+      "spectral_similarity": 0.1194,
+      "remake_segment_start_s": 149.82,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 6,
+      "remake_track": 4,
+      "spectral_similarity": 0.1014,
+      "remake_segment_start_s": 131.05,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 6,
+      "remake_track": 5,
+      "spectral_similarity": 0.1089,
+      "remake_segment_start_s": 14.49,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 6,
+      "remake_track": 6,
+      "spectral_similarity": 0.1231,
+      "remake_segment_start_s": 7.34,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 6,
+      "remake_track": 7,
+      "spectral_similarity": 0.1058,
+      "remake_segment_start_s": 371.33,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 6,
+      "remake_track": 8,
+      "spectral_similarity": 0.0761,
+      "remake_segment_start_s": 4.27,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 6,
+      "remake_track": 9,
+      "spectral_similarity": 0.0937,
+      "remake_segment_start_s": 52.57,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 6,
+      "remake_track": 10,
+      "spectral_similarity": 0.1019,
+      "remake_segment_start_s": 43.37,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 6,
+      "remake_track": 11,
+      "spectral_similarity": 0.1175,
+      "remake_segment_start_s": 46.81,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 6,
+      "remake_track": 12,
+      "spectral_similarity": 0.0649,
+      "remake_segment_start_s": 95.11,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 6,
+      "remake_track": 13,
+      "spectral_similarity": 0.0778,
+      "remake_segment_start_s": 0.93,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 6,
+      "remake_track": 14,
+      "spectral_similarity": 0.1219,
+      "remake_segment_start_s": 43.1,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 6,
+      "remake_track": 15,
+      "spectral_similarity": 0.1282,
+      "remake_segment_start_s": 199.78,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 7,
+      "remake_track": 0,
+      "spectral_similarity": 0.1279,
+      "remake_segment_start_s": 17.0,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 7,
+      "remake_track": 1,
+      "spectral_similarity": 0.1986,
+      "remake_segment_start_s": 21.55,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 7,
+      "remake_track": 2,
+      "spectral_similarity": 0.1641,
+      "remake_segment_start_s": 244.0,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 7,
+      "remake_track": 3,
+      "spectral_similarity": 0.0711,
+      "remake_segment_start_s": 115.82,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 7,
+      "remake_track": 4,
+      "spectral_similarity": 0.1682,
+      "remake_segment_start_s": 132.54,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 7,
+      "remake_track": 5,
+      "spectral_similarity": 0.6557,
+      "remake_segment_start_s": 29.72,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 7,
+      "remake_track": 6,
+      "spectral_similarity": 0.3715,
+      "remake_segment_start_s": 0.09,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 7,
+      "remake_track": 7,
+      "spectral_similarity": 0.1885,
+      "remake_segment_start_s": 29.91,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 7,
+      "remake_track": 8,
+      "spectral_similarity": 0.1625,
+      "remake_segment_start_s": 0.28,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 7,
+      "remake_track": 9,
+      "spectral_similarity": 0.2241,
+      "remake_segment_start_s": 62.04,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 7,
+      "remake_track": 10,
+      "spectral_similarity": 0.207,
+      "remake_segment_start_s": 29.91,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 7,
+      "remake_track": 11,
+      "spectral_similarity": 0.2706,
+      "remake_segment_start_s": 377.56,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 7,
+      "remake_track": 12,
+      "spectral_similarity": 0.1524,
+      "remake_segment_start_s": 129.85,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 7,
+      "remake_track": 13,
+      "spectral_similarity": 0.1167,
+      "remake_segment_start_s": 90.74,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 7,
+      "remake_track": 14,
+      "spectral_similarity": 0.2367,
+      "remake_segment_start_s": 173.41,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    },
+    {
+      "original_track": 7,
+      "remake_track": 15,
+      "spectral_similarity": 0.1857,
+      "remake_segment_start_s": 202.85,
+      "original_segment_start_s": 30,
+      "segment_duration_s": 30
+    }
+  ]
+}

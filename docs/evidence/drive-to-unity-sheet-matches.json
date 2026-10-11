@@ -1,0 +1,2750 @@
+{
+  "Cuerpos.png": [
+    {
+      "row": 0,
+      "col": 0,
+      "matches": [
+        "Jugadores/Cuerpos/Agachado/Agachado0.png"
+      ]
+    },
+    {
+      "row": 0,
+      "col": 1,
+      "matches": [
+        "Jugadores/Cuerpos/Barrida/Barrida0.png"
+      ]
+    },
+    {
+      "row": 0,
+      "col": 2,
+      "matches": [
+        "Jugadores/Cuerpos/Caminar/Caminar0.png"
+      ]
+    },
+    {
+      "row": 0,
+      "col": 3,
+      "matches": [
+        "Jugadores/Cuerpos/Caminar/Caminar1.png"
+      ]
+    },
+    {
+      "row": 0,
+      "col": 4,
+      "matches": [
+        "Jugadores/Cuerpos/Caminar/Caminar2.png"
+      ]
+    },
+    {
+      "row": 0,
+      "col": 5,
+      "matches": [
+        "Jugadores/Cuerpos/Caminar/Caminar3.png"
+      ]
+    },
+    {
+      "row": 0,
+      "col": 6,
+      "matches": [
+        "Jugadores/Cuerpos/Caminar/Caminar4.png"
+      ]
+    },
+    {
+      "row": 1,
+      "col": 0,
+      "matches": [
+        "Jugadores/Cuerpos/Caminar/Caminar5.png"
+      ]
+    },
+    {
+      "row": 1,
+      "col": 1,
+      "matches": [
+        "Jugadores/Cuerpos/Caminar/Caminar6.png"
+      ]
+    },
+    {
+      "row": 1,
+      "col": 2,
+      "matches": [
+        "Jugadores/Cuerpos/Combo Diseno/CProgramacion0.png"
+      ]
+    },
+    {
+      "row": 1,
+      "col": 3,
+      "matches": [
+        "Jugadores/Cuerpos/Combo Diseno/CProgramacion1.png"
+      ]
+    },
+    {
+      "row": 1,
+      "col": 4,
+      "matches": [
+        "Jugadores/Cuerpos/Combo Hard/CHardware0.png"
+      ]
+    },
+    {
+      "row": 1,
+      "col": 5,
+      "matches": [
+        "Jugadores/Cuerpos/Combo Hard/CHardware1.png"
+      ]
+    },
+    {
+      "row": 1,
+      "col": 6,
+      "matches": [
+        "Jugadores/Cuerpos/Combo Hard/CHardware2.png"
+      ]
+    },
+    {
+      "row": 2,
+      "col": 0,
+      "matches": [
+        "Jugadores/Cuerpos/Combo Redes/CRedes0.png"
+      ]
+    },
+    {
+      "row": 2,
+      "col": 1,
+      "matches": [
+        "Jugadores/Cuerpos/Combo Redes/CRedes1.png"
+      ]
+    },
+    {
+      "row": 2,
+      "col": 2,
+      "matches": [
+        "Jugadores/Cuerpos/Defensa/Defensa0.png"
+      ]
+    },
+    {
+      "row": 2,
+      "col": 3,
+      "matches": [
+        "Jugadores/Cuerpos/Golpe/Golpe0.png"
+      ]
+    },
+    {
+      "row": 2,
+      "col": 4,
+      "matches": [
+        "Jugadores/Cuerpos/Golpe/Golpe1.png"
+      ]
+    },
+    {
+      "row": 2,
+      "col": 5,
+      "matches": [
+        "Jugadores/Cuerpos/Golpe/Golpe2.png"
+      ]
+    },
+    {
+      "row": 2,
+      "col": 6,
+      "matches": [
+        "Jugadores/Cuerpos/Golpe/Golpe3.png"
+      ]
+    },
+    {
+      "row": 3,
+      "col": 0,
+      "matches": [
+        "Jugadores/Cuerpos/Golpeado/Malo0.png"
+      ]
+    },
+    {
+      "row": 3,
+      "col": 1,
+      "matches": [
+        "Jugadores/Cuerpos/Golpeado/Malo1.png"
+      ]
+    },
+    {
+      "row": 3,
+      "col": 2,
+      "matches": [
+        "Jugadores/Cuerpos/Golpeado/Malo2.png"
+      ]
+    },
+    {
+      "row": 3,
+      "col": 3,
+      "matches": [
+        "Jugadores/Cuerpos/Golpeado/Malo3.png"
+      ]
+    },
+    {
+      "row": 3,
+      "col": 4,
+      "matches": [
+        "Jugadores/Cuerpos/Idle/Idle0.png"
+      ]
+    },
+    {
+      "row": 3,
+      "col": 5,
+      "matches": [
+        "Jugadores/Cuerpos/Idle/Idle1.png"
+      ]
+    },
+    {
+      "row": 3,
+      "col": 6,
+      "matches": [
+        "Jugadores/Cuerpos/Salto/Salto0.png"
+      ]
+    },
+    {
+      "row": 4,
+      "col": 0,
+      "matches": [
+        "Jugadores/Cuerpos/Spam Diseno/Diseno0.png"
+      ]
+    },
+    {
+      "row": 4,
+      "col": 1,
+      "matches": [
+        "Jugadores/Cuerpos/Spam Diseno/Diseno1.png"
+      ]
+    },
+    {
+      "row": 4,
+      "col": 2,
+      "matches": [
+        "Jugadores/Cuerpos/Spam Hard/Hardware0.png"
+      ]
+    },
+    {
+      "row": 4,
+      "col": 3,
+      "matches": [
+        "Jugadores/Cuerpos/Spam Hard/Hardware1.png"
+      ]
+    },
+    {
+      "row": 4,
+      "col": 4,
+      "matches": [
+        "Jugadores/Cuerpos/Spam Hard/Hardware2.png"
+      ]
+    },
+    {
+      "row": 4,
+      "col": 5,
+      "matches": [
+        "Jugadores/Cuerpos/Spam Prog/Programacion0.png"
+      ]
+    },
+    {
+      "row": 4,
+      "col": 6,
+      "matches": [
+        "Jugadores/Cuerpos/Spam Prog/Programacion1.png"
+      ]
+    },
+    {
+      "row": 5,
+      "col": 0,
+      "matches": [
+        "Jugadores/Cuerpos/Spam Red/Redes0.png"
+      ]
+    },
+    {
+      "row": 5,
+      "col": 1,
+      "matches": [
+        "Jugadores/Cuerpos/Spam Red/Redes1.png"
+      ]
+    },
+    {
+      "row": 5,
+      "col": 2,
+      "matches": [
+        "Jugadores/Cuerpos/Uper Cut/Upercut0.png"
+      ]
+    }
+  ],
+  "Pantalon0.png": [
+    {
+      "row": 0,
+      "col": 0,
+      "matches": [
+        "Jugadores/Pantalon/Agachado/Agachado0_Pantalon0.png"
+      ]
+    },
+    {
+      "row": 0,
+      "col": 1,
+      "matches": [
+        "Jugadores/Pantalon/Barrida/Barrida0_Pantalon0.png"
+      ]
+    },
+    {
+      "row": 0,
+      "col": 2,
+      "matches": [
+        "Jugadores/Pantalon/Caminar/Caminar0_Pantalon0.png"
+      ]
+    },
+    {
+      "row": 0,
+      "col": 3,
+      "matches": [
+        "Jugadores/Pantalon/Caminar/Caminar1_Pantalon0.png"
+      ]
+    },
+    {
+      "row": 0,
+      "col": 4,
+      "matches": [
+        "Jugadores/Pantalon/Caminar/Caminar2_Pantalon0.png"
+      ]
+    },
+    {
+      "row": 0,
+      "col": 5,
+      "matches": [
+        "Jugadores/Pantalon/Caminar/Caminar3_Pantalon0.png"
+      ]
+    },
+    {
+      "row": 0,
+      "col": 6,
+      "matches": [
+        "Jugadores/Pantalon/Caminar/Caminar4_Pantalon0.png"
+      ]
+    },
+    {
+      "row": 1,
+      "col": 0,
+      "matches": [
+        "Jugadores/Pantalon/Caminar/Caminar5_Pantalon0.png"
+      ]
+    },
+    {
+      "row": 1,
+      "col": 1,
+      "matches": [
+        "Jugadores/Pantalon/Caminar/Caminar6_Pantalon0.png"
+      ]
+    },
+    {
+      "row": 1,
+      "col": 2,
+      "matches": [
+        "Jugadores/Pantalon/Combo Diseno/CProgramacion0_Pantalon0.png"
+      ]
+    },
+    {
+      "row": 1,
+      "col": 3,
+      "matches": [
+        "Jugadores/Pantalon/Combo Diseno/CProgramacion1_Pantalon0.png"
+      ]
+    },
+    {
+      "row": 1,
+      "col": 4,
+      "matches": [
+        "Jugadores/Pantalon/Spam Red/Redes0_Pantalon0.png",
+        "Jugadores/Pantalon/Combo Hard/CHardware0_Pantalon0.png"
+      ]
+    },
+    {
+      "row": 1,
+      "col": 5,
+      "matches": [
+        "Jugadores/Pantalon/Spam Red/Redes1_Pantalon0.png",
+        "Jugadores/Pantalon/Combo Hard/CHardware1_Pantalon0.png",
+        "Jugadores/Pantalon/Combo Hard/CHardware2_Pantalon0.png"
+      ]
+    },
+    {
+      "row": 1,
+      "col": 6,
+      "matches": [
+        "Jugadores/Pantalon/Spam Red/Redes1_Pantalon0.png",
+        "Jugadores/Pantalon/Combo Hard/CHardware1_Pantalon0.png",
+        "Jugadores/Pantalon/Combo Hard/CHardware2_Pantalon0.png"
+      ]
+    },
+    {
+      "row": 2,
+      "col": 0,
+      "matches": [
+        "Jugadores/Pantalon/Combo Redes/CRedes0_Pantalon0.png"
+      ]
+    },
+    {
+      "row": 2,
+      "col": 1,
+      "matches": [
+        "Jugadores/Pantalon/Combo Redes/CRedes1_Pantalon0.png"
+      ]
+    },
+    {
+      "row": 2,
+      "col": 2,
+      "matches": [
+        "Jugadores/Pantalon/Defensa/Defensa0_Pantalon0.png"
+      ]
+    },
+    {
+      "row": 2,
+      "col": 3,
+      "matches": [
+        "Jugadores/Pantalon/Golpe/Golpe0_Pantalon0.png"
+      ]
+    },
+    {
+      "row": 2,
+      "col": 4,
+      "matches": [
+        "Jugadores/Pantalon/Golpe/Golpe1_Pantalon0.PNG"
+      ]
+    },
+    {
+      "row": 2,
+      "col": 5,
+      "matches": [
+        "Jugadores/Pantalon/Golpe/Golpe2_Pantalon0.png"
+      ]
+    },
+    {
+      "row": 2,
+      "col": 6,
+      "matches": [
+        "Jugadores/Pantalon/Golpe/Golpe3_Pantalon0.png"
+      ]
+    },
+    {
+      "row": 3,
+      "col": 0,
+      "matches": [
+        "Jugadores/Pantalon/Golpeado/Malo0_Pantalon0.png"
+      ]
+    },
+    {
+      "row": 3,
+      "col": 1,
+      "matches": [
+        "Jugadores/Pantalon/Golpeado/Malo1_Pantalon0.png"
+      ]
+    },
+    {
+      "row": 3,
+      "col": 2,
+      "matches": [
+        "Jugadores/Pantalon/Golpeado/Malo2_Pantalon0.png"
+      ]
+    },
+    {
+      "row": 3,
+      "col": 3,
+      "matches": [
+        "Jugadores/Pantalon/Golpeado/Malo3_Pantalon0.png"
+      ]
+    },
+    {
+      "row": 3,
+      "col": 4,
+      "matches": [
+        "Jugadores/Pantalon/Idle/Idle0_Pantalon0.png"
+      ]
+    },
+    {
+      "row": 3,
+      "col": 5,
+      "matches": [
+        "Jugadores/Pantalon/Idle/Idle1_Pantalon0.png"
+      ]
+    },
+    {
+      "row": 3,
+      "col": 6,
+      "matches": [
+        "Jugadores/Pantalon/Salto/Salto0_Pantalon0.png"
+      ]
+    },
+    {
+      "row": 4,
+      "col": 0,
+      "matches": [
+        "Jugadores/Pantalon/Spam Diseno/Diseno0_Pantalon0.png"
+      ]
+    },
+    {
+      "row": 4,
+      "col": 1,
+      "matches": [
+        "Jugadores/Pantalon/Spam Diseno/Diseno1_Pantalon0.png"
+      ]
+    },
+    {
+      "row": 4,
+      "col": 2,
+      "matches": [
+        "Jugadores/Pantalon/Spam Hard/Hardware0_Pantalon0.png"
+      ]
+    },
+    {
+      "row": 4,
+      "col": 3,
+      "matches": [
+        "Jugadores/Pantalon/Spam Hard/Hardware1_Pantalon0.png"
+      ]
+    },
+    {
+      "row": 4,
+      "col": 4,
+      "matches": [
+        "Jugadores/Pantalon/Spam Hard/Hardware2_Pantalon0.png"
+      ]
+    },
+    {
+      "row": 4,
+      "col": 5,
+      "matches": [
+        "Jugadores/Pantalon/Spam Prog/Programacion0_Pantalon0.png"
+      ]
+    },
+    {
+      "row": 4,
+      "col": 6,
+      "matches": [
+        "Jugadores/Pantalon/Spam Prog/Programacion1_Pantalon0.png"
+      ]
+    },
+    {
+      "row": 5,
+      "col": 0,
+      "matches": [
+        "Jugadores/Pantalon/Spam Red/Redes0_Pantalon0.png",
+        "Jugadores/Pantalon/Combo Hard/CHardware0_Pantalon0.png"
+      ]
+    },
+    {
+      "row": 5,
+      "col": 1,
+      "matches": [
+        "Jugadores/Pantalon/Spam Red/Redes1_Pantalon0.png",
+        "Jugadores/Pantalon/Combo Hard/CHardware1_Pantalon0.png",
+        "Jugadores/Pantalon/Combo Hard/CHardware2_Pantalon0.png"
+      ]
+    },
+    {
+      "row": 5,
+      "col": 2,
+      "matches": [
+        "Jugadores/Pantalon/Uper Cut/Upercut0_Pantalon0.png"
+      ]
+    }
+  ],
+  "Pantalon1.png": [
+    {
+      "row": 0,
+      "col": 0,
+      "matches": [
+        "Jugadores/Pantalon/Agachado/Agachado0_Pantalon1.png"
+      ]
+    },
+    {
+      "row": 0,
+      "col": 1,
+      "matches": [
+        "Jugadores/Pantalon/Barrida/Barrida0_Pantalon1.png"
+      ]
+    },
+    {
+      "row": 0,
+      "col": 2,
+      "matches": [
+        "Jugadores/Pantalon/Caminar/Caminar0_Pantalon1.png"
+      ]
+    },
+    {
+      "row": 0,
+      "col": 3,
+      "matches": [
+        "Jugadores/Pantalon/Caminar/Caminar1_Pantalon1.png"
+      ]
+    },
+    {
+      "row": 0,
+      "col": 4,
+      "matches": [
+        "Jugadores/Pantalon/Caminar/Caminar2_Pantalon1.png"
+      ]
+    },
+    {
+      "row": 0,
+      "col": 5,
+      "matches": [
+        "Jugadores/Pantalon/Caminar/Caminar3_Pantalon1.png"
+      ]
+    },
+    {
+      "row": 0,
+      "col": 6,
+      "matches": [
+        "Jugadores/Pantalon/Caminar/Caminar4_Pantalon1.png"
+      ]
+    },
+    {
+      "row": 1,
+      "col": 0,
+      "matches": [
+        "Jugadores/Pantalon/Caminar/Caminar5_Pantalon1.png"
+      ]
+    },
+    {
+      "row": 1,
+      "col": 1,
+      "matches": [
+        "Jugadores/Pantalon/Caminar/Caminar6_Pantalon1.png"
+      ]
+    },
+    {
+      "row": 1,
+      "col": 2,
+      "matches": [
+        "Jugadores/Pantalon/Combo Diseno/CProgramacion0_Pantalon1.png"
+      ]
+    },
+    {
+      "row": 1,
+      "col": 3,
+      "matches": [
+        "Jugadores/Pantalon/Combo Diseno/CProgramacion1_Pantalon1.png"
+      ]
+    },
+    {
+      "row": 1,
+      "col": 4,
+      "matches": [
+        "Jugadores/Pantalon/Spam Red/Redes0_Pantalon1.png",
+        "Jugadores/Pantalon/Combo Hard/CHardware0_Pantalon1.png"
+      ]
+    },
+    {
+      "row": 1,
+      "col": 5,
+      "matches": [
+        "Jugadores/Pantalon/Spam Red/Redes1_Pantalon1.png",
+        "Jugadores/Pantalon/Combo Hard/CHardware1_Pantalon1.png",
+        "Jugadores/Pantalon/Combo Hard/CHardware2_Pantalon1.png"
+      ]
+    },
+    {
+      "row": 1,
+      "col": 6,
+      "matches": [
+        "Jugadores/Pantalon/Spam Red/Redes1_Pantalon1.png",
+        "Jugadores/Pantalon/Combo Hard/CHardware1_Pantalon1.png",
+        "Jugadores/Pantalon/Combo Hard/CHardware2_Pantalon1.png"
+      ]
+    },
+    {
+      "row": 2,
+      "col": 0,
+      "matches": [
+        "Jugadores/Pantalon/Combo Redes/CRedes0_Pantalon1.png"
+      ]
+    },
+    {
+      "row": 2,
+      "col": 1,
+      "matches": [
+        "Jugadores/Pantalon/Combo Redes/CRedes1_Pantalon1.png"
+      ]
+    },
+    {
+      "row": 2,
+      "col": 2,
+      "matches": [
+        "Jugadores/Pantalon/Defensa/Defensa0_Pantalon1.png"
+      ]
+    },
+    {
+      "row": 2,
+      "col": 3,
+      "matches": [
+        "Jugadores/Pantalon/Golpe/Golpe0_Pantalon1.png"
+      ]
+    },
+    {
+      "row": 2,
+      "col": 4,
+      "matches": [
+        "Jugadores/Pantalon/Golpe/Golpe1_Pantalon1.png"
+      ]
+    },
+    {
+      "row": 2,
+      "col": 5,
+      "matches": [
+        "Jugadores/Pantalon/Golpe/Golpe2_Pantalon1.png"
+      ]
+    },
+    {
+      "row": 2,
+      "col": 6,
+      "matches": [
+        "Jugadores/Pantalon/Golpe/Golpe3_Pantalon1.png"
+      ]
+    },
+    {
+      "row": 3,
+      "col": 0,
+      "matches": [
+        "Jugadores/Pantalon/Golpeado/Malo0_Pantalon1.png"
+      ]
+    },
+    {
+      "row": 3,
+      "col": 1,
+      "matches": [
+        "Jugadores/Pantalon/Golpeado/Malo1_Pantalon1.png"
+      ]
+    },
+    {
+      "row": 3,
+      "col": 2,
+      "matches": [
+        "Jugadores/Pantalon/Golpeado/Malo2_Pantalon1.png"
+      ]
+    },
+    {
+      "row": 3,
+      "col": 3,
+      "matches": [
+        "Jugadores/Pantalon/Golpeado/Malo3_Pantalon1.png"
+      ]
+    },
+    {
+      "row": 3,
+      "col": 4,
+      "matches": [
+        "Jugadores/Pantalon/Idle/Idle0_Pantalon1.png"
+      ]
+    },
+    {
+      "row": 3,
+      "col": 5,
+      "matches": [
+        "Jugadores/Pantalon/Idle/Idle1_Pantalon1.png"
+      ]
+    },
+    {
+      "row": 3,
+      "col": 6,
+      "matches": [
+        "Jugadores/Pantalon/Salto/Salto0_Pantalon1.png"
+      ]
+    },
+    {
+      "row": 4,
+      "col": 0,
+      "matches": [
+        "Jugadores/Pantalon/Spam Diseno/Diseno0_Pantalon1.png"
+      ]
+    },
+    {
+      "row": 4,
+      "col": 1,
+      "matches": [
+        "Jugadores/Pantalon/Spam Diseno/Diseno1_Pantalon1.png"
+      ]
+    },
+    {
+      "row": 4,
+      "col": 2,
+      "matches": [
+        "Jugadores/Pantalon/Spam Hard/Hardware0_Pantalon1.png"
+      ]
+    },
+    {
+      "row": 4,
+      "col": 3,
+      "matches": [
+        "Jugadores/Pantalon/Spam Hard/Hardware1_Pantalon1.png"
+      ]
+    },
+    {
+      "row": 4,
+      "col": 4,
+      "matches": [
+        "Jugadores/Pantalon/Spam Hard/Hardware2_Pantalon1.png"
+      ]
+    },
+    {
+      "row": 4,
+      "col": 5,
+      "matches": [
+        "Jugadores/Pantalon/Spam Prog/Programacion0_Pantalon1.png"
+      ]
+    },
+    {
+      "row": 4,
+      "col": 6,
+      "matches": [
+        "Jugadores/Pantalon/Spam Prog/Programacion1_Pantalon1.png"
+      ]
+    },
+    {
+      "row": 5,
+      "col": 0,
+      "matches": [
+        "Jugadores/Pantalon/Spam Red/Redes0_Pantalon1.png",
+        "Jugadores/Pantalon/Combo Hard/CHardware0_Pantalon1.png"
+      ]
+    },
+    {
+      "row": 5,
+      "col": 1,
+      "matches": [
+        "Jugadores/Pantalon/Spam Red/Redes1_Pantalon1.png",
+        "Jugadores/Pantalon/Combo Hard/CHardware1_Pantalon1.png",
+        "Jugadores/Pantalon/Combo Hard/CHardware2_Pantalon1.png"
+      ]
+    },
+    {
+      "row": 5,
+      "col": 2,
+      "matches": [
+        "Jugadores/Pantalon/Uper Cut/Upercut0_Pantalon1.png"
+      ]
+    }
+  ],
+  "Pantalon2.png": [
+    {
+      "row": 0,
+      "col": 0,
+      "matches": [
+        "Jugadores/Pantalon/Agachado/Agachado0_Pantalon2.png"
+      ]
+    },
+    {
+      "row": 0,
+      "col": 1,
+      "matches": [
+        "Jugadores/Pantalon/Barrida/Barrida0_Pantalon2.png"
+      ]
+    },
+    {
+      "row": 0,
+      "col": 2,
+      "matches": [
+        "Jugadores/Pantalon/Caminar/Caminar0_Pantalon2.png"
+      ]
+    },
+    {
+      "row": 0,
+      "col": 3,
+      "matches": [
+        "Jugadores/Pantalon/Caminar/Caminar1_Pantalon2.png"
+      ]
+    },
+    {
+      "row": 0,
+      "col": 4,
+      "matches": [
+        "Jugadores/Pantalon/Caminar/Caminar2_Pantalon2.png"
+      ]
+    },
+    {
+      "row": 0,
+      "col": 5,
+      "matches": [
+        "Jugadores/Pantalon/Caminar/Caminar3_Pantalon2.png"
+      ]
+    },
+    {
+      "row": 0,
+      "col": 6,
+      "matches": [
+        "Jugadores/Pantalon/Caminar/Caminar4_Pantalon2.png"
+      ]
+    },
+    {
+      "row": 1,
+      "col": 0,
+      "matches": [
+        "Jugadores/Pantalon/Caminar/Caminar5_Pantalon2.png"
+      ]
+    },
+    {
+      "row": 1,
+      "col": 1,
+      "matches": [
+        "Jugadores/Pantalon/Caminar/Caminar6_Pantalon2.png"
+      ]
+    },
+    {
+      "row": 1,
+      "col": 2,
+      "matches": [
+        "Jugadores/Pantalon/Combo Diseno/CProgramacion0_Pantalon2.png"
+      ]
+    },
+    {
+      "row": 1,
+      "col": 3,
+      "matches": [
+        "Jugadores/Pantalon/Combo Diseno/CProgramacion1_Pantalon2.png"
+      ]
+    },
+    {
+      "row": 1,
+      "col": 4,
+      "matches": [
+        "Jugadores/Pantalon/Spam Red/Redes0_Pantalon2.png",
+        "Jugadores/Pantalon/Combo Hard/CHardware0_Pantalon2.png"
+      ]
+    },
+    {
+      "row": 1,
+      "col": 5,
+      "matches": [
+        "Jugadores/Pantalon/Spam Red/Redes1_Pantalon2.png",
+        "Jugadores/Pantalon/Combo Hard/CHardware1_Pantalon2.png",
+        "Jugadores/Pantalon/Combo Hard/CHardware2_Pantalon2.png"
+      ]
+    },
+    {
+      "row": 1,
+      "col": 6,
+      "matches": [
+        "Jugadores/Pantalon/Spam Red/Redes1_Pantalon2.png",
+        "Jugadores/Pantalon/Combo Hard/CHardware1_Pantalon2.png",
+        "Jugadores/Pantalon/Combo Hard/CHardware2_Pantalon2.png"
+      ]
+    },
+    {
+      "row": 2,
+      "col": 0,
+      "matches": [
+        "Jugadores/Pantalon/Combo Redes/CRedes0_Pantalon2.png"
+      ]
+    },
+    {
+      "row": 2,
+      "col": 1,
+      "matches": [
+        "Jugadores/Pantalon/Combo Redes/CRedes1_Pantalon2.png"
+      ]
+    },
+    {
+      "row": 2,
+      "col": 2,
+      "matches": [
+        "Jugadores/Pantalon/Defensa/Defensa0_Pantalon2.png"
+      ]
+    },
+    {
+      "row": 2,
+      "col": 3,
+      "matches": [
+        "Jugadores/Pantalon/Golpe/Golpe0_Pantalon2.png"
+      ]
+    },
+    {
+      "row": 2,
+      "col": 4,
+      "matches": [
+        "Jugadores/Pantalon/Golpe/Golpe1_Pantalon2.png"
+      ]
+    },
+    {
+      "row": 2,
+      "col": 5,
+      "matches": [
+        "Jugadores/Pantalon/Golpe/Golpe2_Pantalon2.png"
+      ]
+    },
+    {
+      "row": 2,
+      "col": 6,
+      "matches": [
+        "Jugadores/Pantalon/Golpe/Golpe3_Pantalon2.png"
+      ]
+    },
+    {
+      "row": 3,
+      "col": 0,
+      "matches": [
+        "Jugadores/Pantalon/Golpeado/Malo0_Pantalon2.png"
+      ]
+    },
+    {
+      "row": 3,
+      "col": 1,
+      "matches": [
+        "Jugadores/Pantalon/Golpeado/Malo1_Pantalon2.png"
+      ]
+    },
+    {
+      "row": 3,
+      "col": 2,
+      "matches": [
+        "Jugadores/Pantalon/Golpeado/Malo2_Pantalon2.png"
+      ]
+    },
+    {
+      "row": 3,
+      "col": 3,
+      "matches": [
+        "Jugadores/Pantalon/Golpeado/Malo3_Pantalon2.png"
+      ]
+    },
+    {
+      "row": 3,
+      "col": 4,
+      "matches": [
+        "Jugadores/Pantalon/Idle/Idle0_Pantalon2.png"
+      ]
+    },
+    {
+      "row": 3,
+      "col": 5,
+      "matches": [
+        "Jugadores/Pantalon/Idle/Idle1_Pantalon2.png"
+      ]
+    },
+    {
+      "row": 3,
+      "col": 6,
+      "matches": [
+        "Jugadores/Pantalon/Salto/Salto0_Pantalon2.png"
+      ]
+    },
+    {
+      "row": 4,
+      "col": 0,
+      "matches": [
+        "Jugadores/Pantalon/Spam Diseno/Diseno0_Pantalon2.png"
+      ]
+    },
+    {
+      "row": 4,
+      "col": 1,
+      "matches": [
+        "Jugadores/Pantalon/Spam Diseno/Diseno1_Pantalon2.png"
+      ]
+    },
+    {
+      "row": 4,
+      "col": 2,
+      "matches": [
+        "Jugadores/Pantalon/Spam Hard/Hardware0_Pantalon2.png"
+      ]
+    },
+    {
+      "row": 4,
+      "col": 3,
+      "matches": [
+        "Jugadores/Pantalon/Spam Hard/Hardware1_Pantalon2.png"
+      ]
+    },
+    {
+      "row": 4,
+      "col": 4,
+      "matches": [
+        "Jugadores/Pantalon/Spam Hard/Hardware2_Pantalon2.png"
+      ]
+    },
+    {
+      "row": 4,
+      "col": 5,
+      "matches": [
+        "Jugadores/Pantalon/Spam Prog/Programacion0_Pantalon2.png"
+      ]
+    },
+    {
+      "row": 4,
+      "col": 6,
+      "matches": [
+        "Jugadores/Pantalon/Spam Prog/Programacion1_Pantalon2.png"
+      ]
+    },
+    {
+      "row": 5,
+      "col": 0,
+      "matches": [
+        "Jugadores/Pantalon/Spam Red/Redes0_Pantalon2.png",
+        "Jugadores/Pantalon/Combo Hard/CHardware0_Pantalon2.png"
+      ]
+    },
+    {
+      "row": 5,
+      "col": 1,
+      "matches": [
+        "Jugadores/Pantalon/Spam Red/Redes1_Pantalon2.png",
+        "Jugadores/Pantalon/Combo Hard/CHardware1_Pantalon2.png",
+        "Jugadores/Pantalon/Combo Hard/CHardware2_Pantalon2.png"
+      ]
+    },
+    {
+      "row": 5,
+      "col": 2,
+      "matches": [
+        "Jugadores/Pantalon/Uper Cut/Upercut0_Pantalon2.png"
+      ]
+    }
+  ],
+  "Pelo0.png": [
+    {
+      "row": 0,
+      "col": 0,
+      "matches": [
+        "Jugadores/Pelo/Agachado/Agachado0_Pelo0.png"
+      ]
+    },
+    {
+      "row": 0,
+      "col": 1,
+      "matches": [
+        "Jugadores/Pelo/Barrida/Barrida0_Pelo0.png"
+      ]
+    },
+    {
+      "row": 0,
+      "col": 2,
+      "matches": [
+        "Jugadores/Pelo/Caminar/Caminar0_Pelo0.png"
+      ]
+    },
+    {
+      "row": 0,
+      "col": 3,
+      "matches": [
+        "Jugadores/Pelo/Caminar/Caminar1_Pelo0.png"
+      ]
+    },
+    {
+      "row": 0,
+      "col": 4,
+      "matches": [
+        "Jugadores/Pelo/Caminar/Caminar2_Pelo0.png"
+      ]
+    },
+    {
+      "row": 0,
+      "col": 5,
+      "matches": [
+        "Jugadores/Pelo/Caminar/Caminar3_Pelo0.png"
+      ]
+    },
+    {
+      "row": 0,
+      "col": 6,
+      "matches": [
+        "Jugadores/Pelo/Caminar/Caminar4_Pelo0.png"
+      ]
+    },
+    {
+      "row": 1,
+      "col": 0,
+      "matches": [
+        "Jugadores/Pelo/Caminar/Caminar5_Pelo0.png"
+      ]
+    },
+    {
+      "row": 1,
+      "col": 1,
+      "matches": [
+        "Jugadores/Pelo/Caminar/Caminar6_Pelo0.png"
+      ]
+    },
+    {
+      "row": 1,
+      "col": 2,
+      "matches": [
+        "Jugadores/Pelo/Combo Diseno/CProgramacion0_Pelo0.png"
+      ]
+    },
+    {
+      "row": 1,
+      "col": 3,
+      "matches": [
+        "Jugadores/Pelo/Combo Diseno/CProgramacion1_Pelo0.png"
+      ]
+    },
+    {
+      "row": 1,
+      "col": 4,
+      "matches": [
+        "Jugadores/Pelo/Combo Hard/CHardware0_Pelo0.png"
+      ]
+    },
+    {
+      "row": 1,
+      "col": 5,
+      "matches": [
+        "Jugadores/Pelo/Spam Red/Redes1_Pelo0.png",
+        "Jugadores/Pelo/Combo Hard/CHardware1_Pelo0.png",
+        "Jugadores/Pelo/Combo Hard/CHardware2_Pelo0.png"
+      ]
+    },
+    {
+      "row": 1,
+      "col": 6,
+      "matches": [
+        "Jugadores/Pelo/Spam Red/Redes1_Pelo0.png",
+        "Jugadores/Pelo/Combo Hard/CHardware1_Pelo0.png",
+        "Jugadores/Pelo/Combo Hard/CHardware2_Pelo0.png"
+      ]
+    },
+    {
+      "row": 2,
+      "col": 0,
+      "matches": [
+        "Jugadores/Pelo/Combo Redes/CRedes0_Pelo0.png"
+      ]
+    },
+    {
+      "row": 2,
+      "col": 1,
+      "matches": [
+        "Jugadores/Pelo/Combo Redes/CRedes1_Pelo0.png"
+      ]
+    },
+    {
+      "row": 2,
+      "col": 2,
+      "matches": [
+        "Jugadores/Pelo/Defensa/Defensa0_Pelo0.png"
+      ]
+    },
+    {
+      "row": 2,
+      "col": 3,
+      "matches": [
+        "Jugadores/Pelo/Golpe/Golpe0_Pelo0.png"
+      ]
+    },
+    {
+      "row": 2,
+      "col": 4,
+      "matches": [
+        "Jugadores/Pelo/Golpe/Golpe1_Pelo0.png",
+        "Jugadores/Pelo/Golpe/Golpe1_Pelo1.png"
+      ]
+    },
+    {
+      "row": 2,
+      "col": 5,
+      "matches": [
+        "Jugadores/Pelo/Golpe/Golpe2_Pelo0.png"
+      ]
+    },
+    {
+      "row": 2,
+      "col": 6,
+      "matches": [
+        "Jugadores/Pelo/Golpe/Golpe3_Pelo0.png"
+      ]
+    },
+    {
+      "row": 3,
+      "col": 0,
+      "matches": [
+        "Jugadores/Pelo/Golpeado/Malo0_Pelo0.png"
+      ]
+    },
+    {
+      "row": 3,
+      "col": 1,
+      "matches": [
+        "Jugadores/Pelo/Golpeado/Malo1_Pelo0.png"
+      ]
+    },
+    {
+      "row": 3,
+      "col": 2,
+      "matches": [
+        "Jugadores/Pelo/Golpeado/Malo2_Pelo0.png"
+      ]
+    },
+    {
+      "row": 3,
+      "col": 3,
+      "matches": [
+        "Jugadores/Pelo/Golpeado/Malo3_Pelo0.png"
+      ]
+    },
+    {
+      "row": 3,
+      "col": 4,
+      "matches": [
+        "Jugadores/Pelo/Idle/Idle0_Pelo0.png"
+      ]
+    },
+    {
+      "row": 3,
+      "col": 5,
+      "matches": [
+        "Jugadores/Pelo/Idle/Idle1_Pelo0.png"
+      ]
+    },
+    {
+      "row": 3,
+      "col": 6,
+      "matches": [
+        "Jugadores/Pelo/Salto/Salto0_Pelo0.png"
+      ]
+    },
+    {
+      "row": 4,
+      "col": 0,
+      "matches": [
+        "Jugadores/Pelo/Spam Diseno/Diseno0_Pelo0.png"
+      ]
+    },
+    {
+      "row": 4,
+      "col": 1,
+      "matches": [
+        "Jugadores/Pelo/Spam Diseno/Diseno1_Pelo0.png"
+      ]
+    },
+    {
+      "row": 4,
+      "col": 2,
+      "matches": [
+        "Jugadores/Pelo/Spam Hard/Hardware0_Pelo0.png"
+      ]
+    },
+    {
+      "row": 4,
+      "col": 3,
+      "matches": [
+        "Jugadores/Pelo/Spam Hard/Hardware1_Pelo0.png"
+      ]
+    },
+    {
+      "row": 4,
+      "col": 4,
+      "matches": [
+        "Jugadores/Pelo/Spam Hard/Hardware2_Pelo0.png"
+      ]
+    },
+    {
+      "row": 4,
+      "col": 5,
+      "matches": [
+        "Jugadores/Pelo/Spam Prog/Programacion0_Pelo0.png"
+      ]
+    },
+    {
+      "row": 4,
+      "col": 6,
+      "matches": [
+        "Jugadores/Pelo/Spam Prog/Programacion1_Pelo0.png"
+      ]
+    },
+    {
+      "row": 5,
+      "col": 0,
+      "matches": [
+        "Jugadores/Pelo/Spam Red/Redes0_Pelo0.png"
+      ]
+    },
+    {
+      "row": 5,
+      "col": 1,
+      "matches": [
+        "Jugadores/Pelo/Spam Red/Redes1_Pelo0.png",
+        "Jugadores/Pelo/Combo Hard/CHardware1_Pelo0.png",
+        "Jugadores/Pelo/Combo Hard/CHardware2_Pelo0.png"
+      ]
+    },
+    {
+      "row": 5,
+      "col": 2,
+      "matches": [
+        "Jugadores/Pelo/Uper Cut/Upercut0_Pelo0.png"
+      ]
+    }
+  ],
+  "Pelo1.png": [
+    {
+      "row": 0,
+      "col": 0,
+      "matches": [
+        "Jugadores/Pelo/Agachado/Agachado0_Pelo1.png"
+      ]
+    },
+    {
+      "row": 0,
+      "col": 1,
+      "matches": [
+        "Jugadores/Pelo/Barrida/Barrida0_Pelo1.png"
+      ]
+    },
+    {
+      "row": 0,
+      "col": 2,
+      "matches": [
+        "Jugadores/Pelo/Caminar/Caminar0_Pelo1.png"
+      ]
+    },
+    {
+      "row": 0,
+      "col": 3,
+      "matches": [
+        "Jugadores/Pelo/Caminar/Caminar1_Pelo1.png"
+      ]
+    },
+    {
+      "row": 0,
+      "col": 4,
+      "matches": [
+        "Jugadores/Pelo/Caminar/Caminar2_Pelo1.png"
+      ]
+    },
+    {
+      "row": 0,
+      "col": 5,
+      "matches": [
+        "Jugadores/Pelo/Caminar/Caminar3_Pelo1.png"
+      ]
+    },
+    {
+      "row": 0,
+      "col": 6,
+      "matches": [
+        "Jugadores/Pelo/Caminar/Caminar4_Pelo1.png"
+      ]
+    },
+    {
+      "row": 1,
+      "col": 0,
+      "matches": [
+        "Jugadores/Pelo/Caminar/Caminar5_Pelo1.png"
+      ]
+    },
+    {
+      "row": 1,
+      "col": 1,
+      "matches": [
+        "Jugadores/Pelo/Caminar/Caminar6_Pelo1.png"
+      ]
+    },
+    {
+      "row": 1,
+      "col": 2,
+      "matches": [
+        "Jugadores/Pelo/Combo Diseno/CProgramacion0_Pelo1.png"
+      ]
+    },
+    {
+      "row": 1,
+      "col": 3,
+      "matches": [
+        "Jugadores/Pelo/Combo Diseno/CProgramacion1_Pelo1.png"
+      ]
+    },
+    {
+      "row": 1,
+      "col": 4,
+      "matches": [
+        "Jugadores/Pelo/Combo Hard/CHardware0_Pelo1.png"
+      ]
+    },
+    {
+      "row": 1,
+      "col": 5,
+      "matches": [
+        "Jugadores/Pelo/Spam Red/Redes1_Pelo1.png",
+        "Jugadores/Pelo/Combo Hard/CHardware1_Pelo1.png",
+        "Jugadores/Pelo/Combo Hard/CHardware2_Pelo1.png"
+      ]
+    },
+    {
+      "row": 1,
+      "col": 6,
+      "matches": [
+        "Jugadores/Pelo/Spam Red/Redes1_Pelo1.png",
+        "Jugadores/Pelo/Combo Hard/CHardware1_Pelo1.png",
+        "Jugadores/Pelo/Combo Hard/CHardware2_Pelo1.png"
+      ]
+    },
+    {
+      "row": 2,
+      "col": 0,
+      "matches": [
+        "Jugadores/Pelo/Combo Redes/CRedes0_Pelo1.png"
+      ]
+    },
+    {
+      "row": 2,
+      "col": 1,
+      "matches": [
+        "Jugadores/Pelo/Combo Redes/CRedes1_Pelo1.png"
+      ]
+    },
+    {
+      "row": 2,
+      "col": 2,
+      "matches": [
+        "Jugadores/Pelo/Defensa/Defensa0_Pelo1.png"
+      ]
+    },
+    {
+      "row": 2,
+      "col": 3,
+      "matches": [
+        "Jugadores/Pelo/Golpe/Golpe0_Pelo1.png"
+      ]
+    },
+    {
+      "row": 2,
+      "col": 4,
+      "matches": [
+        "Jugadores/Pelo/Golpe/Golpe1_Pelo0.png",
+        "Jugadores/Pelo/Golpe/Golpe1_Pelo1.png"
+      ]
+    },
+    {
+      "row": 2,
+      "col": 5,
+      "matches": [
+        "Jugadores/Pelo/Golpe/Golpe2_Pelo1.png"
+      ]
+    },
+    {
+      "row": 2,
+      "col": 6,
+      "matches": [
+        "Jugadores/Pelo/Golpe/Golpe3_Pelo1.png"
+      ]
+    },
+    {
+      "row": 3,
+      "col": 0,
+      "matches": [
+        "Jugadores/Pelo/Golpeado/Malo0_Pelo1.png"
+      ]
+    },
+    {
+      "row": 3,
+      "col": 1,
+      "matches": [
+        "Jugadores/Pelo/Golpeado/Malo1_Pelo1.png"
+      ]
+    },
+    {
+      "row": 3,
+      "col": 2,
+      "matches": [
+        "Jugadores/Pelo/Golpeado/Malo2_Pelo1.png"
+      ]
+    },
+    {
+      "row": 3,
+      "col": 3,
+      "matches": [
+        "Jugadores/Pelo/Golpeado/Malo3_Pelo1.png"
+      ]
+    },
+    {
+      "row": 3,
+      "col": 4,
+      "matches": [
+        "Jugadores/Pelo/Idle/Idle0_Pelo1.png"
+      ]
+    },
+    {
+      "row": 3,
+      "col": 5,
+      "matches": [
+        "Jugadores/Pelo/Idle/Idle1_Pelo1.png"
+      ]
+    },
+    {
+      "row": 3,
+      "col": 6,
+      "matches": [
+        "Jugadores/Pelo/Salto/Salto0_Pelo1.png"
+      ]
+    },
+    {
+      "row": 4,
+      "col": 0,
+      "matches": [
+        "Jugadores/Pelo/Spam Diseno/Diseno0_Pelo1.png"
+      ]
+    },
+    {
+      "row": 4,
+      "col": 1,
+      "matches": [
+        "Jugadores/Pelo/Spam Diseno/Diseno1_Pelo1.png"
+      ]
+    },
+    {
+      "row": 4,
+      "col": 2,
+      "matches": [
+        "Jugadores/Pelo/Spam Hard/Hardware0_Pelo1.png"
+      ]
+    },
+    {
+      "row": 4,
+      "col": 3,
+      "matches": [
+        "Jugadores/Pelo/Spam Hard/Hardware1_Pelo1.png"
+      ]
+    },
+    {
+      "row": 4,
+      "col": 4,
+      "matches": [
+        "Jugadores/Pelo/Spam Hard/Hardware2_Pelo1.png"
+      ]
+    },
+    {
+      "row": 4,
+      "col": 5,
+      "matches": [
+        "Jugadores/Pelo/Spam Prog/Programacion0_Pelo1.png"
+      ]
+    },
+    {
+      "row": 4,
+      "col": 6,
+      "matches": [
+        "Jugadores/Pelo/Spam Prog/Programacion1_Pelo1.png"
+      ]
+    },
+    {
+      "row": 5,
+      "col": 0,
+      "matches": [
+        "Jugadores/Pelo/Spam Red/Redes0_Pelo1.png"
+      ]
+    },
+    {
+      "row": 5,
+      "col": 1,
+      "matches": [
+        "Jugadores/Pelo/Spam Red/Redes1_Pelo1.png",
+        "Jugadores/Pelo/Combo Hard/CHardware1_Pelo1.png",
+        "Jugadores/Pelo/Combo Hard/CHardware2_Pelo1.png"
+      ]
+    },
+    {
+      "row": 5,
+      "col": 2,
+      "matches": [
+        "Jugadores/Pelo/Uper Cut/Upercut0_Pelo1.png"
+      ]
+    }
+  ],
+  "Pelo2.png": [
+    {
+      "row": 0,
+      "col": 0,
+      "matches": [
+        "Jugadores/Pelo/Agachado/Agachado0_Pelo2.png"
+      ]
+    },
+    {
+      "row": 0,
+      "col": 1,
+      "matches": [
+        "Jugadores/Pelo/Barrida/Barrida0_Pelo2.png"
+      ]
+    },
+    {
+      "row": 0,
+      "col": 2,
+      "matches": [
+        "Jugadores/Pelo/Caminar/Caminar0_Pelo2.png"
+      ]
+    },
+    {
+      "row": 0,
+      "col": 3,
+      "matches": [
+        "Jugadores/Pelo/Caminar/Caminar1_Pelo2.png"
+      ]
+    },
+    {
+      "row": 0,
+      "col": 4,
+      "matches": [
+        "Jugadores/Pelo/Caminar/Caminar2_Pelo2.png"
+      ]
+    },
+    {
+      "row": 0,
+      "col": 5,
+      "matches": [
+        "Jugadores/Pelo/Caminar/Caminar3_Pelo2.png"
+      ]
+    },
+    {
+      "row": 0,
+      "col": 6,
+      "matches": [
+        "Jugadores/Pelo/Caminar/Caminar4_Pelo2.png"
+      ]
+    },
+    {
+      "row": 1,
+      "col": 0,
+      "matches": [
+        "Jugadores/Pelo/Caminar/Caminar5_Pelo2.png"
+      ]
+    },
+    {
+      "row": 1,
+      "col": 1,
+      "matches": [
+        "Jugadores/Pelo/Caminar/Caminar6_Pelo2.png"
+      ]
+    },
+    {
+      "row": 1,
+      "col": 2,
+      "matches": [
+        "Jugadores/Pelo/Combo Diseno/CProgramacion0_Pelo2.png"
+      ]
+    },
+    {
+      "row": 1,
+      "col": 3,
+      "matches": [
+        "Jugadores/Pelo/Combo Diseno/CProgramacion1_Pelo2.png"
+      ]
+    },
+    {
+      "row": 1,
+      "col": 4,
+      "matches": [
+        "Jugadores/Pelo/Combo Hard/CHardware0_Pelo2.png"
+      ]
+    },
+    {
+      "row": 1,
+      "col": 5,
+      "matches": [
+        "Jugadores/Pelo/Spam Red/Redes1_Pelo2.png",
+        "Jugadores/Pelo/Combo Hard/CHardware1_Pelo2.png",
+        "Jugadores/Pelo/Combo Hard/CHardware2_Pelo2.png"
+      ]
+    },
+    {
+      "row": 1,
+      "col": 6,
+      "matches": [
+        "Jugadores/Pelo/Spam Red/Redes1_Pelo2.png",
+        "Jugadores/Pelo/Combo Hard/CHardware1_Pelo2.png",
+        "Jugadores/Pelo/Combo Hard/CHardware2_Pelo2.png"
+      ]
+    },
+    {
+      "row": 2,
+      "col": 0,
+      "matches": [
+        "Jugadores/Pelo/Combo Redes/CRedes0_Pelo2.png"
+      ]
+    },
+    {
+      "row": 2,
+      "col": 1,
+      "matches": [
+        "Jugadores/Pelo/Combo Redes/CRedes1_Pelo2.png"
+      ]
+    },
+    {
+      "row": 2,
+      "col": 2,
+      "matches": [
+        "Jugadores/Pelo/Defensa/Defensa0_Pelo2.png"
+      ]
+    },
+    {
+      "row": 2,
+      "col": 3,
+      "matches": [
+        "Jugadores/Pelo/Golpe/Golpe0_Pelo2.png"
+      ]
+    },
+    {
+      "row": 2,
+      "col": 4,
+      "matches": [
+        "Jugadores/Pelo/Golpe/Golpe1_Pelo2.png"
+      ]
+    },
+    {
+      "row": 2,
+      "col": 5,
+      "matches": [
+        "Jugadores/Pelo/Golpe/Golpe2_Pelo2.png"
+      ]
+    },
+    {
+      "row": 2,
+      "col": 6,
+      "matches": [
+        "Jugadores/Pelo/Golpe/Golpe3_Pelo2.png"
+      ]
+    },
+    {
+      "row": 3,
+      "col": 0,
+      "matches": [
+        "Jugadores/Pelo/Golpeado/Malo0_Pelo2.png"
+      ]
+    },
+    {
+      "row": 3,
+      "col": 1,
+      "matches": [
+        "Jugadores/Pelo/Golpeado/Malo1_Pelo2.png"
+      ]
+    },
+    {
+      "row": 3,
+      "col": 2,
+      "matches": [
+        "Jugadores/Pelo/Golpeado/Malo2_Pelo2.png"
+      ]
+    },
+    {
+      "row": 3,
+      "col": 3,
+      "matches": [
+        "Jugadores/Pelo/Golpeado/Malo3_Pelo2.png"
+      ]
+    },
+    {
+      "row": 3,
+      "col": 4,
+      "matches": [
+        "Jugadores/Pelo/Idle/Idle0_pelo2.png"
+      ]
+    },
+    {
+      "row": 3,
+      "col": 5,
+      "matches": [
+        "Jugadores/Pelo/Idle/Idle1_Pelo2.png"
+      ]
+    },
+    {
+      "row": 3,
+      "col": 6,
+      "matches": [
+        "Jugadores/Pelo/Salto/Salto0_Pelo2.png"
+      ]
+    },
+    {
+      "row": 4,
+      "col": 0,
+      "matches": [
+        "Jugadores/Pelo/Spam Diseno/Diseno0_Pelo2.png"
+      ]
+    },
+    {
+      "row": 4,
+      "col": 1,
+      "matches": [
+        "Jugadores/Pelo/Spam Diseno/Diseno1_Pelo2.png"
+      ]
+    },
+    {
+      "row": 4,
+      "col": 2,
+      "matches": [
+        "Jugadores/Pelo/Spam Hard/Hardware0_Pelo2.png"
+      ]
+    },
+    {
+      "row": 4,
+      "col": 3,
+      "matches": [
+        "Jugadores/Pelo/Spam Hard/Hardware1_Pelo2.png"
+      ]
+    },
+    {
+      "row": 4,
+      "col": 4,
+      "matches": [
+        "Jugadores/Pelo/Spam Hard/Hardware2_Pelo2.png"
+      ]
+    },
+    {
+      "row": 4,
+      "col": 5,
+      "matches": [
+        "Jugadores/Pelo/Spam Prog/Programacion0_Pelo2.png"
+      ]
+    },
+    {
+      "row": 4,
+      "col": 6,
+      "matches": [
+        "Jugadores/Pelo/Spam Prog/Programacion1_Pelo2.png"
+      ]
+    },
+    {
+      "row": 5,
+      "col": 0,
+      "matches": [
+        "Jugadores/Pelo/Spam Red/Redes0_Pelo2.png"
+      ]
+    },
+    {
+      "row": 5,
+      "col": 1,
+      "matches": [
+        "Jugadores/Pelo/Spam Red/Redes1_Pelo2.png",
+        "Jugadores/Pelo/Combo Hard/CHardware1_Pelo2.png",
+        "Jugadores/Pelo/Combo Hard/CHardware2_Pelo2.png"
+      ]
+    },
+    {
+      "row": 5,
+      "col": 2,
+      "matches": [
+        "Jugadores/Pelo/Uper Cut/Upercut0_Pelo2.png"
+      ]
+    }
+  ],
+  "Remera0.png": [
+    {
+      "row": 0,
+      "col": 0,
+      "matches": [
+        "Jugadores/Remera/Agachado/Agachado0_Remera0.png"
+      ]
+    },
+    {
+      "row": 0,
+      "col": 1,
+      "matches": [
+        "Jugadores/Remera/Barrida/Barrida0_Remera0.png"
+      ]
+    },
+    {
+      "row": 0,
+      "col": 2,
+      "matches": [
+        "Jugadores/Remera/Caminar/Caminar0_Remera0.png"
+      ]
+    },
+    {
+      "row": 0,
+      "col": 3,
+      "matches": [
+        "Jugadores/Remera/Caminar/Caminar1_Remera0.png"
+      ]
+    },
+    {
+      "row": 0,
+      "col": 4,
+      "matches": [
+        "Jugadores/Remera/Caminar/Caminar2_Remera0.png"
+      ]
+    },
+    {
+      "row": 0,
+      "col": 5,
+      "matches": [
+        "Jugadores/Remera/Caminar/Caminar3_Remera0.png"
+      ]
+    },
+    {
+      "row": 0,
+      "col": 6,
+      "matches": [
+        "Jugadores/Remera/Caminar/Caminar4_Remera0.png"
+      ]
+    },
+    {
+      "row": 1,
+      "col": 0,
+      "matches": [
+        "Jugadores/Remera/Caminar/Caminar5_Remera0.png"
+      ]
+    },
+    {
+      "row": 1,
+      "col": 1,
+      "matches": [
+        "Jugadores/Remera/Caminar/Caminar6_Remera0.png"
+      ]
+    },
+    {
+      "row": 1,
+      "col": 2,
+      "matches": [
+        "Jugadores/Remera/Combo Diseno/CProgramacion0_Remera0.png"
+      ]
+    },
+    {
+      "row": 1,
+      "col": 3,
+      "matches": [
+        "Jugadores/Remera/Combo Diseno/CProgramacion1_Remera0.png"
+      ]
+    },
+    {
+      "row": 1,
+      "col": 4,
+      "matches": [
+        "Jugadores/Remera/Spam Red/Redes0_Remera0.png",
+        "Jugadores/Remera/Combo Hard/CHardware0_Remera0.png"
+      ]
+    },
+    {
+      "row": 1,
+      "col": 5,
+      "matches": [
+        "Jugadores/Remera/Spam Red/Redes1_Remera0.png",
+        "Jugadores/Remera/Combo Hard/CHardware2_Remera0.png",
+        "Jugadores/Remera/Combo Hard/CHardware1_Remera0.png"
+      ]
+    },
+    {
+      "row": 1,
+      "col": 6,
+      "matches": [
+        "Jugadores/Remera/Spam Red/Redes1_Remera0.png",
+        "Jugadores/Remera/Combo Hard/CHardware2_Remera0.png",
+        "Jugadores/Remera/Combo Hard/CHardware1_Remera0.png"
+      ]
+    },
+    {
+      "row": 2,
+      "col": 0,
+      "matches": [
+        "Jugadores/Remera/Combo Redes/CRedes0_Remera0.png"
+      ]
+    },
+    {
+      "row": 2,
+      "col": 1,
+      "matches": [
+        "Jugadores/Remera/Combo Redes/CRedes1_Remera0.png"
+      ]
+    },
+    {
+      "row": 2,
+      "col": 2,
+      "matches": [
+        "Jugadores/Remera/Defensa/Defensa0_Remera0.png"
+      ]
+    },
+    {
+      "row": 2,
+      "col": 3,
+      "matches": [
+        "Jugadores/Remera/Golpe/Golpe0_Remera0.png"
+      ]
+    },
+    {
+      "row": 2,
+      "col": 4,
+      "matches": [
+        "Jugadores/Remera/Golpe/Golpe1_Remera0.png"
+      ]
+    },
+    {
+      "row": 2,
+      "col": 5,
+      "matches": [
+        "Jugadores/Remera/Golpe/Golpe2_Remera0.png"
+      ]
+    },
+    {
+      "row": 2,
+      "col": 6,
+      "matches": [
+        "Jugadores/Remera/Golpe/Golpe3_Remera0.png"
+      ]
+    },
+    {
+      "row": 3,
+      "col": 0,
+      "matches": [
+        "Jugadores/Remera/Golpeado/Malo0_Remera0.png"
+      ]
+    },
+    {
+      "row": 3,
+      "col": 1,
+      "matches": [
+        "Jugadores/Remera/Golpeado/Malo1_Remera0.png"
+      ]
+    },
+    {
+      "row": 3,
+      "col": 2,
+      "matches": [
+        "Jugadores/Remera/Golpeado/Malo2_Remera0.png"
+      ]
+    },
+    {
+      "row": 3,
+      "col": 3,
+      "matches": [
+        "Jugadores/Remera/Golpeado/Malo3_Remera0.png"
+      ]
+    },
+    {
+      "row": 3,
+      "col": 4,
+      "matches": [
+        "Jugadores/Remera/Idle/Idle0_Remera0.png"
+      ]
+    },
+    {
+      "row": 3,
+      "col": 5,
+      "matches": [
+        "Jugadores/Remera/Idle/Idle1_Remera0.png"
+      ]
+    },
+    {
+      "row": 3,
+      "col": 6,
+      "matches": [
+        "Jugadores/Remera/Salto/Salto0_Remera0.png"
+      ]
+    },
+    {
+      "row": 4,
+      "col": 0,
+      "matches": [
+        "Jugadores/Remera/Spam Diseno/Diseno0_Remera0.png"
+      ]
+    },
+    {
+      "row": 4,
+      "col": 1,
+      "matches": [
+        "Jugadores/Remera/Spam Diseno/Diseno1_Remera0.png"
+      ]
+    },
+    {
+      "row": 4,
+      "col": 2,
+      "matches": [
+        "Jugadores/Remera/Spam Hard/Hardware0_Remera0.png"
+      ]
+    },
+    {
+      "row": 4,
+      "col": 3,
+      "matches": [
+        "Jugadores/Remera/Spam Hard/Hardware1_Remera0.png"
+      ]
+    },
+    {
+      "row": 4,
+      "col": 4,
+      "matches": [
+        "Jugadores/Remera/Spam Hard/Hardware2_Remera0.png"
+      ]
+    },
+    {
+      "row": 4,
+      "col": 5,
+      "matches": [
+        "Jugadores/Remera/Spam Prog/Programacion0_Remera0.png"
+      ]
+    },
+    {
+      "row": 4,
+      "col": 6,
+      "matches": [
+        "Jugadores/Remera/Spam Prog/Programacion1_Remera0.png"
+      ]
+    },
+    {
+      "row": 5,
+      "col": 0,
+      "matches": [
+        "Jugadores/Remera/Spam Red/Redes0_Remera0.png",
+        "Jugadores/Remera/Combo Hard/CHardware0_Remera0.png"
+      ]
+    },
+    {
+      "row": 5,
+      "col": 1,
+      "matches": [
+        "Jugadores/Remera/Spam Red/Redes1_Remera0.png",
+        "Jugadores/Remera/Combo Hard/CHardware2_Remera0.png",
+        "Jugadores/Remera/Combo Hard/CHardware1_Remera0.png"
+      ]
+    },
+    {
+      "row": 5,
+      "col": 2,
+      "matches": [
+        "Jugadores/Remera/Uper Cut/Upercut0_Remera0.png"
+      ]
+    }
+  ],
+  "Remera1.png": [
+    {
+      "row": 0,
+      "col": 0,
+      "matches": [
+        "Jugadores/Remera/Agachado/Agachado0_Remera1.png"
+      ]
+    },
+    {
+      "row": 0,
+      "col": 1,
+      "matches": [
+        "Jugadores/Remera/Barrida/Barrida0_Remera1.png"
+      ]
+    },
+    {
+      "row": 0,
+      "col": 2,
+      "matches": [
+        "Jugadores/Remera/Caminar/Caminar0_Remera1.png"
+      ]
+    },
+    {
+      "row": 0,
+      "col": 3,
+      "matches": [
+        "Jugadores/Remera/Caminar/Caminar1_Remera1.png"
+      ]
+    },
+    {
+      "row": 0,
+      "col": 4,
+      "matches": [
+        "Jugadores/Remera/Caminar/Caminar2_Remera1.png"
+      ]
+    },
+    {
+      "row": 0,
+      "col": 5,
+      "matches": [
+        "Jugadores/Remera/Caminar/Caminar3_Remera1.png"
+      ]
+    },
+    {
+      "row": 0,
+      "col": 6,
+      "matches": [
+        "Jugadores/Remera/Caminar/Caminar4_Remera1.png"
+      ]
+    },
+    {
+      "row": 1,
+      "col": 0,
+      "matches": [
+        "Jugadores/Remera/Caminar/Caminar5_Remera1.png"
+      ]
+    },
+    {
+      "row": 1,
+      "col": 1,
+      "matches": [
+        "Jugadores/Remera/Caminar/Caminar6_Remera1.png"
+      ]
+    },
+    {
+      "row": 1,
+      "col": 2,
+      "matches": [
+        "Jugadores/Remera/Combo Diseno/CProgramacion0_Remera1.png"
+      ]
+    },
+    {
+      "row": 1,
+      "col": 3,
+      "matches": [
+        "Jugadores/Remera/Combo Diseno/CProgramacion1_Remera1.png"
+      ]
+    },
+    {
+      "row": 1,
+      "col": 4,
+      "matches": [
+        "Jugadores/Remera/Spam Red/Redes0_Remera1.png",
+        "Jugadores/Remera/Combo Hard/CHardware0_Remera1.png"
+      ]
+    },
+    {
+      "row": 1,
+      "col": 5,
+      "matches": [
+        "Jugadores/Remera/Spam Red/Redes1_Remera1.png",
+        "Jugadores/Remera/Combo Hard/CHardware2_Remera1.png",
+        "Jugadores/Remera/Combo Hard/CHardware1_Remera1.png"
+      ]
+    },
+    {
+      "row": 1,
+      "col": 6,
+      "matches": [
+        "Jugadores/Remera/Spam Red/Redes1_Remera1.png",
+        "Jugadores/Remera/Combo Hard/CHardware2_Remera1.png",
+        "Jugadores/Remera/Combo Hard/CHardware1_Remera1.png"
+      ]
+    },
+    {
+      "row": 2,
+      "col": 0,
+      "matches": [
+        "Jugadores/Remera/Combo Redes/CRedes0_Remera1.png"
+      ]
+    },
+    {
+      "row": 2,
+      "col": 1,
+      "matches": [
+        "Jugadores/Remera/Combo Redes/CRedes1_Remera1.png"
+      ]
+    },
+    {
+      "row": 2,
+      "col": 2,
+      "matches": [
+        "Jugadores/Remera/Defensa/Defensa0_Remera1.png"
+      ]
+    },
+    {
+      "row": 2,
+      "col": 3,
+      "matches": [
+        "Jugadores/Remera/Golpe/Golpe0_Remera1.png"
+      ]
+    },
+    {
+      "row": 2,
+      "col": 4,
+      "matches": [
+        "Jugadores/Remera/Golpe/Golpe1_Remera1.png"
+      ]
+    },
+    {
+      "row": 2,
+      "col": 5,
+      "matches": [
+        "Jugadores/Remera/Golpe/Golpe2_Remera1.png"
+      ]
+    },
+    {
+      "row": 2,
+      "col": 6,
+      "matches": [
+        "Jugadores/Remera/Golpe/Golpe3_Remera1.png"
+      ]
+    },
+    {
+      "row": 3,
+      "col": 0,
+      "matches": [
+        "Jugadores/Remera/Golpeado/Malo0_Remera1.png"
+      ]
+    },
+    {
+      "row": 3,
+      "col": 1,
+      "matches": [
+        "Jugadores/Remera/Golpeado/Malo1_Remera1.png"
+      ]
+    },
+    {
+      "row": 3,
+      "col": 2,
+      "matches": [
+        "Jugadores/Remera/Golpeado/Malo2_Remera1.png"
+      ]
+    },
+    {
+      "row": 3,
+      "col": 3,
+      "matches": [
+        "Jugadores/Remera/Golpeado/Malo3_Remera1.png"
+      ]
+    },
+    {
+      "row": 3,
+      "col": 4,
+      "matches": [
+        "Jugadores/Remera/Idle/Idle0_Remera1.png"
+      ]
+    },
+    {
+      "row": 3,
+      "col": 5,
+      "matches": [
+        "Jugadores/Remera/Idle/Idle1_Remera1.png"
+      ]
+    },
+    {
+      "row": 3,
+      "col": 6,
+      "matches": [
+        "Jugadores/Remera/Salto/Salto0_Remera1.png"
+      ]
+    },
+    {
+      "row": 4,
+      "col": 0,
+      "matches": [
+        "Jugadores/Remera/Spam Diseno/Diseno0_Remera1.png"
+      ]
+    },
+    {
+      "row": 4,
+      "col": 1,
+      "matches": [
+        "Jugadores/Remera/Spam Diseno/Diseno1_Remera1.png"
+      ]
+    },
+    {
+      "row": 4,
+      "col": 2,
+      "matches": [
+        "Jugadores/Remera/Spam Hard/Hardware0_Remera1.png"
+      ]
+    },
+    {
+      "row": 4,
+      "col": 3,
+      "matches": [
+        "Jugadores/Remera/Spam Hard/Hardware1_Remera1.png"
+      ]
+    },
+    {
+      "row": 4,
+      "col": 4,
+      "matches": [
+        "Jugadores/Remera/Spam Hard/Hardware2_Remera1.png"
+      ]
+    },
+    {
+      "row": 4,
+      "col": 5,
+      "matches": [
+        "Jugadores/Remera/Spam Prog/Programacion0_Remera1.png"
+      ]
+    },
+    {
+      "row": 4,
+      "col": 6,
+      "matches": [
+        "Jugadores/Remera/Spam Prog/Programacion1_Remera1.png"
+      ]
+    },
+    {
+      "row": 5,
+      "col": 0,
+      "matches": [
+        "Jugadores/Remera/Spam Red/Redes0_Remera1.png",
+        "Jugadores/Remera/Combo Hard/CHardware0_Remera1.png"
+      ]
+    },
+    {
+      "row": 5,
+      "col": 1,
+      "matches": [
+        "Jugadores/Remera/Spam Red/Redes1_Remera1.png",
+        "Jugadores/Remera/Combo Hard/CHardware2_Remera1.png",
+        "Jugadores/Remera/Combo Hard/CHardware1_Remera1.png"
+      ]
+    },
+    {
+      "row": 5,
+      "col": 2,
+      "matches": [
+        "Jugadores/Remera/Uper Cut/Upercut0_Remera1.png"
+      ]
+    }
+  ],
+  "Remera2.png": [
+    {
+      "row": 0,
+      "col": 0,
+      "matches": [
+        "Jugadores/Remera/Agachado/Agachado0_Remera2.png"
+      ]
+    },
+    {
+      "row": 0,
+      "col": 1,
+      "matches": [
+        "Jugadores/Remera/Barrida/Barrida0_Remera2.png"
+      ]
+    },
+    {
+      "row": 0,
+      "col": 2,
+      "matches": [
+        "Jugadores/Remera/Caminar/Caminar0_Remera2.png"
+      ]
+    },
+    {
+      "row": 0,
+      "col": 3,
+      "matches": [
+        "Jugadores/Remera/Caminar/Caminar1_Remera2.png"
+      ]
+    },
+    {
+      "row": 0,
+      "col": 4,
+      "matches": [
+        "Jugadores/Remera/Caminar/Caminar2_Remera2.png"
+      ]
+    },
+    {
+      "row": 0,
+      "col": 5,
+      "matches": [
+        "Jugadores/Remera/Caminar/Caminar3_Remera2.png"
+      ]
+    },
+    {
+      "row": 0,
+      "col": 6,
+      "matches": [
+        "Jugadores/Remera/Caminar/Caminar4_Remera2.png"
+      ]
+    },
+    {
+      "row": 1,
+      "col": 0,
+      "matches": [
+        "Jugadores/Remera/Caminar/Caminar5_Remera2.png"
+      ]
+    },
+    {
+      "row": 1,
+      "col": 1,
+      "matches": [
+        "Jugadores/Remera/Caminar/Caminar6_Remera2.png"
+      ]
+    },
+    {
+      "row": 1,
+      "col": 2,
+      "matches": [
+        "Jugadores/Remera/Combo Diseno/CProgramacion0_Remera2.png"
+      ]
+    },
+    {
+      "row": 1,
+      "col": 3,
+      "matches": [
+        "Jugadores/Remera/Combo Diseno/CProgramacion1_Remera2.png"
+      ]
+    },
+    {
+      "row": 1,
+      "col": 4,
+      "matches": [
+        "Jugadores/Remera/Spam Red/Redes0_Remera2.png",
+        "Jugadores/Remera/Combo Hard/CHardware0_Remera2.png"
+      ]
+    },
+    {
+      "row": 1,
+      "col": 5,
+      "matches": [
+        "Jugadores/Remera/Spam Red/Redes1_Remera2.png",
+        "Jugadores/Remera/Combo Hard/CHardware2_Remera2.png",
+        "Jugadores/Remera/Combo Hard/CHardware1_Remera2.png"
+      ]
+    },
+    {
+      "row": 1,
+      "col": 6,
+      "matches": [
+        "Jugadores/Remera/Spam Red/Redes1_Remera2.png",
+        "Jugadores/Remera/Combo Hard/CHardware2_Remera2.png",
+        "Jugadores/Remera/Combo Hard/CHardware1_Remera2.png"
+      ]
+    },
+    {
+      "row": 2,
+      "col": 0,
+      "matches": [
+        "Jugadores/Remera/Combo Redes/CRedes0_Remera2.png"
+      ]
+    },
+    {
+      "row": 2,
+      "col": 1,
+      "matches": [
+        "Jugadores/Remera/Combo Redes/CRedes1_Remera2.png"
+      ]
+    },
+    {
+      "row": 2,
+      "col": 2,
+      "matches": [
+        "Jugadores/Remera/Defensa/Defensa0_Remera2.png"
+      ]
+    },
+    {
+      "row": 2,
+      "col": 3,
+      "matches": [
+        "Jugadores/Remera/Golpe/Golpe0_Remera2.png"
+      ]
+    },
+    {
+      "row": 2,
+      "col": 4,
+      "matches": [
+        "Jugadores/Remera/Golpe/Golpe1_Remera2.png"
+      ]
+    },
+    {
+      "row": 2,
+      "col": 5,
+      "matches": [
+        "Jugadores/Remera/Golpe/Golpe2_Remera2.png"
+      ]
+    },
+    {
+      "row": 2,
+      "col": 6,
+      "matches": [
+        "Jugadores/Remera/Golpe/Golpe3_Remera2.png"
+      ]
+    },
+    {
+      "row": 3,
+      "col": 0,
+      "matches": [
+        "Jugadores/Remera/Golpeado/Malo0_Remera2.png"
+      ]
+    },
+    {
+      "row": 3,
+      "col": 1,
+      "matches": [
+        "Jugadores/Remera/Golpeado/Malo1_Remera2.png"
+      ]
+    },
+    {
+      "row": 3,
+      "col": 2,
+      "matches": [
+        "Jugadores/Remera/Golpeado/Malo2_Remera2.png"
+      ]
+    },
+    {
+      "row": 3,
+      "col": 3,
+      "matches": [
+        "Jugadores/Remera/Golpeado/Malo3_Remera2.png"
+      ]
+    },
+    {
+      "row": 3,
+      "col": 4,
+      "matches": [
+        "Jugadores/Remera/Idle/Idle0_Remera2.png"
+      ]
+    },
+    {
+      "row": 3,
+      "col": 5,
+      "matches": [
+        "Jugadores/Remera/Idle/Idle1_Remera2.png"
+      ]
+    },
+    {
+      "row": 3,
+      "col": 6,
+      "matches": [
+        "Jugadores/Remera/Salto/Salto0_Remera2.png"
+      ]
+    },
+    {
+      "row": 4,
+      "col": 0,
+      "matches": [
+        "Jugadores/Remera/Spam Diseno/Diseno0_Remera2.png"
+      ]
+    },
+    {
+      "row": 4,
+      "col": 1,
+      "matches": [
+        "Jugadores/Remera/Spam Diseno/Diseno1_Remera2.png"
+      ]
+    },
+    {
+      "row": 4,
+      "col": 2,
+      "matches": [
+        "Jugadores/Remera/Spam Hard/Hardware0_Remera2.png"
+      ]
+    },
+    {
+      "row": 4,
+      "col": 3,
+      "matches": [
+        "Jugadores/Remera/Spam Hard/Hardware1_Remera2.png"
+      ]
+    },
+    {
+      "row": 4,
+      "col": 4,
+      "matches": [
+        "Jugadores/Remera/Spam Hard/Hardware2_Remera2.png"
+      ]
+    },
+    {
+      "row": 4,
+      "col": 5,
+      "matches": [
+        "Jugadores/Remera/Spam Prog/Programacion0_Remera2.png"
+      ]
+    },
+    {
+      "row": 4,
+      "col": 6,
+      "matches": [
+        "Jugadores/Remera/Spam Prog/Programacion1_Remera2.png"
+      ]
+    },
+    {
+      "row": 5,
+      "col": 0,
+      "matches": [
+        "Jugadores/Remera/Spam Red/Redes0_Remera2.png",
+        "Jugadores/Remera/Combo Hard/CHardware0_Remera2.png"
+      ]
+    },
+    {
+      "row": 5,
+      "col": 1,
+      "matches": [
+        "Jugadores/Remera/Spam Red/Redes1_Remera2.png",
+        "Jugadores/Remera/Combo Hard/CHardware2_Remera2.png",
+        "Jugadores/Remera/Combo Hard/CHardware1_Remera2.png"
+      ]
+    },
+    {
+      "row": 5,
+      "col": 2,
+      "matches": [
+        "Jugadores/Remera/Uper Cut/Upercut0_Remera2.png"
+      ]
+    }
+  ]
+}

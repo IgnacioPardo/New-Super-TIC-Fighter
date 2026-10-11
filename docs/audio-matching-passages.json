@@ -1,0 +1,110 @@
+{
+  "method": "8-second decoded mono waveform correlations at three positions. Supports matching recorded passages, not exact title attribution or licensing. Entirely local comparison.",
+  "results": [
+    {
+      "original_track": 0,
+      "remake_track": 1,
+      "samples": [
+        {
+          "original_start_s": 30,
+          "remake_start_s": 30.1854,
+          "abs_pcm_correlation": 0.5563
+        },
+        {
+          "original_start_s": 90,
+          "remake_start_s": 90.18549,
+          "abs_pcm_correlation": 0.6338
+        },
+        {
+          "original_start_s": 150,
+          "remake_start_s": 150.18531,
+          "abs_pcm_correlation": 0.5175
+        }
+      ]
+    },
+    {
+      "original_track": 2,
+      "remake_track": 15,
+      "samples": [
+        {
+          "original_start_s": 30,
+          "remake_start_s": 29.93868,
+          "abs_pcm_correlation": 0.9809
+        },
+        {
+          "original_start_s": 90,
+          "remake_start_s": 89.93868,
+          "abs_pcm_correlation": 0.9797
+        },
+        {
+          "original_start_s": 150,
+          "remake_start_s": 149.93868,
+          "abs_pcm_correlation": 0.9834
+        }
+      ]
+    },
+    {
+      "original_track": 4,
+      "remake_track": 3,
+      "samples": [
+        {
+          "original_start_s": 30,
+          "remake_start_s": 29.93868,
+          "abs_pcm_correlation": 0.9795
+        },
+        {
+          "original_start_s": 90,
+          "remake_start_s": 89.93868,
+          "abs_pcm_correlation": 0.9799
+        },
+        {
+          "original_start_s": 150,
+          "remake_start_s": 149.93868,
+          "abs_pcm_correlation": 0.9737
+        }
+      ]
+    },
+    {
+      "original_track": 5,
+      "remake_track": 9,
+      "samples": [
+        {
+          "original_start_s": 30,
+          "remake_start_s": 35.85932,
+          "abs_pcm_correlation": 0.4318
+        },
+        {
+          "original_start_s": 90,
+          "remake_start_s": 95.85941,
+          "abs_pcm_correlation": 0.1828
+        },
+        {
+          "original_start_s": 150,
+          "remake_start_s": 156.30785,
+          "abs_pcm_correlation": 0.2379
+        }
+      ]
+    },
+    {
+      "original_track": 7,
+      "remake_track": 5,
+      "samples": [
+        {
+          "original_start_s": 30,
+          "remake_start_s": 29.78748,
+          "abs_pcm_correlation": 0.422
+        },
+        {
+          "original_start_s": 90,
+          "remake_start_s": 89.78776,
+          "abs_pcm_correlation": 0.3213
+        },
+        {
+          "original_start_s": 150,
+          "remake_start_s": 149.78748,
+          "abs_pcm_correlation": 0.3656
+        }
+      ]
+    }
+  ]
+}

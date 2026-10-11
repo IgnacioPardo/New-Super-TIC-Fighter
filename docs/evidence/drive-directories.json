@@ -1,0 +1,877 @@
+[
+  {
+    "path": "OST",
+    "files_direct": 8,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites",
+    "files_direct": 0,
+    "dirs_direct": 4
+  },
+  {
+    "path": "Sprites Sin editar",
+    "files_direct": 0,
+    "dirs_direct": 4
+  },
+  {
+    "path": "Sprites Sin editar/Ataques",
+    "files_direct": 0,
+    "dirs_direct": 4
+  },
+  {
+    "path": "Sprites Sin editar/Ataques/Diseno",
+    "files_direct": 0,
+    "dirs_direct": 2
+  },
+  {
+    "path": "Sprites Sin editar/Ataques/Diseno/Combo",
+    "files_direct": 22,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites Sin editar/Ataques/Diseno/Spam",
+    "files_direct": 10,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites Sin editar/Ataques/Hardware",
+    "files_direct": 0,
+    "dirs_direct": 2
+  },
+  {
+    "path": "Sprites Sin editar/Ataques/Hardware/Combo",
+    "files_direct": 4,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites Sin editar/Ataques/Hardware/Spam",
+    "files_direct": 15,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites Sin editar/Ataques/Programacion",
+    "files_direct": 0,
+    "dirs_direct": 2
+  },
+  {
+    "path": "Sprites Sin editar/Ataques/Programacion/Combo",
+    "files_direct": 1,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites Sin editar/Ataques/Programacion/Spam",
+    "files_direct": 6,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites Sin editar/Ataques/Redes",
+    "files_direct": 0,
+    "dirs_direct": 2
+  },
+  {
+    "path": "Sprites Sin editar/Ataques/Redes/Combo",
+    "files_direct": 15,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites Sin editar/Ataques/Redes/Spam",
+    "files_direct": 15,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites Sin editar/Escenarios",
+    "files_direct": 0,
+    "dirs_direct": 1
+  },
+  {
+    "path": "Sprites Sin editar/Escenarios/Mapa1",
+    "files_direct": 0,
+    "dirs_direct": 1
+  },
+  {
+    "path": "Sprites Sin editar/Escenarios/Mapa1/Plataformas",
+    "files_direct": 3,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites Sin editar/HUD",
+    "files_direct": 16,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites Sin editar/Jugadores",
+    "files_direct": 1,
+    "dirs_direct": 4
+  },
+  {
+    "path": "Sprites Sin editar/Jugadores/Cuerpos",
+    "files_direct": 2,
+    "dirs_direct": 16
+  },
+  {
+    "path": "Sprites Sin editar/Jugadores/Cuerpos/Agachado",
+    "files_direct": 1,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites Sin editar/Jugadores/Cuerpos/Barrida",
+    "files_direct": 1,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites Sin editar/Jugadores/Cuerpos/Caminar",
+    "files_direct": 7,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites Sin editar/Jugadores/Cuerpos/Combo Diseno",
+    "files_direct": 2,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites Sin editar/Jugadores/Cuerpos/Combo Hard",
+    "files_direct": 3,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites Sin editar/Jugadores/Cuerpos/Combo Redes",
+    "files_direct": 2,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites Sin editar/Jugadores/Cuerpos/Defensa",
+    "files_direct": 2,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites Sin editar/Jugadores/Cuerpos/Golpe",
+    "files_direct": 4,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites Sin editar/Jugadores/Cuerpos/Golpeado",
+    "files_direct": 4,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites Sin editar/Jugadores/Cuerpos/Idle",
+    "files_direct": 2,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites Sin editar/Jugadores/Cuerpos/Salto",
+    "files_direct": 1,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites Sin editar/Jugadores/Cuerpos/Spam Diseno",
+    "files_direct": 2,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites Sin editar/Jugadores/Cuerpos/Spam Hard",
+    "files_direct": 3,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites Sin editar/Jugadores/Cuerpos/Spam Prog",
+    "files_direct": 2,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites Sin editar/Jugadores/Cuerpos/Spam Red",
+    "files_direct": 2,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites Sin editar/Jugadores/Cuerpos/Uper Cut",
+    "files_direct": 1,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites Sin editar/Jugadores/Pantalon",
+    "files_direct": 0,
+    "dirs_direct": 16
+  },
+  {
+    "path": "Sprites Sin editar/Jugadores/Pantalon/Agachado",
+    "files_direct": 3,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites Sin editar/Jugadores/Pantalon/Barrida",
+    "files_direct": 3,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites Sin editar/Jugadores/Pantalon/Caminar",
+    "files_direct": 21,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites Sin editar/Jugadores/Pantalon/Combo Diseno",
+    "files_direct": 6,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites Sin editar/Jugadores/Pantalon/Combo Hard",
+    "files_direct": 9,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites Sin editar/Jugadores/Pantalon/Combo Redes",
+    "files_direct": 6,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites Sin editar/Jugadores/Pantalon/Defensa",
+    "files_direct": 3,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites Sin editar/Jugadores/Pantalon/Golpe",
+    "files_direct": 12,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites Sin editar/Jugadores/Pantalon/Golpeado",
+    "files_direct": 12,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites Sin editar/Jugadores/Pantalon/Idle",
+    "files_direct": 6,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites Sin editar/Jugadores/Pantalon/Salto",
+    "files_direct": 3,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites Sin editar/Jugadores/Pantalon/Spam Diseno",
+    "files_direct": 6,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites Sin editar/Jugadores/Pantalon/Spam Hard",
+    "files_direct": 9,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites Sin editar/Jugadores/Pantalon/Spam Prog",
+    "files_direct": 6,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites Sin editar/Jugadores/Pantalon/Spam Red",
+    "files_direct": 6,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites Sin editar/Jugadores/Pantalon/Uper Cut",
+    "files_direct": 3,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites Sin editar/Jugadores/Pelo",
+    "files_direct": 0,
+    "dirs_direct": 16
+  },
+  {
+    "path": "Sprites Sin editar/Jugadores/Pelo/Agachado",
+    "files_direct": 3,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites Sin editar/Jugadores/Pelo/Barrida",
+    "files_direct": 3,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites Sin editar/Jugadores/Pelo/Caminar",
+    "files_direct": 21,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites Sin editar/Jugadores/Pelo/Combo Diseno",
+    "files_direct": 6,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites Sin editar/Jugadores/Pelo/Combo Hard",
+    "files_direct": 9,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites Sin editar/Jugadores/Pelo/Combo Redes",
+    "files_direct": 6,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites Sin editar/Jugadores/Pelo/Defensa",
+    "files_direct": 3,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites Sin editar/Jugadores/Pelo/Golpe",
+    "files_direct": 12,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites Sin editar/Jugadores/Pelo/Golpeado",
+    "files_direct": 12,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites Sin editar/Jugadores/Pelo/Idle",
+    "files_direct": 6,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites Sin editar/Jugadores/Pelo/Salto",
+    "files_direct": 3,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites Sin editar/Jugadores/Pelo/Spam Diseno",
+    "files_direct": 6,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites Sin editar/Jugadores/Pelo/Spam Hard",
+    "files_direct": 9,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites Sin editar/Jugadores/Pelo/Spam Prog",
+    "files_direct": 6,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites Sin editar/Jugadores/Pelo/Spam Red",
+    "files_direct": 6,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites Sin editar/Jugadores/Pelo/Uper Cut",
+    "files_direct": 3,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites Sin editar/Jugadores/Remera",
+    "files_direct": 1,
+    "dirs_direct": 16
+  },
+  {
+    "path": "Sprites Sin editar/Jugadores/Remera/Agachado",
+    "files_direct": 3,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites Sin editar/Jugadores/Remera/Barrida",
+    "files_direct": 3,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites Sin editar/Jugadores/Remera/Caminar",
+    "files_direct": 21,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites Sin editar/Jugadores/Remera/Combo Diseno",
+    "files_direct": 6,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites Sin editar/Jugadores/Remera/Combo Hard",
+    "files_direct": 9,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites Sin editar/Jugadores/Remera/Combo Redes",
+    "files_direct": 6,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites Sin editar/Jugadores/Remera/Defensa",
+    "files_direct": 3,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites Sin editar/Jugadores/Remera/Golpe",
+    "files_direct": 12,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites Sin editar/Jugadores/Remera/Golpeado",
+    "files_direct": 12,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites Sin editar/Jugadores/Remera/Idle",
+    "files_direct": 6,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites Sin editar/Jugadores/Remera/Salto",
+    "files_direct": 3,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites Sin editar/Jugadores/Remera/Spam Diseno",
+    "files_direct": 6,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites Sin editar/Jugadores/Remera/Spam Hard",
+    "files_direct": 9,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites Sin editar/Jugadores/Remera/Spam Prog",
+    "files_direct": 6,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites Sin editar/Jugadores/Remera/Spam Red",
+    "files_direct": 6,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites Sin editar/Jugadores/Remera/Uper Cut",
+    "files_direct": 3,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites/Ataques",
+    "files_direct": 0,
+    "dirs_direct": 4
+  },
+  {
+    "path": "Sprites/Ataques/Diseno",
+    "files_direct": 0,
+    "dirs_direct": 2
+  },
+  {
+    "path": "Sprites/Ataques/Diseno/Combo",
+    "files_direct": 22,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites/Ataques/Diseno/Spam",
+    "files_direct": 10,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites/Ataques/Hardware",
+    "files_direct": 0,
+    "dirs_direct": 2
+  },
+  {
+    "path": "Sprites/Ataques/Hardware/Combo",
+    "files_direct": 4,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites/Ataques/Hardware/Spam",
+    "files_direct": 15,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites/Ataques/Programacion",
+    "files_direct": 0,
+    "dirs_direct": 2
+  },
+  {
+    "path": "Sprites/Ataques/Programacion/Combo",
+    "files_direct": 1,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites/Ataques/Programacion/Spam",
+    "files_direct": 6,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites/Ataques/Redes",
+    "files_direct": 0,
+    "dirs_direct": 2
+  },
+  {
+    "path": "Sprites/Ataques/Redes/Combo",
+    "files_direct": 15,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites/Ataques/Redes/Spam",
+    "files_direct": 15,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites/Escenarios",
+    "files_direct": 0,
+    "dirs_direct": 1
+  },
+  {
+    "path": "Sprites/Escenarios/Mapa1",
+    "files_direct": 0,
+    "dirs_direct": 1
+  },
+  {
+    "path": "Sprites/Escenarios/Mapa1/Plataformas",
+    "files_direct": 3,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites/HUD",
+    "files_direct": 16,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites/Jugadores",
+    "files_direct": 0,
+    "dirs_direct": 4
+  },
+  {
+    "path": "Sprites/Jugadores/Cuerpos",
+    "files_direct": 1,
+    "dirs_direct": 16
+  },
+  {
+    "path": "Sprites/Jugadores/Cuerpos/Agachado",
+    "files_direct": 1,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites/Jugadores/Cuerpos/Barrida",
+    "files_direct": 1,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites/Jugadores/Cuerpos/Caminar",
+    "files_direct": 7,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites/Jugadores/Cuerpos/Combo Diseno",
+    "files_direct": 2,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites/Jugadores/Cuerpos/Combo Hard",
+    "files_direct": 3,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites/Jugadores/Cuerpos/Combo Redes",
+    "files_direct": 2,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites/Jugadores/Cuerpos/Defensa",
+    "files_direct": 2,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites/Jugadores/Cuerpos/Golpe",
+    "files_direct": 4,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites/Jugadores/Cuerpos/Golpeado",
+    "files_direct": 4,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites/Jugadores/Cuerpos/Idle",
+    "files_direct": 2,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites/Jugadores/Cuerpos/Salto",
+    "files_direct": 1,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites/Jugadores/Cuerpos/Spam Diseno",
+    "files_direct": 2,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites/Jugadores/Cuerpos/Spam Hard",
+    "files_direct": 3,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites/Jugadores/Cuerpos/Spam Prog",
+    "files_direct": 2,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites/Jugadores/Cuerpos/Spam Red",
+    "files_direct": 2,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites/Jugadores/Cuerpos/Uper Cut",
+    "files_direct": 1,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites/Jugadores/Pantalon",
+    "files_direct": 0,
+    "dirs_direct": 16
+  },
+  {
+    "path": "Sprites/Jugadores/Pantalon/Agachado",
+    "files_direct": 3,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites/Jugadores/Pantalon/Barrida",
+    "files_direct": 3,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites/Jugadores/Pantalon/Caminar",
+    "files_direct": 21,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites/Jugadores/Pantalon/Combo Diseno",
+    "files_direct": 6,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites/Jugadores/Pantalon/Combo Hard",
+    "files_direct": 9,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites/Jugadores/Pantalon/Combo Redes",
+    "files_direct": 6,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites/Jugadores/Pantalon/Defensa",
+    "files_direct": 3,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites/Jugadores/Pantalon/Golpe",
+    "files_direct": 12,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites/Jugadores/Pantalon/Golpeado",
+    "files_direct": 12,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites/Jugadores/Pantalon/Idle",
+    "files_direct": 6,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites/Jugadores/Pantalon/Salto",
+    "files_direct": 3,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites/Jugadores/Pantalon/Spam Diseno",
+    "files_direct": 6,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites/Jugadores/Pantalon/Spam Hard",
+    "files_direct": 9,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites/Jugadores/Pantalon/Spam Prog",
+    "files_direct": 6,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites/Jugadores/Pantalon/Spam Red",
+    "files_direct": 6,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites/Jugadores/Pantalon/Uper Cut",
+    "files_direct": 3,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites/Jugadores/Pelo",
+    "files_direct": 0,
+    "dirs_direct": 16
+  },
+  {
+    "path": "Sprites/Jugadores/Pelo/Agachado",
+    "files_direct": 3,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites/Jugadores/Pelo/Barrida",
+    "files_direct": 3,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites/Jugadores/Pelo/Caminar",
+    "files_direct": 21,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites/Jugadores/Pelo/Combo Diseno",
+    "files_direct": 6,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites/Jugadores/Pelo/Combo Hard",
+    "files_direct": 9,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites/Jugadores/Pelo/Combo Redes",
+    "files_direct": 6,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites/Jugadores/Pelo/Defensa",
+    "files_direct": 3,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites/Jugadores/Pelo/Golpe",
+    "files_direct": 12,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites/Jugadores/Pelo/Golpeado",
+    "files_direct": 12,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites/Jugadores/Pelo/Idle",
+    "files_direct": 6,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites/Jugadores/Pelo/Salto",
+    "files_direct": 3,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites/Jugadores/Pelo/Spam Diseno",
+    "files_direct": 6,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites/Jugadores/Pelo/Spam Hard",
+    "files_direct": 9,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites/Jugadores/Pelo/Spam Prog",
+    "files_direct": 6,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites/Jugadores/Pelo/Spam Red",
+    "files_direct": 6,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites/Jugadores/Pelo/Uper Cut",
+    "files_direct": 3,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites/Jugadores/Remera",
+    "files_direct": 0,
+    "dirs_direct": 16
+  },
+  {
+    "path": "Sprites/Jugadores/Remera/Agachado",
+    "files_direct": 3,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites/Jugadores/Remera/Barrida",
+    "files_direct": 3,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites/Jugadores/Remera/Caminar",
+    "files_direct": 21,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites/Jugadores/Remera/Combo Diseno",
+    "files_direct": 6,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites/Jugadores/Remera/Combo Hard",
+    "files_direct": 9,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites/Jugadores/Remera/Combo Redes",
+    "files_direct": 6,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites/Jugadores/Remera/Defensa",
+    "files_direct": 3,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites/Jugadores/Remera/Golpe",
+    "files_direct": 12,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites/Jugadores/Remera/Golpeado",
+    "files_direct": 12,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites/Jugadores/Remera/Idle",
+    "files_direct": 6,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites/Jugadores/Remera/Salto",
+    "files_direct": 3,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites/Jugadores/Remera/Spam Diseno",
+    "files_direct": 6,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites/Jugadores/Remera/Spam Hard",
+    "files_direct": 9,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites/Jugadores/Remera/Spam Prog",
+    "files_direct": 6,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites/Jugadores/Remera/Spam Red",
+    "files_direct": 6,
+    "dirs_direct": 0
+  },
+  {
+    "path": "Sprites/Jugadores/Remera/Uper Cut",
+    "files_direct": 3,
+    "dirs_direct": 0
+  }
+]
