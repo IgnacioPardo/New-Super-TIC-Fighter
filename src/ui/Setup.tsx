@@ -35,8 +35,8 @@ export function Setup({config:incomingConfig,setConfig,settings,manifest,devices
  const [editors,setEditors]=useState<Record<string,SeatEditor>>({});
  const [drafts,setDrafts]=useState<Record<string,Partial<PlayerSeat>>>({});
  const [rulesOpen,setRulesOpen]=useState(false);
- const [shortViewport,setShortViewport]=useState(()=>innerHeight<=720&&innerWidth>760);
- useEffect(()=>{const change=()=>setShortViewport(innerHeight<=720&&innerWidth>760);window.addEventListener('resize',change);return()=>window.removeEventListener('resize',change);},[]);
+ const [shortViewport,setShortViewport]=useState(()=>innerWidth>760?innerHeight<=720:innerHeight<=900);
+ useEffect(()=>{const change=()=>setShortViewport(innerWidth>760?innerHeight<=720:innerHeight<=900);window.addEventListener('resize',change);return()=>window.removeEventListener('resize',change);},[]);
  const pageSize=usePageSize(4,1),[seatPage,setSeatPage]=useState(0);
  const pageCount=Math.max(1,Math.ceil(config.players.length/pageSize)),activePage=Math.min(seatPage,pageCount-1);
  const cursors=useRef(new Map<string,number>());

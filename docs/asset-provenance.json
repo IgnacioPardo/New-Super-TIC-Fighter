@@ -3277,5 +3277,125 @@
     "license": "SIL Open Font License 1.1",
     "copyright": "2017 The Barlow Project Authors",
     "correction": null
+  },
+  {
+    "source": "Authored in repository for New Super TIC Fighter (2026-10-11)",
+    "sourceSha256": "b0c2184a198527b33d8dbca797b5d5f4fb17442179fdc5397c89448ae11b9d05",
+    "output": "public/assets/expanded/block.svg",
+    "correction": "Original pixel-aligned SVG sprite; no external image pack or generated raster. Transparent silhouettes replace expanded combat placeholder rectangles. Original 2017/remake artwork remains unchanged."
+  },
+  {
+    "source": "Authored in repository for New Super TIC Fighter (2026-10-11)",
+    "sourceSha256": "bcc318816e6dcf420ad31bc2946ade177048c80f94ce98de2b1017b931f5ed8c",
+    "output": "public/assets/expanded/board-arduino.svg",
+    "correction": "Original pixel-aligned SVG sprite; no external image pack or generated raster. Transparent silhouettes replace expanded combat placeholder rectangles. Original 2017/remake artwork remains unchanged."
+  },
+  {
+    "source": "Authored in repository for New Super TIC Fighter (2026-10-11)",
+    "sourceSha256": "114a5681a1bb45c3ed148e20f35b8000fecf4c3b01e60c943ac882e929482080",
+    "output": "public/assets/expanded/board-esp32.svg",
+    "correction": "Original pixel-aligned SVG sprite; no external image pack or generated raster. Transparent silhouettes replace expanded combat placeholder rectangles. Original 2017/remake artwork remains unchanged."
+  },
+  {
+    "source": "Authored in repository for New Super TIC Fighter (2026-10-11)",
+    "sourceSha256": "7a17f21226f4498b93c3a177644e86237fec2cc9c15b0d11dece8201644014b0",
+    "output": "public/assets/expanded/drone-0.svg",
+    "correction": "Original pixel-aligned SVG sprite; no external image pack or generated raster. Transparent silhouettes replace expanded combat placeholder rectangles. Original 2017/remake artwork remains unchanged."
+  },
+  {
+    "source": "Authored in repository for New Super TIC Fighter (2026-10-11)",
+    "sourceSha256": "e48f3c05e58afd2eb73839bfca494698f9639c18d6ec8f8893cf57c5ebe2479d",
+    "output": "public/assets/expanded/drone-1.svg",
+    "correction": "Original pixel-aligned SVG sprite; no external image pack or generated raster. Transparent silhouettes replace expanded combat placeholder rectangles. Original 2017/remake artwork remains unchanged."
+  },
+  {
+    "source": "Authored in repository for New Super TIC Fighter (2026-10-11)",
+    "sourceSha256": "ad5db7b928ab1946e72c5dc11158dec6bf6ed09ae2e9330c26cd4392b3c94324",
+    "output": "public/assets/expanded/effect-bolt.svg",
+    "correction": "Original pixel-aligned SVG sprite; no external image pack or generated raster. Transparent silhouettes replace expanded combat placeholder rectangles. Original 2017/remake artwork remains unchanged."
+  },
+  {
+    "source": "Authored in repository for New Super TIC Fighter (2026-10-11)",
+    "sourceSha256": "d7c2078520bec34ae589da3b2c58f308ab38ef3ca5c3525c98b612d62de107f9",
+    "output": "public/assets/expanded/effect-displacement.svg",
+    "correction": "Original pixel-aligned SVG sprite; no external image pack or generated raster. Transparent silhouettes replace expanded combat placeholder rectangles. Original 2017/remake artwork remains unchanged."
+  },
+  {
+    "source": "Authored in repository for New Super TIC Fighter (2026-10-11)",
+    "sourceSha256": "8140e0c2d64e1bb97b352bb639576d497b7f4da57d508fba90c608651f17306a",
+    "output": "public/assets/expanded/effect-hub.svg",
+    "correction": "Original pixel-aligned SVG sprite; no external image pack or generated raster. Transparent silhouettes replace expanded combat placeholder rectangles. Original 2017/remake artwork remains unchanged."
+  },
+  {
+    "source": "Authored in repository for New Super TIC Fighter (2026-10-11)",
+    "sourceSha256": "fa6b1835b2e5ea5c9bd9e5a83c8e76f0f335917331469a660ee3c62bf9fb90f7",
+    "output": "public/assets/expanded/effect-mechanical.svg",
+    "correction": "Original pixel-aligned SVG sprite; no external image pack or generated raster. Transparent silhouettes replace expanded combat placeholder rectangles. Original 2017/remake artwork remains unchanged."
+  },
+  {
+    "source": "Authored in repository for New Super TIC Fighter (2026-10-11)",
+    "sourceSha256": "aa78c2af2cc6bc238e3663585234d529ee1a0e835c8f5d08a8764a00dff145d8",
+    "output": "public/assets/expanded/effect-piston.svg",
+    "correction": "Original pixel-aligned SVG sprite; no external image pack or generated raster. Transparent silhouettes replace expanded combat placeholder rectangles. Original 2017/remake artwork remains unchanged."
+  },
+  {
+    "source": "Authored in repository for New Super TIC Fighter (2026-10-11)",
+    "sourceSha256": "f33b9f3f42ef0bc23db7f58a5a1386d614506dda80ca1e56295a98cdb68349ab",
+    "output": "public/assets/expanded/effect-ricochet.svg",
+    "correction": "Original pixel-aligned SVG sprite; no external image pack or generated raster. Transparent silhouettes replace expanded combat placeholder rectangles. Original 2017/remake artwork remains unchanged."
+  },
+  {
+    "source": "Authored in repository for New Super TIC Fighter (2026-10-11)",
+    "sourceSha256": "2f571c84d2b4f90dd53f79cec5470bc0665f2f0a9bd00a58a947a6bdabac765e",
+    "output": "public/assets/expanded/effect-usb.svg",
+    "correction": "Original pixel-aligned SVG sprite; no external image pack or generated raster. Transparent silhouettes replace expanded combat placeholder rectangles. Original 2017/remake artwork remains unchanged."
+  },
+  {
+    "source": "Authored in repository for New Super TIC Fighter (2026-10-11)",
+    "sourceSha256": "df19037346620b6699e3606036190a6f9cb3b2cac868692ca610916eb8409c56",
+    "output": "public/assets/expanded/effect-wireless.svg",
+    "correction": "Original pixel-aligned SVG sprite; no external image pack or generated raster. Transparent silhouettes replace expanded combat placeholder rectangles. Original 2017/remake artwork remains unchanged."
+  },
+  {
+    "source": "Authored in repository for New Super TIC Fighter (2026-10-11)",
+    "sourceSha256": "a4fc0b95328236ed0c6c4035ecfb46ea52262762fd8895e2d8dedf9c2dcbd658",
+    "output": "public/assets/expanded/hub.svg",
+    "correction": "Original pixel-aligned SVG sprite; no external image pack or generated raster. Transparent silhouettes replace expanded combat placeholder rectangles. Original 2017/remake artwork remains unchanged."
+  },
+  {
+    "source": "Authored in repository for New Super TIC Fighter (2026-10-11)",
+    "sourceSha256": "e3e11cacdda2f9e4b33d36dbd96983b0ac7bac695dd07a78e93a3a073420a12a",
+    "output": "public/assets/expanded/item-battery.svg",
+    "correction": "Original pixel-aligned SVG sprite; no external image pack or generated raster. Transparent silhouettes replace expanded combat placeholder rectangles. Original 2017/remake artwork remains unchanged."
+  },
+  {
+    "source": "Authored in repository for New Super TIC Fighter (2026-10-11)",
+    "sourceSha256": "6ed4f8aa619da47753b3c41ecb0ac876867b997171d4c1ab92f29e4466c70cb2",
+    "output": "public/assets/expanded/item-fan.svg",
+    "correction": "Original pixel-aligned SVG sprite; no external image pack or generated raster. Transparent silhouettes replace expanded combat placeholder rectangles. Original 2017/remake artwork remains unchanged."
+  },
+  {
+    "source": "Authored in repository for New Super TIC Fighter (2026-10-11)",
+    "sourceSha256": "c84219966df4fc854112848f299df59e58dc9749e2e871224c405abc5ff201f1",
+    "output": "public/assets/expanded/item-firewall.svg",
+    "correction": "Original pixel-aligned SVG sprite; no external image pack or generated raster. Transparent silhouettes replace expanded combat placeholder rectangles. Original 2017/remake artwork remains unchanged."
+  },
+  {
+    "source": "Authored in repository for New Super TIC Fighter (2026-10-11)",
+    "sourceSha256": "f17666b18fc1e4ff2ae9eecc963b39f562797f91872156e86166f6893dda4498",
+    "output": "public/assets/expanded/item-overclock.svg",
+    "correction": "Original pixel-aligned SVG sprite; no external image pack or generated raster. Transparent silhouettes replace expanded combat placeholder rectangles. Original 2017/remake artwork remains unchanged."
+  },
+  {
+    "source": "Authored in repository for New Super TIC Fighter (2026-10-11)",
+    "sourceSha256": "dbeb40271263957af61b30a3baec2390b5c992e0ddd021072c893eded502a841",
+    "output": "public/assets/expanded/item-usb.svg",
+    "correction": "Original pixel-aligned SVG sprite; no external image pack or generated raster. Transparent silhouettes replace expanded combat placeholder rectangles. Original 2017/remake artwork remains unchanged."
+  },
+  {
+    "source": "Authored in repository for New Super TIC Fighter (2026-10-11)",
+    "sourceSha256": "c5880444b1736acc3f92018e4a82bf26721528e01cceb65544a128defff204b8",
+    "output": "public/assets/expanded/pad.svg",
+    "correction": "Original pixel-aligned SVG sprite; no external image pack or generated raster. Transparent silhouettes replace expanded combat placeholder rectangles. Original 2017/remake artwork remains unchanged."
   }
 ]

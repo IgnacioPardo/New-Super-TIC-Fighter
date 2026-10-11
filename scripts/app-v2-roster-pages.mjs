@@ -4,6 +4,14 @@ import {chromium,expect} from '@playwright/test';
 import {mkdir} from 'node:fs/promises';
 import {enterTitle,chooseMode} from './enter-title.mjs';
 const base=process.env.STF_APP_URL??'http://127.0.0.1:8791',browser=await chromium.launch();await mkdir('tmp/qa/v2-layout',{recursive:true});
+async function assertEditorControls(page) {
+ const covered=await page.evaluate(()=>[...document.querySelectorAll('.fighter-summary:not([hidden]) button,.fighter-summary:not([hidden]) input')].filter(e=>e.getClientRects().length).flatMap(e=>{
+  const r=e.getBoundingClientRect(),c=e.closest('.fighter-summary').getBoundingClientRect(),hit=document.elementFromPoint(r.left+r.width/2,r.bottom-4);
+  return r.bottom>c.bottom||r.top<c.top||hit&&!e.contains(hit)?[e.getAttribute('aria-label')??e.textContent.trim()]:[];
+ }));
+ assert.deepEqual(covered,[],'Editor controls must remain visible and unobstructed');
+ assert.equal(await page.evaluate(()=>document.documentElement.scrollHeight>innerHeight),false,'Editors must fit the window');
+}
 try{
  for(const language of ['es','en']){
  const es=language==='es',page=await browser.newPage({viewport:{width:1024,height:640}}),errors=[];page.on('pageerror',e=>errors.push(e.message));
@@ -18,16 +26,25 @@ try{
  await page.goto(base);await enterTitle(page);await chooseMode(page,'local');
  for(const id of ['p1','p3','p5','p7'])await expect(card(id)).toBeVisible();for(const id of ['p2','p4','p6','p8'])await expect(card(id)).toBeHidden();
  for(let i=0;i<4;i++)await pad(i,0);for(const id of ['p1','p3','p5','p7'])await expect(card(id)).toHaveClass(/is-editing/);
+ // A meaningful preview remains present while all four seats edit independently.
+ for(const id of ['p1','p3','p5','p7']) {
+  const preview=card(id).locator('.fighter-preview');await expect(preview).toBeVisible();
+  assert.ok((await preview.boundingBox()).height>=90,'Preview must show the full fighter');
+ }
+ await assertEditorControls(page);
+ await page.screenshot({path:`tmp/qa/v2-layout/${language}-four-local-editors-first-page-1024.png`});
+ const hairLayer=card('p1').locator('.avatar-sprite span').nth(1),before=await hairLayer.getAttribute('style');
+ await card('p1').getByRole('button',{name:new RegExp(es?'^Pelo:':'^Hair:')}).press('ArrowRight');
+ await expect(hairLayer).not.toHaveAttribute('style',before);
  await card('p1').getByRole('tab',{name:es?'Jugador':'Player',exact:true}).click();const name=card('p1').getByRole('textbox');await name.fill('Couch keyboard');await expect(name).toBeFocused();
  for(let i=1;i<4;i++){await pad(i,13);await pad(i,15);await expect(name).toBeFocused();}
  assert.equal(await name.inputValue(),'Couch keyboard');
  for(const id of ['p3','p5','p7']){const next=card(id).locator('.inline-fighter-editor .content-pager.compact button:last-child');await next.click();await expect(card(id).getByRole('button',{name:new RegExp(es?'^Pantalón:':'^Trousers:')})).toBeVisible();}
  // Every control must be within its card; a row under Ready is a real failure.
+ await assertEditorControls(page);
  await page.screenshot({path:`tmp/qa/v2-layout/${language}-four-local-editors-1024.png`});
- const covered=await page.evaluate(()=>[...document.querySelectorAll('.fighter-summary:not([hidden]) button,.fighter-summary:not([hidden]) input')].filter(e=>e.getClientRects().length).flatMap(e=>{const r=e.getBoundingClientRect(),c=e.closest('.fighter-summary').getBoundingClientRect(),hit=document.elementFromPoint(r.left+r.width/2,r.bottom-4);return r.bottom>c.bottom||r.top<c.top||hit&&!e.contains(hit)?[e.getAttribute('aria-label')??e.textContent.trim()]:[];}));assert.deepEqual(covered,[]);
- await page.screenshot({path:`tmp/qa/v2-layout/${language}-four-local-editors-1024.png`});
- await page.setViewportSize({width:390,height:844});await pad(3,13);await expect(card('p7')).toBeVisible();await expect(card('p1')).toBeHidden();await expect(card('p1')).toHaveClass(/is-editing/);await expect(card('p1').locator('input')).toHaveValue('Couch keyboard');await page.screenshot({path:`tmp/qa/v2-layout/${language}-owned-controller-page-390.png`});
- await page.setViewportSize({width:1366,height:768});await page.waitForTimeout(150);await page.locator('.content-pager button').first().click();for(const id of ['p1','p3','p5','p7']){await card(id).locator('.fighter-edit').click();await card(id).locator('.ready-button').click();}
+ await page.setViewportSize({width:390,height:844});await pad(3,13);await expect(card('p7')).toBeVisible();await expect(card('p1')).toBeHidden();await expect(card('p1')).toHaveClass(/is-editing/);await expect(card('p1').locator('input')).toHaveValue('Couch keyboard');await assertEditorControls(page);await page.screenshot({path:`tmp/qa/v2-layout/${language}-owned-controller-page-390.png`});
+ await page.setViewportSize({width:1366,height:768});await page.waitForTimeout(150);await page.locator('.content-pager button').first().click();await page.screenshot({path:`tmp/qa/v2-layout/${language}-four-local-editors-1366.png`});await assertEditorControls(page);for(const id of ['p1','p3','p5','p7']){await card(id).locator('.fighter-edit').click();await card(id).locator('.ready-button').click();}
  await page.locator('.fight-button').click();await page.waitForFunction(()=>window.__snapshot?.phase==='playing'&&window.__snapshot.fighters.length===8);
  await expect(page.locator('.royale-local-roster .hud-fighter')).toHaveCount(4);await expect(page.locator('.hud-opponent')).toHaveCount(4);const hud=await page.locator('.royale-hud').boundingBox();assert.ok(hud.height<=180);await page.screenshot({path:`tmp/qa/v2-layout/${language}-four-local-royale-hud.png`});assert.deepEqual(errors,[]);await page.close();console.log(`${language}: four simultaneous local editors, preserved native keyboard focus, all appearance options, controller-owned narrow paging and real eight-fighter/four-local Royale HUD passed.`);
  }
