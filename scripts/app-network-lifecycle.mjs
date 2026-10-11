@@ -4,6 +4,7 @@
 import assert from 'node:assert/strict';
 import { mkdir } from 'node:fs/promises';
 import { chromium } from '@playwright/test';
+import { enterTitle } from './enter-title.mjs';
 
 const base = process.env.STF_APP_URL ?? 'http://127.0.0.1:5173';
 const browser = await chromium.launch({ headless: true });
@@ -17,6 +18,7 @@ async function openSession(label) {
   page.on('pageerror', error => errors.push(`${label}: ${error.message}`));
   await page.addInitScript(() => {
     window.__stfObserved = { rooms: [], controls: [], snapshots: 0, sockets: 0, lastInputSequence: 0 };
+    Object.defineProperty(navigator, 'getGamepads', { value: () => [] }); // Isolate keyboard flows from attached physical devices.
     const NativeWorker = window.Worker;
     window.Worker = class extends NativeWorker {
       constructor(...args) {
@@ -75,6 +77,7 @@ async function onlineEntry(session, name, code) {
 }
 
 async function openOnline(page) {
+  await enterTitle(page);
   const mode = page.getByTestId('mode-online');
   if (await mode.count()) await mode.click();
   else await page.getByRole('button', { name: /02.*ONLINE/ }).click();
@@ -106,7 +109,7 @@ async function addHumanHost(host, count) {
 
 async function ready(session, name) {
   const card = session.page.locator('.fighter-card').filter({ hasText: name });
-  await card.getByRole('button', { name: 'Estoy listo', exact: true }).click();
+  await card.getByRole('button', { name: 'Listo', exact: true }).click();
   await session.page.waitForFunction(() => window.__stfRoom?.readiness[window.__stfRoom.peerId]?.ready, null, { timeout: 20_000 });
 }
 

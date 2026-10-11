@@ -56,6 +56,10 @@ Phaser fills the playable viewport. HUD overlays are outside the world camera. T
 
 Large winner pose and player names, an unmistakable victory/draw/interrupted label, one primary rematch or return-to-room action and a compact secondary return action. Preserve honest interruption results (no arbitrary winner). Detailed remaining lives/damage are supporting information, not a dashboard table that competes with the winner. Use coded ribbons/triangles rather than emoji crowns.
 
+## Copy direction
+
+The owner chose minimal arcade labels. Use short actions and status labels in Spanish and English. Omit promotional taglines, character quips, rhetorical questions and filler on pause/results screens. Keep explanations for rules, controls, recovery and settings that need them. Stage subtitles describe the layout. Use ASCII for authored Arcade-font headings and buttons; retain Spanish accents in the regular body font. Keep UI translations in `src/ui/i18n.ts` and shared stage names/descriptions in `src/shared/content.ts`.
+
 ## Verification gate
 
 Type/build checks, real worker fights, settings persistence/remapping, keyboard focus, simulated gamepad menu commands (labeled as simulated), local results/rematch and online lobby/host/guest flows. Review actual screenshots at 1366×768 and a taller desktop aspect; small widths reflow rather than cut off controls. Check every arena behind the HUD, pause and loading/error states. Physical gamepad behavior is not claimed until actual hardware is exercised. No unit tests, image generation, paid services or external art ingestion.

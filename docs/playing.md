@@ -1,5 +1,7 @@
 # Playing New Super TIC Fighter
 
+The opening intro shows the new logo and original fighters. Press a key, click/tap anywhere, or use the controller's confirm/Start button to reach the existing title menu. Escape from that menu returns to the intro. Room invitation links skip the intro and keep their room code. Keyboard/pointer entry also requests browser audio unlock; a controller-only session can enable sound from the title menu if the browser requires a click.
+
 Choose **Local** for two to four people on one computer, **Online** to create or join a shared room, or **Practice** for a bot or stationary training opponent. Each fighter chooses a discipline, hair, shirt, trousers, and a control device. Open **Jugador / Control** to change names, devices, bot difficulty, and team assignment. Everyone confirms readiness before the host starts an online round.
 
 Online rooms also support two people on one computer and friends elsewhere. Assign different keyboard presets or controllers to the two local fighters; each remote browser assigns its own devices. Copy the invitation link from the room. There are no accounts or public matchmaking.
@@ -19,7 +21,7 @@ Online rooms also support two people on one computer and friends elsewhere. Assi
 
 Crouch plus punch gives an uppercut. Crouch plus special gives a sweep. The original direction → crouch → standing special sequence also triggers a combo when completed within half a second. Attacks have recovery time; most require standing on a platform. Face the opponent before holding guard; it locks your facing and blocks ordinary frontal punches. Other attacks bypass it.
 
-Keyboard bindings and controller buttons/dead zone can be changed in Settings. Controllers navigate menus with the stick or D-pad, confirm with the mapped jump button, and go back with the mapped special button. A browser may need a click or key press to unlock sound.
+Keyboard bindings and controller buttons/dead zone can be changed in Settings. Controllers navigate menus with the stick or D-pad, confirm with the bottom face button (✕ / A), and go back with the right face button (○ / B). Menu buttons remain fixed when combat controls are remapped. The first connected controller is assigned to your first fighter when entering practice, local setup, or an online room; each fighter’s device selector remains visible in the lobby. Settings shows detected controllers and their latest input. A browser may need a click or key press to unlock sound.
 
 ## Rounds and reconnecting
 

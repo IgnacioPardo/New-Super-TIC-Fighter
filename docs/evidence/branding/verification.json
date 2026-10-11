@@ -1,0 +1,274 @@
+{
+  "base": "http://127.0.0.1:4173",
+  "engines": {
+    "chromium": "Brand assets, icon metadata, responsive wordmark/icon, title viewports, settings and brand navigation passed.",
+    "firefox": "Brand assets, icon metadata, responsive wordmark/icon, title viewports, settings and brand navigation passed.",
+    "webkit": "Brand assets, icon metadata, responsive wordmark/icon, title viewports, settings and brand navigation passed."
+  },
+  "titleLayout": {
+    "1440x810": {
+      "before": {
+        ".title-screen": {
+          "x": 72,
+          "y": 0,
+          "width": 1296,
+          "height": 758
+        },
+        ".title-poster": {
+          "x": 72,
+          "y": 68.65625,
+          "width": 762.09375,
+          "height": 620.6875
+        },
+        ".title-menu-area": {
+          "x": 891.6875,
+          "y": 126,
+          "width": 476.3125,
+          "height": 506
+        },
+        ".title-cast": {
+          "x": 72,
+          "y": 404.953125,
+          "width": 762.09375,
+          "height": 234.890625
+        },
+        ".title-tagline": {
+          "x": 72,
+          "y": 666.84375,
+          "width": 762.09375,
+          "height": 22.5
+        }
+      },
+      "after": {
+        ".title-screen": {
+          "x": 72,
+          "y": 0,
+          "width": 1296,
+          "height": 758
+        },
+        ".title-poster": {
+          "x": 72,
+          "y": 68.65625,
+          "width": 762.09375,
+          "height": 620.6875
+        },
+        ".title-menu-area": {
+          "x": 891.6875,
+          "y": 126,
+          "width": 476.3125,
+          "height": 506
+        },
+        ".title-cast": {
+          "x": 72,
+          "y": 404.953125,
+          "width": 762.09375,
+          "height": 234.890625
+        },
+        ".title-tagline": {
+          "x": 72,
+          "y": 666.84375,
+          "width": 762.09375,
+          "height": 22.5
+        }
+      }
+    },
+    "1920x1080": {
+      "before": {
+        ".title-screen": {
+          "x": 256,
+          "y": 0,
+          "width": 1408,
+          "height": 1028
+        },
+        ".title-poster": {
+          "x": 256,
+          "y": 113.453125,
+          "width": 817.21875,
+          "height": 801.09375
+        },
+        ".title-menu-area": {
+          "x": 1153.21875,
+          "y": 261,
+          "width": 510.78125,
+          "height": 506
+        },
+        ".title-cast": {
+          "x": 256,
+          "y": 551.859375,
+          "width": 817.21875,
+          "height": 313.1875
+        },
+        ".title-tagline": {
+          "x": 256,
+          "y": 892.046875,
+          "width": 817.21875,
+          "height": 22.5
+        }
+      },
+      "after": {
+        ".title-screen": {
+          "x": 256,
+          "y": 0,
+          "width": 1408,
+          "height": 1028
+        },
+        ".title-poster": {
+          "x": 256,
+          "y": 113.453125,
+          "width": 817.21875,
+          "height": 801.09375
+        },
+        ".title-menu-area": {
+          "x": 1153.21875,
+          "y": 261,
+          "width": 510.78125,
+          "height": 506
+        },
+        ".title-cast": {
+          "x": 256,
+          "y": 551.859375,
+          "width": 817.21875,
+          "height": 313.1875
+        },
+        ".title-tagline": {
+          "x": 256,
+          "y": 892.046875,
+          "width": 817.21875,
+          "height": 22.5
+        }
+      }
+    },
+    "390x844": {
+      "before": {
+        ".title-screen": {
+          "x": 18,
+          "y": 0,
+          "width": 354,
+          "height": 904.046875
+        },
+        ".title-poster": {
+          "x": 18,
+          "y": 40,
+          "width": 354,
+          "height": 450.046875
+        },
+        ".title-menu-area": {
+          "x": 18,
+          "y": 508.046875,
+          "width": 354,
+          "height": 368
+        },
+        ".title-cast": {
+          "x": 18,
+          "y": 243.546875,
+          "width": 354,
+          "height": 200
+        },
+        ".title-tagline": {
+          "x": 18,
+          "y": 470.546875,
+          "width": 354,
+          "height": 19.5
+        }
+      },
+      "after": {
+        ".title-screen": {
+          "x": 18,
+          "y": 0,
+          "width": 354,
+          "height": 904.046875
+        },
+        ".title-poster": {
+          "x": 18,
+          "y": 40,
+          "width": 354,
+          "height": 450.046875
+        },
+        ".title-menu-area": {
+          "x": 18,
+          "y": 508.046875,
+          "width": 354,
+          "height": 368
+        },
+        ".title-cast": {
+          "x": 18,
+          "y": 243.546875,
+          "width": 354,
+          "height": 200
+        },
+        ".title-tagline": {
+          "x": 18,
+          "y": 470.546875,
+          "width": 354,
+          "height": 19.5
+        }
+      }
+    },
+    "667x375": {
+      "before": {
+        ".title-screen": {
+          "x": 18,
+          "y": 0,
+          "width": 631,
+          "height": 1003.234375
+        },
+        ".title-poster": {
+          "x": 48.5,
+          "y": 40,
+          "width": 570,
+          "height": 549.234375
+        },
+        ".title-menu-area": {
+          "x": 123.5,
+          "y": 607.234375,
+          "width": 420,
+          "height": 368
+        },
+        ".title-cast": {
+          "x": 48.5,
+          "y": 342.734375,
+          "width": 570,
+          "height": 200
+        },
+        ".title-tagline": {
+          "x": 48.5,
+          "y": 569.734375,
+          "width": 570,
+          "height": 19.5
+        }
+      },
+      "after": {
+        ".title-screen": {
+          "x": 18,
+          "y": 0,
+          "width": 631,
+          "height": 1003.234375
+        },
+        ".title-poster": {
+          "x": 48.5,
+          "y": 40,
+          "width": 570,
+          "height": 549.234375
+        },
+        ".title-menu-area": {
+          "x": 123.5,
+          "y": 607.234375,
+          "width": 420,
+          "height": 368
+        },
+        ".title-cast": {
+          "x": 48.5,
+          "y": 342.734375,
+          "width": 570,
+          "height": 200
+        },
+        ".title-tagline": {
+          "x": 48.5,
+          "y": 569.734375,
+          "width": 570,
+          "height": 19.5
+        }
+      }
+    }
+  }
+}

@@ -1,6 +1,7 @@
 // Full application flow with real HTML audio decoding, seeking, looping, and shuffle.
 // Instrumentation retains native Audio and Worker behavior; no media is mocked.
 import assert from 'node:assert/strict';
+import {enterTitle} from './enter-title.mjs';
 import {mkdir,readFile,writeFile} from 'node:fs/promises';
 import {chromium,firefox,webkit,expect} from '@playwright/test';
 
@@ -29,7 +30,8 @@ for(const name of (process.env.STF_BROWSERS??'chromium,firefox,webkit').split(',
  const menu=async()=>{const state=await playing();assert.equal(state.path,audio.menu);assert.equal(state.loop,true);};
  try{
   await page.goto(base);
-  await page.getByRole('button',{name:'Activar sonido',exact:true}).click();
+  await page.waitForFunction(()=>window.__music.length>0);
+  await enterTitle(page);
   await menu();
   assert.equal(audio.menu,'/assets/audio/original/04.mp3');
   assert.deepEqual([...requests],[audio.menu],'Only menu music loads before a match');
@@ -67,7 +69,7 @@ for(const name of (process.env.STF_BROWSERS??'chromium,firefox,webkit').split(',
   await page.keyboard.press('Escape');await page.locator('.pause-panel').waitFor();await menu();
   await page.locator('.pause-panel .text-button').click();await menu();
   await page.locator('.back-button').click();await menu();
-  await page.reload();await page.getByRole('button',{name:'Activar sonido',exact:true}).click();await menu();
+  await page.reload();await page.waitForFunction(()=>window.__music.length>0);await enterTitle(page);await menu();
   assert.deepEqual(errors,[]);
   report.push({browser:name,menu:audio.menu,menuLoop:true,menuIndependentOfPlaylist:true,remakeCycle:cycle,errors});
   console.log(`${name}: title/menu loop, both playlists, pause/settings/resume, all ${cycle.length} remake tracks, natural track advance, and return/reload passed.`);

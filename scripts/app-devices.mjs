@@ -15,11 +15,11 @@ for(const name of engines){
  });
  const tap=async button=>{await page.evaluate(index=>window.__pads[0].buttons[index].pressed=true,button);await page.waitForTimeout(70);await page.evaluate(index=>window.__pads[0].buttons[index].pressed=false,button);await page.waitForTimeout(60);};
  try{
-  await page.goto(base);await expect(page.getByTestId('mode-local')).toBeFocused();
+  await page.goto(base);await page.getByTestId('intro-continue').waitFor();await tap(0);await expect(page.getByTestId('mode-local')).toBeFocused();
   await tap(13);await tap(13);await expect(page.getByTestId('mode-practice')).toBeFocused();await tap(0);
   await expect(page.locator('.fighter-edit').first()).toBeFocused();await tap(0);await tap(15);
   await expect(page.getByRole('tab',{name:'Jugador / Control'})).toBeFocused();await tap(13);await tap(13);
-  await expect(page.getByRole('button',{name:'Control: Teclado 1',exact:true})).toBeFocused();await tap(14);await tap(1);
+  await expect(page.getByRole('button',{name:'Control: QA Xbox-compatible virtual pad',exact:true})).toBeFocused();await tap(15);await tap(14);await tap(1);
   await expect(page.locator('.fighter-edit').first()).toBeFocused();await tap(13);await expect(page.locator('.match-summary')).toBeFocused();await tap(0);
   await tap(15);await tap(15);await expect(page.getByRole('button',{name:'Escenario: Dentro de la PC',exact:true})).toBeFocused();await tap(1);
   await tap(13);await expect(page.locator('.fight-button')).toBeFocused();await tap(0);await page.waitForFunction(()=>window.__snapshot?.phase==='playing');

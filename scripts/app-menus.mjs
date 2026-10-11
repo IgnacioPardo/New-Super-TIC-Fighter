@@ -2,6 +2,7 @@
 import assert from 'node:assert/strict';
 import {mkdir} from 'node:fs/promises';
 import {chromium,firefox,webkit,expect} from '@playwright/test';
+import {enterTitle} from './enter-title.mjs';
 const base=process.env.STF_APP_URL??'http://127.0.0.1:5173';
 await mkdir('tmp/qa',{recursive:true});
 for(const engine of (process.env.STF_BROWSERS??'chromium,firefox,webkit').split(',')){
@@ -21,7 +22,7 @@ for(const engine of (process.env.STF_BROWSERS??'chromium,firefox,webkit').split(
  const choice=label=>page.getByRole('button',{name:new RegExp(`^${label}:`)});
  const close=async()=>{await key('Escape');await expect(page.getByRole('dialog')).toHaveCount(0);};
  try{
-  await page.goto(base);await page.getByTestId('mode-settings').click();
+  await page.goto(base);await enterTitle(page);await page.getByTestId('mode-settings').click();
   await expect(page.locator('.settings-category').first()).toBeFocused();
   await key('Enter');await expect(page.getByRole('slider',{name:'Música'})).toBeFocused();
   await key('ArrowRight');await expect(page.getByRole('slider',{name:'Música'})).toHaveValue('0.5');
@@ -35,9 +36,9 @@ for(const engine of (process.env.STF_BROWSERS??'chromium,firefox,webkit').split(
   await key('Shift+Tab');await expect(choice('Reduce motion')).toBeFocused();
   await close();await key('ArrowDown');await key('Enter');await key('ArrowDown');
   await expect(page.locator('.binding-button').first()).toBeFocused();await key('Enter');await key('d');
-  await expect(page.getByRole('status')).toContainText('already assigned');await key('f');await expect(page.locator('.binding-button').first().locator('kbd')).toHaveText('F');
+  await expect(page.getByRole('status')).toContainText('already used');await key('f');await expect(page.locator('.binding-button').first().locator('kbd')).toHaveText('F');
   await key('Enter');await pad(1);await expect(page.getByRole('dialog')).toHaveCount(1);await expect(page.locator('.capturing')).toHaveCount(0);
-  await page.getByRole('button',{name:'Restore original keyboards'}).click();await expect(page.locator('.binding-button').first().locator('kbd')).toHaveText('A');
+  await page.getByRole('button',{name:'Reset keys'}).click();await expect(page.locator('.binding-button').first().locator('kbd')).toHaveText('A');
   await close();await key('ArrowDown');await key('Enter');await expect(choice('Jump')).toBeFocused();
   await page.evaluate(()=>{window.__pad.buttons[15].pressed=true;window.__pad.buttons[13].pressed=true;});await page.waitForTimeout(90);await page.evaluate(()=>{window.__pad.buttons[15].pressed=false;window.__pad.buttons[13].pressed=false;});await page.waitForTimeout(50);
   await expect(choice('Jump')).toBeFocused();await expect(choice('Jump')).toContainText('B / ○');await expect(choice('Special')).toContainText('A / ✕');
@@ -45,7 +46,7 @@ for(const engine of (process.env.STF_BROWSERS??'chromium,firefox,webkit').split(
   await pad(0);await expect(choice('Jump')).toBeFocused(); // Menu A remains confirm after combat remapping.
   await pad(14);await expect(choice('Jump')).toContainText('A / ✕');
   await pad(13,750);assert.match(await page.evaluate(()=>document.activeElement.getAttribute('aria-label')), /^(Guard|PAUSED):/, 'Held D-pad repeats through rows with an initial delay');
-  await pad(1);await page.reload();await page.getByTestId('mode-settings').click();await key('Enter');
+  await pad(1);await page.reload();await enterTitle(page);await page.getByTestId('mode-settings').click();await key('Enter');
   await expect(page.getByRole('slider',{name:'Music'})).toHaveValue('0');await expect(page.getByRole('slider',{name:'Effects'})).toHaveValue('0');await expect(choice('Soundtrack')).toContainText('Original');
   await close();await key('ArrowDown');await key('Enter');await expect(choice('Camera')).toContainText('Fixed');await expect(choice('Reduce motion')).toContainText('On');await key('ArrowLeft'); // English -> Spanish
   await close();await page.locator('.back-button').click();await page.getByTestId('mode-local').click();
@@ -63,7 +64,7 @@ for(const engine of (process.env.STF_BROWSERS??'chromium,firefox,webkit').split(
   for(const card of await page.locator('.fighter-card').all())await card.locator('.ready-button').click();
   await expect(page.locator('.fight-button')).toBeEnabled();
   await page.screenshot({path:`tmp/qa/${engine}-config-roster.png`,fullPage:true});
-  await page.locator('.fighter-edit').last().click();await page.getByRole('tab',{name:'Jugador / Control'}).click();await choice('Control').focus();await key('ArrowRight');await key('ArrowRight');
+  await page.locator('.fighter-edit').last().click();await page.getByRole('tab',{name:'Jugador / Control'}).click();await choice('Control').focus();await key('ArrowRight');await key('ArrowRight');await key('ArrowRight');
   await close();await expect(page.locator('.fight-button')).toBeDisabled();await expect(page.getByRole('status')).toContainText('control distinto');
   await page.locator('.fighter-edit').last().click();await page.getByRole('tab',{name:'Jugador / Control'}).click();await choice('Jugador').click();await close();
   for(const ready of await page.locator('.ready-button:not(:disabled)').all())await ready.click();

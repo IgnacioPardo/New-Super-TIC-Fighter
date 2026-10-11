@@ -67,10 +67,10 @@ export function Setup({ config, setConfig, settings, manifest, devices, ready, t
    <span className="arena-thumbnail" style={{ backgroundImage: manifest ? `url("${manifest.backgrounds[arena.id]}")` : undefined }}><svg viewBox="0 0 1366 768" aria-hidden="true">{arena.platforms.map((platform, i) => <rect key={i} {...platform} />)}</svg></span>
    <span><small>{t.arena} / {t.rules}</small><strong>{arena.name[lang]}</strong><span>{practice ? t.practice : `${config.mode === 'teams' ? t.teams : t.ffa} · ${config.lives} ${t.lives.toLowerCase()} · ${config.timeLimit ? `${config.timeLimit / 60} min` : t.unlimited}`}</span></span><span className="summary-change">{host ? t.change : t.waitHost} <b aria-hidden="true">›</b></span>
   </button>
-  <div className="start-panel"><p className={validation ? 'validation-hint' : 'help-text'} role="status">{validation || (practice ? t.practiceTip : t.readyHelp)}</p><button className="primary-button fight-button" disabled={!!validation || !manifest || !host} onClick={start}>{t.start}<span>↗</span></button></div>
+  <div className="start-panel"><p className={validation ? 'validation-hint' : 'help-text'} role="status">{validation || (practice ? t.practiceTip : t.readyHelp)}</p><button className="primary-button fight-button" data-ui-sound="silent" disabled={!!validation || !manifest || !host} onClick={start}>{t.start}<span>↗</span></button></div>
   {seat && <MenuDialog accent={disciplineInfo[seat.discipline].color} mark={`P${index + 1}`} language={settings.language} title={seat.name} subtitle={owned(seat) ? t.editFighter : t.seatRemote} done={t.done} close={() => setEditing(null)}>
    <div className="fighter-editor" style={{ '--fighter-color': disciplineInfo[seat.discipline].color } as React.CSSProperties}>
-    <div className="editor-preview" data-number={String(index + 1).padStart(2, '0')}><Avatar appearance={seat.appearance} discipline={seat.discipline} manifest={manifest} animated={!settings.reducedMotion} /><strong>{names[seat.discipline][lang]}</strong><p>{disciplineInfo[seat.discipline].flavor[lang]}</p></div>
+    <div className="editor-preview" data-number={String(index + 1).padStart(2, '0')}><Avatar appearance={seat.appearance} discipline={seat.discipline} manifest={manifest} animated={!settings.reducedMotion} /><strong>{names[seat.discipline][lang]}</strong><p>{disciplineInfo[seat.discipline].special[lang]}</p></div>
     <div className="editor-fields">
      <MenuTabs label={t.editFighter} value={editorTab} options={[{ value: 'fighter', label: t.appearance }, { value: 'player', label: `${t.player} / ${t.device}` }]} change={setEditorTab} />
      <div role="tabpanel" aria-label={editorTab === 'fighter' ? t.appearance : `${t.player} / ${t.device}`}>
@@ -82,7 +82,7 @@ export function Setup({ config, setConfig, settings, manifest, devices, ready, t
        <Choice label={t.player} value={seat.kind} disabled={!owned(seat) || !!online && !host || practice} options={[{ value: 'human', label: t.human }, { value: 'bot', label: t.bot }]} change={kind => changeSeat(seat.id, { kind, device: kind === 'bot' ? 'bot' : `keyboard:${index}`, difficulty: 'normal' })} />
        {seat.kind === 'bot' ? <Choice label={t.difficulty} value={seat.difficulty ?? 'normal'} disabled={!owned(seat)} options={[{ value: 'easy' as const, label: t.easy }, { value: 'normal' as const, label: t.normal }, ...(practice ? [{ value: 'dummy' as const, label: t.dummy }] : [])]} change={difficulty => changeSeat(seat.id, { difficulty })} /> : <Choice label={t.device} value={seat.device} disabled={!owned(seat)} options={[
         ...[0,1,2,3].map(value => ({ value: `keyboard:${value}`, label: `${t.keyboard} ${value + 1}` })),
-        ...devices.filter(device => device.id.startsWith('gamepad:') && device.connected).map(device => ({ value: device.id, label: `${t.gamepad} ${Number(device.id.split(':')[1]) + 1}` })),
+        ...devices.filter(device => device.id.startsWith('gamepad:') && device.connected).map(device => ({ value: device.id, label: device.label })),
         ...(seat.device === 'remote' ? [{ value: 'remote', label: t.seatRemote }] : []),
         ...(seat.device.startsWith('gamepad:') && !devices.some(device => device.id === seat.device && device.connected) ? [{ value: seat.device, label: t.disconnected }] : []),
        ]} change={device => changeSeat(seat.id, { device })} />}

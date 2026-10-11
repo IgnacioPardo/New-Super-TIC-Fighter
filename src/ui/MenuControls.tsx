@@ -30,10 +30,10 @@ export function Choice<T extends string | number>({ label, value, options, chang
   adjust(command === 'left' ? -1 : 1); return true;
  });
  return <div className={`config-row choice-row ${disabled ? 'is-disabled' : ''}`} ref={ref}>
-  <button type="button" className="choice-main" disabled={disabled} aria-label={`${label}: ${options[index]?.label ?? ''}`} onClick={() => adjust(1)}>
+  <button type="button" className="choice-main" data-ui-sound="change" disabled={disabled} aria-label={`${label}: ${options[index]?.label ?? ''}`} onClick={() => adjust(1)}>
    <span>{label}</span><strong>{swatches && <span className="choice-swatches" aria-hidden="true">{swatches.map((color, i) => <i key={color} className={index === i ? 'selected' : ''} style={{ background: color }} />)}</span>}{options[index]?.label}</strong>
   </button>
-  <div className="choice-arrows"><button type="button" tabIndex={-1} disabled={disabled} aria-label={`${label} −`} onClick={() => { adjust(-1); ref.current?.querySelector<HTMLButtonElement>('.choice-main')?.focus(); }}>‹</button><button type="button" tabIndex={-1} disabled={disabled} aria-label={`${label} +`} onClick={() => { adjust(1); ref.current?.querySelector<HTMLButtonElement>('.choice-main')?.focus(); }}>›</button></div>
+  <div className="choice-arrows"><button type="button" tabIndex={-1} data-ui-sound="change" disabled={disabled} aria-label={`${label} −`} onClick={() => { adjust(-1); ref.current?.querySelector<HTMLButtonElement>('.choice-main')?.focus(); }}>‹</button><button type="button" tabIndex={-1} data-ui-sound="change" disabled={disabled} aria-label={`${label} +`} onClick={() => { adjust(1); ref.current?.querySelector<HTMLButtonElement>('.choice-main')?.focus(); }}>›</button></div>
  </div>;
 }
 
@@ -81,7 +81,7 @@ export function MenuDialog({ title, subtitle, close, children, done, language, m
   return () => { document.body.style.overflow = overflow; siblings.forEach(element => { element.inert = false; }); dialog.removeEventListener('keydown', trap); if (previous?.isConnected) previous.focus(); else document.querySelector<HTMLElement>('main [data-autofocus]')?.focus(); };
  }, []);
  return <div className="config-shade"><section className="config-dialog" style={{ '--config-accent': accent } as CSSProperties} role="dialog" aria-modal="true" aria-labelledby={titleId} data-menu-dialog data-menu-linear ref={ref}>
-  <header className="config-dialog-heading"><span className="config-dialog-mark" aria-hidden="true">{mark}</span><div><h2 id={titleId}>{title}</h2>{subtitle && <p>{subtitle}</p>}</div><button className="small-button" onClick={close}>{done} <span aria-hidden="true">↩</span></button></header>
+  <header className="config-dialog-heading"><span className="config-dialog-mark" aria-hidden="true">{mark}</span><div><h2 id={titleId}>{title}</h2>{subtitle && <p>{subtitle}</p>}</div><button className="small-button" data-ui-sound="back" onClick={close}>{done} <span aria-hidden="true">↩</span></button></header>
   {children}
   <p className="config-editor-help"><span className="keyboard-menu-help">{ui[language].configHelp}</span><span className="gamepad-menu-help">{ui[language].gamepadHelp}</span></p>
  </section></div>;
