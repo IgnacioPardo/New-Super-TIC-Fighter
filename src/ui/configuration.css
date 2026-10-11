@@ -266,11 +266,11 @@ main:has([data-menu-dialog]) { z-index: 5; }
 .hud-resources span { border-bottom: 2px solid var(--fighter-color); padding: 2px; }
 .hud-resources span.spent { opacity: .45; border-bottom-style: dashed; }
 .hud-buffs span { color: #f3dd71; }
-.objective-status { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; padding: 9px; background: var(--panel); border-bottom: 1px solid var(--panel-line); font-size: 14px; }
+.objective-status { position: absolute; top: 66px; left: 50%; transform: translateX(-50%); z-index: 51; width: max-content; max-width: min(80%,640px); display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; padding: 6px 10px; background: #091728e8; border-bottom: 1px solid var(--panel-line); font-size: 12px; pointer-events: none; }
 .match-hud.royale-hud { grid-template-columns: 1fr; gap: 8px; }
 .royale-local-roster, .royale-opponent-roster { display: grid; grid-template-columns: repeat(var(--roster-count),minmax(0,1fr)); gap: 8px; }
-.royale-hud .hud-fighter { height: 104px; }
-.royale-hud .avatar-portrait { width: 70px; height: 104px; }
+.royale-hud .hud-fighter { height: 112px; }
+.royale-hud .avatar-portrait { width: 70px; height: 112px; }
 .royale-hud .avatar-sprite { transform: scale(1.4); }
 .royale-hud .hud-name { gap: 5px; }
 .royale-hud .hud-name strong { font-size: 13px; }
@@ -278,13 +278,17 @@ main:has([data-menu-dialog]) { z-index: 5; }
 .royale-hud .hud-discipline { display: none; }
 .royale-hud .hud-values { margin-top: 4px; gap: 7px; }
 .royale-hud .hud-values > strong { font-size: 40px; }
-.royale-hud .hud-resources, .royale-hud .hud-buffs { font-size: 8px; gap: 3px; margin-top: 3px; }
+.royale-hud .hud-resources { font-size: 11px; line-height: 1.2; gap: 3px 5px; margin-top: 3px; }
+.royale-hud .hud-buffs { font-size: 10px; gap: 3px; margin-top: 3px; }
 .royale-hud .hud-resources span { padding: 0; }
+.royale-hud .hud-resources span:nth-child(-n+3)::before { content: '●'; margin-right: 3px; }
+.royale-hud .hud-resources span.spent { opacity: 1; color: #a2afbb; }
+.royale-hud .hud-resources span.spent:nth-child(-n+3)::before { content: '○'; }
 .royale-hud .hud-opponent { height: 48px; border-bottom-width: 2px; padding-right: 7px; }
 .royale-hud .hud-opponent .avatar-portrait { width: 32px; height: 44px; }
 .royale-hud .hud-opponent .avatar-sprite { transform: scale(.7); top: 5px; }
 .royale-hud .hud-opponent .hud-name { padding-top: 0; gap: 4px; }
-.royale-hud .hud-opponent .hud-name strong { font-size: 10px; }
+.royale-hud .hud-opponent .hud-name strong { font-size: 11px; }
 .royale-hud .hud-opponent .hud-name > span { font-size: 9px; }
 .royale-hud .hud-opponent .hud-values { margin-top: 2px; gap: 7px; }
 .royale-hud .hud-opponent .hud-values > strong { font-size: 23px; letter-spacing: -1px; text-shadow: 1px 2px #02070d; }
