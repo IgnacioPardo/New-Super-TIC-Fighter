@@ -23,14 +23,11 @@ try{
  await page.locator('.hero-logo').click(); // Mouse modality must not make controller focus invisible.
  await page.getByTestId('mode-local').focus();
  await press(13);
- await expect(page.getByTestId('mode-online')).toBeFocused();
+ await expect(page.getByTestId('mode-solo')).toBeFocused();
  assert.equal(await page.locator('.app').getAttribute('data-input'),'gamepad');
- assert.equal(await page.getByTestId('mode-online').locator('.menu-pointer').evaluate(el=>getComputedStyle(el).visibility),'visible');
- await press(13);
- await expect(page.getByTestId('mode-public')).toBeFocused();
- await press(13);
- await expect(page.getByTestId('mode-practice')).toBeFocused();
+ assert.equal(await page.getByTestId('mode-solo').locator('.menu-pointer').evaluate(el=>getComputedStyle(el).visibility),'visible');
  await press(0);
+ for(let i=0;i<4;i++)await press(13);await expect(page.getByRole('button',{name:/LAB.*Entrenamiento/})).toBeFocused();await press(0);
  await page.locator('.fighter-edit').first().click();
  await page.getByRole('tab',{name:'Jugador / Control'}).click();
  await expect(page.getByRole('button',{name:/^Control:/})).toContainText('DualSense');

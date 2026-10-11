@@ -2,7 +2,7 @@
 import assert from 'node:assert/strict';
 import {mkdir} from 'node:fs/promises';
 import {chromium,firefox,webkit,expect} from '@playwright/test';
-import {enterTitle} from './enter-title.mjs';
+import { enterTitle, chooseMode } from './enter-title.mjs';
 const base=process.env.STF_APP_URL??'http://127.0.0.1:5173';
 await mkdir('tmp/qa',{recursive:true});
 for(const engine of (process.env.STF_BROWSERS??'chromium,firefox,webkit').split(',')){
@@ -71,10 +71,10 @@ for(const engine of (process.env.STF_BROWSERS??'chromium,firefox,webkit').split(
   await expect(page.locator('.fight-button')).toBeEnabled();await page.locator('.fight-button').click();await page.waitForFunction(()=>window.__snapshot?.phase==='playing');
   assert.equal(await page.evaluate(()=>window.__snapshot.config.players.length),4);assert.equal(await page.evaluate(()=>window.__snapshot.config.mode),'teams');
   await key('Escape');await page.locator('.pause-panel').getByRole('button',{name:'AJUSTES',exact:true}).click();await page.locator('.settings-category').first().click();await close();await page.locator('.back-button').click();await page.locator('.pause-panel').getByRole('button',{name:/CONTINUAR/}).click();await page.waitForFunction(()=>window.__snapshot?.phase==='playing');
-  await key('Escape');await page.locator('.pause-panel .text-button').click();await page.locator('.back-button').click();await page.getByTestId('mode-online').click();
+  await key('Escape');await page.locator('.pause-panel .text-button').click();await page.locator('.back-button').click();await chooseMode(page,'online');
   const nickname=page.getByPlaceholder('Jugador',{exact:true});await nickname.fill('Menu QA');await nickname.focus();await pad(13);await expect(nickname).not.toBeFocused();
   await page.route('**/api/**',route=>route.fulfill({status:503,contentType:'application/json',body:JSON.stringify({error:'room_service_unavailable'})}));
-  await page.getByRole('button',{name:/CREAR SALA/}).click();await page.locator('.inline-error').waitFor();await page.locator('.back-button').click();await page.getByTestId('mode-practice').click();
+  await page.getByRole('button',{name:/CREAR SALA/}).click();await page.locator('.inline-error').waitFor();await page.locator('.back-button').click();await chooseMode(page,'practice');
   await page.locator('.fight-button').click();await page.waitForFunction(()=>window.__snapshot?.phase==='playing');assert.equal(await page.locator('canvas').count(),1);assert.equal(await page.locator('.global-error').count(),0);
   assert(music.size<=4,`Music loads on demand (${music.size} tracks)`);assert.deepEqual(errors,[]);
   console.log(`${engine}: arrow-only settings, persistence, capture/conflicts, virtual-pad remapping/repeat, modal focus/Tab, four-player team configuration, readiness, pause/settings/resume, and offline practice passed.`);

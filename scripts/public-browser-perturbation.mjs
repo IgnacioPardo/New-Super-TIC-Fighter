@@ -3,7 +3,7 @@
 import assert from 'node:assert/strict';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { chromium } from '@playwright/test';
-import { enterTitle } from './enter-title.mjs';
+import { enterTitle, chooseMode } from './enter-title.mjs';
 const app=process.env.STF_APP_URL??'http://127.0.0.1:5193',server=process.env.STF_SERVER_URL??'http://127.0.0.1:8787',output=process.env.STF_BROWSER_REPORT??'tmp/qa/public-browser-perturbation.json';
 const headless=process.env.STF_BROWSER_HEADLESS!=='false';
 const browser=await chromium.launch({headless,args:['--disable-background-timer-throttling','--disable-renderer-backgrounding']}),pages=[],errors=[];
@@ -34,7 +34,7 @@ async function open(index){
   };
   const NativeWorker=window.Worker;window.Worker=class extends NativeWorker{postMessage(message,...rest){if(message.type==='authority')window.__net.authorityMessages++;return super.postMessage(message,...rest)}};
  },index);
- await page.goto(app);await enterTitle(page);await page.getByTestId('mode-public').click();await page.waitForFunction(()=>window.__lobby?.party.players.length===1);
+ await page.goto(app);await enterTitle(page);await chooseMode(page,'public');await page.waitForFunction(()=>window.__lobby?.party.players.length===1);
  if(count===8){for(let i=0;i<3;i++)await page.getByRole('button',{name:/^Playlist:/}).click();await page.waitForFunction(()=>window.__lobby.party.preference.pool==='royale')}return page;
 }
 const getState=async id=>(await(await fetch(`${server}/api/matches/${id}`)).json()),pause=ms=>new Promise(resolve=>setTimeout(resolve,ms));

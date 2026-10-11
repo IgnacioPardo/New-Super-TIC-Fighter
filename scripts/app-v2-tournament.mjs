@@ -3,7 +3,7 @@
 import assert from 'node:assert/strict';
 import {mkdir} from 'node:fs/promises';
 import {chromium,expect} from '@playwright/test';
-import {enterTitle} from './enter-title.mjs';
+import { enterTitle, chooseMode } from './enter-title.mjs';
 const base=process.env.STF_APP_URL??'http://127.0.0.1:5193';
 const browser=await chromium.launch({headless:true}),pages=[],errors=[];
 let id;
@@ -16,7 +16,7 @@ try{
    localStorage.setItem('stf-match',JSON.stringify({ruleset:'expanded',players:[{id:'p1',name:`QA Entrant ${index+1}`,discipline:'code',kind:'human',team:0,device:'keyboard:0',appearance:{hair:index,shirt:index,pants:index}},{id:'p2',name:'CPU',discipline:'hardware',kind:'bot',difficulty:'normal',team:1,device:'bot',appearance:{hair:0,shirt:0,pants:0}}]}));
    const Native=window.WebSocket;window.WebSocket=class extends Native{constructor(...args){super(...args);this.addEventListener('message',e=>{let m;try{m=JSON.parse(e.data);}catch{return;}if(m.state?.party)window.__lobby=m.state;if(m.state?.authority==='server')window.__match=m.state;if(m.snapshot)window.__snapshot=m.snapshot;});}};
   },index);
-  await page.goto(base);await enterTitle(page);await page.getByTestId('mode-tournaments').click();await page.waitForFunction(()=>window.__lobby?.party.players.length===1);
+  await page.goto(base);await enterTitle(page);await chooseMode(page,'tournaments');await page.waitForFunction(()=>window.__lobby?.party.players.length===1);
   if(index===0){
    await page.getByRole('textbox',{name:'Competition name',exact:true}).fill('QA browser tournament');
    const response=page.waitForResponse(r=>new URL(r.url()).pathname==='/api/tournaments'&&r.request().method()==='POST');

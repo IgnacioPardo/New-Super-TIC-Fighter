@@ -1,7 +1,7 @@
 // Full application flow with real HTML audio decoding, seeking, looping, and shuffle.
 // Instrumentation retains native Audio and Worker behavior; no media is mocked.
 import assert from 'node:assert/strict';
-import {enterTitle} from './enter-title.mjs';
+import { enterTitle, chooseMode } from './enter-title.mjs';
 import {mkdir,readFile,writeFile} from 'node:fs/promises';
 import {chromium,firefox,webkit,expect} from '@playwright/test';
 
@@ -45,8 +45,8 @@ for(const name of (process.env.STF_BROWSERS??'chromium,firefox,webkit').split(',
   await menu();
   await page.keyboard.press('Escape');await page.locator('.back-button').click();
   await page.getByTestId('mode-guide').click();await menu();await page.locator('.back-button').click();
-  await page.getByTestId('mode-online').click();await menu();await page.locator('.back-button').click();
-  await page.getByTestId('mode-practice').click();await menu();
+  await chooseMode(page,'online');await menu();await page.locator('.back-button').click();
+  await chooseMode(page,'practice');await menu();
   await page.locator('.fight-button').click();
   await page.waitForFunction(()=>window.__snapshot?.phase==='playing');
   const original=await playing();assert(audio.original.includes(original.path));assert.equal(original.loop,false);

@@ -16,9 +16,8 @@ for(const name of engines){
  const tap=async button=>{await page.evaluate(index=>window.__pads[0].buttons[index].pressed=true,button);await page.waitForTimeout(120);await page.evaluate(index=>window.__pads[0].buttons[index].pressed=false,button);await page.waitForTimeout(160);};
  try{
   await page.goto(base);await page.getByTestId('intro-continue').waitFor();await tap(0);await expect(page.getByTestId('mode-local')).toBeFocused();
-  await tap(13);await expect(page.getByTestId('mode-online')).toBeFocused();
-  await tap(13);await expect(page.getByTestId('mode-public')).toBeFocused();
-  await tap(13);await expect(page.getByTestId('mode-practice')).toBeFocused();await tap(0);
+  await tap(13);await expect(page.getByTestId('mode-solo')).toBeFocused();await tap(0);
+  for(let i=0;i<4;i++)await tap(13);await expect(page.getByRole('button',{name:/LAB.*Entrenamiento/})).toBeFocused();await tap(0);
   await expect(page.locator('.fighter-edit').first()).toBeFocused();await tap(0);await tap(15);
   await expect(page.getByRole('tab',{name:'Jugador / Control'})).toHaveAttribute('aria-selected','true');await tap(13);await tap(13);
   await expect(page.getByRole('button',{name:'Control: QA Xbox-compatible virtual pad',exact:true})).toHaveAttribute('data-controller-focus','true');await tap(1);
