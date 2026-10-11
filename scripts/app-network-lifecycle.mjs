@@ -289,6 +289,14 @@ async function scenarioGuestFinishedLobby() {
   const outcome = fighters => fighters.map(({ id, lives, damage }) => ({ id, lives, damage }));
   assert.deepEqual(outcome(guestResult.snapshot.fighters), outcome(hostFinal.fighters), 'Guest must receive exact final fighter stocks and damage');
   assert.equal(await guest.page.locator('.result-scoreboard').innerText(), await host.page.locator('.result-scoreboard').innerText(), 'Both result screens must show identical stocks and damage');
+  await guest.page.goto('about:blank');
+  await guest.page.goto(`${base}/?room=${code}`);
+  await openOnline(guest.page);
+  await guest.page.getByPlaceholder('Jugador', { exact: true }).fill('Guest F');
+  await guest.page.getByRole('button', { name: /ENTRAR/ }).click();
+  await guest.page.waitForFunction(peerId => window.__stfRoom?.peerId === peerId && window.__stfObserved.controls.some(message => message.type === 'result' && message.snapshot?.phase === 'finished'), guestPeerId, { timeout: 10_000 });
+  await guest.page.locator('.results-screen').waitFor({ timeout: 10_000 });
+  assert.equal(await guest.page.locator('.result-scoreboard').innerText(), await host.page.locator('.result-scoreboard').innerText(), 'Refresh during results must restore the exact final scoreboard');
   await host.page.getByRole('button', { name: /VOLVER A LA SALA/ }).click();
   await guest.page.waitForFunction(() => window.__stfRoom?.phase === 'lobby', null, { timeout: 10_000 });
   if (await guest.page.locator('.results-screen').isVisible()) await guest.page.getByRole('button', { name: /VOLVER A LA SALA/ }).click();
