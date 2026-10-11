@@ -24,6 +24,13 @@ Verified on 2026-10-11. These checks exercise complete application flows; no uni
 - Every enabled menu control was reached by native Tab and automatically scrolled into view. No page horizontal overflow or clipped feature controls/text remained. Representative screenshots were inspected for each screen, both languages and all viewport classes; narrow Solo titles retain whole words and tournament input rows match the Settings controls.
 - Royale remaining-fighter and shrinking-safe-zone information now appears below the match header within the renderer’s top reservation, rather than falling below the full-height stage. It describes the playable zone without exposing world coordinates. Screenshot/report output is under `tmp/qa/v2-layout/`; the ES/EN four-local 1024 px HUD images are `tmp/qa/v2-royale-{es,en}-4-local-1024.png`.
 
+## Visible Training tools follow-up
+
+- `app-v2-training.mjs` verified ES/EN against the actual local worker: collapsed live tools fit above the arena, expanded toolbar and input history are visible, the selected dummy receives 100% damage, and recorded injected stick movement appears in the history. At 1024×640 and 390×844 the overlay, Apply action and history remain within viewport and panel bounds.
+- Injected controller Start opened the real pause dialog; D-pad selected the human target and 100% preset, A applied damage, and subsequent navigation reached frame advance and stepped the paused worker. The dummy remained at 0%, confirming seat targeting. The live tools are absent behind the pause modal.
+- `app-v2-solo.mjs` passed the actual Challenge 1, Training recording/playback/frame/reset and two-win set flow after opening the collapsible toolbar. Jump input now waits for the worker’s airborne/cooldown/air-jump state rather than fixed timing.
+- Type/build checks passed. Representative desktop, narrow and paused screenshots were inspected and copied to `tmp/qa/v2-training-final/` in the primary checkout before cleanup.
+
 ## Practical limits
 
 Injected gamepad data does not certify physical DualSense or other hardware. These service browser sessions share one development host and are not a separate-network Argentina latency/reliability session. Physical Arc/controller acceptance, production OAuth/provider-link consent and production performance/capacity evidence belong to the release verification record. The completed initial challenge does not certify all twelve challenge objectives or a full eight-bout Arcade clear.

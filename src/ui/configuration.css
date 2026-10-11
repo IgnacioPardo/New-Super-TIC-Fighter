@@ -259,6 +259,21 @@ main:has([data-menu-dialog]) { z-index: 5; }
 .fighter-card.is-editing { border-color: var(--fighter-color); }
 .fighter-card.is-disconnected { border-style: dashed; }
 [hidden] { display: none !important; }
+.training-overlay { position: absolute; top: 66px; right: 16px; z-index: 52; width: min(410px,calc(100% - 32px)); border: 1px solid #607e95; background: #091728f2; box-shadow: var(--hard-shadow); }
+.training-toggle { display: flex; align-items: center; justify-content: space-between; width: 100%; padding: 9px 12px; border: 0; border-left: 4px solid #57d4f1; background: #142c42; text-align: left; font-size: 13px; }
+.training-toggle span { font-size: 20px; line-height: 1; color: #57d4f1; }
+.training-content { padding: 10px; }
+.training-overlay .training-content { display: flex; flex-direction: column; max-height: min(380px,calc(100svh - 230px)); }
+.training-overlay .training-options { min-height: 0; overflow-y: auto; overscroll-behavior: contain; }
+.training-overlay .training-history { flex: none; max-height: 68px; overflow-y: auto; padding: 8px 4px; border-top: 1px solid var(--panel-line); }
+.training-overlay .choice-main { padding: 10px; }
+.training-overlay .choice-main > span, .training-overlay .choice-main strong { font-size: 13px; }
+.training-overlay .config-row { min-height: 46px; }
+.training-damage { display: flex; align-items: stretch; gap: 8px; }
+.training-damage .choice-row { flex: 1; min-width: 0; }
+.training-damage > button { width: auto; padding: 8px 12px; flex: 0 0 110px; font-size: 13px; margin-bottom: 5px; }
+.training-target-status { color: #b9dcea; font-size: 12px; margin: 4px 0 10px; }
+.training-paused { margin: 14px 0; border-top: 1px solid var(--panel-line); }
 .training-toolbar { display: flex; flex-wrap: wrap; gap: 8px; padding: 12px; background: var(--panel); border: 1px solid var(--panel-line); box-shadow: var(--hard-shadow); }
 .training-toolbar button { flex: 1 1 140px; width: auto; padding: 8px 10px; font-size: 13px; }
 .training-history { display: flex; gap: 8px; flex-wrap: wrap; padding: 10px; color: #b9dcea; font: 12px monospace; }
