@@ -54,7 +54,7 @@ export default function App({ online }: AppProps) {
  useEffect(() => { if (snapshot?.phase === 'finished' && ['match', 'settings', 'guide'].includes(screen)) setScreen('results'); }, [snapshot?.phase, screen]);
  useEffect(() => {
    if (screen !== 'match' || snapshot?.phase === 'paused') {
-     const timer = setTimeout(() => root.current?.querySelector<HTMLElement>('[data-autofocus], main button:not(:disabled), main input:not(:disabled), .pause-panel button:not(:disabled)')?.focus({ preventScroll: true }), 30);
+     const timer = setTimeout(() => (root.current?.querySelector<HTMLElement>('[data-autofocus]:not(:disabled)') ?? root.current?.querySelector<HTMLElement>('main button:not(:disabled), main input:not(:disabled), .pause-panel button:not(:disabled)'))?.focus({ preventScroll: true }), 30);
      return () => clearTimeout(timer);
    }
  }, [screen, snapshot?.phase]);
@@ -68,12 +68,12 @@ export default function App({ online }: AppProps) {
  const leaveRoom = () => { online?.leave(); runtime.stop(); setSource('local'); setScreen('title'); };
  const back = useCallback(() => {
    if (screen === 'match') {
-     if (source === 'online') online?.pause(); else runtime.command({ type: 'pause' });
+     if (snapshot?.phase === 'paused' && !runtime.disconnected) { if (source === 'online' && online?.state.isHost) online.resume(); else if (source !== 'online') runtime.command({ type: 'resume' }); } else { if (source === 'online') online?.pause(); else runtime.command({ type: 'pause' }); }
    } else if (screen === 'settings' || screen === 'guide') setScreen(returnScreen);
    else if (screen === 'room') leaveRoom();
    else if (screen === 'results') leaveMatch();
    else setScreen('title');
- }, [screen, returnScreen, source, online, runtime.command]);
+ }, [screen, returnScreen, source, online, runtime.command, snapshot?.phase, runtime.disconnected]);
  menuHandler.current = command => {
    if (command === 'back' || command === 'pause') { back(); return; }
    const focused = document.activeElement as HTMLElement;
@@ -144,7 +144,7 @@ export default function App({ online }: AppProps) {
       <div className="match-topbar"><div><span className="status-dot" /><strong>{ARENAS[(snapshot?.config ?? activeConfig).arena].name[settings.language]}</strong><span>{(snapshot?.config ?? activeConfig).practice ? t.practice : (snapshot?.config ?? activeConfig).mode === 'teams' ? t.teams : t.ffa}</span></div><div className="match-clock">{snapshot?.config.practice ? '∞' : snapshot?.config.timeLimit ? formatClock(snapshot.config.timeLimit - snapshot.elapsed) : '∞'}</div><button className="small-button" onClick={pause}>Ⅱ {t.pause}</button></div>
       <div className="match-stage"><GameView arena={activeConfig.arena} snapshot={snapshot} snapshotRef={runtime.snapshotRef} settings={settings} manifest={manifest} onReady={() => setRenderReady(true)} />{snapshot?.phase === 'countdown' && renderReady && <div className="countdown-overlay"><span>{Math.ceil(snapshot.countdown) || 'FIGHT!'}</span><p>{settings.language === 'es' ? '¿LISTOS?' : 'READY?'}</p></div>}{!snapshot && <div className="countdown-overlay"><span>…</span></div>}</div>
       {snapshot && <HUD snapshot={snapshot} settings={settings} manifest={manifest} />}
-      {snapshot?.phase === 'paused' && <div className="modal-shade"><section className="pause-panel"><span className="eyebrow">{runtime.disconnected ? t.disconnected : 'TIME OUT'}</span><h1>{t.pause}</h1><p>{runtime.disconnected ? t.reclaim : online?.state.pauseReason || t.pausedHint}</p><button data-autofocus className="primary-button" disabled={source === 'online' && !online?.state.isHost || runtime.disconnected && !runtime.devices.some(d => d.id.startsWith('gamepad:') && d.connected)} onClick={resume}>{t.resume}<span>▶</span></button>{source === 'practice' && <button className="secondary-button" onClick={start}>{t.reset} ↻</button>}<button className="secondary-button" onClick={() => open('settings')}>{t.settings}</button><button className="text-button" onClick={leaveMatch}>{t.lobby}</button></section></div>}
+      {snapshot?.phase === 'paused' && <div className="modal-shade"><section className="pause-panel"><span className="eyebrow">{runtime.disconnected ? t.disconnected : 'TIME OUT'}</span><h1>{t.pause}</h1><p>{runtime.disconnected ? t.reclaim : online?.state.pauseReason || t.pausedHint}</p><button data-autofocus className="primary-button" disabled={source === 'online' && !online?.state.isHost || runtime.disconnected && !Array.from(navigator.getGamepads?.() ?? []).some(d => d?.connected)} onClick={resume}>{t.resume}<span>▶</span></button>{source === 'practice' && <button className="secondary-button" onClick={start}>{t.reset} ↻</button>}<button className="secondary-button" onClick={() => open('settings')}>{t.settings}</button><button className="text-button" onClick={leaveMatch}>{t.lobby}</button></section></div>}
     </div>}
     {screen === 'results' && displaySnapshot && <Results snapshot={displaySnapshot} settings={settings} manifest={manifest} rematch={() => { if (source === 'online') { online?.rematch(); setScreen('room'); } else start(); }} canRematch={source !== 'online' || !!online?.state.isHost} leave={leaveMatch} />}
    </main>

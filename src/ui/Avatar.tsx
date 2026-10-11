@@ -7,7 +7,7 @@ export function Avatar({ appearance, manifest, discipline = 'networks', animated
   useEffect(() => {
     if (!animated || !manifest) return;
     const frames = manifest.poses.idle ?? [0];
-    const timer = setInterval(() => setFrame(current => (current + 1) % frames.length), 200);
+    const timer = setInterval(() => setFrame(current => (current + 1) % frames.length), 250);
     return () => clearInterval(timer);
   }, [animated, manifest]);
   const index = manifest?.poses[hurt ? 'hurt' : 'idle']?.[hurt ? 0 : frame] ?? 0;
