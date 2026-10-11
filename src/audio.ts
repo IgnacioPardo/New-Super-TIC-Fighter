@@ -19,6 +19,7 @@ export class AudioManager {
   constructor(private manifest: AssetsManifest) {
     this.music.preload = 'none';
     this.music.addEventListener('ended', this.nextTrack);
+    document.addEventListener('visibilitychange', this.visibility);
   }
   setSettings(settings: AppSettings) {
     const playlistChanged = this.settings?.playlist !== settings.playlist;
@@ -78,7 +79,7 @@ export class AudioManager {
     }
   }
   destroy() {
-    this.destroyed = true; this.music.pause(); this.music.removeEventListener('ended', this.nextTrack);
+    this.destroyed = true; document.removeEventListener('visibilitychange', this.visibility); this.music.pause(); this.music.removeEventListener('ended', this.nextTrack);
     this.music.removeAttribute('src'); this.music.load(); void this.context?.close(); this.voices.clear();
   }
   private nextTrack = () => {
@@ -91,7 +92,8 @@ export class AudioManager {
     const track = this.playlist.shift();
     if (track) { this.previousTrack = track; this.music.src = track; this.playMusic(); }
   };
-  private playMusic() { if (this.unlocked) void this.music.play().catch(() => { /* Next trusted gesture retries. */ }); }
+  private visibility = () => { if (document.hidden) this.music.pause(); else if (this.scene !== 'silent') this.playMusic(); };
+  private playMusic() { if (this.unlocked && !document.hidden) void this.music.play().catch(() => { /* Next trusted gesture retries. */ }); }
   private async buffer(name: string) {
     if (this.buffers.has(name)) return this.buffers.get(name);
     if (!this.context || !this.manifest.audio.effects[name]) return;
@@ -101,7 +103,7 @@ export class AudioManager {
     return this.loading.get(name);
   }
   private async play(name: string) {
-    if (!this.unlocked || this.destroyed || this.scene !== 'match' || !this.settings?.effectsVolume) return;
+    if (!this.unlocked || this.destroyed || document.hidden || this.scene !== 'match' || !this.settings?.effectsVolume) return;
     const buffer = await this.buffer(name);
     if (!buffer || !this.context || !this.gain || this.destroyed || this.scene !== 'match') return;
     if (this.voices.size >= 16) { const oldest = this.voices.values().next().value; try { oldest?.stop(); } catch { /* already ended */ } }
