@@ -1,13 +1,15 @@
 import { CONTENT_VERSION, PROTOCOL_VERSION } from '../src/shared/types';
 import { Room } from './room';
+import { MatchDO } from './match';
+import { LobbyDO } from './lobby';
+import { TournamentDO } from './tournament';
+import type { Env } from './env';
+import { secret } from './validation';
+import type { MatchAdmission } from './match';
+import { handleAccountRequest, getAccountIdentity } from './accounts';
 
-export { Room };
+export { Room, MatchDO, LobbyDO, TournamentDO };
 
-interface Env {
-  ROOMS: DurableObjectNamespace;
-  ASSETS: Fetcher;
-  ALLOWED_ORIGINS?: string;
-}
 
 const ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
 const CODE_SIZE = 10;
@@ -142,8 +144,55 @@ export default {
     if (!url.pathname.startsWith('/api/')) return env.ASSETS.fetch(request);
     if (!sameAllowedOrigin(request, env)) return json({ error: 'origin_not_allowed' }, 403);
 
+    const accountResponse = await handleAccountRequest(request, env);
+    if (accountResponse) return accountResponse;
+
     if (url.pathname === '/api/health' && request.method === 'GET') {
       return json({ ok: true, protocolVersion: PROTOCOL_VERSION, contentVersion: CONTENT_VERSION });
+    }
+
+    if (url.pathname === '/api/lobby' && request.method === 'GET') return env.LOBBY.get(env.LOBBY.idFromName('global'), { locationHint: 'enam' }).fetch('https://internal/internal/state');
+    if (url.pathname === '/api/lobby/ws' && request.method === 'GET') {
+      if (request.headers.get('Upgrade')?.toLowerCase() !== 'websocket') return json({error:'websocket_required'},426);
+      const identity = await getAccountIdentity(request, env);
+      const headers = new Headers(request.headers); headers.delete('X-Verified-User');
+      if (identity) headers.set('X-Verified-User',identity.userId);
+      return env.LOBBY.get(env.LOBBY.idFromName('global'), { locationHint: 'enam' }).fetch(new Request('https://internal/internal/ws',{headers}));
+    }
+    const spectator = /^\/api\/activities\/([a-zA-Z0-9_-]{1,64})\/spectate$/.exec(url.pathname);
+    if (spectator && request.method === 'GET') return env.LOBBY.get(env.LOBBY.idFromName('global')).fetch(`https://internal/internal/spectate?matchId=${spectator[1]}`);
+
+    if (url.pathname === '/api/tournaments' && request.method === 'GET') {
+      if (!env.DB) return json([]);
+      const rows = await env.DB.prepare("SELECT data FROM tournament_state WHERE visibility='public' ORDER BY updated_at DESC LIMIT 30").all<{data:string}>();
+      return json(rows.results.map(row=>JSON.parse(row.data)));
+    }
+    if (url.pathname === '/api/tournaments' && request.method === 'POST') {
+      const value = await request.json() as Record<string,unknown>;
+      const id = crypto.randomUUID();
+      return env.TOURNAMENTS.get(env.TOURNAMENTS.idFromName(id),{locationHint:'enam'}).fetch('https://internal/internal/create',{method:'POST',body:JSON.stringify({...value,id})});
+    }
+    const competition = /^\/api\/tournaments\/([a-zA-Z0-9_-]{1,64})(?:\/(join|start|tickets|spectate|ws))?$/.exec(url.pathname);
+    if (competition) {
+      const action=competition[2]??'state';
+      if (['join','start','spectate','tickets'].includes(action) && request.method !== 'POST' || ['state','ws'].includes(action) && request.method !== 'GET') return json({error:'method_not_allowed'},405);
+      return env.TOURNAMENTS.get(env.TOURNAMENTS.idFromName(competition[1]),{locationHint:'enam'}).fetch(new Request(`https://internal/internal/${action}${url.search}`,request));
+    }
+
+    if (url.pathname === '/api/feasibility' && request.method === 'POST') {
+      if (!env.PUBLIC_FEASIBILITY_KEY || request.headers.get('X-Feasibility-Key') !== env.PUBLIC_FEASIBILITY_KEY) return json({ error: 'feasibility_disabled' }, 403);
+      const config = await request.json() as MatchAdmission['config'];
+      const matchId = crypto.randomUUID();
+      const peerIds = [...new Set(config.players.map(player => player.peerId))];
+      const members = peerIds.map(peerId => ({ peerId: peerId!, token: secret(), seatIds: config.players.filter(p => p.peerId === peerId).map(p => p.id), connected: false, forfeited: false, lastSequence: 0, ready: {} }));
+      const response = await env.MATCHES.get(env.MATCHES.idFromName(matchId), { locationHint: 'enam' }).fetch('https://internal/internal/create', { method: 'POST', body: JSON.stringify({ matchId, config, members }) });
+      if (!response.ok) return response;
+      return json({ matchId, tickets: members.map(member => ({ matchId, peerId: member.peerId, token: member.token, seatIds: member.seatIds, config })) }, 201);
+    }
+    const publicMatch = /^\/api\/matches\/([a-zA-Z0-9_-]{1,64})(\/ws)?$/.exec(url.pathname);
+    if (publicMatch && request.method === 'GET') {
+      if (publicMatch[2] && request.headers.get('Upgrade')?.toLowerCase() !== 'websocket') return json({ error: 'websocket_required' }, 426);
+      return env.MATCHES.get(env.MATCHES.idFromName(publicMatch[1]), { locationHint: 'enam' }).fetch(new Request(`https://internal/internal/${publicMatch[2] ? 'ws' : 'state'}`, { headers: request.headers }));
     }
 
     if (url.pathname === '/api/rooms' && request.method === 'POST') {

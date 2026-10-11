@@ -1,7 +1,7 @@
 {
   "name": "new-super-tic-fighter",
   "private": true,
-  "version": "0.1.0",
+  "version": "2.0.0-rc.1",
   "type": "module",
   "packageManager": "pnpm@12.4.2",
   "scripts": {
@@ -20,9 +20,21 @@
     "e2e:menus": "node scripts/app-menus.mjs && node scripts/app-results-navigation.mjs",
     "e2e:audio": "node scripts/audio-http.mjs",
     "e2e:controllers": "node scripts/app-dualsense.mjs && node scripts/app-feedback.mjs",
-    "e2e:audio-playback": "node scripts/app-audio.mjs"
+    "e2e:audio-playback": "node scripts/app-audio.mjs",
+    "e2e:expanded": "node scripts/app-expanded.mjs",
+    "verify:simulation": "node scripts/simulation-playthrough.mjs",
+    "verify:public": "node scripts/public-service.mjs",
+    "verify:competition": "node scripts/tournament-service.mjs",
+    "e2e:solo": "node scripts/app-v2-solo.mjs",
+    "e2e:public": "node scripts/app-v2-public.mjs",
+    "e2e:tournament": "node scripts/app-v2-tournament.mjs",
+    "verify:accounts": "node scripts/profile-service.mjs"
   },
   "dependencies": {
+    "@better-auth/drizzle-adapter": "1.7.7",
+    "@better-auth/passkey": "1.7.7",
+    "better-auth": "1.7.7",
+    "drizzle-orm": "0.45.4",
     "phaser": "4.2.1",
     "react": "19.3.0",
     "react-dom": "19.3.0"

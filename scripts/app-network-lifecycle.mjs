@@ -4,7 +4,7 @@
 import assert from 'node:assert/strict';
 import { mkdir } from 'node:fs/promises';
 import { chromium } from '@playwright/test';
-import { enterTitle } from './enter-title.mjs';
+import { enterTitle, chooseMode } from './enter-title.mjs';
 
 const base = process.env.STF_APP_URL ?? 'http://127.0.0.1:5173';
 const browser = await chromium.launch({ headless: true });
@@ -78,14 +78,12 @@ async function onlineEntry(session, name, code) {
 
 async function openOnline(page) {
   await enterTitle(page);
-  const mode = page.getByTestId('mode-online');
-  if (await mode.count()) await mode.click();
-  else await page.getByRole('button', { name: /02.*ONLINE/ }).click();
+  await chooseMode(page, 'online');
 }
 
 async function openFighterOptions(card) {
   await card.locator('.fighter-edit').click();
-  await card.page().getByRole('tab', { name: 'Jugador / Control' }).click();
+  await card.getByRole('tab', { name: 'Jugador' }).click();
 }
 
 async function waitRoster(page, count, predicate = () => true) {
@@ -108,9 +106,11 @@ async function addHumanHost(host, count) {
 }
 
 async function ready(session, name) {
-  const card = session.page.locator('.fighter-card').filter({ hasText: name });
-  await card.getByRole('button', { name: 'Listo', exact: true }).click();
+  for (const button of await session.page.locator('.ready-button:not(:disabled):not(.confirmed)').all()) await button.click();
+  const localHumans = await session.page.evaluate(() => window.__stfRoom.players.filter(player => player.kind === 'human' && player.peerId === window.__stfRoom.peerId).length);
   await session.page.waitForFunction(() => window.__stfRoom?.readiness[window.__stfRoom.peerId]?.ready, null, { timeout: 20_000 });
+  await session.page.waitForFunction(count => document.querySelectorAll('.ready-button.confirmed:not(:disabled)').length === count, localHumans, { timeout: 20_000 });
+  assert.equal(await session.page.locator('.ready-button.confirmed:not(:disabled)').count(), localHumans, `${name}: every owned human must explicitly ready`);
 }
 
 async function startAndWait(host, others, expectedSeats) {
@@ -138,7 +138,7 @@ async function scenarioTwoPlusTwo() {
   assert.equal(room.players.filter(player => player.kind === 'human').length, 4);
   assert.equal(room.players.filter(player => player.peerId !== room.hostPeerId).length, 2);
 
-  await host.page.locator('.match-summary').click();
+  await host.page.locator('.match-summary').click();await host.page.getByRole('tab',{name:'Partida',exact:true}).click();
   await host.page.getByRole('button', { name: /^Modo:/ }).click();
   await host.page.keyboard.press('Escape');
   await host.page.waitForFunction(() => window.__stfRoom?.config.mode === 'teams');
@@ -227,6 +227,19 @@ async function scenarioTwoPlusOnePlusOne() {
   console.log(`2+1+1 ${code}: four human seats across three browsers, host tab loss, interrupted result and new lobby passed.`);
 }
 
+async function scenarioSurvival() {
+ const host=await openSession('survival host'),guest=await openSession('survival guest');
+ const code=await onlineEntry(host,'Coop A');await onlineEntry(guest,'Coop B',code);await waitRoster(host.page,2);
+ await host.page.locator('.match-summary').click();await host.page.getByRole('tab',{name:'Partida',exact:true}).click();await host.page.getByRole('button',{name:/^Objetivo:/}).focus();
+ await host.page.keyboard.press('ArrowRight');await host.page.keyboard.press('ArrowRight');await host.page.keyboard.press('ArrowRight');
+ assert.equal(await host.page.getByRole('button',{name:'Objetivo: Supervivencia',exact:true}).count(),1,'Rapid shared objective edits preserve the latest draft');await host.page.keyboard.press('Escape');
+ await host.page.waitForFunction(()=>window.__stfRoom?.config.gameMode==='survival'&&window.__stfRoom.players.length===4);
+ const roster=await host.page.evaluate(()=>window.__stfRoom.players);assert.equal(roster.filter(p=>p.kind==='human'&&p.team===0).length,2);assert.equal(roster.filter(p=>p.kind==='bot'&&p.team===1).length,2);
+ await ready(host,'Coop A');await ready(guest,'Coop B');await startAndWait(host,[guest],4);
+ for(const session of [host,guest]) {assert.equal(await session.page.evaluate(()=>window.__stfSnapshot.config.gameMode),'survival');assert.ok(await session.page.evaluate(()=>window.__stfSnapshot.objective.wave>=1));}
+ console.log(`Private Survival ${code}: two browsers cooperated on team A, bot opponents filled four active seats, and the actual wave started.`);
+}
+
 async function scenarioBots() {
   const host = await openSession('bot host');
   const guest = await openSession('bot guest');
@@ -289,7 +302,7 @@ async function scenarioGuestFinishedLobby() {
   const code = await onlineEntry(host, 'Host F');
   await onlineEntry(guest, 'Guest F', code);
   await waitRoster(host.page, 2);
-  await host.page.locator('.match-summary').click();
+  await host.page.locator('.match-summary').click();await host.page.getByRole('tab',{name:'Partida',exact:true}).click();
   await host.page.getByRole('button', { name: /^Vidas:/ }).focus();
   await host.page.keyboard.press('ArrowLeft');
   await host.page.keyboard.press('ArrowLeft');
@@ -322,7 +335,7 @@ async function scenarioGuestFinishedLobby() {
   await guest.page.waitForFunction(peerId => window.__stfRoom?.peerId === peerId && window.__stfObserved.controls.some(message => message.type === 'result' && message.snapshot?.phase === 'finished'), guestPeerId, { timeout: 10_000 });
   await guest.page.locator('.results-screen').waitFor({ timeout: 10_000 });
   assert.equal(await guest.page.locator('.result-scoreboard').innerText(), await host.page.locator('.result-scoreboard').innerText(), 'Refresh during results must restore the exact final scoreboard');
-  await host.page.getByRole('button', { name: /VOLVER A LA SALA/ }).click();
+  await host.page.locator('.results-actions .primary-button').click();
   await guest.page.waitForFunction(() => window.__stfRoom?.phase === 'lobby', null, { timeout: 10_000 });
   if (await guest.page.locator('.results-screen').isVisible()) await guest.page.getByRole('button', { name: /VOLVER A LA SALA/ }).click();
   await guest.page.locator('.room-code strong').waitFor({ timeout: 8_000 });
@@ -348,6 +361,7 @@ try {
     '2+2': scenarioTwoPlusTwo,
     '2+1+1': scenarioTwoPlusOnePlusOne,
     bots: scenarioBots,
+    survival: scenarioSurvival,
     'host-refresh': scenarioHostRefresh,
     'guest-finished-lobby': scenarioGuestFinishedLobby,
   };

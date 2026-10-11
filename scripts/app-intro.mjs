@@ -1,3 +1,4 @@
+import { chooseMode } from './enter-title.mjs';
 // Whole-browser intro flow. Gamepads below are simulated, not physical hardware.
 import assert from 'node:assert/strict';
 import {mkdir} from 'node:fs/promises';
@@ -47,7 +48,7 @@ try {
   await expect(page.locator('.app-footer')).toContainText('A / ✕');
   await page.evaluate(()=>{window.__introPad.buttons[0].pressed=false;window.__introPad.buttons[9].pressed=false});
   // An actual downstream menu opens normally; back returns to title, not splash.
-  await page.getByTestId('mode-practice').click();await page.locator('.setup-layout').waitFor();
+  await page.getByTestId('mode-local').click();await page.locator('.setup-layout').waitFor();
   await page.locator('.back-button').click();await expect(title()).toBeVisible();
   await page.keyboard.press('Escape');await ready();
   for(const [width,height,label] of [[1440,810,'desktop'],[1366,768,'laptop'],[390,844,'mobile'],[667,375,'landscape'],[1280,480,'short-desktop']]){
@@ -66,7 +67,7 @@ try {
   await page.reload();await ready();await expect(intro()).toContainText('PRESS ANY KEY TO START');
   await page.goto(base+'/?room=ABC123');await expect(title()).toBeVisible();
   await expect(intro()).toHaveCount(0);
-  await page.getByTestId('mode-online').click();await expect(page.locator('.code-input')).toHaveValue('ABC123');
+  await chooseMode(page,'online');await expect(page.locator('.code-input')).toHaveValue('ABC123');
   assert.deepEqual(errors,[]);
   console.log('Intro: keyboard/click/simulated A+Start, no double activation, back/menu flow, five viewport sizes, reduced motion, ES/EN, and room-link bypass passed.');
 } catch(error) {

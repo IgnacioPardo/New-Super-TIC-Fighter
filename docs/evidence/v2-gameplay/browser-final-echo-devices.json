@@ -1,0 +1,46 @@
+[
+  {
+    "kit": "ai",
+    "arena": "virtual",
+    "tick": 434,
+    "errors": [],
+    "deployables": [],
+    "actions": [
+      "special",
+      "combo",
+      "jump",
+      "air-forward"
+    ]
+  },
+  {
+    "kit": "robotics",
+    "arena": "arcade",
+    "tick": 429,
+    "errors": [],
+    "deployables": [
+      "drone"
+    ],
+    "actions": [
+      "special",
+      "combo",
+      "jump",
+      "air-forward"
+    ]
+  },
+  {
+    "kit": "iot",
+    "arena": "classic",
+    "tick": 414,
+    "errors": [],
+    "deployables": [
+      "board",
+      "hub"
+    ],
+    "actions": [
+      "special",
+      "combo",
+      "jump",
+      "air-forward"
+    ]
+  }
+]

@@ -23,17 +23,16 @@ try{
  await page.locator('.hero-logo').click(); // Mouse modality must not make controller focus invisible.
  await page.getByTestId('mode-local').focus();
  await press(13);
- await expect(page.getByTestId('mode-online')).toBeFocused();
+ await expect(page.getByTestId('mode-solo')).toBeFocused();
  assert.equal(await page.locator('.app').getAttribute('data-input'),'gamepad');
- assert.equal(await page.getByTestId('mode-online').locator('.menu-pointer').evaluate(el=>getComputedStyle(el).visibility),'visible');
- await press(13);
- await expect(page.getByTestId('mode-practice')).toBeFocused();
+ assert.equal(await page.getByTestId('mode-solo').locator('.menu-pointer').evaluate(el=>getComputedStyle(el).visibility),'visible');
  await press(0);
+ for(let i=0;i<4;i++)await press(13);await expect(page.getByRole('button',{name:/LAB.*Entrenamiento/})).toBeFocused();await press(0);
  await page.locator('.fighter-edit').first().click();
- await page.getByRole('tab',{name:'Jugador / Control'}).click();
+ await page.getByRole('tab',{name:'Controles',exact:true}).click();
  await expect(page.getByRole('button',{name:/^Control:/})).toContainText('DualSense');
  await press(1);
- await page.locator('.fight-button').focus();await press(0);
+ await page.locator('.seat-shared-button').click();await page.locator('.fight-button').focus();await press(0);
  await page.waitForFunction(()=>window.__snapshot?.phase==='playing');
  const before=await page.evaluate(()=>window.__snapshot.fighters[0].x);
  await page.evaluate(()=>window.__pad.axes[0]=1);await page.waitForTimeout(250);await page.evaluate(()=>window.__pad.axes[0]=0);
@@ -42,7 +41,7 @@ try{
  await press(9);await page.locator('.pause-panel').waitFor();
  await page.locator('.pause-panel .secondary-button').filter({hasText:'AJUSTES'}).focus();await press(0);
  await page.locator('.settings-category').last().click();
- await expect(page.locator('.controller-status')).toContainText('DualSense');
+ await page.getByRole('button',{name:/^Página siguiente/}).click();await page.getByRole('button',{name:/^Página siguiente/}).click();await expect(page.locator('.controller-status')).toContainText('DualSense');
  await press(1);await page.locator('.settings-category').first().click();
  await page.locator('.volume-field input').nth(1).focus();
  const volume=Number(await page.locator('.volume-field input').nth(1).inputValue());

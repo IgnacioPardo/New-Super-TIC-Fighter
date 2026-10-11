@@ -1,0 +1,76 @@
+{
+  "environment": "visible Chromium, 2 isolated browser contexts, actual rendered React/Phaser app and workerd authority",
+  "app": "http://127.0.0.1:5193",
+  "server": "http://127.0.0.1:8787",
+  "matchId": "f4636ed1-dea2-46f8-9104-c5a2791ce90b",
+  "recordedAt": "2026-10-11T16:58:55.009Z",
+  "ruleset": "expanded",
+  "disciplines": [
+    "networks",
+    "ai"
+  ],
+  "baselineAuthorityMessagesOverTwoSeconds": [
+    40,
+    40
+  ],
+  "jitter": {
+    "droppedInputs": 19,
+    "droppedSnapshots": 14,
+    "delayedInputs": 80,
+    "delayedSnapshots": 87,
+    "authorities": 155
+  },
+  "offline": {
+    "durationMs": 3000,
+    "serverTickDelta": 182,
+    "reconnected": true
+  },
+  "background": {
+    "durationMs": 2000,
+    "method": "minimized browser window",
+    "visibility": "visible",
+    "requestedWindowState": "minimized",
+    "serverTickDelta": 121
+  },
+  "pageFreeze": {
+    "durationMs": 5000,
+    "serverTickDelta": 301,
+    "resumed": true
+  },
+  "clients": [
+    {
+      "matchId": "f4636ed1-dea2-46f8-9104-c5a2791ce90b",
+      "tick": 1365,
+      "fighters": 2,
+      "canvas": true,
+      "peerId": "aafce44a-8b48-4538-9a42-19edfba6e16d",
+      "errors": []
+    },
+    {
+      "matchId": "f4636ed1-dea2-46f8-9104-c5a2791ce90b",
+      "tick": 1365,
+      "fighters": 2,
+      "canvas": true,
+      "peerId": "13bcc0fd-01af-4d88-a52d-9d84d541c249",
+      "errors": []
+    }
+  ],
+  "passed": [
+    "2 rendered independent duel browsers",
+    "authority reconciliation under prediction",
+    "injected input and snapshot jitter/drop",
+    "offline requests and socket reconnect within 15 seconds",
+    "server advances during offline and page suspension",
+    "rendering/control resumes after page freeze",
+    "explicit leave followed by offline/online does not reopen match"
+  ],
+  "limitations": [
+    "Delay/drop occurs at application packet boundary, not physical WAN packet loss",
+    "Offline and socket closure are injected",
+    "Page freeze is Chromium lifecycle suspension, not OS sleep",
+    "All browsers share one Mac and Internet connection",
+    "Background timer/renderer throttling disabled for independent multiplayer fixture",
+    "This Mac Chromium automation retains visible document state even when browser window is minimized",
+    "Keyboard events are automated, no physical gamepads"
+  ]
+}

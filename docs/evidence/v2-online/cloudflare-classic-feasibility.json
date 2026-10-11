@@ -1,0 +1,37 @@
+{
+  "environment": "Deployed Cloudflare preview; four synthetic WebSocket clients on this Mac",
+  "matchId": "bcf3640d-748d-4d06-b0b5-e784ff52558b",
+  "clients": 4,
+  "seconds": 30,
+  "metrics": {
+    "ticks": 1800,
+    "snapshots": 600,
+    "wallMs": 30014,
+    "tickCpuMs": 0,
+    "maxTickCpuMs": 0,
+    "maxLatenessMs": 0.66650390625,
+    "catchupTicks": 0,
+    "droppedTimeMs": 0,
+    "bytesSent": 17008411,
+    "inputPackets": 2370,
+    "checkpointCount": 6
+  },
+  "measuredHz": 59.4136721324701,
+  "serverWallHz": 59.97201306057173,
+  "errorCount": 0,
+  "snapshotIntervalMs": {
+    "p50": 50.053499999999985,
+    "p95": 70.68212499999936,
+    "p99": 122.71437499999956
+  },
+  "roundTripMs": {
+    "p50": 169.85866600000008,
+    "p95": 204.70716699999957
+  },
+  "bytesPerPlayerSecond": 141670.6453654961,
+  "limitations": [
+    "CPU time cannot be measured with Cloudflare I/O-frozen performance.now; reported zero is not measured cost.",
+    "One Internet connection, not separate-network Argentina playtesting.",
+    "Synthetic input, no physical controller."
+  ]
+}

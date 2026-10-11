@@ -6,6 +6,7 @@ export interface OnlineState {
   code?: string; peerId?: string; isHost: boolean; config?: MatchConfig;
   members: OnlineMember[]; route?: 'direct' | 'relay' | 'connecting'; ping?: number;
   error?: string; snapshot?: MatchSnapshot; pauseReason?: string;
+  pendingEdits?: boolean; seatReadiness?: Record<string, boolean | { ready: boolean; assetsReady: boolean }>; authority?: 'peer' | 'server';
 }
 /** This bridge lets the room client provide authority without putting networking in menu components. */
 export interface OnlineBridge {
@@ -18,6 +19,7 @@ export interface OnlineBridge {
   updateSeat(seat: PlayerSeat): void;
   claimSeat(seat: PlayerSeat): void;
   ready(ready: boolean): void;
+  setSeatReady?(id: string, ready: boolean, assetsReady?: boolean): void;
   start(): void;
   pause(): void;
   resume(): void;

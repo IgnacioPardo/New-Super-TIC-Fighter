@@ -23,15 +23,18 @@ jobs:
       - run: pnpm typecheck
       - run: pnpm exec tsc -p tsconfig.server.json --noEmit
       - run: pnpm build
+      - run: pnpm verify:simulation
       - run: pnpm exec playwright install --with-deps chromium
       - name: Exercise the complete game and room service
         env:
           STF_APP_URL: http://127.0.0.1:4173
           STF_BROWSERS: chromium
+          STF_SERVER_URL: http://127.0.0.1:8787
           WRANGLER_SEND_METRICS: "false"
         run: |
           mkdir -p tmp/qa
-          pnpm dev:server > "$RUNNER_TEMP/stf-room.log" 2>&1 &
+          pnpm exec wrangler d1 migrations apply DB --local
+          pnpm dev:server --var AUTH_SECRET:isolated-ci-only-not-a-production-secret --var AUTH_ORIGIN:http://127.0.0.1:4173 > "$RUNNER_TEMP/stf-room.log" 2>&1 &
           stf_room_pid=$!
           pnpm preview --port 4173 > "$RUNNER_TEMP/stf-app.log" 2>&1 &
           stf_app_pid=$!
@@ -42,7 +45,23 @@ jobs:
           done
           curl --fail --silent http://127.0.0.1:4173/api/health
           pnpm e2e
+          node scripts/app-v2-title.mjs
+          node scripts/app-v2-private-entry.mjs
+          node scripts/app-v2-training.mjs
+          node scripts/app-reader-pages.mjs
+          node scripts/app-v2-roster-pages.mjs
           pnpm e2e:audio
+          pnpm e2e:expanded
+          pnpm e2e:solo
+          pnpm e2e:public
+          node scripts/app-v2-terminal.mjs
+          node scripts/app-v2-royale-results.mjs
+          pnpm e2e:tournament
+          node scripts/app-v2-seats.mjs
+          pnpm verify:public
+          pnpm verify:competition
+      - name: Exercise account storage and virtual passkeys
+        run: pnpm verify:accounts
       - name: Preserve failed browser screenshots
         if: failure()
         uses: actions/upload-artifact@v4

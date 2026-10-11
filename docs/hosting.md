@@ -1,56 +1,58 @@
-# Hosting and maintenance
+# Hosting and maintenance · v2
 
-The deployment is one Cloudflare Worker with Static Assets and a SQLite Durable Object per room. The browser host runs combat; the Durable Object handles room coordination, signaling, and optional relay. No paid TURN or dedicated game server is required.
+The game uses Cloudflare **Free only**. No paid service, paid TURN server or custom domain is enabled. Production is [the game Worker](https://new-super-tic-fighter.new-super-tic-fighter.workers.dev); integration uses [an isolated preview](https://new-super-tic-fighter-v2-preview.new-super-tic-fighter.workers.dev).
 
-Use a **Cloudflare Free** account. Do not enable paid Workers, paid Durable Objects, a purchased domain, or paid runner allowances. `wrangler.jsonc` declares the static bundle, room binding, and initial SQLite migration. The public address uses the account's free `workers.dev` subdomain.
+## Authority and storage
 
-## Live deployment
+- React/Tailwind present menus and HUD; Phaser presents arenas, fighters and sound.
+- The independent simulation runs in a client worker for local play and prediction, and in **MatchDO** for public authority. It advances at 60 Hz, batches input at 20 Hz and broadcasts snapshots at 20 Hz. Public clients cannot declare damage, winners or bracket advancement.
+- **LobbyDO** owns presence, parties, compatible queue selection, capacity reservation and admission. **TournamentDO** owns brackets, schedules, verified advancement and league standings.
+- **Room** retains private P2P signaling, coordination and WebSocket relay. Its browser host owns private combat; public matches never fall back to that authority.
+- **D1/Drizzle** stores optional accounts, passkeys, profiles, cosmetic progress, idempotent verified results and tournament indexes. Preview uses `new-super-tic-fighter-preview`; production uses `new-super-tic-fighter-profiles`. Credentials are Worker secrets. See [accounts](accounts.md).
 
-The game is live at [new-super-tic-fighter.new-super-tic-fighter.workers.dev](https://new-super-tic-fighter.new-super-tic-fighter.workers.dev). The account's Free plan was confirmed on 2026-10-11.
+Protocol/content v2 reject incompatible clients with a refresh action. Existing v1 rooms can drain, but old clients cannot partially join v2 matches. Save migrations preserve existing controls and flag dodge-binding conflicts.
+
+## Free capacity
+
+Admission starts with **four active public matches**, **64 lobby sockets** and **1,200 human-player-minutes per UTC day**. Capacity is reserved before a match, reconciled to actual elapsed time and apportioned across midnight. Queue/capacity/reset information is visible. Limits are application safety margins, not a guarantee against all provider-wide traffic.
+
+Cloudflare Free currently includes 100,000 Durable Object requests and 13,000 GB-s/day. Incoming WebSocket messages use a 20:1 request-billing ratio; outgoing messages are uncharged. At 20 Hz and 1,200 human-minutes, input messages alone represent about 72,000 request equivalents. Handshakes, metadata, checkpoints, auth and private-room traffic also consume allowances. A minimum two-human public workload uses at most roughly 36,000 active match-seconds before overhead, around 4,608 GB-s at 128 MB per active object. These are planning estimates, not billed usage measurements. [Provider pricing](https://developers.cloudflare.com/durable-objects/platform/pricing/).
+
+Idle lobby, tournament, waiting-match and finished-match WebSockets use hibernation-compatible auto responses. Active simulation timers cannot hibernate. Idle tournaments with no runnable match stop polling and resume on activity. The public client uses passive idle checks; active matches measure ping separately. [WebSocket hibernation](https://developers.cloudflare.com/durable-objects/best-practices/websockets/).
+
+Cloudflare may reject operations if a Free limit is exhausted; there is no automatic paid upgrade. Static/couch/Solo play remains available independently of matchmaking. Inspect provider telemetry after sustained use and lower application admission caps if other traffic uses the account's remaining allowance.
+
+## Location and observed pacing
+
+No South American simulation server is promised. Cloudflare documents its South America hint as mapping to Eastern North America; objects are explicitly placed with that reality in mind. [Location documentation](https://developers.cloudflare.com/durable-objects/reference/data-location/).
+
+Deployed four-client Classic and later two-/four-match Expanded/Royale samples sustained about 60 authority ticks/s. This Mac saw median round trips around 170–196 ms. See [initial feasibility](public-feasibility.md) and the [v2 verification report](verification-v2.md) for snapshot jitter, bandwidth, exact evidence and limitations. CPU time cannot be inferred from zero-valued `performance.now()` durations in the deployed I/O-frozen clock.
+
+## Builds, migrations and deployment status
+
+The existing Cloudflare GitHub app remains connected only to the private game repository. Production tracks `main`; its build/deployment check appears on GitHub. The separate **Verify game** workflow runs type/build checks and complete browser/service flows, without unit tests. Cloudflare does not wait for GitHub Actions, so PR verification must pass before merging.
 
 - [GitHub verification](https://github.com/IgnacioPardo/New-Super-TIC-Fighter/actions/workflows/verify.yml)
 - [GitHub deployments](https://github.com/IgnacioPardo/New-Super-TIC-Fighter/deployments)
-- [Cloudflare project and deployments](https://dash.cloudflare.com/98f3f5983afc3baf9aa40f441412fee0/workers/services/view/new-super-tic-fighter/production/deployments)
+- [Cloudflare deployments](https://dash.cloudflare.com/98f3f5983afc3baf9aa40f441412fee0/workers/services/view/new-super-tic-fighter/production/deployments)
 
-Production version `8776a50a-1cdd-41fc-a7a1-4d23d760b1b9` includes the complete-arena camera fix and MP3 streaming fix. HTTPS, health, five complete online lifecycle scenarios, direct WebRTC, forced relay, reconnect, refreshed final scoreboards, and rematches have been verified on the public service. All three arenas passed spawn, fall, respawn, and resize checks on the deployed game. All 25 MP3 assets passed HTTP range and source-byte checks. Actual Chromium, Firefox, and WebKit audio playback, seeking, and restart passed; Chromium also sought beyond its buffered segment under throttled networking. A first Firefox probe timed out before receiving media; three subsequent explicit playback checks passed, without assigning a cause to the earlier timeout.
-
-Physical controllers, native Safari hardware, and an owner/friends session on separate networks remain acceptance checks. Automated clients on this Mac do not certify those conditions. See [verification](verification.md).
-
-## Automatic builds
-
-The Cloudflare GitHub app is connected to this private repository only. Production tracks `main`; preview builds are disabled. The owner approved Cloudflare's standard generated build token, stored by Cloudflare. No deployment credential is committed or copied into GitHub Actions secrets.
-
-Cloudflare builds use `NODE_VERSION=24` and `PNPM_VERSION=12.4.2`, with these commands:
+Production commands:
 
 ```sh
-python3 scripts/make-audio-headers.py --check && pnpm exec tsc -p tsconfig.server.json --noEmit && pnpm run build
+pnpm install --frozen-lockfile
+pnpm exec wrangler d1 migrations apply new-super-tic-fighter-profiles --remote
+python3 scripts/make-audio-headers.py --check
+pnpm exec tsc -p tsconfig.server.json --noEmit
+pnpm build
 pnpm exec wrangler deploy
 ```
 
-Cloudflare reports its own build/deployment check on GitHub. The separate **Verify game** workflow checks types, production build, complete application/browser and room-service flows, and HTTP music delivery. It contains no unit tests. The integration PR passed this workflow before merging. Both systems run after pushes to main; Cloudflare does not wait for the separate GitHub workflow, so future runtime changes should be merged only after PR verification passes.
+`wrangler.jsonc` declares Room, MatchDO, LobbyDO and TournamentDO SQLite migrations. D1 migrations `0001_profiles.sql` and `0002_tournaments.sql` were applied to both production and preview. Only set `PUBLIC_ENABLED=true` after the service checks; false disables new public admissions. `/api/feasibility` additionally requires a private `PUBLIC_FEASIBILITY_KEY`; production does not need that diagnostic secret.
 
-## Manual deployment
+Use `pnpm run deploy` (with `run`) for the project's build/deploy script. Bare `pnpm deploy` is a different package-manager operation.
 
-1. Run the complete production checks described in the README and review `docs/verification.md`.
-2. Authenticate Wrangler to the owner's Cloudflare account. The owner completes any login or new authorization prompt in Arc; credentials must not be pasted into chat or committed.
-3. Confirm the account is on the Free plan. Build and deploy with `pnpm run deploy`.
-4. Verify the returned HTTPS URL, `/api/health`, room create/join, a complete two-browser match, direct and forced relay, reconnect, all three arenas, and music playback.
-5. Check response headers and MP3 range requests on the deployed address. Static media should remain available independently of room traffic. Record the URL and verification in this file once deployment succeeds.
+## Recovery and rollback
 
-Use `pnpm run deploy`, including `run`: bare `pnpm deploy` invokes pnpm's different workspace deployment command.
+Public disconnects neutralize input and retain a fifteen-second seat window. Match checkpoints serialize timers, resources, deployables, objectives, hidden runtime and random state. A recoverable process restart rebases the clock and input sequence; missing/incompatible state aborts without inventing winners. Results and bracket advancement are idempotent. Private host failure retains the existing honest interrupted-round behavior.
 
-## Updates and rollback
-
-Normal updates rebuild `dist` and deploy the same Worker. Do not include the transport exercise's temporary browser fixtures in a release; the script cleans those up, and a fresh Vite build clears `dist`.
-
-Deploy after active play sessions end: clients carry explicit protocol/content versions, and live rooms are not a persistent save system. Keep the prior known-good Git revision and Cloudflare deployment version available for rollback. A future protocol/content change must update the corresponding version and document its compatibility policy.
-
-Keep API tokens, Wrangler credentials, `.env` files, generated bundles, test screenshots, and local room storage out of Git. Imported source archives remain read-only and are not deployment inputs; the selected runtime assets and provenance manifest are committed.
-
-## Free-service limits
-
-Room creation, signaling, and relay use the account's free quotas. Most static asset delivery uses asset-first routing. MP3 requests pass through the Worker to implement accurate byte-range streaming and also consume Worker request allowance. Sustained relay traffic consumes the room quota faster than direct WebRTC; exhaustion should surface as a connection error while couch/practice remain usable. There is no automatic paid upgrade configured.
-
-The deployment uses a South America-oriented architecture with direct peer traffic preferred. Cloudflare's available Durable Object placement can put relay traffic outside South America, so measure actual friend-session latency instead of promising a regional ping.
-
-Current provider links, planning estimates, and their assumptions are in the [accepted plan](implementation-plan.md#staying-within-free-hosting). Record actual production usage after the owner/friend playtest.
+Keep the prior Git revision and Cloudflare deployment available. Roll back code only with attention to protocol compatibility and persisted Durable Object classes; never delete production D1 data or a durable class to force a rollback. Stop admission for maintenance if needed. No original archive is a deployment input, and `.assetsignore` excludes operating-system metadata.

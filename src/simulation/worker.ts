@@ -32,6 +32,7 @@ scope.onmessage = ({ data }) => {
     case 'inputs': simulation.setInputs(data.inputs); break;
     case 'pause': simulation.pause(); publish(); break;
     case 'resume': simulation.resume(); publish(); break;
+    case 'training': simulation.training(data.command); publish(); break;
     case 'forfeit': simulation.forfeit(data.seatIds); publish(); break;
     case 'stop': running = false; if (timer !== undefined) clearTimeout(timer); simulation.stop(); break;
   }

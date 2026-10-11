@@ -1,3 +1,4 @@
+import { wireSnapshot } from './snapshot';
 import { CONTENT_VERSION, PROTOCOL_VERSION } from '../shared/types';
 import type { InputFrame, MatchConfig, MatchResult, MatchSnapshot, PlayerSeat } from '../shared/types';
 import type { ClientMessage, RoomClientOptions, RoomCredentials, RoomState, Route, ServerMessage, SignalData, TransportStatus } from './types';
@@ -71,7 +72,7 @@ function validDirectInput(frames: InputFrame[], state: RoomState, from: string):
   if (!Array.isArray(frames) || !frames.length || frames.length > 12) return false;
   const owned = new Set(state.players.filter(player => player.kind === 'human' && player.peerId === from).map(player => player.id));
   return frames.every(frame => owned.has(frame.seatId) && Number.isInteger(frame.tick) && frame.tick >= 0 &&
-    ['left', 'right', 'down', 'jump', 'punch', 'special', 'guard', 'combo'].every(key => typeof frame[key as keyof InputFrame] === 'boolean'));
+    ['left', 'right', 'down', 'jump', 'punch', 'special', 'guard', 'combo'].every(key => typeof frame[key as keyof InputFrame] === 'boolean') && (frame.dodge===undefined || typeof frame.dodge==='boolean'));
 }
 
 /** Browser-side room connection. The caller owns simulation timing and local prediction. */
@@ -131,9 +132,10 @@ export class RoomClient {
     return this.connect(normalized);
   }
 
-  setSeats(players: PlayerSeat[]): void { this.send({ type: 'seats', players }); }
-  setConfig(config: MatchConfig): void { this.send({ type: 'config', config }); }
+  setSeats(players: PlayerSeat[], editId?:number): void { this.send({ type: 'seats', players, editId }); }
+  setConfig(config: MatchConfig, editId?:number): void { this.send({ type: 'config', config, editId }); }
   setReady(ready: boolean, assetsReady = ready): void { this.send({ type: 'ready', ready, assetsReady }); }
+  setSeatReady(seatId:string, ready:boolean, assetsReady=ready):void { this.send({type:'seat_ready',seatId,ready,assetsReady}); }
   start(): void { this.send({ type: 'start' }); }
   pause(reason?: string): void {
     if (this.send({ type: 'pause', reason })) return;
@@ -148,6 +150,7 @@ export class RoomClient {
   }
   rematch(): void { this.send({ type: 'rematch' }); }
   reportResult(result: MatchResult, snapshot?: MatchSnapshot): void {
+    if(snapshot)snapshot=wireSnapshot(snapshot);
     if (snapshot && snapshot.matchId === this.room?.matchId && snapshot.phase === 'finished') this.finalSnapshot = snapshot;
     if (this.send({ type: 'result', result, snapshot }) || !this.isHost || !this.room?.matchId) return;
     this.acceptControl({ type: 'result', matchId: this.room.matchId, result, snapshot, controlId: crypto.randomUUID() });
@@ -166,6 +169,7 @@ export class RoomClient {
   }
 
   sendSnapshot(snapshot: MatchSnapshot): void {
+    snapshot=wireSnapshot(snapshot);
     if (!this.room || !this.isHost || snapshot.matchId !== this.room.matchId) return;
     const sequence = this.nextSequence();
     const targets: string[] = [];
@@ -298,6 +302,7 @@ export class RoomClient {
         }
         break;
       }
+      case 'edit_ack': this.options.onEditAck?.(message.editId,message.accepted); break;
       case 'room':
         this.room = message.state;
         this.options.onRoomState?.(message.state);

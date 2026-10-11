@@ -2,8 +2,7 @@
 import assert from 'node:assert/strict';
 
 const base = process.env.STF_SERVER_URL ?? 'http://127.0.0.1:8787';
-const protocolVersion = 1;
-const contentVersion = 'stf-classic-1';
+const {protocolVersion,contentVersion}=await(await fetch(`${base}/api/health`)).json();
 const sockets = [];
 
 function seat(id, peerId, team) {

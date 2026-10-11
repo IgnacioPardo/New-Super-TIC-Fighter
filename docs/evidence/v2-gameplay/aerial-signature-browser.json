@@ -1,0 +1,152 @@
+[
+  {
+    "kit": "networks",
+    "arena": "classic",
+    "tick": 570,
+    "errors": [],
+    "deployables": [],
+    "actions": [
+      "special",
+      "combo",
+      "jump",
+      "recover",
+      "air-forward"
+    ]
+  },
+  {
+    "kit": "design",
+    "arena": "lab",
+    "tick": 609,
+    "errors": [],
+    "deployables": [],
+    "actions": [
+      "special",
+      "combo",
+      "jump",
+      "recover",
+      "air-forward"
+    ]
+  },
+  {
+    "kit": "code",
+    "arena": "pc",
+    "tick": 590,
+    "errors": [],
+    "deployables": [],
+    "actions": [
+      "special",
+      "combo",
+      "jump",
+      "recover",
+      "air-forward"
+    ]
+  },
+  {
+    "kit": "hardware",
+    "arena": "embedded",
+    "tick": 573,
+    "errors": [],
+    "deployables": [],
+    "actions": [
+      "special",
+      "combo",
+      "jump",
+      "recover",
+      "air-forward"
+    ]
+  },
+  {
+    "kit": "ai",
+    "arena": "virtual",
+    "tick": 604,
+    "errors": [],
+    "deployables": [],
+    "actions": [
+      "special",
+      "combo",
+      "jump",
+      "recover",
+      "air-forward"
+    ]
+  },
+  {
+    "kit": "robotics",
+    "arena": "arcade",
+    "tick": 579,
+    "errors": [],
+    "deployables": [
+      "drone"
+    ],
+    "actions": [
+      "special",
+      "combo",
+      "jump",
+      "recover",
+      "air-forward"
+    ]
+  },
+  {
+    "kit": "iot",
+    "arena": "classic",
+    "tick": 571,
+    "errors": [],
+    "deployables": [
+      "board",
+      "hub",
+      "board"
+    ],
+    "actions": [
+      "special",
+      "combo",
+      "jump",
+      "recover",
+      "air-forward"
+    ]
+  },
+  {
+    "kit": "vr",
+    "arena": "lab",
+    "tick": 603,
+    "errors": [],
+    "deployables": [],
+    "actions": [
+      "special",
+      "combo",
+      "jump",
+      "recover",
+      "air-forward"
+    ]
+  },
+  {
+    "kit": "games",
+    "arena": "pc",
+    "tick": 661,
+    "errors": [],
+    "deployables": [
+      "pad"
+    ],
+    "actions": [
+      "special",
+      "combo",
+      "jump",
+      "recover",
+      "air-forward"
+    ]
+  },
+  {
+    "kit": "printing",
+    "arena": "embedded",
+    "tick": 614,
+    "errors": [],
+    "deployables": [
+      "block"
+    ],
+    "actions": [
+      "special",
+      "combo",
+      "jump",
+      "recover",
+      "air-forward"
+    ]
+  }
+]

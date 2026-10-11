@@ -1,0 +1,56 @@
+{
+  "environment": "compiled application, real worker and Playwright keyboard input",
+  "mode": "royale",
+  "tick": 283,
+  "fighters": [
+    {
+      "id": "p1",
+      "x": 191.55982033046615,
+      "y": 650,
+      "eliminated": false
+    },
+    {
+      "id": "p2",
+      "x": 1170.9963541666657,
+      "y": 426.55000000000007,
+      "eliminated": false
+    },
+    {
+      "id": "p3",
+      "x": 84.8522489561201,
+      "y": 430,
+      "eliminated": false
+    },
+    {
+      "id": "p4",
+      "x": 1413.793305340366,
+      "y": 430,
+      "eliminated": false
+    },
+    {
+      "id": "p5",
+      "x": 993.4063807515936,
+      "y": 242.5,
+      "eliminated": false
+    },
+    {
+      "id": "p6",
+      "x": 886,
+      "y": 350,
+      "eliminated": false
+    },
+    {
+      "id": "p7",
+      "x": 956.28125,
+      "y": 347.5,
+      "eliminated": false
+    },
+    {
+      "id": "p8",
+      "x": 1033.895443848533,
+      "y": 279.65000000000003,
+      "eliminated": false
+    }
+  ],
+  "errors": []
+}

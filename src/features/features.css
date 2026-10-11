@@ -1,0 +1,63 @@
+.feature-home{width:min(100%,1040px);min-width:0;margin:18px auto 48px;display:grid;gap:22px}.feature-panel{--config-accent:#57d4f1;border:1px solid #607e95;background:#101d2d;box-shadow:6px 6px #020a1477;min-width:0}.feature-heading{display:flex;align-items:center;gap:18px;padding:18px 22px;border-top:4px solid var(--config-accent);background:#e5eeef;color:#11223a}.feature-heading h2{overflow-wrap:anywhere;font:21px Arcade,Impact,sans-serif;line-height:1.4;text-transform:uppercase}.feature-heading p{font:13px/1.5 'Trebuchet MS',sans-serif;color:#446074;margin-top:5px}.feature-heading>div{flex:1;min-width:0}.feature-number{background:#122a42;color:var(--config-accent);font:20px Arcade,Impact,sans-serif;padding:12px;box-shadow:3px 3px var(--config-accent)}.feature-body{padding:22px}.feature-body h3{font:15px Arcade,Impact,sans-serif;margin:24px 0 16px;color:#dfeaf4}.feature-stats{display:flex;flex-wrap:wrap;gap:24px;margin:24px 0}.feature-stats>span{display:grid;gap:7px;color:#b2c9d9;font-size:13px;min-width:100px}.feature-stats strong{color:#f2f7fa;font:25px Arcade,Impact,sans-serif}.feature-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:16px}.feature-actions button,.feature-list button{background:#213950;border:1px solid #67849b;padding:12px 17px;color:#e5eff8;box-shadow:3px 3px #030b17}.feature-actions button:focus,.feature-list button:focus{background:#e5eeef;color:#11223a;outline:2px solid var(--config-accent);outline-offset:2px}.cosmetic-options{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:0 0 22px}.cosmetic-options button{display:grid;gap:9px;padding:16px;text-align:left;background:#14273b;border:1px solid #57758d;color:#ddecf6}.cosmetic-options button.selected{border:2px solid var(--config-accent);background:#234058}.cosmetic-options i{width:25px;height:6px;box-shadow:3px 3px #0006}.cosmetic-options small{font-size:12px;color:#acc4d3}.feature-list{list-style:none;padding:0;margin:18px 0}.feature-list li{display:flex;gap:18px;align-items:center;justify-content:space-between;border-bottom:1px solid #496477;padding:12px 0}.feature-status{border-left:4px solid #f5bd67;background:#172b3e;padding:16px;font:15px/1.6 'Trebuchet MS',sans-serif}.feature-home button:disabled{opacity:.45;cursor:not-allowed}.feature-home input{font-family:'Trebuchet MS',sans-serif}.feature-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}.feature-card{min-height:136px;text-align:left;display:flex;gap:20px;align-items:center;padding:22px;border:1px solid #526e86;border-left:4px solid var(--config-accent,#57d4f1);background:#13263a;box-shadow:4px 4px #030b17;color:#e9f4fb}.feature-card strong{display:block;font:20px Arcade,Impact,sans-serif;margin-bottom:10px}.feature-card small{display:block;font:14px/1.6 'Trebuchet MS',sans-serif;color:#adc6d8}.feature-card:focus{background:#e5eeef;color:#12273c;outline:2px solid white;box-shadow:4px 4px var(--config-accent,#57d4f1)}.feature-card:focus small{color:#35576f}.feature-card>span:first-child{font:30px Arcade,Impact,sans-serif;color:var(--config-accent,#57d4f1)}.feature-card>span:last-child{flex:1;min-width:0;overflow-wrap:anywhere}.feature-subtitle{color:#b9cddc;line-height:1.6}.feature-progress{height:8px;background:#263c50;overflow:hidden;margin-top:12px}.feature-progress>span{display:block;height:100%;background:var(--config-accent,#a0e769)}
+@media(max-width:760px){.feature-grid{grid-template-columns:1fr}.cosmetic-options{grid-template-columns:repeat(2,minmax(0,1fr))}.feature-heading{padding:14px}.feature-body{padding:16px}.feature-heading h2{font-size:18px}.feature-card{padding:18px;min-height:112px}.feature-card strong{font-size:17px}.feature-card>span:first-child{font-size:26px}.feature-actions button{flex:1}}
+@media(max-height:720px) and (min-width:761px){.feature-home{margin-top:8px;gap:16px}.feature-heading{padding:14px 20px}.feature-body{padding:18px}.feature-card{min-height:108px;padding:18px}.feature-card strong{font-size:17px}}
+.solo-status{position:absolute;left:50%;top:12px;transform:translateX(-50%);z-index:8;max-width:min(680px,75%);background:#091728ed;border-top:3px solid #a0e769;padding:10px 18px;display:flex;gap:12px;align-items:center;color:#e7f3f7;font:13px/1.5 'Trebuchet MS',sans-serif;box-shadow:4px 4px #0006}.solo-status strong{font-family:Arcade,Impact,sans-serif}.solo-status.solo-finished{position:fixed;top:50%;width:min(620px,90vw);max-width:90vw;transform:translate(-50%,-50%);padding:26px;display:grid;z-index:70;border:2px solid #a0e769;box-shadow:0 0 0 100vmax #030a13cc}.solo-finished .feature-actions p{width:100%;font-size:20px}.solo-finished button{font-size:15px}.solo-status:not(.solo-finished) span{max-width:400px}
+.competition-fixtures{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px}.competition-fixture{border:1px solid #546d81;background:#14273b;padding:16px}.competition-fixture.running{border-top:3px solid #63d5ef}.competition-fixture>small{color:#b1c7d6}.competition-fixture>div{display:flex;align-items:center;justify-content:space-between;gap:20px;margin-top:15px;overflow-wrap:anywhere}.competition-fixture .winner{color:#a0e769}.competition-fixture button{margin-top:16px;padding:10px 16px;background:#29445c;border:1px solid #8bacc5}.competition-table{overflow-x:auto}.competition-table table{width:100%;text-align:left;border-collapse:collapse;min-width:440px}.competition-table th,.competition-table td{padding:13px 10px;border-bottom:1px solid #445e73}.competition-home .feature-heading>h2{flex:1}.competition-home label.config-row{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 16px}.competition-home label.config-row>span{font-size:15px;color:#adbed1;min-width:0}.competition-home .config-row input{min-width:0;max-width:60%}
+
+/* A panel is a page, rather than another section below the viewport. */
+.feature-home { flex:1; min-height:0; margin:0 auto; display:flex; flex-direction:column; gap:12px; }
+.feature-home>.feature-subtitle { flex:none; font-size:14px; }
+.content-page>.feature-panel { min-height:0; flex:1; display:flex; flex-direction:column; }
+.content-page .feature-heading { flex:none; padding:14px 20px; }
+.content-page .feature-heading h2 { font-size:18px; }
+.content-page .feature-body { flex:1; min-height:0; padding:18px 20px; display:flex; flex-direction:column; gap:12px; }
+.content-page .feature-body>h3 { margin:0; }
+.content-page .feature-actions { margin:0; gap:10px; align-items:center; }
+.content-page .feature-actions button { padding:10px 15px; min-height:40px; font-size:14px; }
+.content-page .config-note { margin:0; font-size:13px; line-height:1.5; }
+.content-page .config-row { min-height:44px; }
+.content-page .choice-main { padding:11px 14px; }
+.content-page .name-row { padding:10px 14px; }
+.content-page .feature-stats { margin:8px 0; gap:24px; }
+.content-page .feature-list { margin:0; }
+.content-page .feature-list li { min-height:48px; padding:9px 0; font-size:14px; }
+.content-page .feature-list li>strong,.content-page .feature-list li>span { min-width:0; overflow-wrap:anywhere; }
+.content-page .feature-list button { padding:8px 12px; font-size:13px; flex:none; }
+.content-page .cosmetic-options { margin:0; }
+.content-page .feature-body>.primary-button { align-self:flex-start; min-height:44px; font-size:15px; }
+.feature-home>.feature-status,.content-page .feature-status { padding:10px 14px; font-size:13px; line-height:1.5; flex:none; }
+.feature-home .feature-status p { margin:0; }
+.solo-home .feature-grid { flex:1; min-height:0; grid-auto-rows:1fr; gap:14px; }
+.solo-home .feature-card { min-height:0; padding:16px 20px; }
+.solo-home .feature-card strong { font-size:18px; margin-bottom:7px; }
+.solo-home .feature-card small { font-size:14px; line-height:1.45; }
+.solo-home>.paged-content { flex:1; }
+.competition-fixtures { grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
+.competition-fixture { padding:12px; }
+.competition-fixture>div { margin-top:10px; }
+.competition-fixture button { margin-top:10px; }
+.competition-create .feature-body { gap:0; }
+.competition-create .feature-actions { margin-top:12px; }
+.competition-home label.config-row { padding:10px 14px; }
+.standings-list li { flex-wrap:wrap; }
+@media(max-width:760px) {
+ .content-page .feature-heading { padding:12px; gap:12px; }
+ .content-page .feature-heading h2 { font-size:16px; }
+ .content-page .feature-heading p { font-size:12px; }
+ .content-page .feature-body { padding:14px; gap:12px; }
+ .content-page .feature-number { font-size:16px; padding:8px; }
+ .content-page .feature-stats { gap:16px; }
+ .content-page .feature-stats>span { min-width:80px; font-size:12px; }
+ .content-page .feature-stats strong { font-size:22px; }
+ .content-page .feature-list li { gap:10px; }
+ .content-page .feature-list li>span { font-size:12px; }
+ .solo-home .feature-grid { grid-template-columns:1fr; gap:10px; }
+ .solo-home .feature-card { padding:12px; gap:12px; }
+ .solo-home .feature-card strong { font-size:16px; }
+ .solo-home .feature-card small { font-size:12px; line-height:1.4; }
+ .solo-home .feature-card>span:first-child { font-size:23px; }
+ .competition-fixtures { grid-template-columns:1fr; }
+}
+.competition-create .content-page { gap:0; }
+.competition-create .feature-body>.content-pages { gap:8px; }
+.competition-create .content-pages>.config-tabs button { min-height:38px; }

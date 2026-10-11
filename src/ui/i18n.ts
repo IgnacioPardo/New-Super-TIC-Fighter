@@ -2,20 +2,28 @@ import type { Discipline, Language } from '../shared/types';
 export const names: Record<Discipline, Record<Language, string>> = {
   networks: { es: 'Redes', en: 'Networks' }, design: { es: 'Diseño', en: 'Design' },
   code: { es: 'Programación', en: 'Programming' }, hardware: { es: 'Hardware', en: 'Hardware' },
+  ai: { es: 'Inteligencia Artificial', en: 'Artificial Intelligence' }, robotics: { es: 'Robótica', en: 'Robotics' }, iot: { es: 'Internet de las Cosas', en: 'Internet of Things' }, vr: { es: 'Realidad Virtual', en: 'Virtual Reality' }, games: { es: 'Videojuegos', en: 'Video Games' }, printing: { es: 'Impresión 3D', en: '3D Printing' },
 };
 export const disciplineInfo: Record<Discipline, { symbol: string; color: string; special: Record<Language, string>; combo: Record<Language, string> }> = {
   networks: { symbol: '↯', color: '#57d4f1', special: { es: 'Cable UTP', en: 'UTP cable' }, combo: { es: 'Lluvia de cables', en: 'Rising cables' } },
   design: { symbol: '↖', color: '#f073c9', special: { es: 'Puntero', en: 'Pointer' }, combo: { es: 'Selección', en: 'Selection box' } },
   code: { symbol: '⌘', color: '#a0e769', special: { es: 'Bola de código', en: 'Code projectile' }, combo: { es: 'Columna de código', en: 'Code column' } },
   hardware: { symbol: '▤', color: '#f4bd67', special: { es: 'Memoria RAM', en: 'RAM obstacle' }, combo: { es: 'Disco giratorio', en: 'Spinning disc' } },
+  ai: { symbol: '∴', color: '#bb8ff0', special: { es: 'Eco de ataque', en: 'Attack echo' }, combo: { es: 'Secuencia predictiva', en: 'Predictive sequence' } },
+  robotics: { symbol: '⚙', color: '#f48a72', special: { es: 'Brazo mecánico', en: 'Mechanical arm' }, combo: { es: 'Dron', en: 'Drone' } },
+  iot: { symbol: '⌁', color: '#62d6be', special: { es: 'Placa sensora', en: 'Sensor board' }, combo: { es: 'Hub Raspberry Pi', en: 'Raspberry Pi hub' } },
+  vr: { symbol: '◇', color: '#7ab6ff', special: { es: 'Desplazamiento', en: 'Displacement' }, combo: { es: 'Señuelo virtual', en: 'Virtual decoy' } },
+  games: { symbol: '✚', color: '#f3dd71', special: { es: 'Proyectil rebote', en: 'Ricochet shot' }, combo: { es: 'Plataforma de rebote', en: 'Bounce pad' } },
+  printing: { symbol: '▱', color: '#e2a0c2', special: { es: 'Pistón', en: 'Piston' }, combo: { es: 'Bloque impreso', en: 'Printed block' } },
 };
-export const disciplines: Discipline[] = ['networks', 'design', 'code', 'hardware'];
+export const disciplines: Discipline[] = ['networks', 'design', 'code', 'hardware', 'ai', 'robotics', 'iot', 'vr', 'games', 'printing'];
 export function formatLives(count: number, language: Language): string {
  const label = language === 'es' ? count === 1 ? 'vida' : 'vidas' : count === 1 ? 'life' : 'lives';
  return `${count} ${label}`;
 }
 export const ui = {
  es: {
+  hard: 'Difícil', dodge: 'Esquiva / impulso', ruleset: 'Reglamento', classic: 'Classic', expanded: 'Expanded', gameMode: 'Objetivo', stock: 'Vidas', timed: 'KO por tiempo', hill: 'Rey de la zona', royale: 'Royale', survival: 'Supervivencia', training: 'Entrenamiento', bestOf: 'Al mejor de', hazards: 'Peligros', items: 'Objetos', coordinator: 'Coordinador', joinController: 'Pulsa A / ✕ para unirte', sharedControls: 'Reglas / empezar', ownFighter: 'Tu luchador', keyboardText: 'Usa el teclado físico · Esc para salir del campo', reclaimSeat: 'Pulsa A / ✕ con el mismo mando para recuperar', pendingEdits: 'Guardando cambios…', bindingMigration: 'Una tecla de esquiva coincide con otra acción. Revisa los controles.',
   done: 'Listo', editFighter: 'Editar luchador', savedAuto: 'Los cambios se guardan automáticamente.', configHelp: '↑ ↓ Mover · ← → Ajustar · Enter Elegir · Esc Volver',
   introPrompt: 'PULSA UNA TECLA PARA COMENZAR', introInputHint: 'O haz clic · A / ✕ en el mando',
   // Arcade headings use ASCII: the original pixel font lacks accented letters and inverted punctuation.
@@ -30,7 +38,7 @@ export const ui = {
   noWinner: 'Sin resultado', timeout: 'Tiempo agotado', lastStanding: 'Fin de partida', damage: 'Daño', stocks: 'Vidas',
   keyboard: 'Teclado', gamepad: 'Mando', noGamepads: 'Conecta un mando para asignarlo', language: 'Idioma', camera: 'Cámara', adaptive: 'Adaptativa', fixed: 'Fija',
   motion: 'Reducir movimiento', music: 'Música', effects: 'Efectos', playlist: 'Banda sonora', original: 'Original', remake: 'Remake', controls: 'Controles',
-  jump: 'Saltar', punch: 'Golpe', special: 'Especial', guard: 'Guardia', combo: 'Combo', down: 'Agacharse', left: 'Izquierda', right: 'Derecha',
+  jump: 'Saltar', punch: 'Golpe', special: 'Especial', guard: 'Guardia', combo: 'Firma / combo', down: 'Agacharse', left: 'Izquierda', right: 'Derecha',
   soundLocked: 'Activar sonido', soundHint: 'Activar música y efectos', fullscreen: 'Pantalla completa',
   onlineTitle: 'ONLINE', onlineDescription: '2–4 jugadores · Salas privadas', onlineNote: 'Invita por enlace o código. Sin cuentas.', create: 'CREAR SALA', join: 'ENTRAR', code: 'Código de sala',
   yourName: 'Nombre', room: 'Sala', copy: 'COPIAR ENLACE', copied: 'COPIADO', connecting: 'Conectando…', reconnecting: 'Reconectando…',
@@ -51,10 +59,11 @@ export const ui = {
   controlsHint: 'Elige un jugador y una acción para cambiar su tecla.', bindingConflict: 'Tecla en uso. Elige otra.', pressKey: 'Pulsa una tecla… · Esc: cancelar',
   gamepadBindings: 'Botones del mando', deadZone: 'Zona muerta', sound: 'Sonido', display: 'Pantalla', tracks: 'pistas',
   soundtrackHint: 'Combate: música aleatoria. Menús: Danger Zone.', cameraHint: 'Adaptativa: zoom automático. Fija: encuadre constante.', restoreKeyboard: 'Restaurar teclas',
-  controllerGuide: 'Mando por defecto: stick/cruceta para moverse · A / ✕ saltar · X / □ golpe · B / ○ especial · Y / △ combo · RB / R1 guardia · Start pausa.',
+  controllerGuide: 'Mando por defecto: stick/cruceta para moverse · A / ✕ saltar · X / □ golpe · B / ○ especial · Y / △ firma · LB / L1 esquiva/impulso · RB / R1 guardia · Start pausa.',
   or: 'O', countdownReady: 'LISTOS', countdownFight: 'YA', reload: 'RECARGAR', slowConnection: 'Conexión lenta', waitingHost: 'ESPERANDO AL ANFITRIÓN', leaveRoom: 'SALIR DE LA SALA',
  },
  en: {
+  hard: 'Hard', dodge: 'Dodge / dash', ruleset: 'Ruleset', classic: 'Classic', expanded: 'Expanded', gameMode: 'Objective', stock: 'Stock', timed: 'Timed KO', hill: 'King of the Hill', royale: 'Royale', survival: 'Survival', training: 'Training', bestOf: 'Best of', hazards: 'Hazards', items: 'Items', coordinator: 'Coordinator', joinController: 'Press A / ✕ to join', sharedControls: 'Rules / start', ownFighter: 'Your fighter', keyboardText: 'Use the physical keyboard · Esc to leave this field', reclaimSeat: 'Press A / ✕ on the same controller to reclaim', pendingEdits: 'Saving changes…', bindingMigration: 'A dodge key overlaps another action. Review your controls.',
   done: 'Done', editFighter: 'Edit fighter', savedAuto: 'Changes are saved automatically.', configHelp: '↑ ↓ Move · ← → Adjust · Enter Choose · Esc Back',
   introPrompt: 'PRESS ANY KEY TO START', introInputHint: 'Or click · A / ✕ on your controller',
   local: 'LOCAL', online: 'ONLINE', practice: 'PRACTICE', settings: 'SETTINGS', guide: 'HOW TO PLAY', back: 'Back',
@@ -68,7 +77,7 @@ export const ui = {
   noWinner: 'No result', timeout: 'Time up', lastStanding: 'Match over', damage: 'Damage', stocks: 'Lives',
   keyboard: 'Keyboard', gamepad: 'Controller', noGamepads: 'Connect a controller to assign it', language: 'Language', camera: 'Camera', adaptive: 'Adaptive', fixed: 'Fixed',
   motion: 'Reduce motion', music: 'Music', effects: 'Effects', playlist: 'Soundtrack', original: 'Original', remake: 'Remake', controls: 'Controls',
-  jump: 'Jump', punch: 'Punch', special: 'Special', guard: 'Guard', combo: 'Combo', down: 'Crouch', left: 'Left', right: 'Right',
+  jump: 'Jump', punch: 'Punch', special: 'Special', guard: 'Guard', combo: 'Signature / combo', down: 'Crouch', left: 'Left', right: 'Right',
   soundLocked: 'Enable sound', soundHint: 'Enable music and effects', fullscreen: 'Fullscreen',
   onlineTitle: 'ONLINE', onlineDescription: '2–4 players · Private rooms', onlineNote: 'Invite by link or code. No accounts.', create: 'CREATE ROOM', join: 'JOIN', code: 'Room code',
   yourName: 'Name', room: 'Room', copy: 'COPY LINK', copied: 'COPIED', connecting: 'Connecting…', reconnecting: 'Reconnecting…',
@@ -89,7 +98,7 @@ export const ui = {
   controlsHint: 'Choose a player and an action to change its key.', bindingConflict: 'Key already used. Choose another.', pressKey: 'Press a key… · Esc: cancel',
   gamepadBindings: 'Controller buttons', deadZone: 'Dead zone', sound: 'Sound', display: 'Display', tracks: 'tracks',
   soundtrackHint: 'Match: shuffled music. Menus: Danger Zone.', cameraHint: 'Adaptive: automatic zoom. Fixed: constant framing.', restoreKeyboard: 'Reset keys',
-  controllerGuide: 'Default controller: stick/D-pad to move · A / ✕ jump · X / □ punch · B / ○ special · Y / △ combo · RB / R1 guard · Start pause.',
+  controllerGuide: 'Default controller: stick/D-pad to move · A / ✕ jump · X / □ punch · B / ○ special · Y / △ signature · LB / L1 dodge/dash · RB / R1 guard · Start pause.',
   or: 'OR', countdownReady: 'READY', countdownFight: 'GO', reload: 'RELOAD', slowConnection: 'Slow connection', waitingHost: 'WAITING FOR HOST', leaveRoom: 'LEAVE ROOM',
  },
 } as const;

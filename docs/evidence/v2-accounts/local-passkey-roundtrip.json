@@ -1,0 +1,51 @@
+{
+  "environment": "isolated local workerd, disposable D1, compiled application, Playwright Chromium",
+  "identity": "seeded local identity, session and Google recovery-provider row; no OAuth exchange",
+  "hardware": "CDP virtual CTAP2 authenticator with resident credentials and user verification",
+  "passed": [
+    "guest profile save and cosmetic selection without authentication",
+    "unauthenticated profile returns 401; unconfigured OAuth buttons remain disabled",
+    "explicit guest-to-account union/max merge is idempotent and retains guest/couch stores",
+    "signed-in public name and unlocked cosmetic persist to D1",
+    "new device-local account progress synchronizes on profile refresh and unlocks/saves newly earned Neon at 600 XP",
+    "server rejects locked cosmetic, foreign Origin, non-JSON, malformed and oversized writes",
+    "client cannot forge verified matches, wins or XP",
+    "virtual WebAuthn enrollment persists a discoverable localhost credential and lists it in profile",
+    "logout restores saved guest name/Copper and invalidates session; fresh virtual passkey assertion creates authenticated session and restores account name/Neon/progress without account cache",
+    "passkey removal persists while linked recovery identity remains; local imports never increment verified stats",
+    "zero browser page errors"
+  ],
+  "pageErrors": [],
+  "rejectedStatuses": [
+    400,
+    403,
+    415,
+    400,
+    413
+  ],
+  "authenticatorCounter": {
+    "before": 1,
+    "after": 2
+  },
+  "profile": {
+    "handle": "Passkey Pilot",
+    "cosmetic": "neon",
+    "local": {
+      "version": 1,
+      "completedChallenges": [
+        "challenge-1",
+        "challenge-2",
+        "challenge-3"
+      ],
+      "arcadeClears": 1,
+      "survivalBest": 5,
+      "matches": 10,
+      "wins": 4
+    },
+    "verified": {
+      "matches": 0,
+      "wins": 0,
+      "xp": 0
+    }
+  }
+}

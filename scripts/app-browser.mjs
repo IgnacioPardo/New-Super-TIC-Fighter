@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import {mkdir} from 'node:fs/promises';
 await mkdir('tmp/qa',{recursive:true});
 import {chromium} from '@playwright/test';
-import {enterTitle} from './enter-title.mjs';
+import { enterTitle, chooseMode } from './enter-title.mjs';
 const base=process.env.STF_APP_URL??'http://127.0.0.1:5173';
 const browser=await chromium.launch({headless:true});
 const contexts=await Promise.all([browser.newContext({viewport:{width:1440,height:1000}}),browser.newContext({viewport:{width:1440,height:1000}})]);
@@ -20,9 +20,9 @@ for(const page of pages){
 }
 const [host,guest]=pages;
 try{
-  await host.goto(base);await enterTitle(host);await host.getByTestId('mode-online').or(host.getByRole('button',{name:/02.*ONLINE/})).click();await host.getByPlaceholder('Jugador',{exact:true}).fill('Host');await host.getByRole('button',{name:/CREAR SALA/}).click();
+  await host.goto(base);await enterTitle(host);await chooseMode(host,'online');await host.getByPlaceholder('Jugador',{exact:true}).fill('Host');await host.getByRole('button',{name:/CREAR SALA/}).click();
   await host.locator('.room-code strong').waitFor();const code=await host.locator('.room-code strong').innerText();console.log('Room created',code);
-  await guest.goto(`${base}/?room=${code}`);await enterTitle(guest);await guest.getByTestId('mode-online').or(guest.getByRole('button',{name:/02.*ONLINE/})).click();await guest.getByPlaceholder('Jugador',{exact:true}).fill('Guest');await guest.getByRole('button',{name:/ENTRAR/}).click();
+  await guest.goto(`${base}/?room=${code}`);await enterTitle(guest);await chooseMode(guest,'online');await guest.getByPlaceholder('Jugador',{exact:true}).fill('Guest');await guest.getByRole('button',{name:/ENTRAR/}).click();
   await guest.locator('.room-code strong').waitFor();await host.locator('.fighter-card').nth(1).waitFor();
   await host.locator('.fighter-card').filter({hasText:'Host'}).getByRole('button',{name:'Listo',exact:true}).click();
   await guest.locator('.fighter-card').filter({hasText:'Guest'}).getByRole('button',{name:'Listo',exact:true}).click();
