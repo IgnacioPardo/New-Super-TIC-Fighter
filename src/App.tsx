@@ -324,12 +324,19 @@ function Results({ snapshot, settings, manifest, rematch, primaryLabel, leave, l
  const t = ui[settings.language], result = snapshot.result, es=settings.language==='es';
  const fightersPerPage=usePageSize(4,2),scoreRows=usePageSize(4,4);
  const winners = snapshot.config.players.filter(p => result?.winners.includes(p.id));
+ const mode=snapshot.config.gameMode??'stock';
+ const placement=(id:string)=>result?.placements?.[id]??snapshot.scores?.[id]?.placement;
+ const scoreboardPlayers=mode==='royale'?[...snapshot.config.players].sort((a,b)=>(placement(a.id)??99)-(placement(b.id)??99)):snapshot.config.players;
  const draw = result?.reason === 'draw', interrupted = result?.reason === 'interrupted';
  return <div className="results-screen">
   <span className="eyebrow">{interrupted ? t.noWinner : result?.reason === 'timeout' ? t.timeout : t.lastStanding}</span><h1>{interrupted ? t.interrupted : draw ? t.draw : t.winner}</h1>
   <ContentTabs label={es?'Resultados':'Results'} pages={[
    {id:'podium',label:es?'Podio':'Podium',content:<PagedContent size={fightersPerPage} language={settings.language} label={es?'Luchadores':'Fighters'} className="result-fighters">{(winners.length ? winners : snapshot.config.players).map(seat => <div key={seat.id} style={{ '--fighter-color': disciplineInfo[seat.discipline].color } as React.CSSProperties}>{!draw && !interrupted && <span className="winner-ribbon" aria-hidden="true">1</span>}<Avatar manifest={manifest} appearance={seat.appearance} discipline={seat.discipline} animated={!settings.reducedMotion} /><h2>{seat.name}</h2><span>{names[seat.discipline][settings.language]}</span></div>)}</PagedContent>},
-   {id:'scores',label:es?'Marcador':'Scoreboard',content:<PagedContent size={scoreRows} language={settings.language} label={es?'Marcador':'Scoreboard'} className="result-scoreboard">{snapshot.config.players.map(seat => {const f=snapshot.fighters.find(fighter=>fighter.id===seat.id);return <div key={seat.id}><strong>{seat.name}</strong><span>{formatLives(f?.lives??0,settings.language)}</span><span>{Math.round(f?.damage??0)}%</span>{result?.winners.includes(seat.id)&&<b>1</b>}</div>;})}</PagedContent>}
+   {id:'scores',label:es?'Marcador':'Scoreboard',content:<PagedContent size={scoreRows} language={settings.language} label={es?'Marcador':'Scoreboard'} className="result-scoreboard">{scoreboardPlayers.map(seat => {
+    const f=snapshot.fighters.find(fighter=>fighter.id===seat.id),score=snapshot.scores?.[seat.id];
+    const metric=mode==='hill'?`${(result?.scores?.[seat.id]??score?.hill??0).toFixed(1)} s`:mode==='timed'?`${result?.scores?.[seat.id]??((score?.kos??0)-(score?.selfDestructs??0))} KO`:formatLives(f?.lives??0,settings.language);
+    return <div key={seat.id}>{mode==='royale'&&<b aria-label={`${es?'Puesto':'Place'} ${placement(seat.id)??'—'}`}>#{placement(seat.id)??'—'}</b>}<strong>{seat.name}</strong><span>{metric}</span><span>{Math.round(f?.damage??0)}%</span>{mode!=='royale'&&result?.winners.includes(seat.id)&&<b>1</b>}</div>;
+   })}</PagedContent>}
   ]}/>
   {setState && <SetScore state={setState} language={settings.language} />}
   <div className="results-actions"><button data-autofocus disabled={waitingForHost} className="primary-button" onClick={rematch}>{primaryLabel}<span>↻</span></button><button className="secondary-button" onClick={leave}>{leaveLabel}<span>←</span></button></div>
