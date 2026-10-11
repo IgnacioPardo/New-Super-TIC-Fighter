@@ -31,5 +31,7 @@ export function keyName(code: string) { return code.replace('Key', '').replace('
 
 export function bindingConflicts(settings: AppSettings): string[] {
  const all = settings.keyboardBindings.flatMap((bindings,index) => Object.entries(bindings).map(([action,key]) => ({action,key,index})));
- return all.filter(binding => binding.action === "dodge" && all.some(other => other !== binding && other.key === binding.key)).map(binding => `P${binding.index+1}: ${keyName(binding.key)}`);
+ const keyboard=all.filter(binding => binding.action === "dodge" && all.some(other => other !== binding && other.key === binding.key)).map(binding => `P${binding.index+1}: ${keyName(binding.key)}`);
+ const dodge=settings.gamepadBindings.dodge;
+ return [...keyboard,...(Object.entries(settings.gamepadBindings).some(([action,button])=>action!=='dodge'&&button===dodge)?[`LB / L1 (${dodge})`]:[])];
 }

@@ -277,3 +277,5 @@ main:has([data-menu-dialog]) { z-index: 5; }
 .set-score span { display: flex; gap: 12px; align-items: center; padding: 10px; background: #172b40; flex: 1; min-width: 140px; }
 .set-score b { font: 24px Arcade, sans-serif; margin-left: auto; color: #f3dd71; }
 .set-score i { font-style: normal; color: #a0e769; }
+
+.config-dialog .solo-status.solo-finished { position: static; transform: none; width: 100%; max-width: 100%; box-shadow: none; border: 0; padding: 8px; background: transparent; }

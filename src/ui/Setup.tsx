@@ -74,7 +74,7 @@ export function Setup({config,setConfig,settings,manifest,devices,ready,toggleRe
  },[ready,manifest,drafts,bridge?.state.pendingEdits,reclaims]);
  const update=(patch:Partial<MatchConfig>)=>{if(!host) return;invalidateReady?.();if(online) online.updateConfig({...config,...patch});else setConfig({...config,...patch});};
  const maxFighters=config.gameMode==='royale'?8:4;
- const teamValid=config.mode!=='teams'||config.players.length===4&&config.players.filter(player=>player.team===0).length===2&&config.players.filter(player=>player.team===1).length===2;
+ const teamValid=config.gameMode==='survival'?localHumans.length>=1&&localHumans.length<=2:config.mode!=='teams'||config.players.length===4&&config.players.filter(player=>player.team===0).length===2&&config.players.filter(player=>player.team===1).length===2;
  const humanDevices=localHumans.map(player=>player.device);
  const devicesValid=new Set(humanDevices).size===humanDevices.length&&localHumans.every(connected);
  const rosterValid=config.players.length>=2&&config.players.length<=maxFighters&&localHumans.length<=4;
@@ -87,7 +87,7 @@ export function Setup({config,setConfig,settings,manifest,devices,ready,toggleRe
   const seat={...defaultSeat(index,!device&&(localHumans.length>=4||!!online&&host),lang),...(device?{kind:'human' as const,device}:{}),...(online?{peerId:online.state.peerId}: {})};
   if(online) online.claimSeat({...seat,id:host?seat.id:crypto.randomUUID().replaceAll('-','')});else update({players:[...config.players,seat]});
  };
- const closeRules=()=>{setRulesOpen(false);setSharedDevice(null);window.dispatchEvent(new Event('menu-transition'));};
+ const closeRules=()=>{setRulesOpen(false);window.dispatchEvent(new Event('menu-transition'));};
  const deviceLabel=(seat:PlayerSeat)=>seat.kind==='bot'?`${t.bot} · ${t[seat.difficulty??'normal']}`:seat.device.startsWith('keyboard:')?`${t.keyboard} ${Number(seat.device.split(':')[1])+1}`:!owned(seat)||seat.device==='remote'?t.seatRemote:devices.find(device=>device.id===seat.device)?.label??`${t.gamepad} ${Number(seat.device.split(':')[1])+1}`;
  const handlePad=(input:MenuInput)=>{
   if(scope.current?.closest('[hidden]')) return false;
@@ -118,7 +118,7 @@ export function Setup({config,setConfig,settings,manifest,devices,ready,toggleRe
   if((command==='left'||command==='right')&&!target.dispatchEvent(new CustomEvent('menu-command',{detail:command,bubbles:true,cancelable:true}))) {article.removeAttribute('data-controller-command');feedback?.('change');return true;}
   if(command==='confirm') {
    if(target.matches('input')) {target.focus();feedback?.('confirm');return true;}
-   target.setAttribute('data-virtual-activate','true');target.click();target.removeAttribute('data-virtual-activate');if(target.classList.contains('fighter-edit')&&!editor(seat.id).open) {cursor=1;window.dispatchEvent(new CustomEvent('menu-transition',{detail:identity.device}));}feedback?.('confirm');
+   target.setAttribute('data-virtual-activate','true');target.click();target.removeAttribute('data-virtual-activate');if(target.classList.contains('fighter-edit')&&!editor(seat.id).open) {cursor=1;window.dispatchEvent(new CustomEvent('menu-transition',{detail:identity.device}));}
   } else if(['up','down','left','right'].includes(command)) {cursor=Math.max(0,Math.min(targets.length-1,cursor+(['up','left'].includes(command)?-1:1)));feedback?.('navigate');}
   article.removeAttribute('data-controller-command');
   cursors.current.set(identity.device,cursor);
@@ -131,7 +131,7 @@ export function Setup({config,setConfig,settings,manifest,devices,ready,toggleRe
   const keyboardBack=(event:Event)=>{if((event as CustomEvent<string>).detail!=='back'||event.defaultPrevented) return;const article=(event.target as HTMLElement)?.closest<HTMLElement>('[data-seat-id]');const id=article?.dataset.seatId;if(id&&editor(id).open) {edit(id,{open:false});article?.querySelector<HTMLButtonElement>('.fighter-edit')?.focus();event.preventDefault();event.stopPropagation();window.dispatchEvent(new CustomEvent('menu-transition',{detail:'keyboard'}));}};
   element?.addEventListener('seat-menu-input',handle);element?.addEventListener('menu-command',keyboardBack);return()=>{element?.removeEventListener('seat-menu-input',handle);element?.removeEventListener('menu-command',keyboardBack);};
  });
- const openRules=(device?:string)=>{setSharedDevice(device??null);setRulesOpen(true);};
+ const openRules=(device?:string)=>{setSharedDevice(device??sharedDevice);setRulesOpen(true);};
  const arena=ARENAS[config.arena];
  return <div className="setup-layout setup-overview" ref={scope} data-seat-navigation>
   <section className="roster-section">

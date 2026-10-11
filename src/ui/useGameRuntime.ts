@@ -19,7 +19,10 @@ export function useGameRuntime(settings: AppSettings, manifest: AssetsManifest |
   const menu = useRef(onMenu), network = useRef(online), remote = useRef(onlineActive);
   const publishAt = useRef(0), phase = useRef('');
   menu.current = onMenu; network.current = online; remote.current = onlineActive;
-  const command = useCallback((message: SimulationCommand) => worker.current?.postMessage(message), []);
+  const command = useCallback((message: SimulationCommand) => {
+    if (message.type === 'training' && message.command.action === 'frame') worker.current?.postMessage({...message,command:{...message.command,inputs:input.current?.poll((snapshotRef.current?.tick ?? 0)+1)}});
+    else worker.current?.postMessage(message);
+  }, []);
   useEffect(() => {
     const manager = new InputManager(settings, () => {
       if (snapshotRef.current?.phase === 'playing' || snapshotRef.current?.phase === 'countdown') {
@@ -86,7 +89,7 @@ export function useGameRuntime(settings: AppSettings, manifest: AssetsManifest |
       await preloadMatchAssets(config);
       if (generation !== startGeneration.current || !worker.current) return;
       input.current?.setPlayers(config.players); input.current?.setMode('game');
-      worker.current.postMessage({ type: 'start', config: { ...config, seed: Date.now() } });
+      worker.current.postMessage({ type: 'start', config: { ...config, seed: Date.now() >>> 0 } });
     } catch (failure) { if (generation === startGeneration.current) setError(failure instanceof Error ? failure.message : 'El combate no pudo iniciarse / The fight could not start.'); }
   }, []);
   const stop = useCallback(() => { startGeneration.current++; command({ type: 'stop' }); snapshotRef.current = null; setSnapshot(null); setDisconnected(false); input.current?.setPlayers([]); input.current?.setMode('menu'); audio.current?.setScene('menu'); }, [command]);
