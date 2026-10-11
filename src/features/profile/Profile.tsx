@@ -22,10 +22,10 @@ export function Profile({ language }: { language: Language }) {
   const configured = await fetch('/api/auth-config').then(r => {if(!r.ok)throw Error('offline');return r.json();}); setConfig(configured);
   if (!configured.enabled) return;
   const response = await fetch('/api/profile');
-  if (response.status === 401) { setProfile(null); setLocal(loadProgress()); return; }
+  if (response.status === 401) { localStorage.removeItem('stf-active-profile');setProfile(null);setLocal(loadProgress());return; }
   if (!response.ok) throw Error('offline');
   const next:ProfileData = await response.json(); setProfile(next);const merged=mergeProgress(next.local,loadProgress(next.userId));setLocal(merged);setHandle(next.handle);setCosmetic(next.cosmetic);
-  saveProgress(merged,next.userId);localStorage.setItem('stf-active-profile',next.userId);localStorage.setItem('stf-cosmetic',next.cosmetic);
+  saveProgress(merged,next.userId);localStorage.setItem('stf-active-profile',next.userId);localStorage.setItem('stf-cosmetic',next.cosmetic);window.dispatchEvent(new Event('stf-profile'));
   const [keys,accounts] = await Promise.all([authClient.passkey.listUserPasskeys(),authClient.listAccounts()]);
   setPasskeys(keys.data ?? []);setProviders(accounts.data?.map(a=>a.providerId) ?? []);
   if(JSON.stringify(merged)!==JSON.stringify(next.local)){const saved=await fetch('/api/profile',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({local:merged})});if(!saved.ok)throw Error('sync');}
@@ -41,7 +41,7 @@ export function Profile({ language }: { language: Language }) {
   if(!handle.trim())return;
   if(profile){const result=await fetch('/api/profile',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({handle,cosmetic,local:progress})});if(!result.ok)throw Error('profile');}
   else {localStorage.setItem('stf-name',handle.trim());localStorage.setItem('stf-cosmetic',cosmetic);saveProgress(progress);}
-  setMessage(es?'Perfil guardado.':'Profile saved.');
+  window.dispatchEvent(new Event('stf-profile'));setMessage(es?'Perfil guardado.':'Profile saved.');
  };
  const xp=cosmeticXP(local,profile?.verified.xp ?? 0);
  return <div className="feature-home profile-home" data-menu-linear>
