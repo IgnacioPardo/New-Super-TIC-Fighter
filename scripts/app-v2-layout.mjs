@@ -63,10 +63,19 @@ try{
    if(screen==='solo'){await page.getByRole('button',{name:/12.*(Challenges|Desafíos)/}).click();await inspect(page,`${prefix}-challenges-page1`);const next=page.locator('.content-pager button').last();let i=1;while(await next.isEnabled()){await next.click();await inspect(page,`${prefix}-challenges-page${++i}`);}assert.equal(await page.locator('.challenge-grid .feature-card').count(),viewport.width<=760?2:4);}
    await page.locator('.brand-button').click();
   }
+  await page.getByTestId('mode-settings').click();await inspect(page,`${prefix}-settings`);
+  const categories=await page.locator('.settings-category').allTextContents();
+  for(let category=0;category<categories.length;category++){
+   await page.locator('.settings-category').nth(category).click();await inspect(page,`${prefix}-settings-${category+1}-page1`);
+   const next=page.getByRole('dialog').locator('.content-pager button').last();let i=1;while(await next.count()&&await next.isEnabled()){await next.click();await inspect(page,`${prefix}-settings-${category+1}-page${++i}`);}
+   await page.getByRole('dialog').locator('.config-dialog-heading button').click();
+  }
+  await page.locator('footer button').click();await pages(page,page.locator('.reader-guide'),`${prefix}-guide`);await page.locator('.brand-button').click();
+  await chooseMode(page,'online');await inspect(page,`${prefix}-private-create`);const entryTabs=page.locator('.online-form [role=tab]');for(const tab of await entryTabs.all()){await tab.click();await inspect(page,`${prefix}-private-${await tab.textContent()}`);}await page.locator('.brand-button').click();
   await chooseMode(page,'local');await inspect(page,`${prefix}-setup`);
   const cards=page.locator('.fighter-summary:visible');for(let i=0;i<await cards.count();i++)await cards.nth(i).locator('.fighter-edit').click();
   for(const name of await cards.first().getByRole('tab').allTextContents()){for(let i=0;i<await cards.count();i++)await cards.nth(i).getByRole('tab',{name,exact:true}).click();await inspect(page,`${prefix}-setup-${name}`);
-   if((es?name==='Aspecto':name==='Appearance')&&viewport.height<=720&&viewport.width>760){for(const button of await page.locator('.inline-fighter-editor .content-pager.compact button:last-child').all())await button.click();await inspect(page,`${prefix}-setup-appearance-page2`);}
+   let editorPage=1;const editorNext=page.locator('.inline-fighter-editor .content-pager.compact button:last-child:not(:disabled)');while(await editorNext.count()){for(const button of await editorNext.all())await button.click();await inspect(page,`${prefix}-setup-${name}-page${++editorPage}`);}
   }
   await page.locator('.match-summary').click();const dialog=page.getByRole('dialog');await pages(page,dialog,`${prefix}-rules`);await dialog.locator('.config-dialog-heading button').click();
   assert.deepEqual(errors,[]);await context.close();console.log(`${prefix}: current pages, actual bounds/hit targets, wheel and keyboard passed.`);
