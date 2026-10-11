@@ -44,5 +44,6 @@ delayed active cue must first verify that the action was not interrupted.
 
 Validation follows the project policy: type/build checks and complete browser
 matches, multiplayer exercises, and playtesting. No unit or isolated simulation
-tests are included. Type checking passed during implementation; complete app
-and multiplayer playtests belong to the integration acceptance work.
+tests are included. Type/build checks and the local complete-application flows
+in [PLAYTEST.md](./PLAYTEST.md) passed during integration. Multiplayer acceptance
+and physical controller verification are tracked separately.
