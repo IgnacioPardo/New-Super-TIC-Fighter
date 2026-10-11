@@ -1,39 +1,86 @@
 import { ARENAS, ATTACKS, NAVIGATION, PHYSICS } from '../shared/content';
 import type { AttackAction } from '../shared/content';
 import { emptyInput } from '../shared/types';
-import type { ArenaId, BotRuntimeState, FighterState, InputFrame, MatchConfig, MatchSnapshot, PlayerSeat, Platform } from '../shared/types';
+import type {
+  ArenaId,
+  BotRuntimeState,
+  FighterState,
+  InputFrame,
+  MatchConfig,
+  MatchSnapshot,
+  PlayerSeat,
+  Platform,
+} from '../shared/types';
 import { clamp, supportingPlatform } from './geometry';
 
-interface BotMemory { nextDecision: number; input: InputFrame; moveUntil: number; target?: string; jumpTarget?: number; launchedAt?: number }
+interface BotMemory {
+  nextDecision: number;
+  input: InputFrame;
+  moveUntil: number;
+  target?: string;
+  jumpTarget?: number;
+  launchedAt?: number;
+}
 
 /** Estimate only our own issued movement over the observation delay. */
-function anticipateMotion(observed: FighterState, input: InputFrame | undefined, ticks: number, movingTicks: number): { x: number; vx: number } {
+function anticipateMotion(
+  observed: FighterState,
+  input: InputFrame | undefined,
+  ticks: number,
+  movingTicks: number,
+): { x: number; vx: number } {
   if (!input) return { x: observed.x, vx: observed.vx };
-  let x = observed.x, vx = observed.vx, action = observed.action, age = observed.actionTime;
-  let recovery = observed.recovery, stun = observed.stun, grounded = observed.grounded;
+  let x = observed.x,
+    vx = observed.vx,
+    action = observed.action,
+    age = observed.actionTime;
+  let recovery = observed.recovery,
+    stun = observed.stun,
+    grounded = observed.grounded;
   let facing = observed.facing;
-  const requested: AttackAction | undefined = input.combo ? 'combo' : input.special ? input.down ? 'sweep' : 'special' : input.punch ? input.down ? 'uppercut' : 'punch' : undefined;
+  const requested: AttackAction | undefined = input.combo
+    ? 'combo'
+    : input.special
+      ? input.down
+        ? 'sweep'
+        : 'special'
+      : input.punch
+        ? input.down
+          ? 'uppercut'
+          : 'punch'
+        : undefined;
   for (let tick = 0; tick < ticks; tick++) {
     const direction = tick >= movingTicks || input.left === input.right ? 0 : input.left ? -1 : 1;
-    recovery = Math.max(0, recovery - 1 / 60); stun = Math.max(0, stun - 1 / 60);
+    recovery = Math.max(0, recovery - 1 / 60);
+    stun = Math.max(0, stun - 1 / 60);
     if (stun === 0 && action === 'hurt') action = grounded ? 'idle' : 'jump';
-    let attack = action in ATTACKS ? action as AttackAction : undefined;
+    let attack = action in ATTACKS ? (action as AttackAction) : undefined;
     if (!attack && stun === 0 && direction && (action !== 'guard' || !input.guard)) facing = direction;
-    if (!attack && stun === 0 && grounded && requested && recovery < .000001 && action !== 'guard') {
-      attack = requested; action = requested; age = 0; vx = 0;
+    if (!attack && stun === 0 && grounded && requested && recovery < 0.000001 && action !== 'guard') {
+      attack = requested;
+      action = requested;
+      age = 0;
+      vx = 0;
       if (attack === 'uppercut') grounded = false;
     }
-    if (stun > 0) { /* Known launch keeps its public horizontal velocity. */ }
-    else if (attack) { if (attack === 'sweep') vx = facing * 300; else if (grounded) vx = 0; }
-    else if (grounded && (input.down || input.guard && recovery < .000001)) vx = 0;
+    if (stun > 0) {
+      /* Known launch keeps its public horizontal velocity. */
+    } else if (attack) {
+      if (attack === 'sweep') vx = facing * 300;
+      else if (grounded) vx = 0;
+    } else if (grounded && (input.down || (input.guard && recovery < 0.000001))) vx = 0;
     else if (direction) {
       if (vx * direction < 0) vx = 0;
-      vx = clamp(vx + direction * PHYSICS.acceleration / 60, -PHYSICS.speed, PHYSICS.speed);
+      vx = clamp(vx + (direction * PHYSICS.acceleration) / 60, -PHYSICS.speed, PHYSICS.speed);
     } else vx = 0;
     x += vx / 60;
     if (attack) {
       age += 1 / 60;
-      if (age + .000001 >= ATTACKS[attack].windup + ATTACKS[attack].active) { recovery = ATTACKS[attack].recovery; action = grounded ? 'idle' : 'jump'; age = 0; }
+      if (age + 0.000001 >= ATTACKS[attack].windup + ATTACKS[attack].active) {
+        recovery = ATTACKS[attack].recovery;
+        action = grounded ? 'idle' : 'jump';
+        age = 0;
+      }
     }
   }
   return { x, vx };
@@ -42,22 +89,44 @@ function anticipateMotion(observed: FighterState, input: InputFrame | undefined,
 /** A seeded generator is shared only by bots, never by rendering/audio. */
 export class Random {
   private value: number;
-  constructor(seed: number) { this.value = seed >>> 0 || 0x9e3779b9; }
-  state(): number { return this.value; }
-  restore(value: number): void { this.value = value >>> 0; }
+  constructor(seed: number) {
+    this.value = seed >>> 0 || 0x9e3779b9;
+  }
+  state(): number {
+    return this.value;
+  }
+  restore(value: number): void {
+    this.value = value >>> 0;
+  }
   next(): number {
     let value = this.value;
-    value ^= value << 13; value ^= value >>> 17; value ^= value << 5;
+    value ^= value << 13;
+    value ^= value >>> 17;
+    value ^= value << 5;
     this.value = value >>> 0;
     return this.value / 0x100000000;
   }
 }
 
-function nextPlatform(arena: ArenaId, from: number, to: number, platforms: Platform[], expanded: boolean): number | undefined {
-  const edges: [number,number][] = expanded ? platforms.flatMap((a,i)=>platforms.flatMap((b,j)=>{
-    if(i===j)return [];const rise=a.y-b.y,gap=Math.max(0,b.x-a.x-a.width,a.x-b.x-b.width);
-    return rise<=300 && rise>=-400 && gap<=(rise>0?340:440) ? [[i,j] as [number,number]]:[];
-  })) : [...NAVIGATION[arena]].map(([a,b])=>[a,b]);
+function nextPlatform(
+  arena: ArenaId,
+  from: number,
+  to: number,
+  platforms: Platform[],
+  expanded: boolean,
+): number | undefined {
+  const edges: [number, number][] = expanded
+    ? platforms.flatMap((a, i) =>
+        platforms.flatMap((b, j) => {
+          if (i === j) return [];
+          const rise = a.y - b.y,
+            gap = Math.max(0, b.x - a.x - a.width, a.x - b.x - b.width);
+          return rise <= 300 && rise >= -400 && gap <= (rise > 0 ? 340 : 440)
+            ? [[i, j] as [number, number]]
+            : [];
+        }),
+      )
+    : [...NAVIGATION[arena]].map(([a, b]) => [a, b]);
   const queue: number[][] = [[from]];
   const visited = new Set([from]);
   while (queue.length) {
@@ -66,7 +135,8 @@ function nextPlatform(arena: ArenaId, from: number, to: number, platforms: Platf
     if (current === to) return path[1];
     for (const [a, b] of edges) {
       if (a !== current || visited.has(b)) continue;
-      visited.add(b); queue.push([...path, b]);
+      visited.add(b);
+      queue.push([...path, b]);
     }
   }
 }
@@ -75,51 +145,108 @@ export class Bots {
   private readonly memories = new Map<string, BotMemory>();
   private readonly observations: { tick: number; fighters: FighterState[] }[] = [];
   private readonly random: Random;
-  constructor(private readonly config: MatchConfig) { this.random = new Random(config.seed); }
+  constructor(private readonly config: MatchConfig) {
+    this.random = new Random(config.seed);
+  }
   reset(seatId?: string): void {
     if (seatId) this.memories.delete(seatId);
-    else { this.memories.clear(); this.observations.length = 0; }
+    else {
+      this.memories.clear();
+      this.observations.length = 0;
+    }
   }
   observe(tick: number, fighters: FighterState[]): void {
-    if (!this.config.players.some(seat=>seat.kind==='bot')) return;
-    this.observations.push({ tick, fighters: fighters.map(fighter => ({ ...fighter })) });
+    if (!this.config.players.some((seat) => seat.kind === 'bot')) return;
+    this.observations.push({ tick, fighters: fighters.map((fighter) => ({ ...fighter })) });
     while (this.observations.length > 30) this.observations.shift();
   }
-  serialize(): BotRuntimeState { return structuredClone({ random: this.random.state(), memories: [...this.memories.entries()], observations: this.observations }); }
-  restore(state: BotRuntimeState): void { this.random.restore(state.random); this.memories.clear(); for (const [id, memory] of state.memories) this.memories.set(id, structuredClone(memory)); this.observations.splice(0, this.observations.length, ...structuredClone(state.observations)); }
+  serialize(): BotRuntimeState {
+    return structuredClone({
+      random: this.random.state(),
+      memories: [...this.memories.entries()],
+      observations: this.observations,
+    });
+  }
+  restore(state: BotRuntimeState): void {
+    this.random.restore(state.random);
+    this.memories.clear();
+    for (const [id, memory] of state.memories) this.memories.set(id, structuredClone(memory));
+    this.observations.splice(0, this.observations.length, ...structuredClone(state.observations));
+  }
   input(seat: PlayerSeat, tick: number, state?: MatchSnapshot): InputFrame {
     if (seat.difficulty === 'dummy') return emptyInput(seat.id, tick);
     const delay = seat.difficulty === 'easy' ? 24 : seat.difficulty === 'hard' ? 6 : 12;
-    const view = [...this.observations].reverse().find(observation => observation.tick <= tick - delay);
+    const view = [...this.observations].reverse().find((observation) => observation.tick <= tick - delay);
     if (!view) return emptyInput(seat.id, tick);
     const previous = this.memories.get(seat.id);
-    if (previous && tick < previous.nextDecision) return { ...previous.input, tick, left: previous.input.left && tick < previous.moveUntil, right: previous.input.right && tick < previous.moveUntil, jump: previous.input.jump && tick === previous.input.tick, dodge: previous.input.dodge && tick === previous.input.tick };
-    const observedSelf = view.fighters.find(fighter => fighter.id === seat.id);
+    if (previous && tick < previous.nextDecision)
+      return {
+        ...previous.input,
+        tick,
+        left: previous.input.left && tick < previous.moveUntil,
+        right: previous.input.right && tick < previous.moveUntil,
+        jump: previous.input.jump && tick === previous.input.tick,
+        dodge: previous.input.dodge && tick === previous.input.tick,
+      };
+    const observedSelf = view.fighters.find((fighter) => fighter.id === seat.id);
     const input = emptyInput(seat.id, tick);
     if (!observedSelf || observedSelf.eliminated) return input;
     // Compensate for our own already-issued movement using public velocity.
     // Opponent observations remain delayed. Without this braking estimate a
     // 200ms reaction walks 120 units past a narrow launch point before jumping.
-    const me = { ...observedSelf, ...anticipateMotion(observedSelf, previous?.input, delay, previous ? clamp(previous.moveUntil - (tick - delay), 0, delay) : 0) };
-    const enemies = view.fighters.filter(fighter => !fighter.eliminated && fighter.id !== seat.id &&
-      (this.config.mode !== 'teams' || this.config.players.find(player => player.id === fighter.id)?.team !== seat.team));
-    let target = enemies.sort((a, b) => Math.abs(a.x - me.x) + Math.abs(a.y - me.y) * 2 - Math.abs(b.x - me.x) - Math.abs(b.y - me.y) * 2)[0];
+    const me = {
+      ...observedSelf,
+      ...anticipateMotion(
+        observedSelf,
+        previous?.input,
+        delay,
+        previous ? clamp(previous.moveUntil - (tick - delay), 0, delay) : 0,
+      ),
+    };
+    const enemies = view.fighters.filter(
+      (fighter) =>
+        !fighter.eliminated &&
+        fighter.id !== seat.id &&
+        (this.config.mode !== 'teams' ||
+          this.config.players.find((player) => player.id === fighter.id)?.team !== seat.team),
+    );
+    let target = enemies.sort(
+      (a, b) =>
+        Math.abs(a.x - me.x) + Math.abs(a.y - me.y) * 2 - Math.abs(b.x - me.x) - Math.abs(b.y - me.y) * 2,
+    )[0];
     if (!target) return input;
-    const decoy=state?.deployables?.filter(d=>d.kind==='decoy'&&d.ownerId!==seat.id&&enemies.some(e=>e.id===d.ownerId)).sort((a,b)=>Math.abs(a.x-me.x)-Math.abs(b.x-me.x))[0];
-    if(decoy && Math.abs(decoy.x-me.x)<Math.abs(target.x-me.x)+80 && this.random.next()<.75) target={...target,id:decoy.ownerId,x:decoy.x+decoy.width/2,y:decoy.y+decoy.height};
-    const platforms = state?.platforms?.filter(p => p.active !== false) ?? ARENAS[this.config.arena].platforms;
+    const decoy = state?.deployables
+      ?.filter((d) => d.kind === 'decoy' && d.ownerId !== seat.id && enemies.some((e) => e.id === d.ownerId))
+      .sort((a, b) => Math.abs(a.x - me.x) - Math.abs(b.x - me.x))[0];
+    if (decoy && Math.abs(decoy.x - me.x) < Math.abs(target.x - me.x) + 80 && this.random.next() < 0.75)
+      target = { ...target, id: decoy.ownerId, x: decoy.x + decoy.width / 2, y: decoy.y + decoy.height };
+    const platforms =
+      state?.platforms?.filter((p) => p.active !== false && !p.warning) ??
+      ARENAS[this.config.arena].platforms;
     let desiredX = target.x;
+    const nearbyItem = state?.items
+      ?.filter((item) => item.ttl > 0 && Math.abs(item.x - me.x) < 240 && Math.abs(item.y - me.y) < 180)
+      .sort((a, b) => Math.abs(a.x - me.x) - Math.abs(b.x - me.x))[0];
+    if (nearbyItem && Math.abs(target.x - me.x) > 140) desiredX = nearbyItem.x;
     const from = supportingPlatform(observedSelf, platforms);
     const to = supportingPlatform(target, platforms);
     let jumpTarget = previous?.jumpTarget;
     let launchedAt = previous?.launchedAt;
     let leavingPlatform = false;
-    if (jumpTarget !== undefined && !platforms[jumpTarget]) {jumpTarget=undefined;launchedAt=undefined;}
+    if (jumpTarget !== undefined && !platforms[jumpTarget]) {
+      jumpTarget = undefined;
+      launchedAt = undefined;
+    }
     if (jumpTarget !== undefined) {
       const landing = platforms[jumpTarget];
       const pending = tick - (launchedAt ?? tick) <= delay;
-      if (!pending && ((from === jumpTarget && observedSelf.grounded) || (!observedSelf.grounded && observedSelf.vy > 0 && observedSelf.y > landing.y))) {
-        jumpTarget = undefined; launchedAt = undefined;
+      if (
+        !pending &&
+        ((from === jumpTarget && observedSelf.grounded) ||
+          (!observedSelf.grounded && observedSelf.vy > 0 && observedSelf.y > landing.y))
+      ) {
+        jumpTarget = undefined;
+        launchedAt = undefined;
       } else {
         // Keep the intended upper landing throughout the legal jump instead
         // of steering back toward a lower rescue surface while ascending.
@@ -128,7 +255,13 @@ export class Bots {
       }
     }
     if (jumpTarget === undefined && from >= 0 && to >= 0 && from !== to) {
-      const destination = nextPlatform(this.config.arena, from, to, platforms, this.config.ruleset==='expanded');
+      const destination = nextPlatform(
+        this.config.arena,
+        from,
+        to,
+        platforms,
+        this.config.ruleset === 'expanded',
+      );
       if (destination !== undefined) {
         const start = platforms[from];
         const finish = platforms[destination];
@@ -136,8 +269,15 @@ export class Bots {
         // Launch close to the adjacent landing edge with room for a running jump.
         const launchX = clamp(center, start.x + 36, start.x + start.width - 36);
         desiredX = launchX;
-        if (Math.abs(me.x - launchX) < Math.max(48, PHYSICS.speed * delay / 60 * .6) && finish.y <= start.y && me.jumpCooldown <= delay / 60 && me.recovery <= delay / 60) {
-          input.jump = true; jumpTarget = destination; launchedAt = tick;
+        if (
+          Math.abs(me.x - launchX) < Math.max(48, ((PHYSICS.speed * delay) / 60) * 0.6) &&
+          finish.y <= start.y &&
+          me.jumpCooldown <= delay / 60 &&
+          me.recovery <= delay / 60
+        ) {
+          input.jump = true;
+          jumpTarget = destination;
+          launchedAt = tick;
           desiredX = clamp(target.x, finish.x + 36, finish.x + finish.width - 36);
         }
         if (finish.y > start.y) {
@@ -147,8 +287,13 @@ export class Bots {
       }
     } else if (jumpTarget === undefined && !me.grounded) {
       // Recover toward a surface reachable below, using only the delayed state.
-      const below = platforms.filter(platform => platform.y >= me.y && platform.y - me.y < 500)
-        .sort((a, b) => Math.abs(clamp(me.x, a.x + 35, a.x + a.width - 35) - me.x) - Math.abs(clamp(me.x, b.x + 35, b.x + b.width - 35) - me.x))[0];
+      const below = platforms
+        .filter((platform) => platform.y >= me.y && platform.y - me.y < 500)
+        .sort(
+          (a, b) =>
+            Math.abs(clamp(me.x, a.x + 35, a.x + a.width - 35) - me.x) -
+            Math.abs(clamp(me.x, b.x + 35, b.x + b.width - 35) - me.x),
+        )[0];
       if (below) desiredX = clamp(target.x, below.x + 35, below.x + below.width - 35);
     }
     // A launched opponent is often already falling out of reach. Stay on our
@@ -164,77 +309,166 @@ export class Bots {
     if (desiredX > me.x + 22) input.right = true;
     const close = Math.abs(distance) < 66 && Math.abs(target.y - me.y) < PHYSICS.standingHeight;
     const inRange = Math.abs(distance) < 380 && Math.abs(target.y - me.y) < 110;
-    const mistake = this.random.next() < (seat.difficulty === 'easy' ? 0.24 : seat.difficulty === 'hard' ? .025 : 0.07);
+    const mistake =
+      this.random.next() < (seat.difficulty === 'easy' ? 0.24 : seat.difficulty === 'hard' ? 0.025 : 0.07);
     if (me.grounded && jumpTarget === undefined && me.recovery <= delay / 60 && me.stun === 0 && !mistake) {
       if (close) {
-        if (me.facing !== targetFacing) { input.left = targetFacing === -1; input.right = targetFacing === 1; }
+        if (me.facing !== targetFacing) {
+          input.left = targetFacing === -1;
+          input.right = targetFacing === 1;
+        }
         const choice = this.random.next();
         if (choice < 0.3) input.punch = true;
-        else if (choice < 0.5) { input.down = true; input.punch = true; }
-        else if (choice < 0.7) {
+        else if (choice < 0.5) {
+          input.down = true;
+          input.punch = true;
+        } else if (choice < 0.7) {
           const support = platforms[from];
-          const edgeDistance = support ? targetFacing === -1 ? me.x - support.x : support.x + support.width - me.x : 0;
-          if (edgeDistance >= 140) { input.down = true; input.special = true; }
-          else input.punch = true;
-        }
-        else if (choice < 0.85) input.combo = true;
+          const edgeDistance = support
+            ? targetFacing === -1
+              ? me.x - support.x
+              : support.x + support.width - me.x
+            : 0;
+          if (edgeDistance >= 140) {
+            input.down = true;
+            input.special = true;
+          } else input.punch = true;
+        } else if (choice < 0.85) input.combo = true;
         else input.special = true;
       } else if (inRange && from === to) {
-        if (me.facing !== targetFacing) { input.left = targetFacing === -1; input.right = targetFacing === 1; }
+        if (me.facing !== targetFacing) {
+          input.left = targetFacing === -1;
+          input.right = targetFacing === 1;
+        }
         if (this.random.next() < 0.4) input.combo = true;
         else input.special = true;
       }
       // Guard is a deliberate response to a visible frontal ordinary punch.
       if (target.action === 'punch' && close && this.random.next() < 0.4) {
-        input.punch = false; input.special = false; input.combo = false; input.down = false; input.guard = true;
+        input.punch = false;
+        input.special = false;
+        input.combo = false;
+        input.down = false;
+        input.guard = true;
       }
     }
-    if (mistake) { input.left = false; input.right = false; input.jump = false; }
-    if (mistake && input.jump === false && launchedAt === tick) { jumpTarget = undefined; launchedAt = undefined; }
+    if (mistake) {
+      input.left = false;
+      input.right = false;
+      input.jump = false;
+    }
+    if (mistake && input.jump === false && launchedAt === tick) {
+      jumpTarget = undefined;
+      launchedAt = undefined;
+    }
     if (this.config.ruleset === 'expanded') {
       // Objectives and recovery share the same delayed observation as combat.
       if (this.config.gameMode === 'hill' && state?.objective && !close) {
         const zoneX = state.objective.x + state.objective.width / 2;
-        input.left = zoneX < me.x - 25; input.right = zoneX > me.x + 25;
-        if (me.grounded && me.y > state.objective.y + state.objective.height && me.jumpCooldown < .15) input.jump = true;
+        input.left = zoneX < me.x - 25;
+        input.right = zoneX > me.x + 25;
+        if (me.grounded && me.y > state.objective.y + state.objective.height && me.jumpCooldown < 0.15)
+          input.jump = true;
       }
       if (state?.objective?.safeLeft !== undefined) {
-        if (me.x < state.objective.safeLeft + 80) { input.left = false; input.right = true; }
-        if (me.x > (state.objective.safeRight ?? 1366) - 80) { input.right = false; input.left = true; }
+        if (me.x < state.objective.safeLeft + 80) {
+          input.left = false;
+          input.right = true;
+        }
+        if (me.x > (state.objective.safeRight ?? 1366) - 80) {
+          input.right = false;
+          input.left = true;
+        }
       }
-      if (this.config.hazards && this.config.arena==='embedded' && (state?.elapsed ?? 0)%7>4.5 && me.x>550&&me.x<816&&me.y>400) {
-        input.left=me.x<683;input.right=me.x>=683;input.jump=me.grounded;
+      const fading = state?.platforms?.find(
+        (p) => p.warning && Math.abs(me.y - p.y) < 12 && me.x > p.x && me.x < p.x + p.width,
+      );
+      if (fading) {
+        const stable = platforms
+          .filter((p) => p.y >= me.y - 150)
+          .sort((a, b) => Math.abs(a.x + a.width / 2 - me.x) - Math.abs(b.x + b.width / 2 - me.x))[0];
+        if (stable) {
+          input.left = stable.x + stable.width / 2 < me.x;
+          input.right = !input.left;
+          input.jump = true;
+        }
+      }
+      if (
+        this.config.hazards &&
+        this.config.arena === 'embedded' &&
+        (state?.elapsed ?? 0) % 7 > 4.5 &&
+        me.x > 550 &&
+        me.x < 816 &&
+        me.y > 400
+      ) {
+        input.left = me.x < 683;
+        input.right = me.x >= 683;
+        input.jump = me.grounded;
       }
       if (!me.grounded) {
-        const landing=jumpTarget!==undefined?platforms[jumpTarget]:undefined;
-        if(landing && me.y>landing.y && me.vy>-180 && (me.airJumps ?? 0)>0) input.jump=true;
-        const rescue = platforms.filter(p => p.y > me.y - 150).sort((a,b) => Math.abs(a.x+a.width/2-me.x)-Math.abs(b.x+b.width/2-me.x))[0];
+        const landing = jumpTarget !== undefined ? platforms[jumpTarget] : undefined;
+        if (landing && me.y > landing.y && me.vy > -180 && (me.airJumps ?? 0) > 0) input.jump = true;
+        const rescue = platforms
+          .filter((p) => p.y > me.y - 150)
+          .sort((a, b) => Math.abs(a.x + a.width / 2 - me.x) - Math.abs(b.x + b.width / 2 - me.x))[0];
         if (rescue && me.y > rescue.y - 30 && me.vy > 0) {
           input.jump = (me.airJumps ?? 0) > 0;
           if (!input.jump && me.recoveryAvailable && me.y > rescue.y + 60) input.special = true;
-          if (!input.jump && !input.special && me.airDash && Math.abs(me.x - clamp(me.x,rescue.x+35,rescue.x+rescue.width-35)) > 90) input.dodge = true;
+          if (
+            !input.jump &&
+            !input.special &&
+            me.airDash &&
+            Math.abs(me.x - clamp(me.x, rescue.x + 35, rescue.x + rescue.width - 35)) > 90
+          )
+            input.dodge = true;
         }
-        if (close && me.recovery < .1 && me.stun === 0) { input.punch = true; input.down = target.y > me.y + 50; }
+        if (close && me.recovery < 0.1 && me.stun === 0) {
+          input.punch = true;
+          input.down = target.y > me.y + 50;
+        }
       }
       const threat = target.action in ATTACKS && close && me.stun === 0;
-      if (threat && seat.difficulty === 'hard' && (me.dodgeCooldown ?? 0) < .01 && this.random.next() < .45) {
-        input.dodge = true; input.punch = input.special = input.combo = false;
-        input.left = target.x > me.x; input.right = target.x < me.x;
+      if (
+        threat &&
+        seat.difficulty === 'hard' &&
+        (me.dodgeCooldown ?? 0) < 0.01 &&
+        this.random.next() < 0.45
+      ) {
+        input.dodge = true;
+        input.punch = input.special = input.combo = false;
+        input.left = target.x > me.x;
+        input.right = target.x < me.x;
       }
-      const obstacle = state?.deployables?.find(d => d.ownerId !== me.id && Math.abs(d.x+d.width/2-me.x)<90 && Math.abs(d.y+d.height-me.y)<100);
-      if (obstacle && !input.jump && me.recovery < .1) input.punch = true;
+      const obstacle = state?.deployables?.find(
+        (d) =>
+          d.ownerId !== me.id &&
+          Math.abs(d.x + d.width / 2 - me.x) < 90 &&
+          Math.abs(d.y + d.height - me.y) < 100,
+      );
+      if (obstacle && !input.jump && me.recovery < 0.1) input.punch = true;
     }
     // Schedule a release using our known movement, rather than holding a full
     // reaction interval past the destination. This is a normal input release,
     // with no speed/rules advantage, and keeps Easy's 400ms reaction usable.
     const direction = input.left === input.right ? 0 : input.left ? -1 : 1;
     const remaining = Math.max(0, (desiredX - me.x) * direction - 8);
-    let movementTicks = 0, travel = 0, speed = Math.max(0, me.vx * direction);
-    if (direction) do {
-      speed = Math.min(PHYSICS.speed, speed + PHYSICS.acceleration / 60);
-      travel += speed / 60; movementTicks++;
-    } while (movementTicks < delay && travel < remaining);
-    this.memories.set(seat.id, { nextDecision: tick + delay, input, moveUntil: tick + movementTicks, target: target.id, jumpTarget, launchedAt });
+    let movementTicks = 0,
+      travel = 0,
+      speed = Math.max(0, me.vx * direction);
+    if (direction)
+      do {
+        speed = Math.min(PHYSICS.speed, speed + PHYSICS.acceleration / 60);
+        travel += speed / 60;
+        movementTicks++;
+      } while (movementTicks < delay && travel < remaining);
+    this.memories.set(seat.id, {
+      nextDecision: tick + delay,
+      input,
+      moveUntil: tick + movementTicks,
+      target: target.id,
+      jumpTarget,
+      launchedAt,
+    });
     return input;
   }
 }
