@@ -10,7 +10,7 @@ import type {
 } from '../shared/types';
 import { CombatFeedback } from './combatFeedback';
 import { authoredPose } from './poses';
-import { ARENAS, ATTACKS, DISCIPLINES } from '../shared/content';
+import { ARENAS, DISCIPLINES } from '../shared/content';
 
 type SnapshotRef = { current: MatchSnapshot | null };
 export interface GameViewProps {
@@ -543,17 +543,22 @@ export function GameView({
                 .lineStyle(3, color, 0.7)
                 .lineBetween(f.x - f.vx / 35, f.y - f.vy / 35 - 45, f.x, f.y - 45);
             }
-            if (state.training?.hitboxes) {
-              expansion.lineStyle(1, 0x61ff92, 0.9).strokeRect(f.x - 30, f.y - f.height, 60, f.height);
-              if (f.action in ATTACKS) {
-                const active = f.actionTime >= ATTACKS[f.action as keyof typeof ATTACKS].windup;
-                expansion
-                  .lineStyle(2, active ? 0xff6e76 : 0xf4df7c, 0.9)
-                  .strokeRect(f.x + (f.facing === 1 ? 0 : -100), f.y - 90, 100, 80);
-              }
-            }
           }
         }
+        if (state.training?.hitboxes)
+          for (const box of state.training.collisionBoxes ?? []) {
+            const color =
+              box.kind === 'body'
+                ? 0x61ff92
+                : box.kind === 'deployable'
+                  ? 0x87c4ff
+                  : box.active
+                    ? 0xff6e76
+                    : 0xf4df7c;
+            expansion
+              .lineStyle(box.kind === 'body' ? 1 : 2, color, 0.9)
+              .strokeRect(box.x, box.y, box.width, box.height);
+          }
         echoLayers.forEach((layers, id) => {
           if (!seenEchoes.has(id)) {
             layers.forEach((layer) => layer.destroy());

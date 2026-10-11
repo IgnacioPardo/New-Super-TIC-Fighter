@@ -1,0 +1,124 @@
+[
+  {
+    "kit": "networks",
+    "arena": "classic",
+    "tick": 420,
+    "errors": [],
+    "deployables": [],
+    "actions": [
+      "jump",
+      "air-forward"
+    ]
+  },
+  {
+    "kit": "design",
+    "arena": "lab",
+    "tick": 455,
+    "errors": [],
+    "deployables": [],
+    "actions": [
+      "jump",
+      "air-forward"
+    ]
+  },
+  {
+    "kit": "code",
+    "arena": "pc",
+    "tick": 449,
+    "errors": [],
+    "deployables": [],
+    "actions": [
+      "jump",
+      "air-forward"
+    ]
+  },
+  {
+    "kit": "hardware",
+    "arena": "embedded",
+    "tick": 428,
+    "errors": [],
+    "deployables": [],
+    "actions": [
+      "combo",
+      "jump",
+      "air-forward"
+    ]
+  },
+  {
+    "kit": "ai",
+    "arena": "virtual",
+    "tick": 432,
+    "errors": [],
+    "deployables": [],
+    "actions": [
+      "jump",
+      "air-forward"
+    ]
+  },
+  {
+    "kit": "robotics",
+    "arena": "arcade",
+    "tick": 430,
+    "errors": [],
+    "deployables": [
+      "drone"
+    ],
+    "actions": [
+      "jump",
+      "air-forward"
+    ]
+  },
+  {
+    "kit": "iot",
+    "arena": "classic",
+    "tick": 415,
+    "errors": [],
+    "deployables": [
+      "board",
+      "hub"
+    ],
+    "actions": [
+      "jump",
+      "air-forward"
+    ]
+  },
+  {
+    "kit": "vr",
+    "arena": "lab",
+    "tick": 444,
+    "errors": [],
+    "deployables": [
+      "decoy"
+    ],
+    "actions": [
+      "jump",
+      "air-forward"
+    ]
+  },
+  {
+    "kit": "games",
+    "arena": "pc",
+    "tick": 442,
+    "errors": [],
+    "deployables": [
+      "pad"
+    ],
+    "actions": [
+      "jump",
+      "air-forward"
+    ]
+  },
+  {
+    "kit": "printing",
+    "arena": "embedded",
+    "tick": 428,
+    "errors": [],
+    "deployables": [
+      "block"
+    ],
+    "actions": [
+      "jump",
+      "air-forward"
+    ]
+  }
+]

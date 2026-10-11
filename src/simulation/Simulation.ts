@@ -24,6 +24,7 @@ import type {
   DeployableState,
   ItemKind,
   TrainingCommand,
+  CollisionBox,
 } from '../shared/types';
 import { Bots, Random } from './bots';
 import { bodyBounds, clamp, effectBottom, overlaps, supportingPlatform, sweptLanding } from './geometry';
@@ -251,7 +252,7 @@ export class Simulation {
       ) {
         input = {
           ...state.training.dummyRecording[
-            state.training.playbackIndex++ % state.training.dummyRecording.length
+            state.training.playbackIndex % state.training.dummyRecording.length
           ],
           seatId: seat.id,
           tick: state.tick,
@@ -260,7 +261,12 @@ export class Simulation {
       if (state.training && seat.kind === 'human') {
         state.training.inputHistory.push({ ...input });
         state.training.inputHistory = state.training.inputHistory.slice(-120);
-        if (state.training.recording && state.training.dummyRecording.length < 600)
+        if (
+          state.training.recording &&
+          seat.id ===
+            (state.training.sourceSeatId ?? state.config.players.find((p) => p.kind === 'human')?.id) &&
+          state.training.dummyRecording.length < 600
+        )
           state.training.dummyRecording.push({ ...input });
       }
       if (this.expanded) this.updateExpandedFighter(fighter, input);
@@ -271,6 +277,7 @@ export class Simulation {
       if (seat.kind === 'human' && this.inputs.has(fighter.id))
         this.consumedInputs.set(fighter.id, { ...this.runtimes.get(fighter.id)!.previous });
     }
+    if (state.training?.playback && state.training.dummyRecording.length) state.training.playbackIndex++;
     // Every collision reads this common post-movement, pre-hit state, so trades
     // survive interruption and never depend on the arrival order of inputs.
     if (!options.prediction) {
@@ -362,6 +369,45 @@ export class Simulation {
       serial: this.serial,
       projectiles: structuredClone(this.projectiles),
     };
+    if (snapshot.training?.hitboxes) {
+      const boxes: CollisionBox[] = [];
+      for (const f of this.requireState().fighters) {
+        if (f.eliminated) continue;
+        boxes.push({ ...bodyBounds(f), ownerId: f.id, kind: 'body', active: true });
+        if (isAttack(f.action)) {
+          const effect = this.runtimes.get(f.id)?.effect;
+          const bounds = effect ? this.effectBounds(effect) : this.meleeBounds(f);
+          if (bounds.width > 0 && bounds.height > 0)
+            boxes.push({
+              ...bounds,
+              ownerId: f.id,
+              kind: effect ? 'effect' : 'attack',
+              active:
+                f.actionTime + EPSILON >= ATTACKS[f.action].windup &&
+                !(effect?.kind === 'selection' && effect.frame < 15),
+            });
+        }
+      }
+      for (const p of this.projectiles)
+        if (p.ttl > 0)
+          boxes.push({
+            ...this.effectBounds(p.effect),
+            ownerId: p.effect.ownerId,
+            kind: 'effect',
+            active: true,
+          });
+      for (const d of snapshot.deployables ?? [])
+        boxes.push({
+          x: d.x,
+          y: d.y,
+          width: d.width,
+          height: d.height,
+          ownerId: d.ownerId,
+          kind: 'deployable',
+          active: true,
+        });
+      snapshot.training.collisionBoxes = boxes;
+    } else if (snapshot.training) snapshot.training.collisionBoxes = undefined;
     snapshot.acknowledgedInputs = [...this.consumedInputs.values()]
       .filter((input) =>
         snapshot.config.players.some((seat) => seat.id === input.seatId && seat.kind === 'human'),
@@ -375,8 +421,8 @@ export class Simulation {
     return this.step(inputs, { prediction: true });
   }
 
-  /** Adopt visible authority for bounded guest movement/startup prediction.
-   * Hidden combo/bot history deliberately resets; authority still decides hits.
+  /** Restore full deterministic authority when a runtime checkpoint is present.
+   * Legacy snapshots retain a visible-state fallback for bounded prediction.
    */
   restore(
     snapshot: MatchSnapshot & { acknowledgedInputs?: InputFrame[] },
@@ -1848,7 +1894,11 @@ export class Simulation {
     if (command.action === 'record') {
       state.training.recording = command.enabled ?? !state.training.recording;
       state.training.playback = false;
-      if (state.training.recording) state.training.dummyRecording = [];
+      if (state.training.recording) {
+        state.training.dummyRecording = [];
+        state.training.sourceSeatId =
+          command.seatId ?? state.config.players.find((p) => p.kind === 'human')?.id;
+      }
     }
     if (command.action === 'playback') {
       state.training.playback = command.enabled ?? !state.training.playback;
