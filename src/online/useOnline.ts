@@ -56,7 +56,7 @@ export function useOnline(): OnlineBridge {
       if(data.type!=='snapshot'||!client.current?.isHost||data.snapshot.matchId!==ownMatch.current)return;
       const next=data.snapshot;publish(next);
       if(performance.now()-lastSent.current>=48&&reported.current!==next.matchId){lastSent.current=performance.now();client.current.sendSnapshot(next);}
-      if(next.result&&reported.current!==next.matchId){reported.current=next.matchId;client.current.reportResult(next.result);}
+      if(next.result&&reported.current!==next.matchId){reported.current=next.matchId;client.current.reportResult(next.result,next);}
     };
     prediction.onmessage=({data}:MessageEvent<MatchSnapshot>)=>{if(!client.current?.isHost&&data.matchId===room.current?.matchId)publish(data);};
     const timer=setInterval(()=>{
@@ -117,7 +117,7 @@ export function useOnline(): OnlineBridge {
       },
       onResume(){update({pauseReason:undefined});if(connection.isHost)authorityWorker.current?.postMessage({type:'resume'});},
       onForfeit(seatIds){if(connection.isHost)authorityWorker.current?.postMessage({type:'forfeit',seatIds});},
-      onResult(result){pendingInputs.current=[];if(snapshotRef.current)publish({...snapshotRef.current,phase:'finished',result},true);},
+      onResult(result,finalSnapshot){pendingInputs.current=[];if(finalSnapshot)publish(finalSnapshot,true);else if(snapshotRef.current)publish({...snapshotRef.current,phase:'finished',result},true);},
       onError(_code,message){update({error:message,...(!room.current?{status:'error' as const}:{})});},
       onStatus(status){
         routes.current.set(status.peerId,status);
