@@ -1,6 +1,6 @@
 # V2 online verification — 2026-10-11
 
-The exercises below ran real Worker/Durable Object services. Node clients generated inputs and outages. Independent WebSockets represent independent browser identities, but these runs did not use physical controllers or separate Internet connections.
+The exercises below ran real Worker/Durable Object services. Node clients and isolated Chromium browsers generated inputs and outages. The rendered browser exercise used eight independent browser contexts; earlier service exercises used independent WebSockets. These runs did not use physical controllers or separate Internet connections.
 
 ## Deployed Classic feasibility
 
@@ -44,6 +44,20 @@ The controlled process recovery restarted in 1,550 ms. This run observed no roll
 
 Server TypeScript and the owned network/OnlineBridge source TypeScript checks passed. The integrated root branch owns final whole-application build and UI verification. No unit tests were added.
 
+## Rendered browser perturbation followup
+
+`scripts/public-browser-perturbation.mjs` ran against the stable integrated application on port 5193 and local workerd on 8787. Eight isolated visible Chromium contexts entered the actual public UI, queued, acknowledged readiness, and rendered the same Expanded Royale match in Phaser. They used all six Expanded disciplines plus Networks and Hardware. Every client received 40 authoritative reconciliation messages over the two-second baseline. All eight rendered eight fighters; the inspected screenshot shows the Royale safe-zone HUD and separate local/remote fighter cards. No page errors or server errors occurred. See [sanitized eight-browser evidence](evidence/v2-online/browser-royale-perturbation.json) and [actual rendered scene](evidence/v2-online/browser-royale.png).
+
+For five seconds, an observational WebSocket wrapper delayed outgoing input packets by 0/30/80/170 ms and dropped every fifth packet; it delayed incoming snapshots by 20/60/150/220 ms and dropped every seventh snapshot. The successful eight-browser run recorded 19 input drops, 14 snapshot drops, 80 delayed input packets and 87 delayed snapshots. Actual payloads still came from the running application and server. Authority reconciliation continued and the match remained running.
+
+One browser then went offline for three seconds and closed its lobby/match sockets. The server advanced 182 ticks while that browser was offline, and the browser rejoined the same match within the fifteen-second window. A subsequent five-second Chromium page freeze let the server advance 307 ticks; on activation, authoritative snapshots caught up, rendering continued, and automated keyboard actions generated new control packets. This is real lifecycle suspension of a rendered browser, with an injected outage; it is not physical WAN loss or operating-system sleep.
+
+The offline exercise found a real client failure: a TCP close handshake could remain in `CLOSING`, preventing reconnect until the grace window expired. The client now retires its old sockets on the browser offline event and reconnects on online. Retired callbacks cannot overwrite replacement state. Explicit leave/forfeit inhibits match reconnect, and disconnect removes the online/offline listeners. Active raw pings use Durable Object auto responses; the server detects five seconds without contact and starts the fifteen-second grace period at the last contact rather than a stalled TCP close event.
+
+Chromium on this Mac retained `document.visibilityState = visible` when another tab was selected and even when its native window bounds reported `minimized`. The successful eight-client run verified two seconds of another-page foregrounding with 122 server ticks, but does not establish hidden-document throttling behavior. A separate two-client minimized-window run advanced 121 server ticks in two seconds; it also verified that explicitly returning to the lobby, followed by offline/online, did not reopen the departed match. See [minimized-window and explicit-leave evidence](evidence/v2-online/browser-duel-window-perturbation.json). The harness records visibility rather than inventing a hidden state. Its background timer/renderer throttling flags keep the multiplayer fixture stable; native background power saving remains separate coverage.
+
+The later process-recovery rerun passed with the heartbeat change: workerd restarted in 1,003 ms and restored a checkpoint 209 ticks behind the last observation, within the five-second checkpoint bound. Resumed inputs were acknowledged, the remaining peer kept playing, and the disconnected peer forfeited after fifteen seconds. Browser fixtures explicitly forfeit their seats and close their contexts; the shared local pool returned to zero active matches, connections, queued parties and reserved minutes.
+
 ## Quota and service behavior
 
 Public admission reserves human-player minutes before match creation. The cap is four simultaneous matches, 64 lobby connections and 1,200 human-player-minutes per UTC day. Reservations include the bounded readiness window, are split across UTC midnight, refund unused duration on authoritative completion, and conservatively consume their reserved allowance when a lost match expires. Results/releases are idempotent. Passive socket pings use Durable Object auto responses; only active simulation/input work keeps gameplay objects awake.
@@ -54,4 +68,4 @@ Latency is a matchmaking preference measured by server-issued random nonce round
 
 ## Remaining acceptance evidence
 
-Physical controller play, two truly separate Argentina Internet connections, sustained balance playtests, injected WAN jitter/loss/background/sleep, a natural daily-budget rollover, and production billed CPU/storage usage remain outside these service exercises. Authentication provider, passkey and account-link flows belong to root's separate account verification report. Private eight-seat validation is not a completed private eight-player browser fight.
+Physical controller play, two truly separate Argentina Internet connections, sustained balance playtests, physical WAN jitter/loss, native hidden-document throttling/OS sleep, a natural daily-budget rollover, and production billed CPU/storage usage remain outside these service exercises. Authentication provider, passkey and account-link flows belong to root's separate account verification report. Private eight-seat validation is not a completed private eight-player browser fight.

@@ -1,0 +1,132 @@
+{
+  "environment": "visible Chromium, 8 isolated browser contexts, actual rendered React/Phaser app and workerd authority",
+  "app": "http://127.0.0.1:5193",
+  "server": "http://127.0.0.1:8787",
+  "matchId": "91d90d9a-c258-4e6b-b19e-4c5c578e1753",
+  "recordedAt": "2026-10-11T16:56:18.339Z",
+  "ruleset": "expanded",
+  "disciplines": [
+    "networks",
+    "iot",
+    "vr",
+    "ai",
+    "games",
+    "robotics",
+    "printing",
+    "hardware"
+  ],
+  "baselineAuthorityMessagesOverTwoSeconds": [
+    40,
+    40,
+    40,
+    40,
+    40,
+    40,
+    40,
+    40
+  ],
+  "jitter": {
+    "droppedInputs": 19,
+    "droppedSnapshots": 14,
+    "delayedInputs": 80,
+    "delayedSnapshots": 87,
+    "authorities": 160
+  },
+  "offline": {
+    "durationMs": 3000,
+    "serverTickDelta": 182,
+    "reconnected": true
+  },
+  "background": {
+    "durationMs": 2000,
+    "visibility": "visible",
+    "serverTickDelta": 122
+  },
+  "pageFreeze": {
+    "durationMs": 5000,
+    "serverTickDelta": 307,
+    "resumed": true
+  },
+  "clients": [
+    {
+      "matchId": "91d90d9a-c258-4e6b-b19e-4c5c578e1753",
+      "tick": 1350,
+      "fighters": 8,
+      "canvas": true,
+      "peerId": "3509230d-a49e-4d02-b0c0-eaa8da0717f1",
+      "errors": []
+    },
+    {
+      "matchId": "91d90d9a-c258-4e6b-b19e-4c5c578e1753",
+      "tick": 1350,
+      "fighters": 8,
+      "canvas": true,
+      "peerId": "38b71fc2-0ab5-419e-9c56-8535d9b98849",
+      "errors": []
+    },
+    {
+      "matchId": "91d90d9a-c258-4e6b-b19e-4c5c578e1753",
+      "tick": 1350,
+      "fighters": 8,
+      "canvas": true,
+      "peerId": "1350508c-45be-4252-9e06-8f3cdef14ccd",
+      "errors": []
+    },
+    {
+      "matchId": "91d90d9a-c258-4e6b-b19e-4c5c578e1753",
+      "tick": 1350,
+      "fighters": 8,
+      "canvas": true,
+      "peerId": "25a37984-3765-4f2e-9862-af860203d8c4",
+      "errors": []
+    },
+    {
+      "matchId": "91d90d9a-c258-4e6b-b19e-4c5c578e1753",
+      "tick": 1350,
+      "fighters": 8,
+      "canvas": true,
+      "peerId": "e27e3be6-a3ca-4314-9597-be280ebf5cac",
+      "errors": []
+    },
+    {
+      "matchId": "91d90d9a-c258-4e6b-b19e-4c5c578e1753",
+      "tick": 1350,
+      "fighters": 8,
+      "canvas": true,
+      "peerId": "cdcbb804-551d-4998-a070-4497c0af5734",
+      "errors": []
+    },
+    {
+      "matchId": "91d90d9a-c258-4e6b-b19e-4c5c578e1753",
+      "tick": 1350,
+      "fighters": 8,
+      "canvas": true,
+      "peerId": "948fc7ba-b850-467d-a289-e8c0bf826d34",
+      "errors": []
+    },
+    {
+      "matchId": "91d90d9a-c258-4e6b-b19e-4c5c578e1753",
+      "tick": 1350,
+      "fighters": 8,
+      "canvas": true,
+      "peerId": "50537a8a-ddc4-4c9f-a750-a6dfc0108632",
+      "errors": []
+    }
+  ],
+  "passed": [
+    "8 rendered independent Royale browsers",
+    "authority reconciliation under prediction",
+    "injected input and snapshot jitter/drop",
+    "offline requests and socket reconnect within 15 seconds",
+    "server advances during offline and page suspension",
+    "rendering/control resumes after page freeze"
+  ],
+  "limitations": [
+    "Delay/drop occurs at application packet boundary, not physical WAN packet loss",
+    "Offline and socket closure are injected",
+    "Page freeze is Chromium lifecycle suspension, not OS sleep",
+    "All browsers share one Mac and Internet connection",
+    "Background timer/renderer throttling disabled for independent multiplayer fixture",
+    "Keyboard events are automated, no physical gamepads"
+  ]
+}
