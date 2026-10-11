@@ -1,7 +1,7 @@
 {
   "name": "new-super-tic-fighter",
   "private": true,
-  "version": "0.1.0",
+  "version": "2.0.0",
   "type": "module",
   "packageManager": "pnpm@12.4.2",
   "scripts": {
@@ -20,7 +20,11 @@
     "e2e:menus": "node scripts/app-menus.mjs && node scripts/app-results-navigation.mjs",
     "e2e:audio": "node scripts/audio-http.mjs",
     "e2e:controllers": "node scripts/app-dualsense.mjs && node scripts/app-feedback.mjs",
-    "e2e:audio-playback": "node scripts/app-audio.mjs"
+    "e2e:audio-playback": "node scripts/app-audio.mjs",
+    "e2e:expanded": "node scripts/app-expanded.mjs",
+    "verify:simulation": "node scripts/simulation-playthrough.mjs",
+    "verify:public": "node scripts/public-service.mjs",
+    "verify:competition": "node scripts/tournament-service.mjs"
   },
   "dependencies": {
     "@better-auth/drizzle-adapter": "1.7.7",

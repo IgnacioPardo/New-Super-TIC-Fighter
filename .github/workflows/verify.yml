@@ -23,6 +23,7 @@ jobs:
       - run: pnpm typecheck
       - run: pnpm exec tsc -p tsconfig.server.json --noEmit
       - run: pnpm build
+      - run: pnpm verify:simulation
       - run: pnpm exec playwright install --with-deps chromium
       - name: Exercise the complete game and room service
         env:
@@ -43,6 +44,7 @@ jobs:
           curl --fail --silent http://127.0.0.1:4173/api/health
           pnpm e2e
           pnpm e2e:audio
+          pnpm e2e:expanded
       - name: Preserve failed browser screenshots
         if: failure()
         uses: actions/upload-artifact@v4
