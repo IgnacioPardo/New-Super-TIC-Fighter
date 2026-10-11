@@ -10,6 +10,7 @@ export function usePublicOnline() {
  const [snapshot,setSnapshot]=useState<MatchSnapshot|undefined>(),[status,setStatus]=useState<OnlineState['status']>('idle');
  const [error,setError]=useState(''),[errorCode,setErrorCode]=useState(''),[ping,setPing]=useState<number>(),[paused,setPaused]=useState(false);
  const client=useRef<PublicClient|null>(null),ticket=useRef<MatchTicket|null>(null),snapshotRef=useRef<MatchSnapshot|null>(null);
+ const connecting=useRef<Promise<void>|null>(null);
  const localSeats=useRef<PlayerSeat[]>([]),publishAt=useRef(0),lastPhase=useRef(''),generation=useRef(0);
  const pausedRef=useRef(false);pausedRef.current=paused;
  const makeClient=()=>{
@@ -32,15 +33,24 @@ export function usePublicOnline() {
    onStatus:(next,latency)=>{if(latency!==undefined)setPing(latency);if(next==='reconnecting')setStatus('reconnecting');else if(next==='disconnected')setStatus('error');else setStatus(current=>current==='connecting'||current==='reconnecting'?(ticket.current?'lobby':'lobby'):current);},
   });return client.current;
  };
- useEffect(()=>()=>{generation.current++;client.current?.close();client.current=null;},[]);
- const connect=async(config:MatchConfig)=>{
-  if(client.current?.state)return;
+ useEffect(()=>()=>{generation.current++;client.current?.close();client.current=null;connecting.current=null;},[]);
+ const connect=(config:MatchConfig):Promise<void>=>{
+  if(client.current?.state)return Promise.resolve();
+  if(connecting.current)return connecting.current;
   setStatus('connecting');setError('');setErrorCode('');localSeats.current=config.players.filter(p=>p.kind==='human').slice(0,4);
-  try{const instance=makeClient();await instance.connect();instance.setSeats(localSeats.current);setStatus('lobby');}catch(failure){setStatus('error');setErrorCode('unavailable');setError(failure instanceof Error?failure.message:'Public lobby unavailable.');}
+  const instance=makeClient();const current=generation.current;
+  const pending=instance.connect().then(()=>{
+   if(current!==generation.current||client.current!==instance)return;
+   instance.setSeats(localSeats.current);setStatus('lobby');
+  }).catch(failure=>{
+   if(current!==generation.current||client.current!==instance)return;
+   setStatus('error');setErrorCode('unavailable');setError(failure instanceof Error?failure.message:'Public lobby unavailable.');
+  }).finally(()=>{if(connecting.current===pending)connecting.current=null;});
+  connecting.current=pending;return pending;
  };
  const updateSeats=(players:PlayerSeat[])=>{localSeats.current=players.filter(p=>p.kind==='human').slice(0,4);if(client.current?.state&&!ticket.current)client.current.setSeats(localSeats.current);};
  const leaveMatch=()=>{generation.current++;if(match?.phase==='running')client.current?.forfeit();client.current?.leaveMatch();ticket.current=null;snapshotRef.current=null;setSnapshot(undefined);setMatch(null);setPaused(false);setStatus(client.current?.state?'lobby':'idle');};
- const disconnect=()=>{leaveMatch();client.current?.close();client.current=null;setLobby(null);setStatus('idle');};
+ const disconnect=()=>{leaveMatch();client.current?.close();client.current=null;connecting.current=null;setLobby(null);setStatus('idle');};
  const ready=async(id:string,value:boolean)=>{
   if(!ticket.current||!ticket.current.seatIds.includes(id))return;
   const current=generation.current;
