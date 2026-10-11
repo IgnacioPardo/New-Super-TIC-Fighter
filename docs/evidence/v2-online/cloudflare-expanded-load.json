@@ -1,0 +1,183 @@
+{
+  "environment": "deployed Cloudflare Worker/DO preview, synthetic clients/inputs from one Argentina Mac",
+  "base": "https://new-super-tic-fighter-v2-preview.new-super-tic-fighter.workers.dev",
+  "versions": {
+    "ok": true,
+    "protocolVersion": 2,
+    "contentVersion": "stf-expanded-2"
+  },
+  "recordedAt": "2026-10-11T16:37:25.781Z",
+  "two": {
+    "label": "two concurrent matches",
+    "requestedSeconds": 15,
+    "clientWallMs": 15288.491125,
+    "matches": [
+      {
+        "pool": "royale",
+        "matchId": "4cdddb85-00b5-45b8-b56d-1d8a2590b763",
+        "players": 8,
+        "tickDelta": 919,
+        "snapshotDelta": 306,
+        "measuredHz": 60.110575496703895,
+        "serverWallHz": 60.01436687781623,
+        "droppedTimeMs": 0,
+        "catchupTicks": 0,
+        "bytesPerPlayerSecond": 229287.01539865008,
+        "snapshotIntervalMs": {
+          "p50": 49.86774999999761,
+          "p95": 68.63237500000105,
+          "p99": 160.14400000000023
+        },
+        "roundTripMs": {
+          "p50": 170.0377499999995,
+          "p95": 388.2793339999989
+        }
+      },
+      {
+        "pool": "duel",
+        "matchId": "8fcc0aad-f1d6-4b97-b764-64d5a8f3ec0f",
+        "players": 2,
+        "tickDelta": 919,
+        "snapshotDelta": 306,
+        "measuredHz": 60.110575496703895,
+        "serverWallHz": 59.990861022259935,
+        "droppedTimeMs": 0,
+        "catchupTicks": 0,
+        "bytesPerPlayerSecond": 67764.69904906982,
+        "snapshotIntervalMs": {
+          "p50": 49.51629099999991,
+          "p95": 67.32137499999953,
+          "p99": 111.70695799999885
+        },
+        "roundTripMs": {
+          "p50": 192.7747079999972,
+          "p95": 233.59287499999846
+        }
+      }
+    ],
+    "roundTripScope": "connection lifetime"
+  },
+  "four": {
+    "label": "four concurrent matches",
+    "requestedSeconds": 15,
+    "clientWallMs": 15647.629874999999,
+    "matches": [
+      {
+        "pool": "royale",
+        "matchId": "4cdddb85-00b5-45b8-b56d-1d8a2590b763",
+        "players": 8,
+        "tickDelta": 937,
+        "snapshotDelta": 312,
+        "measuredHz": 59.8812732334008,
+        "serverWallHz": 60.002561475409834,
+        "droppedTimeMs": 0,
+        "catchupTicks": 0,
+        "bytesPerPlayerSecond": 229743.63553573,
+        "snapshotIntervalMs": {
+          "p50": 49.92679200000566,
+          "p95": 78.13683399999718,
+          "p99": 121.14154200000485
+        },
+        "roundTripMs": {
+          "p50": 170.51499999999942,
+          "p95": 388.2793339999989
+        }
+      },
+      {
+        "pool": "duel",
+        "matchId": "8fcc0aad-f1d6-4b97-b764-64d5a8f3ec0f",
+        "players": 2,
+        "tickDelta": 940,
+        "snapshotDelta": 314,
+        "measuredHz": 60.07299555965501,
+        "serverWallHz": 60.04854989140156,
+        "droppedTimeMs": 0,
+        "catchupTicks": 0,
+        "bytesPerPlayerSecond": 67850.69102997301,
+        "snapshotIntervalMs": {
+          "p50": 49.769625000000815,
+          "p95": 82.7190830000036,
+          "p99": 156.1175000000003
+        },
+        "roundTripMs": {
+          "p50": 195.986708000004,
+          "p95": 292.0399169999946
+        }
+      },
+      {
+        "pool": "duel",
+        "matchId": "fa2c0fda-e969-47d7-b1e8-8d410d39f3ff",
+        "players": 2,
+        "tickDelta": 938,
+        "snapshotDelta": 313,
+        "measuredHz": 59.94518067548553,
+        "serverWallHz": 59.98593080514165,
+        "droppedTimeMs": 0,
+        "catchupTicks": 0,
+        "bytesPerPlayerSecond": 67906.48222691298,
+        "snapshotIntervalMs": {
+          "p50": 49.7711249999993,
+          "p95": 78.38175000000047,
+          "p99": 132.94895800000086
+        },
+        "roundTripMs": {
+          "p50": 176.14795800000138,
+          "p95": 345.5250840000008
+        }
+      },
+      {
+        "pool": "duel",
+        "matchId": "3a7f3566-1c27-45f7-998d-939938ca80d0",
+        "players": 2,
+        "tickDelta": 939,
+        "snapshotDelta": 313,
+        "measuredHz": 60.00908811757027,
+        "serverWallHz": 59.992333248147204,
+        "droppedTimeMs": 0,
+        "catchupTicks": 0,
+        "bytesPerPlayerSecond": 67985.95113114535,
+        "snapshotIntervalMs": {
+          "p50": 50.021749999999884,
+          "p95": 85.8104170000006,
+          "p99": 136.61499999999796
+        },
+        "roundTripMs": {
+          "p50": 171.25345899999957,
+          "p95": 238.19495800000004
+        }
+      }
+    ],
+    "roundTripScope": "connection lifetime"
+  },
+  "teamParties": "2+2 couch seats admitted, authoritative two-seat winners",
+  "errorCount": 0,
+  "capacityBefore": {
+    "enabled": true,
+    "activeMatches": 0,
+    "maxMatches": 4,
+    "connections": 0,
+    "maxConnections": 64,
+    "usedPlayerMinutes": 10.0045,
+    "reservedPlayerMinutes": 0,
+    "dailyPlayerMinutes": 1200,
+    "resetAt": 1791763200000,
+    "queuedParties": 0
+  },
+  "capacityAfter": {
+    "enabled": true,
+    "activeMatches": 0,
+    "maxMatches": 4,
+    "connections": 16,
+    "maxConnections": 64,
+    "usedPlayerMinutes": 20.471,
+    "reservedPlayerMinutes": 0,
+    "dailyPlayerMinutes": 1200,
+    "resetAt": 1791763200000,
+    "queuedParties": 0
+  },
+  "limitations": [
+    "Independent sockets share one Internet connection",
+    "CPU clocks are not valid production billed CPU measurements",
+    "No physical controllers or injected network loss"
+  ]
+}
