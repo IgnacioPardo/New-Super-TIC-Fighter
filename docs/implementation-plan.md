@@ -2,7 +2,7 @@
 
 Updated: 11 October 2026, Buenos Aires.
 
-**Decision status:** the recommendations from both grilling rounds are accepted. This document incorporates React and Tailwind, two new environments with substantial original scenery, optional bots in every mode, and the accepted interruption policies. There are no pending product decisions in this plan. Implementation has not started; the current deliverable is this specification.
+**Decision status:** the recommendations from both grilling rounds are accepted. This document incorporates React and Tailwind, two new environments with substantial original scenery, optional bots in every mode, and the accepted interruption policies. There are no pending product decisions in this plan. Implementation is underway in the private repository; this remains the accepted specification.
 
 ## 1. Product, sources, and release commitments
 
@@ -98,7 +98,7 @@ Use the same physics scale, static one-way surfaces, and bottom death threshold 
 | Laboratorio TIC | A computer classroom with desks, monitors, cables, and substantial new scenery/platform art | Symmetric central lower platform, two elevated flanks, and an upper centre, suited to teams |
 | Dentro de la PC | Oversized chips, circuit boards, connectors, and cooling equipment, with substantial new scenery/platform art | Alternating centre and paired side platforms, emphasizing vertical positioning |
 
-New artwork extends the original retro photographic/cutout aesthetic. Preserve the existing fighter artwork. Give each environment a distinct palette and silhouette; reduce background contrast behind the combat plane and ensure platform edges are unmistakable. Fans, monitors, and lights may animate cosmetically. Platforms do not move, and scenery does not damage or push fighters in this release.
+Following the owner’s decision to skip image generation, new environments use code-authored browser scenery and matching platform trim alongside the supplied retro artwork. Preserve the existing fighter artwork. Give each environment a distinct palette and silhouette; reduce background contrast behind the combat plane and ensure platform edges are unmistakable. Fans, monitors, and lights may animate cosmetically. Platforms do not move, and scenery does not damage or push fighters in this release.
 
 Initial collision rectangles for the new layouts use the existing coordinate scale and 50-unit platform thickness:
 

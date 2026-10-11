@@ -87,7 +87,8 @@ audio = {
 }
 manifest = {
     'sheets':sheets, 'poses':poses, 'effects':effects, 'platforms':platforms, 'portraits':portraits,
-    'backgrounds':{'classic':background, 'lab':'/assets/backgrounds/lab.webp','pc':'/assets/backgrounds/pc.webp'},
+    'arenaPlatforms':{arena:[f'/assets/platforms/{arena}-{i}.svg' for i in range(3)] for arena in ['lab','pc']},
+    'backgrounds':{'classic':background, 'lab':'/assets/backgrounds/lab.svg','pc':'/assets/backgrounds/pc.svg'},
     'font':copy(remake / 'ARCADE_N.TTF','arcade.ttf'), 'logo':copy(remake / 'STFX.png','logo.png'), 'audio':audio,
 }
 (out / 'manifest.json').write_text(json.dumps(manifest, indent=2)+'\n')
