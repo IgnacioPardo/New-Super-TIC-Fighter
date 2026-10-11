@@ -235,7 +235,14 @@ async function scenarioBots() {
   await ready(guest, 'Guest C');
   await startAndWait(host, [guest], 4);
   assert.equal(await host.page.evaluate(() => window.__stfSnapshot.config.players.filter(player => player.kind === 'bot').length), 2);
-  console.log(`Bot room ${code}: two human browsers plus two bot seats entered a live Worker round.`);
+  if (process.env.STF_REQUIRE_DIRECT) {
+    await guest.page.waitForFunction(() => window.__stfRoom?.phase === 'playing' && window.__stfRoom.routes[window.__stfRoom.peerId] === 'direct', null, { timeout: 12_000 });
+  }
+  const route = await guest.page.evaluate(() => ({
+    kind: window.__stfRoom.routes[window.__stfRoom.peerId],
+    pingMs: window.__stfRoom.peers.find(peer => peer.peerId === window.__stfRoom.peerId)?.pingMs,
+  }));
+  console.log(`Bot room ${code}: two human browsers plus two bot seats entered a live Worker round; guest route ${route.kind}${route.pingMs === undefined ? '' : `, room ping ${route.pingMs} ms`}.`);
 }
 
 async function scenarioHostRefresh() {
