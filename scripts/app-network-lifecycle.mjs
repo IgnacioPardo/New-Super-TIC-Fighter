@@ -59,13 +59,24 @@ async function openSession(label) {
 async function onlineEntry(session, name, code) {
   const { page } = session;
   await page.goto(code ? `${base}/?room=${code}` : base);
-  await page.getByRole('button', { name: /02.*ONLINE/ }).click();
+  await openOnline(page);
   await page.getByPlaceholder('Jugador', { exact: true }).fill(name);
   if (code) await page.getByRole('button', { name: /ENTRAR/ }).click();
   else await page.getByRole('button', { name: /CREAR SALA/ }).click();
   await page.locator('.room-code strong').waitFor({ timeout: 15_000 });
   await page.waitForFunction(() => !!window.__stfRoom?.peerId, null, { timeout: 15_000 });
   return page.locator('.room-code strong').innerText();
+}
+
+async function openOnline(page) {
+  const mode = page.getByTestId('mode-online');
+  if (await mode.count()) await mode.click();
+  else await page.getByRole('button', { name: /02.*ONLINE/ }).click();
+}
+
+async function openFighterOptions(card) {
+  const details = card.locator('details.fighter-options');
+  if (await details.count() && await details.getAttribute('open') === null) await details.locator('summary').click();
 }
 
 async function waitRoster(page, count, predicate = () => true) {
@@ -80,7 +91,9 @@ async function addHumanHost(host, count) {
   const { page } = host;
   await page.locator('.add-fighter').click();
   await waitRoster(page, count, room => room.players.at(-1).kind === 'bot');
-  await page.locator('.fighter-card').last().locator('.seat-kind-row select').first().selectOption('human');
+  const card = page.locator('.fighter-card').last();
+  await openFighterOptions(card);
+  await card.locator('.seat-kind-row select').first().selectOption('human');
   await page.waitForFunction(({ count }) => window.__stfRoom?.players.length === count && window.__stfRoom.players.at(-1).kind === 'human', { count }, { timeout: 12_000 });
 }
 
@@ -117,7 +130,9 @@ async function scenarioTwoPlusTwo() {
 
   await host.page.locator('.rules-controls .field-label select').first().selectOption('teams');
   await host.page.waitForFunction(() => window.__stfRoom?.config.mode === 'teams');
-  await guest.page.locator('.fighter-card').filter({ has: guest.page.locator('input[value="Guest A"]') }).locator('.seat-kind-row select').last().selectOption('0');
+  const guestCard = guest.page.locator('.fighter-card').filter({ has: guest.page.locator('input[value="Guest A"]') });
+  await openFighterOptions(guestCard);
+  await guestCard.locator('.seat-kind-row select').last().selectOption('0');
   await host.page.waitForFunction(() => window.__stfRoom?.players.filter(player => player.team === 0).length === 2);
   const teams = await host.page.evaluate(() => window.__stfRoom.players.map(player => player.team));
   assert.deepEqual(teams.sort(), [0, 0, 1, 1]);
@@ -142,7 +157,7 @@ async function scenarioTwoPlusTwo() {
   await host.page.waitForFunction(() => window.__stfSnapshot?.phase === 'paused', null, { timeout: 10_000 });
   await host.page.waitForFunction(peerId => window.__stfRoom?.peers.find(peer => peer.peerId === peerId)?.connected === false, guestPeerId, { timeout: 10_000 });
   await guest.page.goto(`${base}/?room=${code}`);
-  await guest.page.getByRole('button', { name: /02.*ONLINE/ }).click();
+  await openOnline(guest.page);
   await guest.page.getByPlaceholder('Jugador', { exact: true }).fill('Guest A');
   await guest.page.getByRole('button', { name: /ENTRAR/ }).click();
   await guest.page.waitForFunction(peerId => window.__stfRoom?.peerId === peerId && window.__stfRoom?.phase === 'paused', guestPeerId, { timeout: 15_000 });
