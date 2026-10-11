@@ -54,19 +54,19 @@ for(const engine of (process.env.STF_BROWSERS??'chromium,firefox,webkit').split(
   await key('ArrowDown');await key('ArrowRight');await expect(choice('Disciplina')).toContainText('Diseño');
   await key('ArrowDown');await key('ArrowRight');await expect(choice('Pelo')).toContainText('2 / 4');await key('ArrowDown');await key('ArrowRight');await key('ArrowDown');await key('ArrowRight');
   await key('ArrowDown');await expect(choice('Pantalón')).toBeFocused(); // No wrap to an unrelated control.
-  await page.getByRole('tab',{name:'Jugador / Control'}).focus();await key('Enter');await key('ArrowDown');
+  await page.getByRole('tab',{name:'Jugador',exact:true}).focus();await key('Enter');await key('ArrowDown');
   await expect(page.getByRole('textbox',{name:'Nombre P1'})).toBeFocused();await page.getByRole('textbox',{name:'Nombre P1'}).fill('Arrow pilot');await key('ArrowDown');await expect(choice('Jugador')).toBeFocused();
   await close();await expect(page.locator('.fighter-edit').first()).toBeFocused();await expect(page.locator('.fighter-card').first()).toContainText('Arrow pilot');
   await key('ArrowDown');await expect(page.locator('.ready-button').first()).toBeFocused();await key('Enter');
   await key('ArrowRight');await expect(page.locator('.ready-button').nth(1)).toBeFocused();await key('Enter');await expect(page.locator('.fight-button')).toBeEnabled();
-  await page.locator('.match-summary').click();await expect(choice('Reglamento')).toBeFocused();await key('ArrowDown');await expect(choice('Escenario')).toBeFocused();await key('ArrowRight');await choice('Modo').focus();await key('ArrowRight');await expect(choice('Modo')).toContainText('Equipos');
+  await page.locator('.match-summary').click();await choice('Reglamento').focus();await expect(choice('Reglamento')).toBeFocused();await key('ArrowDown');await expect(choice('Escenario')).toBeFocused();await key('ArrowRight');await page.getByRole('tab',{name:'Partida',exact:true}).click();await choice('Modo').focus();await key('ArrowRight');await expect(choice('Modo')).toContainText('Equipos');
   await close();await expect(page.locator('.fight-button')).toBeDisabled();await page.locator('.add-fighter').click();await page.locator('.add-fighter').click();
   for(const card of await page.locator('.fighter-card').all())await card.locator('.ready-button').click();
   await expect(page.locator('.fight-button')).toBeEnabled();
   await page.screenshot({path:`tmp/qa/${engine}-config-roster.png`,fullPage:true});
-  await page.locator('.fighter-edit').last().click();await page.getByRole('tab',{name:'Jugador / Control'}).click();await choice('Control').focus();await key('ArrowRight');await key('ArrowRight');await key('ArrowRight');
+  await page.locator('.fighter-edit').last().click();await page.getByRole('tab',{name:'Controles',exact:true}).click();await choice('Control').focus();await key('ArrowRight');await key('ArrowRight');await key('ArrowRight');
   await close();await expect(page.locator('.fight-button')).toBeDisabled();await expect(page.getByRole('status')).toContainText('Falta confirmar');
-  await page.locator('.fighter-edit').last().click();await page.getByRole('tab',{name:'Jugador / Control'}).click();await choice('Jugador').click();await close();
+  await page.locator('.fighter-edit').last().click();await page.getByRole('tab',{name:'Jugador',exact:true}).click();await choice('Jugador').click();await close();
   for(const ready of await page.locator('.ready-button:not(:disabled)').all())await ready.click();
   await expect(page.locator('.fight-button')).toBeEnabled();await page.locator('.fight-button').click();await page.waitForFunction(()=>window.__snapshot?.phase==='playing');
   assert.equal(await page.evaluate(()=>window.__snapshot.config.players.length),4);assert.equal(await page.evaluate(()=>window.__snapshot.config.mode),'teams');

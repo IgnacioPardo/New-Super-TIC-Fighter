@@ -58,7 +58,7 @@
  .reader-settings .settings-category strong { font-size:18px; }
  .reader-settings .settings-category small { font-size:13px; }
  .reader-guide .config-tabs { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); }
- .reader-guide .config-tabs button { min-height:40px; font-size:15px; padding:10px 8px; }
+ .reader-guide .content-pages > .config-tabs button { min-height:40px; font-size:15px; padding:10px 8px; }
  .reader-text-card { padding:18px; }
  .reader-text-card p,.reader-text-card .guide-rule p { font-size:15px; line-height:1.6; }
  .reader-text-card h2 { font-size:20px; margin-bottom:14px; }
