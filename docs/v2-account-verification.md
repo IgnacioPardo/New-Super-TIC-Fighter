@@ -26,4 +26,12 @@ The retained report is `docs/evidence/v2-accounts/local-passkey-roundtrip.json`.
 
 The initial user, session and Google recovery-provider row are deliberately seeded in local D1; this does not verify a real Google/GitHub consent exchange or provider linking. Subsequent passkey registration and login execute the real service/browser cryptographic ceremonies, using simulated authenticator hardware. This is not evidence of a physical Touch ID/security-key/phone passkey, Arc's native passkey prompt, production HTTPS configuration, synced passkeys across devices, or external OAuth recovery. Those flows need their own actual verification.
 
+## Production OAuth follow-up
+
+On 2026-10-11, native Arc completed real Google consent with the owner's approval against the production domain. The callback returned to the game with Google linked. The authenticated state survived a refresh; sign-out restored guest actions, and a new Google sign-in restored the linked account.
+
+The subsequent owner-approved GitHub linking attempt exposed `email_does_not_match`: the two providers use different email addresses. Explicit authenticated linking now permits different verified provider emails while implicit linking remains disabled. Better Auth still validates the OAuth exchange and rejects a provider identity already owned by another user. This follows its [manual account-linking configuration](https://www.better-auth.com/docs/concepts/users-accounts#manually-linking-accounts). Provider errors now return to the game's translated profile UI instead of the library's developer error page.
+
+The full disposable account-service/browser exercise passed again after that correction, including guest/profile storage, virtual passkey round-trip, rejection of anonymous linking, and usable OAuth error returns. It does not substitute for the pending production GitHub retry or physical passkey coverage; the release's `production-oauth.json` records the subsequent observed production outcome without account identifiers or credentials.
+
 Client-local achievements are intentionally eligible only for cosmetic progression and are not trusted competitive results. This exercise verifies that boundary at the profile endpoint; authoritative multiplayer verified-result persistence is covered by the separate service competition exercises.

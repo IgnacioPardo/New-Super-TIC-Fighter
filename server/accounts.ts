@@ -18,7 +18,9 @@ export function createAuth(env: AuthEnv, origin: string) {
   appName: 'New Super TIC Fighter', baseURL, basePath: '/api/auth', secret: env.AUTH_SECRET,
   database: drizzleAdapter(drizzle(env.DB, { schema }), { provider: 'sqlite', schema, transaction: false }),
   trustedOrigins: [baseURL], emailAndPassword: { enabled: false },
-  account: { accountLinking: { enabled: true, disableImplicitLinking: true } },
+  // Linking requires an authenticated, explicit OAuth flow; provider emails need not match.
+  account: { accountLinking: { enabled: true, disableImplicitLinking: true, allowDifferentEmails: true } },
+  onAPIError: { errorURL: `${baseURL}/?screen=profile` },
   socialProviders: {
    ...(env.GOOGLE_CLIENT_ID && env.GOOGLE_CLIENT_SECRET ? { google: { clientId: env.GOOGLE_CLIENT_ID, clientSecret: env.GOOGLE_CLIENT_SECRET } } : {}),
    ...(env.GITHUB_CLIENT_ID && env.GITHUB_CLIENT_SECRET ? { github: { clientId: env.GITHUB_CLIENT_ID, clientSecret: env.GITHUB_CLIENT_SECRET } } : {}),

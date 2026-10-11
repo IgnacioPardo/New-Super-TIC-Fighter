@@ -54,7 +54,7 @@ Royale JSON application traffic measured approximately 230 KB per player per sec
 ## Remaining acceptance coverage
 
 - Owner-deferred physical v2 DualSense play in Arc and a real separate-network Argentina match.
-- Real production Google/GitHub sign-in, explicit linking, physical passkey and cross-device progress, recorded separately when exercised.
+- Production Google consent, session refresh, logout and repeat sign-in passed in native Arc on 2026-10-11. GitHub explicit linking exposed a different-email configuration issue; see the [account follow-up](v2-account-verification.md) and the release's `production-oauth.json` for the subsequent retry. Physical passkey and cross-device progress remain separate acceptance checks.
 - Sustained reference-desktop rendering/input-response measurements and human balance/playability across the complete roster/modes.
 - Native Safari, additional physical gamepads, true OS sleep/wake, production eviction and natural free-tier daily rollover.
 
