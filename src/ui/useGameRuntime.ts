@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { InputManager } from '../input';
 import { AudioManager } from '../audio';
+import { preloadMatchAssets } from '../assets';
 import type { AppSettings, AssetsManifest, MatchConfig, MatchSnapshot, SimulationCommand, SimulationMessage } from '../shared/types';
 import type { OnlineBridge } from './contracts';
 export type MenuCommand = 'up' | 'down' | 'left' | 'right' | 'confirm' | 'back' | 'pause';
@@ -11,6 +12,7 @@ export function useGameRuntime(settings: AppSettings, manifest: AssetsManifest |
   const [soundUnlocked, setSoundUnlocked] = useState(false);
   const [disconnected, setDisconnected] = useState(false);
   const [error, setError] = useState('');
+  const startGeneration = useRef(0);
   const input = useRef<InputManager | null>(null), audio = useRef<AudioManager | null>(null), worker = useRef<Worker | null>(null);
   const menu = useRef(onMenu), network = useRef(online), remote = useRef(onlineActive);
   const publishAt = useRef(0), phase = useRef('');
@@ -29,7 +31,7 @@ export function useGameRuntime(settings: AppSettings, manifest: AssetsManifest |
     const unsubscribe = manager.subscribeMenu(command => menu.current(command));
     const instance = new Worker(new URL('../simulation/worker.ts', import.meta.url), { type: 'module' });
     worker.current = instance;
-    instance.onerror = () => setError(settings.language === 'es' ? 'El combate no pudo iniciarse. Recarga la página para intentarlo de nuevo.' : 'The fight could not start. Reload the page to try again.');
+    instance.onerror = () => { snapshotRef.current = null; setSnapshot(null); manager.setMode('menu'); setError(settings.language === 'es' ? 'El combate no pudo continuar. Recarga la página para intentarlo de nuevo.' : 'The fight could not continue. Reload the page to try again.'); };
     instance.onmessage = (event: MessageEvent<SimulationMessage>) => {
       if (event.data.type !== 'snapshot' || remote.current) return;
       const next = event.data.snapshot; snapshotRef.current = next;
@@ -72,12 +74,17 @@ export function useGameRuntime(settings: AppSettings, manifest: AssetsManifest |
     if (next) input.current?.setPlayers(next.config.players.filter(p => p.kind === 'human' && (!onlineActive || p.peerId === online?.state.peerId)));
     audio.current?.setScene(running ? 'match' : 'menu');
   }, [snapshot, online?.state.snapshot, onlineActive, online?.state.peerId]);
-  const start = useCallback((config: MatchConfig) => {
+  const start = useCallback(async (config: MatchConfig) => {
+    const generation = ++startGeneration.current;
     setDisconnected(false); setError(''); snapshotRef.current = null; setSnapshot(null); phase.current = '';
-    input.current?.setPlayers(config.players); input.current?.setMode('game');
-    worker.current?.postMessage({ type: 'start', config: { ...config, seed: Date.now() } });
+    try {
+      await preloadMatchAssets(config);
+      if (generation !== startGeneration.current || !worker.current) return;
+      input.current?.setPlayers(config.players); input.current?.setMode('game');
+      worker.current.postMessage({ type: 'start', config: { ...config, seed: Date.now() } });
+    } catch (failure) { if (generation === startGeneration.current) setError(failure instanceof Error ? failure.message : 'El combate no pudo iniciarse / The fight could not start.'); }
   }, []);
-  const stop = useCallback(() => { command({ type: 'stop' }); snapshotRef.current = null; setSnapshot(null); input.current?.setMode('menu'); audio.current?.setScene('menu'); }, [command]);
+  const stop = useCallback(() => { startGeneration.current++; command({ type: 'stop' }); snapshotRef.current = null; setSnapshot(null); input.current?.setMode('menu'); audio.current?.setScene('menu'); }, [command]);
   const unlock = useCallback(async () => { if (audio.current) { await audio.current.unlock(); setSoundUnlocked(audio.current.unlocked); } }, []);
   const reclaim = useCallback(() => { const restored = input.current?.reclaim() ?? false; setDisconnected(!restored); return restored; }, []);
   return { snapshot: onlineActive ? online?.state.snapshot ?? null : snapshot, snapshotRef, start, stop, command, devices, soundUnlocked, unlock, disconnected, reclaim, error };
