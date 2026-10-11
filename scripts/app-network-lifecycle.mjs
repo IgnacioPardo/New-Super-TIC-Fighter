@@ -289,13 +289,33 @@ async function scenarioGuestFinishedLobby() {
   const outcome = fighters => fighters.map(({ id, lives, damage }) => ({ id, lives, damage }));
   assert.deepEqual(outcome(guestResult.snapshot.fighters), outcome(hostFinal.fighters), 'Guest must receive exact final fighter stocks and damage');
   assert.equal(await guest.page.locator('.result-scoreboard').innerText(), await host.page.locator('.result-scoreboard').innerText(), 'Both result screens must show identical stocks and damage');
+  await guest.page.goto('about:blank');
+  await guest.page.goto(`${base}/?room=${code}`);
+  await openOnline(guest.page);
+  await guest.page.getByPlaceholder('Jugador', { exact: true }).fill('Guest F');
+  await guest.page.getByRole('button', { name: /ENTRAR/ }).click();
+  await guest.page.waitForFunction(peerId => window.__stfRoom?.peerId === peerId && window.__stfObserved.controls.some(message => message.type === 'result' && message.snapshot?.phase === 'finished'), guestPeerId, { timeout: 10_000 });
+  await guest.page.locator('.results-screen').waitFor({ timeout: 10_000 });
+  assert.equal(await guest.page.locator('.result-scoreboard').innerText(), await host.page.locator('.result-scoreboard').innerText(), 'Refresh during results must restore the exact final scoreboard');
   await host.page.getByRole('button', { name: /VOLVER A LA SALA/ }).click();
   await guest.page.waitForFunction(() => window.__stfRoom?.phase === 'lobby', null, { timeout: 10_000 });
   if (await guest.page.locator('.results-screen').isVisible()) await guest.page.getByRole('button', { name: /VOLVER A LA SALA/ }).click();
   await guest.page.locator('.room-code strong').waitFor({ timeout: 8_000 });
   assert.equal(await guest.page.locator('.room-code strong').innerText(), code, 'Guest returning from results should remain in the same room');
   assert.equal(await guest.page.evaluate(() => window.__stfRoom.peerId), guestPeerId, 'Guest must retain its own seats through rematch');
-  console.log(`Guest finish ${code}: returning from a natural result preserved room membership.`);
+  await guest.page.locator('.back-button').click();
+  await guest.page.getByTestId('mode-local').click();
+  await guest.page.locator('.fighter-card .ready-button').first().click();
+  await guest.page.locator('.fighter-card .ready-button').last().click();
+  await guest.page.locator('.fight-button:not(:disabled)').click();
+  await guest.page.waitForFunction(previous => window.__stfSnapshot?.phase === 'playing' && window.__stfSnapshot.matchId !== previous, hostFinal.matchId, { timeout: 20_000 });
+  const localBefore = await guest.page.evaluate(() => window.__stfSnapshot.fighters[0].x);
+  await guest.page.keyboard.down('d');
+  await guest.page.waitForTimeout(500);
+  await guest.page.keyboard.up('d');
+  const localAfter = await guest.page.evaluate(() => window.__stfSnapshot.fighters[0].x);
+  assert(localAfter > localBefore + 30, `Local controls must work after leaving online: ${localBefore} -> ${localAfter}`);
+  console.log(`Guest finish ${code}: exact result survived refresh, rematch kept the room, and local mode stayed playable.`);
 }
 
 try {

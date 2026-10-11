@@ -30,6 +30,7 @@ interface StoredRoom {
   pauseReason?: string;
   resumeAt?: number;
   result?: MatchResult;
+  finalSnapshot?: MatchSnapshot;
 }
 
 interface SocketAttachment { peerId?: string }
@@ -178,6 +179,7 @@ export class Room {
         this.broadcast({ type: 'result', matchId: room.matchId!, result, controlId: crypto.randomUUID() });
         room.phase = 'lobby';
         room.result = result;
+        room.finalSnapshot = undefined;
         room.matchId = undefined;
         room.pauseReason = undefined;
         room.resumeAt = undefined;
@@ -232,6 +234,9 @@ export class Room {
     ws.serializeAttachment({ peerId: member.peerId } satisfies SocketAttachment);
     this.save();
     this.send(ws, { type: 'welcome', state: this.publicState(member.peerId), peerId: member.peerId, reconnectToken: member.reconnectToken, ...(member.peerId === room.hostPeerId ? { hostToken: room.hostToken } : {}) });
+    if (room.phase === 'finished' && room.matchId && room.result) {
+      this.send(ws, { type: 'result', matchId: room.matchId, result: room.result, snapshot: room.finalSnapshot, controlId: crypto.randomUUID() });
+    }
     this.broadcastState();
     await this.scheduleAlarm();
   }
@@ -309,6 +314,7 @@ export class Room {
         room.matchId = crypto.randomUUID();
         room.phase = 'playing';
         room.result = undefined;
+        room.finalSnapshot = undefined;
         room.pauseReason = undefined;
         this.broadcast({ type: 'start', matchId: room.matchId, config: room.config, controlId: crypto.randomUUID() });
         break;
@@ -334,6 +340,7 @@ export class Room {
         if (message.snapshot !== undefined && !validFinalSnapshot(message.snapshot, room.matchId!, message.result, new Set(room.config.players.map(player => player.id)))) return this.error(ws, 'invalid_result', 'Final snapshot does not match the round result.');
         room.phase = 'finished';
         room.result = message.result;
+        room.finalSnapshot = message.snapshot;
         this.broadcast({ type: 'result', matchId: room.matchId!, result: message.result, snapshot: message.snapshot, controlId: crypto.randomUUID() });
         break;
       }
@@ -342,6 +349,7 @@ export class Room {
         room.phase = 'lobby';
         room.matchId = undefined;
         room.result = undefined;
+        room.finalSnapshot = undefined;
         room.resumeAt = undefined;
         room.config.players = [...room.members.flatMap(item => item.players), ...room.config.players.filter(player => player.kind === 'bot')];
         this.clearReadiness();

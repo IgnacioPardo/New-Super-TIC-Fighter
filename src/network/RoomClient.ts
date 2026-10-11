@@ -94,6 +94,7 @@ export class RoomClient {
   private sequence = 0;
   private lastInputSequences = new Map<string, number>();
   private lastSnapshots = new Map<string, number>();
+  private finalSnapshot?: MatchSnapshot;
   private pendingWelcome?: { resolve: (state: RoomState) => void; reject: (error: Error) => void };
   private lastControl = new Set<string>();
 
@@ -147,6 +148,7 @@ export class RoomClient {
   }
   rematch(): void { this.send({ type: 'rematch' }); }
   reportResult(result: MatchResult, snapshot?: MatchSnapshot): void {
+    if (snapshot && snapshot.matchId === this.room?.matchId && snapshot.phase === 'finished') this.finalSnapshot = snapshot;
     if (this.send({ type: 'result', result, snapshot }) || !this.isHost || !this.room?.matchId) return;
     this.acceptControl({ type: 'result', matchId: this.room.matchId, result, snapshot, controlId: crypto.randomUUID() });
   }
@@ -212,6 +214,7 @@ export class RoomClient {
     this.code = undefined;
     this.lastInputSequences.clear();
     this.lastSnapshots.clear();
+    this.finalSnapshot = undefined;
     this.lastControl.clear();
   }
 
@@ -291,7 +294,7 @@ export class RoomClient {
         if (previous?.matchId && previous.matchId === message.state.matchId && this.isHost) {
           if (previous.phase === 'paused' && message.state.phase === 'playing') this.send({ type: 'pause', reason: previous.pauseReason });
           if (previous.phase === 'playing' && previous.resumeAt && message.state.phase === 'paused') this.send({ type: 'resume' });
-          if (previous.phase === 'finished' && previous.result && message.state.phase !== 'finished') this.send({ type: 'result', result: previous.result });
+          if (previous.phase === 'finished' && previous.result && message.state.phase !== 'finished') this.send({ type: 'result', result: previous.result, snapshot: this.finalSnapshot });
         }
         break;
       }
@@ -340,13 +343,14 @@ export class RoomClient {
     if (this.lastControl.has(key)) return;
     this.lastControl.add(key);
     if (this.lastControl.size > 32) this.lastControl.delete(this.lastControl.values().next().value!);
-    if (message.type === 'start' && message.matchId && message.config) { this.room.matchId = message.matchId; this.room.phase = 'playing'; this.options.onStart?.(message.matchId, message.config); }
+    if (message.type === 'start' && message.matchId && message.config) { this.finalSnapshot = undefined; this.room.matchId = message.matchId; this.room.phase = 'playing'; this.options.onStart?.(message.matchId, message.config); }
     if (message.type === 'pause') { this.room.phase = 'paused'; this.room.pauseReason = message.reason ?? 'Paused'; this.options.onPause?.(this.room.pauseReason); }
     if (message.type === 'resume' && message.resumeAt) { this.room.phase = 'playing'; this.room.resumeAt = message.resumeAt; this.room.pauseReason = undefined; this.options.onResume?.(message.resumeAt); }
     if (message.type === 'result' && message.result) {
       this.room.phase = 'finished'; this.room.result = message.result;
       const finalSnapshot = message.snapshot;
       const snapshot = finalSnapshot && finalSnapshot.matchId === this.room.matchId && finalSnapshot.phase === 'finished' ? finalSnapshot : undefined;
+      if (snapshot) this.finalSnapshot = snapshot;
       this.options.onResult?.(message.result, snapshot);
     }
     if (message.type === 'forfeit' && message.seatIds) this.options.onForfeit?.(message.seatIds);
