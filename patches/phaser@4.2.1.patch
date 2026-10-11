@@ -1,0 +1,240 @@
+diff --git a/dist/phaser.esm.js b/dist/phaser.esm.js
+index 8c6521ac895c8ba041b6990573cdb38e7210fec6..b76328da6110ca66ac1007f0ef736e180bf7910d 100644
+--- a/dist/phaser.esm.js
++++ b/dist/phaser.esm.js
+@@ -19298,6 +19298,23 @@ var Events = __webpack_require__(8443);
+  *
+  * @param {Phaser.Game} game - The Game instance this Visibility Handler is working on.
+  */
++// Keep ownership private to this module so overlapping Game instances can be
++// destroyed in either order without restoring a handler from a destroyed Game.
++var windowHandlerOwners = new WeakMap();
++
++var previousLiveHandler = function (handler)
++{
++    var owner = handler && windowHandlerOwners.get(handler);
++
++    while (owner && !owner.active)
++    {
++        handler = owner.previous;
++        owner = handler && windowHandlerOwners.get(handler);
++    }
++
++    return handler;
++};
++
+ var VisibilityHandler = function (game)
+ {
+     var hiddenVar;
+@@ -19343,16 +19360,49 @@ var VisibilityHandler = function (game)
+         document.addEventListener(hiddenVar, onChange, false);
+     }
+ 
+-    window.onblur = function ()
++    var onBlur = function ()
+     {
+         eventEmitter.emit(Events.BLUR);
+     };
+ 
+-    window.onfocus = function ()
++    var onFocus = function ()
+     {
+         eventEmitter.emit(Events.FOCUS);
+     };
+ 
++    var blurOwner = { active: true, previous: previousLiveHandler(window.onblur) };
++    var focusOwner = { active: true, previous: previousLiveHandler(window.onfocus) };
++
++    windowHandlerOwners.set(onBlur, blurOwner);
++    windowHandlerOwners.set(onFocus, focusOwner);
++
++    window.onblur = onBlur;
++    window.onfocus = onFocus;
++
++    eventEmitter.once(Events.DESTROY, function ()
++    {
++        if (hiddenVar)
++        {
++            document.removeEventListener(hiddenVar, onChange, false);
++        }
++
++        blurOwner.active = false;
++        focusOwner.active = false;
++        blurOwner.previous = previousLiveHandler(blurOwner.previous);
++        focusOwner.previous = previousLiveHandler(focusOwner.previous);
++
++        // A newer Game or application handler may now own these properties.
++        if (window.onblur === onBlur)
++        {
++            window.onblur = blurOwner.previous;
++        }
++
++        if (window.onfocus === onFocus)
++        {
++            window.onfocus = focusOwner.previous;
++        }
++    });
++
+     //  Automatically give the window focus unless config says otherwise
+     if (window.focus && game.config.autoFocus)
+     {
+diff --git a/dist/phaser.js b/dist/phaser.js
+index d5f7d60dd067d6a5b9d1fc2518b216f821f16e0c..14086b1d77c872f6d1fca89f2d6aea270f010a47 100644
+--- a/dist/phaser.js
++++ b/dist/phaser.js
+@@ -19310,6 +19310,23 @@ var Events = __webpack_require__(8443);
+  *
+  * @param {Phaser.Game} game - The Game instance this Visibility Handler is working on.
+  */
++// Keep ownership private to this module so overlapping Game instances can be
++// destroyed in either order without restoring a handler from a destroyed Game.
++var windowHandlerOwners = new WeakMap();
++
++var previousLiveHandler = function (handler)
++{
++    var owner = handler && windowHandlerOwners.get(handler);
++
++    while (owner && !owner.active)
++    {
++        handler = owner.previous;
++        owner = handler && windowHandlerOwners.get(handler);
++    }
++
++    return handler;
++};
++
+ var VisibilityHandler = function (game)
+ {
+     var hiddenVar;
+@@ -19355,16 +19372,49 @@ var VisibilityHandler = function (game)
+         document.addEventListener(hiddenVar, onChange, false);
+     }
+ 
+-    window.onblur = function ()
++    var onBlur = function ()
+     {
+         eventEmitter.emit(Events.BLUR);
+     };
+ 
+-    window.onfocus = function ()
++    var onFocus = function ()
+     {
+         eventEmitter.emit(Events.FOCUS);
+     };
+ 
++    var blurOwner = { active: true, previous: previousLiveHandler(window.onblur) };
++    var focusOwner = { active: true, previous: previousLiveHandler(window.onfocus) };
++
++    windowHandlerOwners.set(onBlur, blurOwner);
++    windowHandlerOwners.set(onFocus, focusOwner);
++
++    window.onblur = onBlur;
++    window.onfocus = onFocus;
++
++    eventEmitter.once(Events.DESTROY, function ()
++    {
++        if (hiddenVar)
++        {
++            document.removeEventListener(hiddenVar, onChange, false);
++        }
++
++        blurOwner.active = false;
++        focusOwner.active = false;
++        blurOwner.previous = previousLiveHandler(blurOwner.previous);
++        focusOwner.previous = previousLiveHandler(focusOwner.previous);
++
++        // A newer Game or application handler may now own these properties.
++        if (window.onblur === onBlur)
++        {
++            window.onblur = blurOwner.previous;
++        }
++
++        if (window.onfocus === onFocus)
++        {
++            window.onfocus = focusOwner.previous;
++        }
++    });
++
+     //  Automatically give the window focus unless config says otherwise
+     if (window.focus && game.config.autoFocus)
+     {
+diff --git a/src/core/VisibilityHandler.js b/src/core/VisibilityHandler.js
+index 13978368556927dd57411a38a264b7252f0046bb..36dd968c9c6525975ee56a6e290541beb9241e9e 100644
+--- a/src/core/VisibilityHandler.js
++++ b/src/core/VisibilityHandler.js
+@@ -29,6 +29,23 @@ var Events = require('./events');
+  *
+  * @param {Phaser.Game} game - The Game instance this Visibility Handler is working on.
+  */
++// Keep ownership private to this module so overlapping Game instances can be
++// destroyed in either order without restoring a handler from a destroyed Game.
++var windowHandlerOwners = new WeakMap();
++
++var previousLiveHandler = function (handler)
++{
++    var owner = handler && windowHandlerOwners.get(handler);
++
++    while (owner && !owner.active)
++    {
++        handler = owner.previous;
++        owner = handler && windowHandlerOwners.get(handler);
++    }
++
++    return handler;
++};
++
+ var VisibilityHandler = function (game)
+ {
+     var hiddenVar;
+@@ -74,16 +91,49 @@ var VisibilityHandler = function (game)
+         document.addEventListener(hiddenVar, onChange, false);
+     }
+ 
+-    window.onblur = function ()
++    var onBlur = function ()
+     {
+         eventEmitter.emit(Events.BLUR);
+     };
+ 
+-    window.onfocus = function ()
++    var onFocus = function ()
+     {
+         eventEmitter.emit(Events.FOCUS);
+     };
+ 
++    var blurOwner = { active: true, previous: previousLiveHandler(window.onblur) };
++    var focusOwner = { active: true, previous: previousLiveHandler(window.onfocus) };
++
++    windowHandlerOwners.set(onBlur, blurOwner);
++    windowHandlerOwners.set(onFocus, focusOwner);
++
++    window.onblur = onBlur;
++    window.onfocus = onFocus;
++
++    eventEmitter.once(Events.DESTROY, function ()
++    {
++        if (hiddenVar)
++        {
++            document.removeEventListener(hiddenVar, onChange, false);
++        }
++
++        blurOwner.active = false;
++        focusOwner.active = false;
++        blurOwner.previous = previousLiveHandler(blurOwner.previous);
++        focusOwner.previous = previousLiveHandler(focusOwner.previous);
++
++        // A newer Game or application handler may now own these properties.
++        if (window.onblur === onBlur)
++        {
++            window.onblur = blurOwner.previous;
++        }
++
++        if (window.onfocus === onFocus)
++        {
++            window.onfocus = focusOwner.previous;
++        }
++    });
++
+     //  Automatically give the window focus unless config says otherwise
+     if (window.focus && game.config.autoFocus)
+     {

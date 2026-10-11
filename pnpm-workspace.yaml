@@ -3,3 +3,5 @@ allowBuilds:
   workerd: true
 minimumReleaseAgeExclude:
   - '@cloudflare/workers-types@5.20261011.1'
+patchedDependencies:
+  phaser@4.2.1: patches/phaser@4.2.1.patch
