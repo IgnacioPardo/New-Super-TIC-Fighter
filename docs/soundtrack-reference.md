@@ -56,4 +56,6 @@ The original sources are 44.1 kHz stereo MP3; XNA-built and Drive versions are W
 
 ## What remains uncertain
 
-The fifteen historical titles cannot responsibly be assigned to all sixteen final files from numbering or length alone. The exact finished intro/menu presentation was not executed in Unity. The owner has not yet decided whether the web version should retain these recordings or use fresh synthesized audio; this audit does not silently resolve that creative decision.
+Follow-up identification, 2026-10-11: the owner's request to use Danger Zone for title/menu music prompted a direct comparison with [8 Bit Universe's published recording](https://www.youtube.com/watch?v=lRs9Z7B1tk0). Three eight-second passages correlate at 0.995–0.996 with `remake/03.mp3`, identifying that existing recording as Danger Zone. `original/04.mp3` also matches at 0.976–0.982. Measurements and hashes are in `evidence/danger-zone-identification.json`. The web game's additional recordings and credits are maintained separately in `soundtrack-additions.json`.
+
+The remaining historical titles cannot responsibly be assigned to the other final files from numbering or length alone. The exact finished intro/menu presentation was not executed in Unity. The accepted implementation plan subsequently chose to retain the archived recordings; the historical audit itself did not make that decision.

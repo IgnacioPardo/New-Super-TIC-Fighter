@@ -44,6 +44,10 @@ Verified on 2026-10-11. No unit tests were written or run. Verification uses the
 - Enlarged the title logo by 18% on desktop and 12% on mobile; reduced the title fighters by approximately 10%. The intro and gameplay sprite sizes are unchanged.
 - Visually reviewed desktop/mobile captures and measured the existing title, poster, menu, fighter platform and tagline at 1440×810, 1920×1080, 390×844 and 667×375: layout anchors remain unchanged. Updated the branding evidence images. Production build passes.
 
+### Soundtrack update, local verification
+
+Soundtrack update, locally verified on 2026-10-11: added the requested Facundo Pereyra 8-bit Rata Blanca track to Remake and assigned owner-confirmed Original 04 (Danger Zone) to title/menu playback. Production build, client/server types, MP3 header validation, all 26 files' Worker HTTP/range checks, and the existing complete settings/menu flow passed. `pnpm e2e:audio-playback` passed in Chromium, Firefox, and WebKit against the local Worker: native audio decoding, title/menu looping, playlist independence, pause/settings/resume, all 17 Remake tracks once per shuffle cycle, natural ended transitions after seeking, no immediate repeat across cycles, and return/reload. A full asset import into a temporary output tree reproduced the runtime manifest and provenance. These are automated playback checks, not a human listening review or a deployment of this update.
+
 ### Remaining acceptance gates
 
 - Public HTTPS deployment, production media range/header checks, and full multiplayer verification on the deployed service are recorded separately in `docs/hosting.md` when completed.

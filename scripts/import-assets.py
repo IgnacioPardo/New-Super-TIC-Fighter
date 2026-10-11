@@ -10,6 +10,10 @@ parser.add_argument('--remake', type=Path, default=Path('/tmp/stf-remake-audit-T
 args = parser.parse_args()
 root = Path(__file__).resolve().parents[1]
 out = root / 'public/assets'
+additions = json.loads((root / 'docs/soundtrack-additions.json').read_text())
+for track in additions:
+    if hashlib.sha256((root / track['output']).read_bytes()).hexdigest() != track['outputSha256']:
+        raise SystemExit(f"Soundtrack addition has changed: {track['output']}")
 drive = args.drive / 'Sprites Sin editar'
 remake = args.remake / 'Assets'
 original = args.original / 'Programacion/Super Tic Fighter/Super Tic Fighter/Super Tic FighterContent'
@@ -81,10 +85,14 @@ portraits = [copy(drive / f'HUD/Retrato{h}-{s}.png', f'portraits/{h}-{s}.png') f
 background = copy(remake / 'Backgrounds/Map1.png', 'backgrounds/classic.png')
 audio = {
     'intro': copy(remake / 'OST/intro.mp3', 'audio/intro.mp3'),
+    'menu': '/assets/audio/original/04.mp3',  # Owner-confirmed Danger Zone; see docs/evidence/danger-zone-identification.json.
     'original': [copy(original / f'Sonidos/Cancion {i}.mp3', f'audio/original/{i:02d}.mp3') for i in range(8)],
     'remake': [copy(remake / f'Music/Cancion{i}.mp3', f'audio/remake/{i:02d}.mp3') for i in range(16)],
     'effects': {p.stem:copy(p, f'audio/effects/{p.name}') for p in sorted((original / 'Sonidos').glob('*.wav'))},
 }
+for track in additions:
+    audio[track['playlist']].append('/' + str(Path(track['output']).relative_to('public')))
+provenance.extend(additions)
 manifest = {
     'sheets':sheets, 'poses':poses, 'effects':effects, 'platforms':platforms, 'portraits':portraits,
     'arenaPlatforms':{arena:[f'/assets/platforms/{arena}-{i}.svg' for i in range(3)] for arena in ['lab','pc']},

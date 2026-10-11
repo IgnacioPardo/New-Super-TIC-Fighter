@@ -45,7 +45,7 @@ export class AudioManager {
     for (const voice of this.voices) { try { voice.stop(); } catch { /* already ended */ } }
     this.music.pause();
     if (scene === 'silent') return;
-    if (scene === 'menu') { this.music.src = this.manifest.audio.intro; this.music.loop = true; this.playMusic(); }
+    if (scene === 'menu') { this.music.src = this.manifest.audio.menu; this.music.loop = true; this.playMusic(); }
     else { this.music.loop = false; this.nextTrack(); }
   }
   handleEvents(events: GameplayEvent[]) {

@@ -3198,6 +3198,21 @@
     "correction": null
   },
   {
+    "source": "https://www.youtube.com/watch?v=OJZllHHVDJQ",
+    "sourceSha256": "0051a7eae1539e815572e8ea7a2c7dd6d64b2568d0de856968b94e763e29c68a",
+    "sourceFormat": "YouTube format 251, WebM/Opus",
+    "output": "public/assets/audio/remake/la-leyenda-del-hada-y-el-mago.mp3",
+    "outputSha256": "c8dca878e5645733bec0cee8e2fffb85c95e432353dd258b7e5942a6ce80c0aa",
+    "title": "Rata Blanca en 8 bit - \"La leyenda del Hada y el Mago\"",
+    "artist": "Rata Blanca",
+    "arranger": "Facundo Pereyra (FPereyra)",
+    "channel": "https://www.youtube.com/channel/UCglBmR2rtD6aszL957eF1aw",
+    "durationSeconds": 160,
+    "playlist": "remake",
+    "addedOn": "2026-10-11",
+    "correction": "Audio extracted with yt-dlp 2026.8.19 and FFmpeg; MP3 VBR quality 2, no cuts or volume changes."
+  },
+  {
     "source": "docs/logo-concepts/02-overdrive/polished/overdrive-primary.svg",
     "sourceSha256": "b29f5406228627ba92870e7778c1e76029e0f972b30ac44b1d8bea84c8cecc2e",
     "output": "public/assets/branding/overdrive.svg",

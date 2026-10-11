@@ -58,7 +58,7 @@ The accepted first release is built around:
 - **Your setup.** Keyboards, gamepads, remapping, names, appearance, lives, timers, and friendly fire.
 - **Sparring partners.** Optional Easy/Normal bots in local and online matches, plus practice with unlimited respawns.
 - **One more match.** Setup, readiness, pause, results, and rematch; Spanish by default with an English switch.
-- **The soundtrack returns.** Eight original recordings, sixteen remake tracks, the menu intro, and eighteen gameplay sound effects, with music loaded on demand.
+- **The soundtrack returns.** Eight original recordings, seventeen remake tracks including “La leyenda del Hada y el Mago” in 8 bit, and eighteen gameplay sound effects, with music loaded on demand. Danger Zone loops on the title screen and menus.
 
 Online play is designed around private room links/codes, direct WebRTC connections, and a WebSocket relay fallback. The host browser runs the match. Hosting targets **Cloudflare Free**; local and practice modes are designed to work independently of the room service.
 
@@ -100,6 +100,7 @@ Install isolated browser engines once with `pnpm exec playwright install chromiu
 | `pnpm e2e` | Complete browser, device, settings, and multiplayer lifecycle flows |
 | `pnpm e2e:transport` | Room service and real browser transport flows |
 | `pnpm e2e:audio` | Actual Worker HTTP streaming and exact music byte ranges |
+| `pnpm e2e:audio-playback` | Real browser menu loops, playlist playback, seeking, and shuffle (defaults to the local Worker) |
 | `pnpm run deploy` | Build and manually deploy to Cloudflare Free |
 
 Run the frontend and room service before browser exercises. Set `STF_APP_URL=http://127.0.0.1:4173` to check a stable production preview, `STF_SERVER_URL` for a different room-service endpoint, or `STF_AUDIO_ORIGIN` for production media checks. Device checks cover Chromium, Firefox, and WebKit with injected gamepads; `STF_BROWSERS` selects engines. Do not rebuild during a browser exercise.

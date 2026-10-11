@@ -103,7 +103,7 @@ export interface AssetsManifest {
   portraits: string[];
   font: string;
   logo: string;
-  audio: { intro: string; original: string[]; remake: string[]; effects: Record<string, string> };
+  audio: { intro: string; menu: string; original: string[]; remake: string[]; effects: Record<string, string> };
 }
 export const emptyInput = (seatId: string, tick = 0): InputFrame => ({
   seatId, tick, left: false, right: false, down: false, jump: false,
