@@ -22,6 +22,12 @@ export function useOnline(): OnlineBridge {
   const update=(patch:Partial<OnlineState>)=>{current.current={...current.current,...patch};setState(current.current);};
   const localize=(config:MatchConfig):MatchConfig=>({...config,players:config.players.map(player=>({...player,device:player.peerId===room.current?.peerId ? localDevices.current.get(player.id) ?? player.device : player.kind==='bot'?'bot':'remote'}))});
   const publish=(snapshot:MatchSnapshot,force=false)=>{
+    // A worker response queued before a reliable room control must not undo it.
+    const active=room.current;
+    if(!force&&active&&(active.phase==='lobby'||
+      active.phase==='paused'&&['playing','countdown'].includes(snapshot.phase)||
+      active.phase==='finished'&&snapshot.phase!=='finished'||
+      active.phase==='playing'&&active.resumeAt&&snapshot.phase==='paused'))return;
     const next={...snapshot,config:localize(snapshot.config)};
     const phaseChanged=next.phase!==snapshotRef.current?.phase;
     snapshotRef.current=next;
