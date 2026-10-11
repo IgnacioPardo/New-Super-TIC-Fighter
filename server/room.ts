@@ -53,7 +53,7 @@ function record(value: unknown): value is Record<string, unknown> {
 }
 
 function validResult(value: unknown, ids: Set<string>): value is MatchResult {
-  return record(value) && Array.isArray(value.winners) && value.winners.length <= 4 &&
+  return record(value) && Array.isArray(value.winners) && value.winners.length <= ids.size &&
     value.winners.every(id => typeof id === 'string' && ids.has(id)) &&
     ['last-standing', 'timeout', 'draw', 'interrupted'].includes(String(value.reason)) &&
     (value.winningTeam === undefined || value.winningTeam === 0 || value.winningTeam === 1);
@@ -222,9 +222,10 @@ export class Room {
     switch (message.type) {
       case 'seats': {
         if (room.phase !== 'lobby' || !Array.isArray(message.players) || message.players.length > 4 || !message.players.every(player => validSeat(player, 'human'))) return this.error(ws, 'invalid_seats', 'Seats can be changed in the lobby only.');
-        const players = message.players.map(player => ({ ...player, name: player.name.trim(), peerId: member.peerId, kind: 'human' as const, difficulty: undefined }));
+        const players = message.players.map(player => ({ ...player, name: player.name.trim(), peerId: member.peerId, kind: 'human' as const, difficulty: undefined, ...(room.config.gameMode==='survival'?{team:0 as const}:{}) }));
         const all = [...room.members.filter(item => item.peerId !== member.peerId).flatMap(item => item.players), ...players, ...room.config.players.filter(player => player.kind === 'bot')];
         if (all.length > maxSeats(room.config) || new Set(all.map(player => player.id)).size !== all.length) return this.error(ws, 'invalid_seats', 'Seats must be unique and the room holds at most four fighters.');
+        if(room.config.gameMode==='survival'&&all.filter(player=>player.kind==='human').length>2)return this.error(ws,'invalid_survival','Survival allows one or two human players.');
         member.players = players;
         room.config.players = all;
         this.clearReadiness();
@@ -239,7 +240,11 @@ export class Room {
         if (humans.length !== proposedHumans.length || !humans.every(player => proposedHumans.some(other => other.id === player.id && other.peerId === player.peerId)) || ids.length > maxSeats(message.config) || new Set(ids).size !== ids.length) {
           return this.error(ws, 'invalid_roster', 'Register every human seat before setting room rules.');
         }
-        room.config = { ...message.config, players: [...humans, ...bots] };
+        if(message.config.gameMode==='survival'){
+          if(humans.length<1||humans.length>2||!bots.length)return this.error(ws,'invalid_survival','Survival needs one or two humans and bot opponents.');
+          for(const player of humans)player.team=0;for(const player of bots)player.team=1;
+        }
+        room.config = { ...message.config, ...(message.config.gameMode==='survival'?{mode:'teams' as const}:{}), players: [...humans, ...bots] };
         this.clearReadiness();
         break;
       }
@@ -361,7 +366,8 @@ export class Room {
     const room = this.room!;
     const players = room.config.players;
     if (players.length < 2 || players.length > maxSeats(room.config) || new Set(players.map(player => player.id)).size !== players.length) return ['invalid_roster', 'Choose a valid number of unique fighters for this mode.'];
-    if (room.config.mode === 'teams' && (players.filter(player => player.team === 0).length < 2 || players.filter(player => player.team === 1).length < 2)) return ['invalid_teams', 'Team matches need at least two fighters on each side.'];
+    if(room.config.gameMode==='survival'&&(players.filter(player=>player.kind==='human').length<1||players.filter(player=>player.kind==='human').length>2||!players.some(player=>player.kind==='bot')))return ['invalid_survival','Survival needs one or two humans and bot opponents.'];
+    if (room.config.gameMode!=='survival' && room.config.mode === 'teams' && (players.filter(player => player.team === 0).length < 2 || players.filter(player => player.team === 1).length < 2)) return ['invalid_teams', 'Team matches need at least two fighters on each side.'];
     const humans = room.members.filter(member => member.players.length > 0);
     if (humans.some(member => member.disconnectedAt || !this.connectionFor(member.peerId))) return ['player_disconnected', 'Wait for every player to reconnect.'];
     if (humans.some(member => !member.ready || !member.assetsReady)) return ['not_ready', 'Every player must be ready with required assets loaded.'];
