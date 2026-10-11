@@ -77,12 +77,11 @@ export default function App({ online }: AppProps) {
  menuHandler.current = command => {
    if (command === 'back' || command === 'pause') { back(); return; }
    const focused = document.activeElement as HTMLElement;
-   if (focused?.matches('input[type="text"], input:not([type]), textarea') && command !== 'confirm') return;
    const container = root.current?.querySelector('.pause-panel') ?? root.current?.querySelector('main');
    if (!container) return;
    const options = Array.from(container.querySelectorAll<HTMLElement>('button:not(:disabled), input:not(:disabled), select:not(:disabled), a[href]')).filter(item => item.offsetParent !== null);
    if (!options.length) return;
-   if (command === 'confirm') { if (focused?.tagName === 'BUTTON' || focused?.tagName === 'A') focused.click(); else options[0].focus(); return; }
+   if (command === 'confirm') { if (focused?.tagName === 'BUTTON' || focused?.tagName === 'A' || focused?.matches('input[type="checkbox"]')) focused.click(); else if (!options.includes(focused)) options[0].focus(); return; }
    if ((command === 'left' || command === 'right') && focused?.tagName === 'SELECT') {
      const select = focused as HTMLSelectElement, direction = command === 'left' ? -1 : 1;
      select.selectedIndex = Math.max(0, Math.min(select.options.length - 1, select.selectedIndex + direction));
@@ -114,7 +113,7 @@ export default function App({ online }: AppProps) {
    <div className="site-atmosphere" aria-hidden="true" style={{ backgroundImage: manifest ? `url("${manifest.backgrounds.classic}")` : undefined }} />
    <header className="app-header">
      <button className="brand-button" aria-label="New Super TIC Fighter" onClick={() => { if (isMatch) pause(); else setScreen('title'); }}><span className="brand-new">NEW</span>{manifest ? <img src={manifest.logo} alt="Super TIC Fighter" /> : <span className="brand-fallback">SUPER TIC <em>FIGHTER</em></span>}</button>
-     <div className="header-status"><span className="status-dot" /><span>{source === 'online' && online?.state.code ? `${t.room} ${online.state.code}` : 'CLASSIC REBORN'}</span></div>
+     <div className="header-status"><span className="status-dot" /><span>{source === 'online' && online?.state.code ? `${t.room} ${online.state.code}` : settings.language === 'es' ? 'EL CLÁSICO VUELVE' : 'CLASSIC REBORN'}</span></div>
      <div className="header-actions">
        {!runtime.soundUnlocked && <button className="sound-unlock" title={t.soundHint} onClick={() => void runtime.unlock()}>♪ <span>{t.soundLocked}</span></button>}
        <button className="icon-button" aria-label={t.fullscreen} title={t.fullscreen} onClick={() => document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen()}>⛶</button>
@@ -124,13 +123,13 @@ export default function App({ online }: AppProps) {
    </header>
    <main>
     {screen === 'title' && <div className="title-screen">
-      <section className="title-copy"><span className="eyebrow">NEW CHALLENGERS WELCOME</span><div className="hero-logo"><span className="new-stamp">NEW</span>{manifest ? <img src={manifest.logo} alt="Super TIC Fighter" /> : <h1>SUPER TIC<br /><em>FIGHTER</em></h1>}</div><p className="title-tagline">{t.subtitle}</p><span className="title-divider" /><p className="title-intro">{t.about}</p>
+      <section className="title-copy"><span className="eyebrow">{settings.language === 'es' ? 'NUEVOS RIVALES BIENVENIDOS' : 'NEW CHALLENGERS WELCOME'}</span><div className="hero-logo"><span className="new-stamp">NEW</span>{manifest ? <img src={manifest.logo} alt="Super TIC Fighter" /> : <h1>SUPER TIC<br /><em>FIGHTER</em></h1>}</div><p className="title-tagline">{t.subtitle}</p><span className="title-divider" /><p className="title-intro">{t.about}</p>
        <div className="title-utility"><button onClick={() => open('guide')}>{t.guide}<span>↗</span></button><button onClick={() => open('settings')}>{t.settings}<span>⚙</span></button></div>
       </section>
       <section className="mode-selection"><span className="eyebrow">{t.titlePrompt}</span><button className="mode-card local-card" data-autofocus onClick={() => enterLocal()}><span className="mode-index">01</span><span className="mode-icon">✚</span><div><strong>{t.local}</strong><p>{t.localHint}</p></div><span className="mode-arrow">↗</span></button><button className="mode-card online-card" onClick={() => { setSource('online'); setScreen('online'); }}><span className="mode-index">02</span><span className="mode-icon">↯</span><div><strong>{t.online}</strong><p>{t.onlineHint}</p></div><span className="mode-arrow">↗</span></button><button className="mode-card practice-card" onClick={() => enterLocal(true)}><span className="mode-index">03</span><span className="mode-icon">◎</span><div><strong>{t.practice}</strong><p>{t.practiceHint}</p></div><span className="mode-arrow">↗</span></button>
        <div className="mode-fighters">{(['networks','design','code','hardware'] as const).map((d,i) => <div key={d} style={{ '--fighter-color': disciplineInfo[d].color } as React.CSSProperties}><Avatar manifest={manifest} discipline={d} appearance={{hair:i,shirt:i,pants:i}} animated={!settings.reducedMotion} /><span>{names[d][settings.language]}</span></div>)}</div>
       </section>
-      <div className="title-bottom"><span>{t.titleFoot}</span><span>2—4 PLAYERS / CLASSIC COMBAT</span></div>
+      <div className="title-bottom"><span>{t.titleFoot}</span><span>{settings.language === 'es' ? '2—4 JUGADORES / COMBATE CLÁSICO' : '2—4 PLAYERS / CLASSIC COMBAT'}</span></div>
     </div>}
     {['setup','room','settings','guide','online'].includes(screen) && <div className="page-heading"><button className="back-button" onClick={back}>← {t.back}</button><div><span className="eyebrow">{screen === 'setup' ? source === 'practice' ? t.practice : t.local : screen === 'room' ? `${t.online} / ${t.room} ${online?.state.code ?? ''}` : 'NEW SUPER TIC FIGHTER'}</span><h1>{screen === 'setup' || screen === 'room' ? t.setup : screen === 'settings' ? t.settings : screen === 'guide' ? t.guide : t.onlineTitle}</h1></div></div>}
     {(screen === 'setup' || screen === 'room') && <>
@@ -144,12 +143,12 @@ export default function App({ online }: AppProps) {
       <div className="match-topbar"><div><span className="status-dot" /><strong>{ARENAS[(snapshot?.config ?? activeConfig).arena].name[settings.language]}</strong><span>{(snapshot?.config ?? activeConfig).practice ? t.practice : (snapshot?.config ?? activeConfig).mode === 'teams' ? t.teams : t.ffa}</span></div><div className="match-clock">{snapshot?.config.practice ? '∞' : snapshot?.config.timeLimit ? formatClock(snapshot.config.timeLimit - snapshot.elapsed) : '∞'}</div><button className="small-button" onClick={pause}>Ⅱ {t.pause}</button></div>
       <div className="match-stage"><GameView arena={activeConfig.arena} snapshot={snapshot} snapshotRef={runtime.snapshotRef} settings={settings} manifest={manifest} onReady={() => setRenderReady(true)} />{snapshot?.phase === 'countdown' && renderReady && <div className="countdown-overlay"><span>{Math.ceil(snapshot.countdown) || 'FIGHT!'}</span><p>{settings.language === 'es' ? '¿LISTOS?' : 'READY?'}</p></div>}{!snapshot && <div className="countdown-overlay"><span>…</span></div>}</div>
       {snapshot && <HUD snapshot={snapshot} settings={settings} manifest={manifest} />}
-      {snapshot?.phase === 'paused' && <div className="modal-shade"><section className="pause-panel"><span className="eyebrow">{runtime.disconnected ? t.disconnected : 'TIME OUT'}</span><h1>{t.pause}</h1><p>{runtime.disconnected ? t.reclaim : online?.state.pauseReason || t.pausedHint}</p><button data-autofocus className="primary-button" disabled={source === 'online' && !online?.state.isHost || runtime.disconnected && !Array.from(navigator.getGamepads?.() ?? []).some(d => d?.connected)} onClick={resume}>{t.resume}<span>▶</span></button>{source === 'practice' && <button className="secondary-button" onClick={start}>{t.reset} ↻</button>}<button className="secondary-button" onClick={() => open('settings')}>{t.settings}</button><button className="text-button" onClick={leaveMatch}>{t.lobby}</button></section></div>}
+      {snapshot?.phase === 'paused' && <div className="modal-shade"><section className="pause-panel"><span className="eyebrow">{runtime.disconnected ? t.disconnected : settings.language === 'es' ? 'UN RESPIRO' : 'TIME OUT'}</span><h1>{t.pause}</h1><p>{runtime.disconnected ? t.reclaim : online?.state.pauseReason || t.pausedHint}</p><button data-autofocus className="primary-button" disabled={source === 'online' && !online?.state.isHost || runtime.disconnected && !snapshot.config.players.filter(p => p.kind === 'human' && p.device.startsWith('gamepad:')).every(p => navigator.getGamepads?.()[Number(p.device.split(':')[1])]?.connected)} onClick={resume}>{t.resume}<span>▶</span></button>{source === 'practice' && <button className="secondary-button" onClick={start}>{t.reset} ↻</button>}<button className="secondary-button" onClick={() => open('settings')}>{t.settings}</button><button className="text-button" onClick={leaveMatch}>{t.lobby}</button></section></div>}
     </div>}
     {screen === 'results' && displaySnapshot && <Results snapshot={displaySnapshot} settings={settings} manifest={manifest} rematch={() => { if (source === 'online') { online?.rematch(); setScreen('room'); } else start(); }} canRematch={source !== 'online' || !!online?.state.isHost} leave={leaveMatch} />}
    </main>
    {!isMatch && <footer className="app-footer"><span className="footer-mark">STF<span>✕</span></span><span>{menuInput === 'gamepad' ? t.gamepadHelp : t.menuHelp}</span><button onClick={() => open('guide')}>{t.guide} <span>?</span></button></footer>}
-   {(assetError || online?.state.error && source === 'online' && screen !== 'online') && <div className="global-error" role="alert">{assetError || online?.state.error}</div>}
+   {(assetError || runtime.error && source !== 'online' && screen === 'match' || online?.state.error && source === 'online' && screen !== 'online') && <div className="global-error" role="alert">{assetError || runtime.error || online?.state.error}</div>}
  </div>;
 }
 function Results({ snapshot, settings, manifest, rematch, canRematch, leave }: { snapshot: MatchSnapshot; settings: AppSettings; manifest: AssetsManifest | null; rematch: () => void; canRematch: boolean; leave: () => void }) {
