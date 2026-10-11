@@ -18,6 +18,7 @@ async function openSession(label) {
   page.on('pageerror', error => errors.push(`${label}: ${error.message}`));
   await page.addInitScript(() => {
     window.__stfObserved = { rooms: [], controls: [], snapshots: 0, sockets: 0, lastInputSequence: 0 };
+    Object.defineProperty(navigator, 'getGamepads', { value: () => [] }); // Isolate keyboard flows from attached physical devices.
     const NativeWorker = window.Worker;
     window.Worker = class extends NativeWorker {
       constructor(...args) {

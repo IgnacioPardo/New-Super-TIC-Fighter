@@ -13,6 +13,7 @@ const errors=[];
 for(const page of pages){
   page.on('pageerror',error=>errors.push(error.message));
   await page.addInitScript(()=>{
+    Object.defineProperty(navigator, 'getGamepads', { value: () => [] }); // Isolate keyboard flows from attached physical devices.
     const NativeWorker=window.Worker;
     window.Worker=class extends NativeWorker{constructor(...args){super(...args);this.addEventListener('message',event=>{const snapshot=event.data?.type==='snapshot'?event.data.snapshot:event.data;if(snapshot?.matchId&&Array.isArray(snapshot.fighters)){window.__stfSnapshot=snapshot;}});}};
   });

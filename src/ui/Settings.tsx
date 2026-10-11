@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react';
 import type { AppSettings, AssetsManifest } from '../shared/types';
 import { DEFAULT_SETTINGS, keyName } from './preferences';
 import { ui } from './i18n';
-export function Settings({ settings, manifest, change }: { settings: AppSettings; manifest: AssetsManifest | null; change: (settings: AppSettings) => void }) {
+import type { UiSound } from '../audio';
+export function Settings({ settings, manifest, change, feedback }: { settings: AppSettings; manifest: AssetsManifest | null; change: (settings: AppSettings) => void; feedback?: (cue: UiSound) => void }) {
  const t = ui[settings.language];
  const [tab, setTab] = useState<'sound' | 'display' | 'controls'>('sound');
  const [seat, setSeat] = useState(0);
@@ -13,11 +14,11 @@ export function Settings({ settings, manifest, change }: { settings: AppSettings
   if (!capture) return;
   const handler = (event: KeyboardEvent) => {
     event.preventDefault(); event.stopImmediatePropagation();
-    if (event.code === 'Escape') { setCapture(null); return; }
+    if (event.code === 'Escape') { setCapture(null); feedback?.('back'); return; }
     const conflict = settings.keyboardBindings.some((bindings, i) => Object.entries(bindings).some(([action, key]) => key === event.code && (i !== seat || action !== capture)));
-    if (conflict) { setError(t.bindingConflict); return; }
+    if (conflict) { setError(t.bindingConflict); feedback?.('error'); return; }
     const bindings = settings.keyboardBindings.map((b, i) => i === seat ? { ...b, [capture]: event.code } : b);
-    patch({ keyboardBindings: bindings }); setCapture(null); setError('');
+    patch({ keyboardBindings: bindings }); setCapture(null); setError(''); feedback?.('confirm');
   };
   window.addEventListener('keydown', handler, true);
   return () => window.removeEventListener('keydown', handler, true);

@@ -695,3 +695,21 @@ main { max-width: 1600px; padding: 0 28px; }
  .start-panel .fight-button { line-height: 1; }.fight-button > span { line-height: 1; font-size: 20px; }
  .result-fighters .avatar { height: 200px; }.result-fighters .avatar-sprite { transform: scale(2.1); }.results-screen > h1 { font-size: 62px; }.results-screen > p { margin: 16px 0; }.results-actions { margin-top: 20px; margin-bottom: 18px; }
 }
+
+/* Gamepad focus must remain visible even after the browser last received a mouse click. */
+.app[data-input='gamepad'] :is(button, input, select, summary, a[href]):focus {
+  outline: 3px solid #fff; outline-offset: 3px; box-shadow: 0 0 0 6px #151515;
+}
+.app[data-input='gamepad'] .arcade-menu button:focus {
+  background: #f5f4eb; color: #071e32; box-shadow: 7px 6px 0 #1ba9e9;
+}
+.app[data-input='gamepad'] .arcade-menu button:focus strong { text-shadow: none; }
+.app[data-input='gamepad'] .arcade-menu button:focus .menu-pointer { visibility: visible; }
+.controller-connected { color: #8ee6d4; font-size: .8rem; }
+.controller-status { margin: 0 0 20px; padding: 16px 20px; border-left: 4px solid #79d4ff; background: #0c2033; }
+.controller-status > strong { display: block; margin-bottom: 8px; letter-spacing: .09em; }
+.controller-status > div { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; padding: 5px 0; }
+.controller-status > div span { color: #8ee6d4; }
+.controller-status p { margin: 8px 0 0; color: #c1ccda; font-size: .9rem; }
+.fighter-device { margin: 8px 0 14px; }
+.fighter-device select { width: 100%; }
