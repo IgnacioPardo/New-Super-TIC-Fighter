@@ -1,5 +1,7 @@
 // Whole-app device and rendering exercise. Injected pads are not physical-hardware certification.
 import assert from 'node:assert/strict';
+import {mkdir} from 'node:fs/promises';
+await mkdir('tmp/qa',{recursive:true});
 import {chromium,firefox,webkit} from '@playwright/test';
 const base=process.env.STF_APP_URL??'http://127.0.0.1:5173';
 const engines=process.env.STF_BROWSERS?.split(',')??['chromium','firefox','webkit'];
@@ -12,8 +14,10 @@ for(const name of engines){
   Object.defineProperty(navigator,'getGamepads',{value:()=>window.__pads});
  });
  try{
-  await page.goto(base);await page.getByRole('button',{name:/03.*PRÁCTICA/}).click();
-  await page.locator('.fighter-card').first().locator('select').nth(1).selectOption('gamepad:0');
+  await page.goto(base);await page.getByTestId('mode-practice').or(page.getByRole('button',{name:/03.*PRÁCTICA/})).click();
+  const card=page.locator('.fighter-card').first();
+  const details=card.locator('details.fighter-options');if(await details.count())await details.locator('summary').click();
+  await card.locator('select').filter({has:page.locator('option[value="gamepad:0"]')}).selectOption('gamepad:0');
   await page.locator('.fight-button').click();await page.waitForFunction(()=>window.__snapshot?.phase==='playing');
   assert.equal(await page.locator('canvas').count(),1,'One live game canvas');
   await page.screenshot({path:`tmp/qa/${name}-classic.png`,fullPage:true});
