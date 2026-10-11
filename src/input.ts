@@ -18,6 +18,7 @@ export class InputManager {
   private previousButtons = new Map<number, boolean[]>();
   private menuDirections = new Map<string, number>();
   private reclaimed = new Set<number>();
+  private padIdentities = new Map<string, { device: string; id: string }>();
   private raf = 0;
   private destroyed = false;
 
@@ -34,9 +35,25 @@ export class InputManager {
   setSettings(settings: AppSettings) { this.settings = settings; this.keys.clear(); }
   setPlayers(players: PlayerSeat[]) {
     this.players = players;
+    const pads = this.pads();
+    for (const player of players) {
+      if (!player.device.startsWith('gamepad:')) { this.padIdentities.delete(player.id); continue; }
+      const pad = pads[Number(player.device.split(':')[1])];
+      const known = this.padIdentities.get(player.id);
+      if (pad && (!known || known.device !== player.device)) this.padIdentities.set(player.id, {device:player.device,id:pad.id});
+    }
 
   }
-  reclaim() { this.reclaimed.clear(); this.keys.clear(); }
+  reclaim(): boolean {
+    const pads = this.pads();
+    for (const player of this.players) {
+      if (!player.device.startsWith('gamepad:')) continue;
+      const pad = pads[Number(player.device.split(':')[1])];
+      const known = this.padIdentities.get(player.id);
+      if (!pad?.connected || (known && known.id !== pad.id)) return false;
+    }
+    this.reclaimed.clear(); this.keys.clear(); return true;
+  }
   setMode(mode: 'menu' | 'game') { if (this.mode !== mode) { this.mode = mode; this.keys.clear(); this.menuDirections.clear(); } }
   subscribeMenu(listener: (command: MenuCommand) => void) { this.listeners.add(listener); return () => { this.listeners.delete(listener); }; }
   getDevices() {

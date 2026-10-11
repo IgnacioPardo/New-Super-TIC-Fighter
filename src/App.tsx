@@ -98,7 +98,7 @@ export default function App({ online }: AppProps) {
  useEffect(() => { const connected = () => setMenuInput('gamepad'); const key = () => setMenuInput('keyboard'); window.addEventListener('gamepadconnected', connected); window.addEventListener('keydown', key); return () => { window.removeEventListener('gamepadconnected', connected); window.removeEventListener('keydown', key); }; }, []);
  const start = () => { setRenderReady(false); if (source === 'online') online?.start(); else { runtime.start({ ...config, seed: Date.now() }); setScreen('match'); } };
  const pause = () => source === 'online' ? online?.pause() : runtime.command({ type: 'pause' });
- const resume = () => { runtime.reclaim(); if (source === 'online') online?.resume(); else runtime.command({ type: 'resume' }); };
+ const resume = () => { if (!runtime.reclaim()) return; if (source === 'online') online?.resume(); else runtime.command({ type: 'resume' }); };
  const open = (page: 'settings' | 'guide') => { setReturnScreen(screen); if (screen === 'match') pause(); setScreen(page); };
  const connect = async (create: boolean) => {
    setOnlineError('');

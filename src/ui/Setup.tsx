@@ -21,7 +21,7 @@ export function Setup({ config, setConfig, settings, manifest, devices, ready, t
    const players = config.players.map(p => p.id === id ? { ...p, ...updates } : p);
    if (online) online.updateSeat(players.find(p => p.id === id)!); else setConfig({ ...config, players });
  };
- const humanDevices = config.players.filter(p => p.kind === 'human').map(p => `${p.peerId ?? 'local'}:${p.device}`);
+ const humanDevices = config.players.filter(p => p.kind === 'human' && (!online || p.peerId === online.state.peerId)).map(p => p.device);
  const teamValid = config.mode !== 'teams' || (config.players.filter(p => p.team === 0).length === 2 && config.players.filter(p => p.team === 1).length === 2);
  const devicesValid = new Set(humanDevices).size === humanDevices.length;
  const rosterValid = config.players.length >= 2 && config.players.length <= 4;

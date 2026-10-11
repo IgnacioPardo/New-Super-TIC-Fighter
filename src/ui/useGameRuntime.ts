@@ -77,6 +77,6 @@ export function useGameRuntime(settings: AppSettings, manifest: AssetsManifest |
   }, []);
   const stop = useCallback(() => { command({ type: 'stop' }); snapshotRef.current = null; setSnapshot(null); input.current?.setMode('menu'); audio.current?.setScene('menu'); }, [command]);
   const unlock = useCallback(async () => { if (audio.current) { await audio.current.unlock(); setSoundUnlocked(audio.current.unlocked); } }, []);
-  const reclaim = useCallback(() => { input.current?.reclaim(); setDisconnected(false); }, []);
+  const reclaim = useCallback(() => { const restored = input.current?.reclaim() ?? false; setDisconnected(!restored); return restored; }, []);
   return { snapshot: onlineActive ? online?.state.snapshot ?? null : snapshot, snapshotRef, start, stop, command, devices, soundUnlocked, unlock, disconnected, reclaim };
 }

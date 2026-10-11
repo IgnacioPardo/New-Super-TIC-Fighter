@@ -8,7 +8,6 @@ export class AudioManager {
   private loading = new Map<string, Promise<AudioBuffer | undefined>>();
   private voices = new Set<AudioBufferSourceNode>();
   private seen = new Set<string>();
-  private pending = new Map<string, Set<ReturnType<typeof setTimeout>>>();
   private music = new Audio();
   private scene: 'menu' | 'match' | 'silent' = 'silent';
   private settings?: AppSettings;
@@ -33,6 +32,7 @@ export class AudioManager {
     this.context ??= new AudioContext();
     if (!this.gain) { this.gain = this.context.createGain(); this.gain.gain.value = this.settings?.effectsVolume ?? .8; this.gain.connect(this.context.destination); }
     try { await this.context.resume(); this.unlocked = this.context.state === 'running'; } catch { this.unlocked = false; }
+    if (this.unlocked) for (const name of Object.keys(this.manifest.audio.effects)) void this.buffer(name);
     if (this.unlocked && this.scene !== 'silent') {
       if (!this.music.src) this.nextTrack();
       try { await this.music.play(); } catch { /* Browser may require a pointer/keyboard gesture for music independently. */ }
@@ -40,7 +40,7 @@ export class AudioManager {
   }
   setScene(scene: 'menu' | 'match' | 'silent') {
     if (this.scene === scene) return;
-    this.scene = scene; this.clearPending();
+    this.scene = scene;
     for (const voice of this.voices) { try { voice.stop(); } catch { /* already ended */ } }
     this.music.pause();
     if (scene === 'silent') return;
@@ -53,13 +53,16 @@ export class AudioManager {
       this.seen.add(event.id);
       if (this.seen.size > 1024) this.seen.delete(this.seen.values().next().value!);
       if (event.type === 'fight') this.play('Fight');
-      if (event.type === 'fall' || event.type === 'respawn') this.cancelSeat(event.seatId);
       if (event.type === 'block') this.play('Golpeado');
       if (event.type === 'hit') {
-        this.cancelSeat(event.targetId);
         const sound = event.action === 'punch' || event.action === 'uppercut' ? 'Gancho'
           : event.action === 'special' ? ({networks:'Latigo', design:'golpeMouse', code:'Bola', hardware:''}[event.discipline ?? 'hardware'])
           : event.action === 'combo' && event.discipline === 'hardware' ? 'golpeMouse' : '';
+        if (sound) this.play(sound);
+      }
+      if (event.type === 'active') {
+        const sound = event.action === 'special' ? {design:'Mouse',hardware:'RAM',networks:'',code:''}[event.discipline ?? 'networks']
+          : event.action === 'combo' ? {hardware:'Disco',code:'Programacion',networks:'',design:''}[event.discipline ?? 'networks'] : '';
         if (sound) this.play(sound);
       }
       if (event.type !== 'attack') continue;
@@ -68,18 +71,14 @@ export class AudioManager {
       else if (event.action === 'special') {
         const initial = {networks:'Redes', design:'', code:'Prog', hardware:'Hard'}[event.discipline ?? 'hardware'];
         if (initial) this.play(initial);
-        if (event.discipline === 'design') this.delayed(event, 'Mouse');
-        if (event.discipline === 'hardware') this.delayed(event, 'RAM');
       } else if (event.action === 'combo') {
         if (event.discipline === 'networks') this.play('Hard');
         if (event.discipline === 'design') this.play('Seleccion');
-        if (event.discipline === 'hardware') this.delayed(event, 'Disco');
-        if (event.discipline === 'code') this.delayed(event, 'Programacion');
       }
     }
   }
   destroy() {
-    this.destroyed = true; this.clearPending(); this.music.pause(); this.music.removeEventListener('ended', this.nextTrack);
+    this.destroyed = true; this.music.pause(); this.music.removeEventListener('ended', this.nextTrack);
     this.music.removeAttribute('src'); this.music.load(); void this.context?.close(); this.voices.clear();
   }
   private nextTrack = () => {
@@ -109,11 +108,4 @@ export class AudioManager {
     const source = this.context.createBufferSource(); source.buffer = buffer; source.connect(this.gain); this.voices.add(source);
     source.onended = () => { this.voices.delete(source); source.disconnect(); }; source.start();
   }
-  private delayed(event: GameplayEvent, sound: string) {
-    const key = event.seatId ?? ''; const group = this.pending.get(key) ?? new Set();
-    const timer = setTimeout(() => { group.delete(timer); void this.play(sound); }, 200);
-    group.add(timer); this.pending.set(key, group);
-  }
-  private cancelSeat(id?: string) { for (const timer of this.pending.get(id ?? '') ?? []) clearTimeout(timer); this.pending.delete(id ?? ''); }
-  private clearPending() { for (const group of this.pending.values()) for (const timer of group) clearTimeout(timer); this.pending.clear(); }
 }
