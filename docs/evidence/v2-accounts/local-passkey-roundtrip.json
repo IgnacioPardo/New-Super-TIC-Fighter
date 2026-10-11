@@ -3,6 +3,7 @@
   "identity": "seeded local identity, session and Google recovery-provider row; no OAuth exchange",
   "hardware": "CDP virtual CTAP2 authenticator with resident credentials and user verification",
   "passed": [
+    "OAuth errors return to usable profile UI and clear stale query details; explicit linking rejects unauthenticated requests",
     "guest profile save and cosmetic selection without authentication",
     "unauthenticated profile returns 401; unconfigured OAuth buttons remain disabled",
     "explicit guest-to-account union/max merge is idempotent and retains guest/couch stores",

@@ -18,7 +18,14 @@ export function Profile({ language }: { language: Language }) {
  const [cosmetic,setCosmetic] = useState(localStorage.getItem('stf-cosmetic') ?? 'original');
  const [passkeys,setPasskeys] = useState<{ id:string;name?:string }[]>([]);
  const [providers,setProviders] = useState<string[]>([]);
- const [busy,setBusy] = useState(false), [message,setMessage] = useState('');
+ const [busy,setBusy] = useState(false), [message,setMessage] = useState(()=>{
+  const error=new URLSearchParams(location.search).get('error');
+  if(!error)return '';
+  if(error==='account_not_linked')return es?'Entra con tu método habitual y vincula esta cuenta desde Cuenta → Acceso.':'Sign in with your usual method, then link this account from Account → Access.';
+  if(error==='access_denied')return es?'Acceso cancelado. Puedes seguir jugando o volver a intentarlo.':'Sign-in cancelled. You can keep playing or try again.';
+  return es?'No se pudo conectar la cuenta. Puedes volver a intentarlo; tu progreso sigue guardado.':'The account could not be connected. You can retry; your progress is still saved.';
+ });
+ useEffect(()=>{const url=new URL(location.href);if(url.searchParams.has('error')){url.searchParams.delete('error');url.searchParams.delete('error_description');history.replaceState(history.state,'',url);}},[]);
  const refresh = useCallback(async () => {
   const configured = await fetch('/api/auth-config').then(r => {if(!r.ok)throw Error('offline');return r.json();}); setConfig(configured);
   if (!configured.enabled) return;
@@ -41,7 +48,7 @@ export function Profile({ language }: { language: Language }) {
  useEffect(()=>{let mounted=true;void refresh().catch(()=>{if(mounted)setMessage(es?'El perfil online no está disponible. Tu progreso local está guardado.':'Online profile is unavailable. Your local progress is saved.');});return()=>{mounted=false;};},[refresh]);
  const act=async(task:()=>Promise<unknown>)=>{setBusy(true);setMessage('');try{await task();await refresh();}catch{setMessage(es?'No se completó la operación. Puedes volver a intentarlo; tu progreso sigue guardado.':'The operation did not finish. You can retry; your progress is still saved.');}finally{setBusy(false);}};
  const oauth=(provider:'google'|'github',link=false)=>act(async()=>{
-  const options={provider,callbackURL:`${location.origin}/?screen=profile`};
+  const options={provider,callbackURL:`${location.origin}/?screen=profile`,errorCallbackURL:`${location.origin}/?screen=profile`};
   const result=link?await authClient.linkSocial(options):await authClient.signIn.social(options);
   if(result.error)throw Error(result.error.message);
  });

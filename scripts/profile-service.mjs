@@ -111,6 +111,14 @@ try {
   }, { guest, couch });
   await page.goto(`${origin}/?screen=profile`);
   await expect(page.getByRole('heading', { name: 'Local profile', exact: true })).toBeVisible();
+  await page.goto(`${origin}/?screen=profile&error=account_not_linked`);
+  await expect(page.getByRole('status')).toContainText('Sign in with your usual method');
+  assert.equal(new URL(page.url()).searchParams.has('error'), false);
+  await page.goto(`${origin}/?screen=profile&error=access_denied`);
+  await expect(page.getByRole('status')).toContainText('Sign-in cancelled');
+  await page.goto(`${origin}/?screen=profile`);
+  assert.equal((await page.request.post(`${origin}/api/auth/link-social`, { headers: { Origin: origin }, data: { provider: 'github', callbackURL: `${origin}/?screen=profile` } })).status(), 401);
+  report.passed.push('OAuth errors return to usable profile UI and clear stale query details; explicit linking rejects unauthenticated requests');
   const authConfig = await (await page.request.get(`${origin}/api/auth-config`)).json();
   assert.deepEqual(authConfig, { enabled: true, google: false, github: false, passkey: true });
   assert.equal((await page.request.get(`${origin}/api/profile`)).status(), 401);
