@@ -1,0 +1,194 @@
+[
+  {
+    "language": "es",
+    "width": 1366,
+    "height": 768,
+    "screen": "title",
+    "targets": 9,
+    "noPageScroll": true
+  },
+  {
+    "language": "es",
+    "width": 1366,
+    "height": 768,
+    "screen": "online-hub",
+    "targets": 9,
+    "noPageScroll": true
+  },
+  {
+    "language": "es",
+    "width": 1024,
+    "height": 640,
+    "screen": "title",
+    "targets": 9,
+    "noPageScroll": true
+  },
+  {
+    "language": "es",
+    "width": 1024,
+    "height": 640,
+    "screen": "online-hub",
+    "targets": 9,
+    "noPageScroll": true
+  },
+  {
+    "language": "es",
+    "width": 1440,
+    "height": 1000,
+    "screen": "title",
+    "targets": 9,
+    "noPageScroll": true
+  },
+  {
+    "language": "es",
+    "width": 1440,
+    "height": 1000,
+    "screen": "online-hub",
+    "targets": 9,
+    "noPageScroll": true
+  },
+  {
+    "language": "es",
+    "width": 390,
+    "height": 844,
+    "screen": "title",
+    "targets": 9,
+    "noPageScroll": true
+  },
+  {
+    "language": "es",
+    "width": 390,
+    "height": 844,
+    "screen": "online-hub",
+    "targets": 9,
+    "noPageScroll": true
+  },
+  {
+    "language": "es",
+    "width": 667,
+    "height": 375,
+    "screen": "title",
+    "targets": 9,
+    "noPageScroll": true
+  },
+  {
+    "language": "es",
+    "width": 667,
+    "height": 375,
+    "screen": "online-hub",
+    "targets": 9,
+    "noPageScroll": true
+  },
+  {
+    "language": "es",
+    "width": 1280,
+    "height": 480,
+    "screen": "title",
+    "targets": 9,
+    "noPageScroll": true
+  },
+  {
+    "language": "es",
+    "width": 1280,
+    "height": 480,
+    "screen": "online-hub",
+    "targets": 9,
+    "noPageScroll": true
+  },
+  {
+    "language": "en",
+    "width": 1366,
+    "height": 768,
+    "screen": "title",
+    "targets": 9,
+    "noPageScroll": true
+  },
+  {
+    "language": "en",
+    "width": 1366,
+    "height": 768,
+    "screen": "online-hub",
+    "targets": 9,
+    "noPageScroll": true
+  },
+  {
+    "language": "en",
+    "width": 1024,
+    "height": 640,
+    "screen": "title",
+    "targets": 9,
+    "noPageScroll": true
+  },
+  {
+    "language": "en",
+    "width": 1024,
+    "height": 640,
+    "screen": "online-hub",
+    "targets": 9,
+    "noPageScroll": true
+  },
+  {
+    "language": "en",
+    "width": 1440,
+    "height": 1000,
+    "screen": "title",
+    "targets": 9,
+    "noPageScroll": true
+  },
+  {
+    "language": "en",
+    "width": 1440,
+    "height": 1000,
+    "screen": "online-hub",
+    "targets": 9,
+    "noPageScroll": true
+  },
+  {
+    "language": "en",
+    "width": 390,
+    "height": 844,
+    "screen": "title",
+    "targets": 9,
+    "noPageScroll": true
+  },
+  {
+    "language": "en",
+    "width": 390,
+    "height": 844,
+    "screen": "online-hub",
+    "targets": 9,
+    "noPageScroll": true
+  },
+  {
+    "language": "en",
+    "width": 667,
+    "height": 375,
+    "screen": "title",
+    "targets": 9,
+    "noPageScroll": true
+  },
+  {
+    "language": "en",
+    "width": 667,
+    "height": 375,
+    "screen": "online-hub",
+    "targets": 9,
+    "noPageScroll": true
+  },
+  {
+    "language": "en",
+    "width": 1280,
+    "height": 480,
+    "screen": "title",
+    "targets": 9,
+    "noPageScroll": true
+  },
+  {
+    "language": "en",
+    "width": 1280,
+    "height": 480,
+    "screen": "online-hub",
+    "targets": 9,
+    "noPageScroll": true
+  }
+]

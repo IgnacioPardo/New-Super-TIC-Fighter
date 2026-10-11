@@ -4,11 +4,13 @@ Press a key, click, or use controller confirm/Start to enter. Room and tournamen
 
 ## Choose a mode
 
-- **Local:** couch stock, timed KO, Hill or Royale, optional bots, best-of-one/three/five. Stock defaults to three lives and five minutes; Timed/Hill default to three minutes.
-- **Private Online:** invitation rooms with direct P2P and relay fallback, including mixed couch/online groups, custom rules, and one/two-human Survival co-op. The host sets rules and starts after all seats are ready.
-- **Public Online:** choose duel, four-player FFA, 2v2 or eight-player Royale. Invite friends into a party before queueing. 2v2 parties have at most two players; larger groups use FFA/Royale/private rooms. The server runs matches. No automatic public bots.
+The title has three choices: **Play**, **Solo**, and **Online**. Profile and Settings are secondary header controls; the guide stays in the footer. Online groups Quick Play, Private Room and Tournaments.
+
+- **Play:** couch stock, timed KO, Hill or Royale, optional bots, best-of-one/three/five. Stock defaults to three lives and five minutes; Timed/Hill default to three minutes.
+- **Online → Private Room:** invitation rooms with direct P2P and relay fallback, including mixed couch/online groups, custom rules, and one/two-human Survival co-op. The host sets rules and starts after all seats are ready.
+- **Online → Quick Play:** choose duel, four-player FFA, 2v2 or eight-player Royale. Invite friends into a party before queueing. 2v2 parties have at most two players; larger groups use FFA/Royale/private rooms. The server runs matches. No automatic public bots.
 - **Solo:** eight-bout Arcade, Survival, twelve authored challenges, or Training. Hard bots have bounded reactions and understand expanded recovery/platforms.
-- **Tournaments:** duel or 2v2 elimination (best of three) and round robin (one bout per fixture). Enter local players independently or enter a two-player party as a team. Brackets persist; a shared browser's entrants are never assigned simultaneous bouts. Use the invitation link to return, and Refresh/Recover Match if needed. Only server results advance the bracket.
+- **Online → Tournaments:** duel or 2v2 elimination (best of three) and round robin (one bout per fixture). Enter local players independently or enter a two-player party as a team. Brackets persist; a shared browser's entrants are never assigned simultaneous bouts. Use the invitation link to return, and Refresh/Recover Match if needed. Only server results advance the bracket.
 - **Profile:** optional Google/GitHub sign-in, explicit provider linking, passkey enrollment and cosmetic progress. Guests can play everything; additional couch players stay separate guests.
 
 ## Controls

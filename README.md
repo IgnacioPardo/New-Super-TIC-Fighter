@@ -31,7 +31,7 @@ A desktop browser remake of **Super TIC Fighter**, the school-computing platform
 ## Jump in
 
 1. **[Open the game](https://new-super-tic-fighter.new-super-tic-fighter.workers.dev)** on a desktop browser. Press a key, click, or use the controller's confirm/Start button to enter the title menu.
-2. **Choose your match.** Local shares one computer. Private Online uses invitation rooms. Public Online finds opponents on the server. Solo offers Arcade, Survival, Challenges and Training; Tournaments offers elimination brackets and leagues.
+2. **Choose Play, Solo or Online.** Play shares one computer. Solo offers Arcade, Survival, Challenges and Training. Online groups Quick Play, Private Room and Tournaments. Profile and Settings stay in the header.
 3. **Pick a discipline, look, and device.** Each controller edits its own fighter card. Confirm every local seat. Private hosts set rules and start; public servers begin when all seats and assets are ready.
 
 Guests play immediately. Optional Google/GitHub accounts and passkeys synchronize cosmetics and verified results. If a controller-only session starts silently, click or press a key to enable browser audio. Public pause opens a local menu while the match continues. Private P2P hosts must keep their tab active.
