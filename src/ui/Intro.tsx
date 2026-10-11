@@ -39,6 +39,5 @@ export function Intro({ manifest, settings, onContinue }: {
       <span className="intro-prompt">{t.introPrompt}</span>
       <span className="intro-input-hint">{t.introInputHint}</span>
     </button>
-    <p className="intro-tagline">{t.subtitle}</p>
   </section>;
 }

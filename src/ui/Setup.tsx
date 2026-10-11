@@ -78,7 +78,6 @@ export function Setup({ config, setConfig, settings, manifest, devices, ready, t
        {!practice && host && config.players.length < 4 && <button className="add-fighter" onClick={addSeat}><span>+</span>{t.add}</button>}
        {online && !host && config.players.length < 4 && <button className="add-fighter" onClick={() => online.claimSeat({ ...defaultSeat(config.players.length, false, lang), id: crypto.randomUUID().replaceAll('-', ''), peerId: online.state.peerId })}><span>+</span>{t.add}</button>}
      </div>
-     {practice && <p className="practice-note"><span>↻</span>{t.practiceTip}</p>}
    </section>
    <section className="rules-section">
      <div className="section-heading"><h2>{t.rules}</h2></div>

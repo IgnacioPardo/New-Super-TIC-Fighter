@@ -11,7 +11,7 @@ export const PHYSICS = {
 export const ARENAS: Record<ArenaId, ArenaDefinition> = {
   classic: {
     id: 'classic', name: { es: 'Clásico', en: 'Classic' },
-    subtitle: { es: 'La ciudad, los fierros y la pelea original.', en: 'The city, the girders, the original fight.' },
+    subtitle: { es: 'Original · 6 plataformas', en: 'Original · 6 platforms' },
     color: '#7c93b3',
     platforms: [
       { x: 500, y: 600, width: 800, height: 50 },
@@ -25,7 +25,7 @@ export const ARENAS: Record<ArenaId, ArenaDefinition> = {
   },
   lab: {
     id: 'lab', name: { es: 'Laboratorio TIC', en: 'TIC Laboratory' },
-    subtitle: { es: 'Última hora. Último combate.', en: 'Last period. Last fight.' },
+    subtitle: { es: 'Simétrico · 4 plataformas', en: 'Symmetric · 4 platforms' },
     color: '#557c9b',
     platforms: [
       { x: 283, y: 600, width: 800, height: 50 },
@@ -37,7 +37,7 @@ export const ARENAS: Record<ArenaId, ArenaDefinition> = {
   },
   pc: {
     id: 'pc', name: { es: 'Dentro de la PC', en: 'Inside the PC' },
-    subtitle: { es: 'El hardware se toma demasiado en serio.', en: 'The hardware takes this personally.' },
+    subtitle: { es: 'Vertical · 6 plataformas', en: 'Vertical · 6 platforms' },
     color: '#335e5c',
     platforms: [
       { x: 433, y: 650, width: 500, height: 50 },
@@ -54,16 +54,15 @@ export const ARENAS: Record<ArenaId, ArenaDefinition> = {
 export interface DisciplineDefinition {
   id: Discipline;
   name: Record<Language, string>;
-  subtitle: Record<Language, string>;
   special: Record<Language, string>;
   combo: Record<Language, string>;
   color: string;
 }
 export const DISCIPLINES: Record<Discipline, DisciplineDefinition> = {
-  networks: { id: 'networks', name: { es: 'Redes', en: 'Networks' }, subtitle: { es: 'Conexión directa al mentón.', en: 'A direct connection to the chin.' }, special: { es: 'Cable UTP', en: 'UTP cable' }, combo: { es: 'Cables', en: 'Rising cables' }, color: '#52c6fd' },
-  design: { id: 'design', name: { es: 'Diseño', en: 'Design' }, subtitle: { es: 'Seleccionar. Copiar. Pegar.', en: 'Select. Copy. Smash.' }, special: { es: 'Mouse', en: 'Mouse pointer' }, combo: { es: 'Selección', en: 'Selection box' }, color: '#fb73b9' },
-  code: { id: 'code', name: { es: 'Programación', en: 'Programming' }, subtitle: { es: 'Este golpe compila.', en: 'This punch compiles.' }, special: { es: 'Bola de código', en: 'Code ball' }, combo: { es: 'Columna de código', en: 'Code column' }, color: '#86ec8f' },
-  hardware: { id: 'hardware', name: { es: 'Hardware', en: 'Hardware' }, subtitle: { es: 'Actualización a la fuerza.', en: 'A forceful upgrade.' }, special: { es: 'RAM', en: 'RAM' }, combo: { es: 'Disco', en: 'Spinning disc' }, color: '#fbc565' },
+  networks: { id: 'networks', name: { es: 'Redes', en: 'Networks' }, special: { es: 'Cable UTP', en: 'UTP cable' }, combo: { es: 'Cables', en: 'Rising cables' }, color: '#52c6fd' },
+  design: { id: 'design', name: { es: 'Diseño', en: 'Design' }, special: { es: 'Mouse', en: 'Mouse pointer' }, combo: { es: 'Selección', en: 'Selection box' }, color: '#fb73b9' },
+  code: { id: 'code', name: { es: 'Programación', en: 'Programming' }, special: { es: 'Bola de código', en: 'Code ball' }, combo: { es: 'Columna de código', en: 'Code column' }, color: '#86ec8f' },
+  hardware: { id: 'hardware', name: { es: 'Hardware', en: 'Hardware' }, special: { es: 'RAM', en: 'RAM' }, combo: { es: 'Disco', en: 'Spinning disc' }, color: '#fbc565' },
 };
 
 export type AttackAction = Extract<PlayerAction, 'punch' | 'uppercut' | 'sweep' | 'special' | 'combo'>;

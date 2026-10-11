@@ -108,7 +108,7 @@ async function addHumanHost(host, count) {
 
 async function ready(session, name) {
   const card = session.page.locator('.fighter-card').filter({ has: session.page.locator(`input[value="${name}"]`) });
-  await card.getByRole('button', { name: 'Estoy listo', exact: true }).click();
+  await card.getByRole('button', { name: 'Listo', exact: true }).click();
   await session.page.waitForFunction(() => window.__stfRoom?.readiness[window.__stfRoom.peerId]?.ready, null, { timeout: 20_000 });
 }
 

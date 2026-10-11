@@ -28,7 +28,7 @@ try{
  assert.match(await page.locator('.validation-hint').innerText(),/asignada|asignado|uso|used/i,'Conflicting keyboard binding is rejected');
  await page.keyboard.press('f');
  assert.equal(await page.locator('.binding-button').first().locator('kbd').innerText(),'F');
- await page.getByRole('button',{name:'Restaurar teclados originales'}).click();
+ await page.getByRole('button',{name:'Restaurar teclas'}).click();
  assert.equal(await page.locator('.binding-button').first().locator('kbd').innerText(),'A');
  await page.locator('.settings-tabs button').nth(1).click();
  await page.locator('.settings-panel select').nth(0).selectOption('en');

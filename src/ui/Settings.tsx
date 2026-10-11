@@ -25,28 +25,28 @@ export function Settings({ settings, manifest, change, feedback }: { settings: A
  }, [capture, settings, seat, t]);
  const actions = ['left','right','down','jump','punch','special','guard','combo'] as const;
  return <div className="settings-layout">
-  <nav className="settings-tabs" aria-label={t.settings}><button className={tab === 'sound' ? 'selected' : ''} onClick={() => setTab('sound')}>♪ {t.music} & {t.effects}</button><button className={tab === 'display' ? 'selected' : ''} onClick={() => setTab('display')}>◈ {t.camera} & {t.language}</button><button className={tab === 'controls' ? 'selected' : ''} onClick={() => setTab('controls')}>✚ {t.controls}</button></nav>
+  <nav className="settings-tabs" aria-label={t.settings}><button className={tab === 'sound' ? 'selected' : ''} onClick={() => setTab('sound')}>♪ {t.sound}</button><button className={tab === 'display' ? 'selected' : ''} onClick={() => setTab('display')}>◈ {t.display}</button><button className={tab === 'controls' ? 'selected' : ''} onClick={() => setTab('controls')}>✚ {t.controls}</button></nav>
   <section className="settings-panel">
    {tab === 'sound' && <>
-    <div className="setting-title"><span>♪</span><h2>{t.music} & {t.effects}</h2></div>
+    <div className="setting-title"><span>♪</span><h2>{t.sound}</h2></div>
     <label className="volume-field"><span>{t.music}<b>{Math.round(settings.musicVolume * 100)}%</b></span><input type="range" min="0" max="1" step=".01" value={settings.musicVolume} onChange={e => patch({ musicVolume: Number(e.target.value) })} /></label>
     <label className="volume-field"><span>{t.effects}<b>{Math.round(settings.effectsVolume * 100)}%</b></span><input type="range" min="0" max="1" step=".01" value={settings.effectsVolume} onChange={e => patch({ effectsVolume: Number(e.target.value) })} /></label>
-    <label className="field-label"><span>{t.playlist}</span><select value={settings.playlist} onChange={e => patch({ playlist: e.target.value as AppSettings['playlist'] })}>{(['remake', 'original'] as const).map(playlist => <option key={playlist} value={playlist}>{t[playlist]}{manifest ? ` · ${manifest.audio[playlist].length} ${settings.language === 'es' ? 'pistas' : 'tracks'}` : ''}</option>)}</select></label>
-    <p className="setting-note">{settings.language === 'es' ? 'Música de combate: selección aleatoria sin repetir la última pista. Danger Zone suena en la pantalla de título y los menús.' : 'Match music is shuffled without repeating the last track. Danger Zone plays on the title screen and menus.'}</p>
+    <label className="field-label"><span>{t.playlist}</span><select value={settings.playlist} onChange={e => patch({ playlist: e.target.value as AppSettings['playlist'] })}>{(['remake', 'original'] as const).map(playlist => <option key={playlist} value={playlist}>{t[playlist]}{manifest ? ` · ${manifest.audio[playlist].length} ${t.tracks}` : ''}</option>)}</select></label>
+    <p className="setting-note">{t.soundtrackHint}</p>
    </>}
    {tab === 'display' && <>
-    <div className="setting-title"><span>◈</span><h2>{t.camera} & {t.language}</h2></div>
+    <div className="setting-title"><span>◈</span><h2>{t.display}</h2></div>
     <label className="field-label"><span>{t.language}</span><select value={settings.language} onChange={e => patch({ language: e.target.value as AppSettings['language'] })}><option value="es">Español</option><option value="en">English</option></select></label>
     <label className="field-label"><span>{t.camera}</span><select value={settings.camera} onChange={e => patch({ camera: e.target.value as AppSettings['camera'] })}><option value="adaptive">{t.adaptive}</option><option value="fixed">{t.fixed}</option></select></label>
     <label className="toggle-field"><span>{t.motion}</span><input type="checkbox" checked={settings.reducedMotion} onChange={e => patch({ reducedMotion: e.target.checked })} /><span className="toggle-track" /></label>
-    <p className="setting-note">{settings.language === 'es' ? 'La cámara adaptativa sigue a quienes siguen en combate. La vista fija conserva el encuadre clásico.' : 'Adaptive framing follows the fighters still in the match. Fixed view preserves the classic framing.'}</p>
+    <p className="setting-note">{t.cameraHint}</p>
    </>}
    {tab === 'controls' && <>
     <div className="setting-title"><span>✚</span><h2>{t.controls}</h2></div><p className="help-text">{t.controlsHint}</p>
     <div className="keyboard-seat-tabs">{[0,1,2,3].map(i => <button className={seat === i ? 'selected' : ''} key={i} onClick={() => { setSeat(i); setCapture(null); }}>P{i + 1}</button>)}</div>
     <div className="bindings-grid">{actions.map(action => <button className={`binding-button ${capture === action ? 'capturing' : ''}`} key={action} onClick={() => { setCapture(action); setError(''); }}><span>{t[action]}</span><kbd>{capture === action ? '…' : keyName(settings.keyboardBindings[seat]?.[action] ?? '')}</kbd></button>)}</div>
     {(error || capture) && <p className="validation-hint" role="status">{error || t.pressKey}</p>}
-    <button className="text-button" onClick={() => { patch({ keyboardBindings: structuredClone(DEFAULT_SETTINGS.keyboardBindings) }); setError(''); setCapture(null); }}>{settings.language === 'es' ? 'Restaurar teclados originales' : 'Restore original keyboards'}</button>
+    <button className="text-button" onClick={() => { patch({ keyboardBindings: structuredClone(DEFAULT_SETTINGS.keyboardBindings) }); setError(''); setCapture(null); }}>{t.restoreKeyboard}</button>
     <h3 className="controller-setting-heading">{t.gamepadBindings}</h3><div className="gamepad-bindings">{(['jump','punch','special','combo','guard'] as const).map(action => <label className="field-label" key={action}><span>{t[action]}</span><select value={settings.gamepadBindings[action]} onChange={e => {
       const button = Number(e.target.value); const bindings = { ...settings.gamepadBindings };
       const occupied = Object.keys(bindings).find(key => key !== action && bindings[key] === button);
