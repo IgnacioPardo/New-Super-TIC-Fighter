@@ -15,6 +15,7 @@ export function Tournaments({ language, network, config }: { language:Language; 
  const [ruleset,setRuleset]=useState<'classic'|'expanded'>('expanded'),[seat,setSeat]=useState('');
  const [busy,setBusy]=useState(false),[message,setMessage]=useState('');
  const generation=useRef(0);
+ const [streamRevision,setStreamRevision]=useState(0);
  const ownSeats=network.lobby?.party.players.filter(p=>p.peerId===network.lobby?.peerId)??[];
  const credentials=()=>{const value=network.credentials();if(!value)throw Error('lobby_identity_required');return value;};
  const request=async<T,>(path:string,body?:unknown):Promise<T>=>{
@@ -37,18 +38,27 @@ export function Tournaments({ language, network, config }: { language:Language; 
  const open=async(value:string)=>{
   const clean=value.trim().replace(/^.*[?&]tournament=/,'').split('&')[0];
   if(!/^[a-zA-Z0-9-]{1,80}$/.test(clean))throw Error('tournament_not_found');
-  const next=await request<TournamentState>(`/${encodeURIComponent(clean)}`);setState(next);setId(next.id);sessionStorage.setItem('stf-tournament',next.id);
+  const next=await request<TournamentState>(`/${encodeURIComponent(clean)}`);setState(next);setId(next.id);setStreamRevision(value=>value+1);sessionStorage.setItem('stf-tournament',next.id);
  };
  useEffect(()=>{void act(async()=>{await network.connect(config);await loadList();if(id)await open(id);});},[]);
  useEffect(()=>{
   if(!state?.id)return;
   const gen=++generation.current;
   const url=new URL(`/api/tournaments/${state.id}/ws`,location.href);url.protocol=location.protocol==='https:'?'wss:':'ws:';
-  const socket=new WebSocket(url);
-  socket.onmessage=event=>{try{const data=JSON.parse(event.data);if(data.type==='tournament'&&gen===generation.current)setState(data.state);}catch{/* Non-state keepalive. */}};
-  socket.onerror=()=>setMessage(es?'La conexión del cuadro se interrumpió. Usa Actualizar para recuperarla.':'Bracket connection interrupted. Use Refresh to recover.');
-  return()=>{generation.current++;socket.close();};
- },[state?.id]);
+  let socket:WebSocket|undefined,retry:ReturnType<typeof setTimeout>|undefined,keepalive:ReturnType<typeof setInterval>|undefined,attempt=0;
+  const connect=()=>{
+   if(gen!==generation.current)return;
+   socket=new WebSocket(url);
+   socket.onopen=()=>{attempt=0;keepalive=setInterval(()=>{if(socket?.readyState===WebSocket.OPEN)socket.send('ping');},20000);};
+   socket.onmessage=event=>{try{const data=JSON.parse(event.data);if(data.type==='tournament'&&gen===generation.current)setState(data.state);}catch{/* Non-state keepalive. */}};
+   socket.onclose=()=>{clearInterval(keepalive);if(gen===generation.current)retry=setTimeout(connect,Math.min(1000*2**attempt++,15000));};
+   socket.onerror=()=>socket?.close();
+  };
+  connect();
+  const online=()=>{if(socket?.readyState===WebSocket.CLOSED){clearTimeout(retry);connect();}};
+  window.addEventListener('online',online);
+  return()=>{generation.current++;clearTimeout(retry);clearInterval(keepalive);window.removeEventListener('online',online);socket?.close();};
+ },[state?.id,streamRevision]);
  const entryName=(entryId:string)=>state?.entrants.find(e=>e.id===entryId)?.name??'—';
  const phase=(value:string)=>({registration:es?'Inscripción':'Registration',running:es?'En juego':'In progress',finished:es?'Finalizada':'Complete',scheduled:es?'Pendiente':'Scheduled'}[value]??value);
  const enter=()=>act(async()=>{
