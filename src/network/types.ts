@@ -19,6 +19,9 @@ export interface RoomState {
   config: MatchConfig;
   readiness: Record<string, { ready: boolean; assetsReady: boolean }>;
   phase: RoomPhase;
+  seatReadiness?: Record<string, {ready:boolean; assetsReady:boolean}>;
+  protocolVersion?: number;
+  contentVersion?: string;
   matchId?: string;
   peers: RoomPeer[];
   routes: Record<string, Route>;
@@ -36,6 +39,7 @@ export interface TransportStatus {
 }
 
 export interface RoomCallbacks {
+  onEditAck?: (editId:number, accepted:boolean) => void;
   onRoomState?: (state: RoomState) => void;
   onInput?: (peerId: string, frames: InputFrame[]) => void;
   onSnapshot?: (snapshot: MatchSnapshot, sequence: number, acknowledgements: Record<string, number>) => void;
@@ -64,9 +68,10 @@ export type SignalData =
 
 export type ClientMessage =
   | { type: 'hello'; protocolVersion: number; contentVersion: string; peerId?: string; reconnectToken?: string; hostToken?: string }
-  | { type: 'seats'; players: PlayerSeat[] }
-  | { type: 'config'; config: MatchConfig }
+  | { type: 'seats'; players: PlayerSeat[]; editId?:number }
+  | { type: 'config'; config: MatchConfig; editId?:number }
   | { type: 'ready'; ready: boolean; assetsReady: boolean }
+  | { type: 'seat_ready'; seatId:string; ready:boolean; assetsReady:boolean }
   | { type: 'route'; route: Route; pingMs?: number }
   | { type: 'signal'; to: string; data: SignalData }
   | { type: 'input'; matchId: string; sequence: number; frames: InputFrame[] }
@@ -80,6 +85,7 @@ export type ClientMessage =
   | { type: 'peer_alive'; peerId: string };
 
 export type ServerMessage =
+  | { type: 'edit_ack'; editId:number; accepted:boolean }
   | { type: 'welcome'; state: RoomState; peerId: string; reconnectToken: string; hostToken?: string }
   | { type: 'room'; state: RoomState }
   | { type: 'signal'; from: string; data: SignalData }
