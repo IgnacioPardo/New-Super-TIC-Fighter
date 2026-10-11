@@ -47,6 +47,14 @@ function apiUrl(baseUrl: string, path: string): string {
 }
 
 function credentialKey(code: string): string { return `stf-room-${code}`; }
+function sequenceKey(code: string): string { return `stf-room-sequence-${code}`; }
+
+function storedSequence(code: string): number {
+  try {
+    const value = Number(sessionStorage.getItem(sequenceKey(code)));
+    return Number.isSafeInteger(value) && value >= 0 ? value : 0;
+  } catch { return 0; }
+}
 
 function storedCredentials(code: string): RoomCredentials | undefined {
   try {
@@ -148,7 +156,7 @@ export class RoomClient {
     const owned = new Set(this.room.players.filter(player => player.kind === 'human' && player.peerId === this.room!.peerId).map(player => player.id));
     const valid = frames.filter(frame => owned.has(frame.seatId)).slice(0, 12);
     if (!valid.length) return;
-    const sequence = ++this.sequence;
+    const sequence = this.nextSequence();
     const host = this.room.hostPeerId;
     const link = this.links.get(host);
     if (link?.route === 'direct' && this.room.routes[host] === 'direct' && this.sendGameplay(link, { type: 'input', matchId: this.room.matchId, sequence, frames: valid })) return;
@@ -157,7 +165,7 @@ export class RoomClient {
 
   sendSnapshot(snapshot: MatchSnapshot): void {
     if (!this.room || !this.isHost || snapshot.matchId !== this.room.matchId) return;
-    const sequence = ++this.sequence;
+    const sequence = this.nextSequence();
     const targets: string[] = [];
     const acknowledgements = Object.fromEntries(this.lastInputSequences);
     for (const peer of this.room.peers) {
@@ -209,6 +217,7 @@ export class RoomClient {
 
   private connect(code: string): Promise<RoomState> {
     this.code = code;
+    this.sequence = Math.max(this.sequence, storedSequence(code));
     return new Promise((resolve, reject) => {
       this.pendingWelcome = { resolve, reject };
       this.openSocket(code);
@@ -245,6 +254,14 @@ export class RoomClient {
       if (!this.reconnectStarted) this.reconnectStarted = Date.now();
       this.reconnect(code);
     };
+  }
+
+  private nextSequence(): number {
+    const sequence = ++this.sequence;
+    if (this.code) {
+      try { sessionStorage.setItem(sequenceKey(this.code), String(sequence)); } catch { /* storage may be disabled */ }
+    }
+    return sequence;
   }
 
   private reconnect(code: string): void {
