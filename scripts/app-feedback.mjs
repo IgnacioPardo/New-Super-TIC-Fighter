@@ -20,7 +20,7 @@ try{
  await page.goto(process.env.STF_APP_URL??'http://127.0.0.1:4173');
  await enterTitle(page);
  await page.getByTestId('mode-local').focus();
- await page.locator('.title-tagline').click(); // Mouse modality must not make controller focus invisible.
+ await page.locator('.hero-logo').click(); // Mouse modality must not make controller focus invisible.
  await page.getByTestId('mode-local').focus();
  await press(13);
  await expect(page.getByTestId('mode-online')).toBeFocused();
